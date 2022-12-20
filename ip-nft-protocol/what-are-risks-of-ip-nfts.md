@@ -45,9 +45,3 @@ A public patent system is supposed to be a public library of the newest inventio
 We like public libraries. But something has gone wrong with the patent system. It certainly doesn’t seem to work like a library. Patents are now mostly an [expensive distraction](https://molecule.to/blog/ip-nfts-for-researchers-a-new-biomedical-funding-paradigm).&#x20;
 
 We designed IP-NFTs to support the open-access structure of public libraries, but preserve the economic advantage of trade secret protection. FRENS & FAM does this by creating a token-gated IP commons with open-access IP inside the commons and trade secret protection from those outside the commons.&#x20;
-
-### 4. Securities
-
-#### Are IP-NFTs securities?
-
-It depends on how they are sold.&#x20;

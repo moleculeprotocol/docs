@@ -2,6 +2,8 @@
 
 Molecule uses a host of services to enable the transacting of intellectual property in the form of NFTs. Find below a list of third-party projects and their corresponding application in the IP-NFT tech stack:
 
+<figure><img src="https://lh3.googleusercontent.com/2H3rZNjLyZUfCDBOvgNblFIJB8CmEIrqRFDIjE87HGScZcEBZG7z_S-EpUmJAnj1auYpzF0vDZvJKDsp0jKF4xhRmy6WU4tUN6HjLjUWmDg-yA5R4_GJcX_Hrf_AugPgC1AmFwXllAKT5L_DFfbfPSqePLocO077JFD26ETvXoHn2okAYHngnVp9kIjIdg" alt=""><figcaption><p>Diagram showing the process of IP-NFT minting</p></figcaption></figure>
+
 ### ****[**Lit Protocol**](https://litprotocol.com/) **(Access Control Module)**
 
 To securely manage access rights to private research data and IP, Molecule uses Lit Protocol's SDK. Lit is a leading technology provider for creating and managing access to encryption keys for different use-cases. In our case, Lit Protocol hosts the access control condition to an encrypted descyption key for the documents or data connected to an IP-NFT
