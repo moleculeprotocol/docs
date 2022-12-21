@@ -1,8 +1,10 @@
 # 💡 Why Molecule?
 
-Early-stage bio-pharma research suffers from complex legal agreements, missing transparency, and reduced investments. This leads to potentially promising research projects all too often being abandoned before they get off the ground. Academia has termed the problem of missing funds between fundamental research and clinical trial "the valley of death".&#x20;
+Disrupting early-stage bio-pharma can change the world.&#x20;
 
-Molecule aims to solve the "valley of death" with markets for funding research projects. Via Molecule, researchers can manage rights and permissions for their IP and R\&D data using blockchain tokens and wallets on Ethereum.
+Ineffective incentive alignment means potentially promising scientific research projects all too often are abandoned for lack of funding before they get off the ground. For new drugs, the gap between foundational research and clinical trials is called "the valley of death."&#x20;
+
+Molecule aims to cross "valley of death" by making markets for funding science and building tools for researchers to manage rights and permissions to their IP and R\&D data using cryptography on [Ethereum](https://www.ethereum.org).&#x20;
 
 You can find a good entry-level blog post on this on Medium:&#x20;
 

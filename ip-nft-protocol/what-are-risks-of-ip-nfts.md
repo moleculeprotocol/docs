@@ -1,47 +1,33 @@
 # ⚖ What are risks of IP-NFTs?
 
+_The statements set forth herein must not be construed as representations, warranties, guarantees, promises or legal advice, and they must not be relied upon by any person as a basis for decision making. We are not your lawyers. No legal opinion is expressed in this documentation and it is neither intended to nor creates an attorney-client relationship. Get legal advice._&#x20;
+
 When IP-NFTs are minted, they merge two different fields of risk: traditional IP risk and all of the risks that come with web3 experimentation.&#x20;
 
-Web3 regulatory uncertainty and evolving standards for IP valuation and risk assessment drive much of the risk.  &#x20;
+### Who controls the IP?
 
-### 1. Entity wrappers for risk-mitigation&#x20;
+A classic risk for traditional IP, both because of inefficient default IP laws as well as jurisdictional conflict of laws, is risk of dispute over control. We strongly recommend that you have a clear understanding of who controls any piece of IP that you want to mint into an IP-NFT. If disputes arise over who has legal control over an IP-NFT, the whole DeSci economy suffers.
 
-We are all scared of somehow having to bear liability for the risky behavior of an anonymous stranger. Are DAOs general partnerships? Will using IP-NFTs expose my IP to new risks? Is there a way to limit my liability from the risks that seem inherent to economic experimentation?
-
-Everything in the permissionless IP-NFT protocol should be used at your own risk. Sometimes someone might want to add another layer of limited liability.&#x20;
-
-**Double wrapped**
-
-Entities like [NextRound](https://nextround.xyz/) and [Otoco](https://otoco.io/) are creating amazing new ways to wrap wallets with limited liability, such as minting Otoco Series LLCs and Nextround Phalanx NFTs. You can easily attach IP to these NFTs, creating a wallet and the tokens that it issues relying on the latest liability limitation technology tools available in web3 (Note: this is not legal advice. In fact, to our knowledge neither the Otoco Series LLCs or Nextround Phalanx NFTs have been tested in court, so caveat emptor).&#x20;
-
-We plan to introduce new legal and smart contract tools for wrapping and risk mitigation as we develop them with our partners.  &#x20;
-
-### 2. Who controls the IP?
-
-A classic risk for traditional IP, both because of inefficient default IP laws as well as jurisdictional conflict of laws. We strongly recommend that you have a clear understanding of who controls any piece of IP that you want to mint into an IP-NFT. If disputes arise over who has legal control over an IP-NFT, the whole DeSci economy suffers.
-
-We recommend a conservative, court-tested approach: assign co-created IP into a single legal entity that is co-managed by the creators, e.g. a Series LLC minted on [Otoco](https://otoco.io/). Make sure the IP-NFT LLC wrapper has clear mechanisms for determining how the IP-NFT can be commercialized. By using the IP-NFT wrapper to set forth clear terms and conditions regarding IP control, many of the traditional risks can be avoided. Write here for an attorney referral.&#x20;
+To mitigate this risk is to transfer to the IP-NFT into a single legal entity co-managed by several people, e.g. a Series LLC minted on [Wrappr](https://www.wrappr.wtf). Make sure the LLC wrapper has clear mechanisms for determining how the IP can be commercialized. By using a wrapper corporation that sets forth clear terms and conditions regarding IP control and housing the IP in an IP-NFT, many of the traditional risks of IP control can be avoided.&#x20;
 
 Check out our [model FAM agreement](https://docs.google.com/document/d/18mWC\_8Q0pfKP0zSjvG09JFbI0W5DHLDqySmjNz2lURY/edit) for one way we propose for handling IP control in a more radical approach for the future of DeSci.&#x20;
 
-### 3. To patent or not to patent? And the risks
+### To patent or not to patent?&#x20;
 
-Patent lawyers come up with all types of questions when thinking about the implications of capturing potential patentable subject matter through a DAO, protecting it as a trade secret, fractioning it as FRENS & FAM, and then trying to patent some part of it.&#x20;
+There are many implications of capturing potential patentable subject matter through a DAO, protecting it, fractionalizing it, and then trying to patent some part of it.&#x20;
 
 When exactly was the IP put “[on sale](https://en.wikipedia.org/wiki/On-sale\_bar)”? Was the IP “[publicly disclosed](https://en.wikipedia.org/wiki/Public\_disclosure)” to the DAO, and if so, when? Who has legal control of the trade secret? What does it mean to be an inventor in DeSci?
 
-We cannot do much to answer those questions. They all depend on how the specific IP was created, who had access to it, where those involved reside, as well as any issues arising under applicable private agreements. Whether or not to pursue a patent is also commercially case specific. Something that IP holders should strategize and discuss, but ultimately decide for themselves.
+We cannot do much to answer those questions. They all depend on how the specific IP was created, who had access to it, where those involved reside, as well as any issues arising under applicable private agreements.&#x20;
 
-**Trade secrets**
+Whether or not to pursue a patent is also commercially case specific. Something that IP holders should strategize and discuss, but ultimately decide for themselves.&#x20;
 
-We can share a bit on our approach to trade secrets, which is the default IP protection provided by a Molecule IP-NFT, as a matter of legal design.&#x20;
+There is a substantial risk that IP holders make bad decisions about whether or when to file a patent. This risk may be mitigated somewhat through the wisdom of the crowd in managing IP assets together using IP-NFTs, fractions, and DAOs.&#x20;
 
-Trade secret protection goes back to at least [Roman law](https://en.wikipedia.org/wiki/Trade\_secret). It was what instigated the creation of a public patent system. Economists theorized that a public patent system would create the type of financial incentive that one needs to teach the public how a trade secret works. Rather than keep the knowledge hidden away forever as a trade secret, the public will grant the inventor a time-limited monopoly over some claims to the invention.&#x20;
+### Entity wrappers for risk-mitigation&#x20;
 
-**A public library**&#x20;
+Are DAOs general partnerships? Will using IP-NFTs expose my IP to new risks? Is there a way to limit my liability from the risks that seem inherent to economic experimentation? Maybe.&#x20;
 
-A public patent system is supposed to be a public library of the newest inventions, teaching others across an industry how to use and implement the new invention.&#x20;
+Entities like [NextRound](https://nextround.xyz/) and [Otoco](https://otoco.io/) or [Wrappr](https://www.wrappr.wtf) are experimenting with ways to limit liability for crypto wallet holders, such as minting Series LLCs or UNAs to DAO wallets and LeXpunK DAO Defense Protocol documents as NFTs.&#x20;
 
-We like public libraries. But something has gone wrong with the patent system. It certainly doesn’t seem to work like a library. Patents are now mostly an [expensive distraction](https://molecule.to/blog/ip-nfts-for-researchers-a-new-biomedical-funding-paradigm).&#x20;
-
-We designed IP-NFTs to support the open-access structure of public libraries, but preserve the economic advantage of trade secret protection. FRENS & FAM does this by creating a token-gated IP commons with open-access IP inside the commons and trade secret protection from those outside the commons.&#x20;
+Some bioDAOs and people in bioDAOs in [bio.xyz](https://www.bio.xyz) use them. Use them at your own risk.&#x20;

@@ -6,4 +6,4 @@ The following notion page is a detailed blueprint for creating BioDAOs developed
 BioDAO Blueprint
 {% endembed %}
 
-In case you need help or have additional questions feel free to reach out to info@molecule.io or join the Molecule Discord: [https://discord.gg/trQd6MJM3H](https://discord.gg/trQd6MJM3H)
+In case you need help or have additional questions feel free to reach out to info@molecule.io or join the Molecule [Discord](https://discord.gg/trQd6MJM3H).
