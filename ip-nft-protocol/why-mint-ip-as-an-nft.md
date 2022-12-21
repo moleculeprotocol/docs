@@ -36,6 +36,6 @@ Early-stage IP-NFTs, representing rights to future IP arising from a research pr
 
 Later-stage IP-NFTs can represent rights to trade secrets and patents on inventions that arise from the research project. Licensing terms, ethical conditions, and governance clauses can be encoded into IP-NFTs as license wrappers–legal contracts attached to the NFTs. By attaching legal contracts to smart contracts, IP-NFTs create a new kind of smart IP.&#x20;
 
-**Cambrian explosion**&#x20;
+**Cambrian explosion of IP**
 
 IP seeds can evolve into complex thickets of patents and tech trees. With this diverse potential for evolution, IP-NFTs can create a Cambrian explosion of novel applications for decentralized IP ownership, governance, and commercialization. \
