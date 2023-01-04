@@ -11,7 +11,9 @@
 * [❓ Why mint IP as an NFT?](ip-nft-protocol/why-mint-ip-as-an-nft.md)
 * [⚖ What are risks of IP-NFTs?](ip-nft-protocol/what-are-risks-of-ip-nfts.md)
 * [✨ How to mint an IP-NFT?](ip-nft-protocol/how-to-mint-an-ip-nft.md)
-* [🛠 Technical Components of IP-NFTs](ip-nft-protocol/technical-components-of-ip-nfts.md)
+* [🛠 Technical Components of IP-NFTs](ip-nft-protocol/technical-components-of-ip-nfts/README.md)
+  * [⚙ Technical Details for Developers](ip-nft-protocol/technical-components-of-ip-nfts/technical-details-for-developers.md)
+  * [📭 Smart Contract Addresses](ip-nft-protocol/technical-components-of-ip-nfts/smart-contract-addresses.md)
 
 ## Molecule Discovery&#x20;
 
