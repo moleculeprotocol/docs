@@ -72,6 +72,7 @@ The JSON metadata documents behind IP-NFTs are required to strictly validate aga
   "name": "Our awesome test IP-NFT",
   "description": "Lorem ipsum dolor sit amet, ...",
   "image": "ar://7De6dRLDaMhMeC6Utm9bB9PRbcvKdi-rw_sDM8pJSMU",
+  "external_url": "https://ip-nft.com/1",
   "properties": {
     "type": "IP-NFT",
     "agreements": [
