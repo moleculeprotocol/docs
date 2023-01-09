@@ -15,14 +15,14 @@
   * [⚙ Technical Details for Developers](ip-nft-protocol/technical-components-of-ip-nfts/technical-details-for-developers.md)
   * [📭 Smart Contract Addresses](ip-nft-protocol/technical-components-of-ip-nfts/smart-contract-addresses.md)
 
-## Molecule Discovery&#x20;
+## Molecule Discovery
 
 * [🔎 Molecule Discovery](molecule-discovery/molecule-discovery.md)
 * [🔐 Accounts on Molecule](molecule-discovery/accounts-on-molecule.md)
-* [👩🔬 For Researchers](molecule-discovery/for-researchers/README.md)
+* [👩🔬 👩🔬 For Researchers](molecule-discovery/for-researchers/README.md)
   * [Intellectual property NFTs (IP-NFTs)](molecule-discovery/for-researchers/intellectual-property-nfts-ip-nfts.md)
   * [How to create an IP-NFT?](molecule-discovery/for-researchers/how-to-create-an-ip-nft.md)
-* [👨💼 For Funders](molecule-discovery/for-funders/README.md)
+* [👨💼 👨💼 For Funders](molecule-discovery/for-funders/README.md)
   * [How to fund research](molecule-discovery/for-funders/how-to-fund-research.md)
 * [⁉ FAQ](molecule-discovery/faq.md)
 

@@ -10,11 +10,17 @@ You can find all relevant IP-NFT contract sources on our official [Github repo](
 
 ## Non Fungible Tokens in a Nutshell
 
-Non fungible tokens ([NFTs](https://ethereum.org/en/nft/)) are smart contract based assets that associate a unique token identifier with the blockchain address of its respective owner. The underlying smart contract defines rules on how they are minted (brought into existence), transferred or burnt (destroyed). It also can restrict their ability to be transferred or offer features that are unlocked for individual token holders.&#x20;
+Non fungible tokens ([NFTs](https://ethereum.org/en/nft/)) are smart contract based assets that associate a unique token identifier with the blockchain address of its respective owner. The underlying smart contract defines rules on how they are minted (brought into existence), transferred or burnt (destroyed). It also can restrict their ability to be transferred or offer features that are unlocked for individual token holders.
 
 IP-NFTs are based on [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155) that allows users to mint and distribute several tokens of the same "kind", not unlike several instances of a rare - but not unique - gem. An ERC-1155 token kind with only one instance effectively represents assets in the same way as [ERC-721](https://eips.ethereum.org/EIPS/eip-721) does.
 
-The IP-NFT collection contract [is deployed on mainnet](https://etherscan.io/address/0x0dccd55fc2f116d0f0b82942cd39f4f6a5d88f65#code) and [on Görli testnet](https://goerli.etherscan.io/address/0x36444254795ce6E748cf0317EEE4c4271325D92A#code). Each token's metadata is stored as a file descriptor URI (e.g. `ar://HxXKCIE0skR4siRNYeLKI61Vwg_TJ5PJTbxQmtO0EPo`) that must be resolved client side, e.g. by using decentralized storage network gateways ([Arweave](https://arweave.news/introduction-to-the-most-important-infrastructure-in-the-ar-ecosystem-ar-gateway/) or [IPFS](https://ipfs.github.io/public-gateway-checker/)). The contract is non enumerable, i.e. users can't simply query their owned assets on chain but rather must rely on reading the respective event logs to build their own off chain state. We've deployed subgraphs [on mainnet](https://api.thegraph.com/subgraphs/name/moleculeprotocol/ip-nft-mainnet) and [on Görli](https://thegraph.com/explorer/subgraph/dorianwilhelm/ip-nft-subgraph-goerli) that can be queried for asset ownership and other IP-NFT related information. Here's a GraphQL example on how to do that:
+The IP-NFT collection contract [is deployed on mainnet](https://etherscan.io/address/0x0dccd55fc2f116d0f0b82942cd39f4f6a5d88f65#code) and [on Görli testnet](https://goerli.etherscan.io/address/0x36444254795ce6E748cf0317EEE4c4271325D92A#code). Each token's metadata is stored as a file descriptor URI (e.g. `ar://HxXKCIE0skR4siRNYeLKI61Vwg_TJ5PJTbxQmtO0EPo`) that must be resolved client side, e.g. by using decentralized storage network gateways ([Arweave](https://arweave.news/introduction-to-the-most-important-infrastructure-in-the-ar-ecosystem-ar-gateway/) or [IPFS](https://ipfs.github.io/public-gateway-checker/)). The contract is non enumerable, i.e. users can't simply query their owned assets on chain but rather must rely on reading the respective event logs to build their own off chain state. We've deployed TheGraph subgraphs [on mainnet](https://api.thegraph.com/subgraphs/name/moleculeprotocol/ip-nft-mainnet) and [on Görli](https://thegraph.com/explorer/subgraph/dorianwilhelm/ip-nft-subgraph-goerli) that can be queried for asset ownership and other IP-NFT related information.
+
+{% hint style="info" %}
+Read more about [TheGraph, subgraphs](https://thegraph.com/docs/en/about/#what-the-graph-is) and [how to query them](https://thegraph.com/docs/en/querying/querying-the-graph/) from your application.
+{% endhint %}
+
+Here's a GraphQL example on how to query IP-NFT data from the subgraph:
 
 ```graphql
 query IPNFTsOf($owner: ID!)
@@ -375,4 +381,3 @@ To sum up, minting an IP-NFT technically requires the following steps:
   * `uint256 reservationId`: the token id you've reserved
   * `uint256 mintPassId`: the mintpass id that's going to be redeemed during the mint
   * `string memory tokenURI`: the URI that resolves to the metadata
-
