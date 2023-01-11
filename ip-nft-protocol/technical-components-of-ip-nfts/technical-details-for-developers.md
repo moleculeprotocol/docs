@@ -70,7 +70,7 @@ Once holding a mintpass, the next step on the minting journey is to reserve an I
 
 ## Assemble and Upload Metadata
 
-The JSON metadata documents behind IP-NFTs are required to strictly validate against a [well defined JSON schema](https://w3s.link/ipfs/bafybeifyciqacag3wev63lspuvxs3e6fe3n6mt4rwharttxgwpkcq6f5z4/ipnft.schema.json) that's flexible enough to cover many relevant use cases. [Here's a visual tool](https://jsonschema.dev/s/BkeKG) to investigate a valid IP-NFT's metadata interactively. Note that the generic fields `name`, `image` and `description` are located on the document's root level [as required by ERC-1155](https://eips.ethereum.org/EIPS/eip-1155#metadata), whereas the `agreements` and `project_details` structures are modeled as rich property definitions.
+The JSON metadata documents behind IP-NFTs are required to strictly validate against a [well defined JSON schema that's](https://bafybeiho346bhsmtvt3opy3fxznraiueeagmco2rvzy5pfa74ru5vovk6m.ipfs.w3s.link/ipnft.schema.json) flexible enough to cover many relevant use cases. [Here's a visual tool](https://jsonschema.dev/s/EmB1F) to investigate a valid IP-NFT's metadata interactively. Note that the generic fields `name`, `image` and `description` are located on the document's root level [as required by ERC-1155](https://eips.ethereum.org/EIPS/eip-1155#metadata), whereas the `agreements` and `project_details` structures are modelled as rich property definitions.
 
 ```json
 {
@@ -94,8 +94,7 @@ The JSON metadata documents behind IP-NFTs are required to strictly validate aga
       "organization": "Newcastle University, UK",
       "topic": "Aging",
       "research_lead": {
-        "first_name": "Chuck",
-        "last_name": "Norris",
+        "name": "Chuck Norris",
         "email": "chuck@norris.com"
       }
     }
