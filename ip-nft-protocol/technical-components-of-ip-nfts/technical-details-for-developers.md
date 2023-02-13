@@ -70,7 +70,7 @@ Once holding a mintpass, the next step on the minting journey is to reserve an I
 
 ## Assemble and Upload Metadata
 
-The JSON metadata documents behind IP-NFTs are required to strictly validate against a [well defined JSON schema that's](https://bafybeiho346bhsmtvt3opy3fxznraiueeagmco2rvzy5pfa74ru5vovk6m.ipfs.w3s.link/ipnft.schema.json) flexible enough to cover many relevant use cases. [Here's a visual tool](https://jsonschema.dev/s/EmB1F) to investigate a valid IP-NFT's metadata interactively. Note that the generic fields `name`, `image` and `description` are located on the document's root level [as required by ERC-1155](https://eips.ethereum.org/EIPS/eip-1155#metadata), whereas the `agreements` and `project_details` structures are modelled as rich property definitions.
+The JSON metadata documents behind IP-NFTs are required to strictly validate against a [well defined JSON schema that's](https://bafybeibxovb2ihsjmd6tjjzq3ftllftfken655koypnkakxcd6fs427mwi.ipfs.w3s.link/ipnft.schema.json) flexible enough to cover many relevant use cases. [Here's a visual tool](https://jsonschema.dev/s/i9UZ3) to investigate a valid IP-NFT's metadata interactively. Note that the generic fields `name`, `image` and `description` are located on the document's root level [as required by ERC-1155](https://eips.ethereum.org/EIPS/eip-1155#metadata), whereas the `agreements` and `project_details` structures are modelled as rich property definitions.
 
 ```json
 {
@@ -78,7 +78,8 @@ The JSON metadata documents behind IP-NFTs are required to strictly validate aga
   "name": "Our awesome test IP-NFT",
   "description": "Lorem ipsum dolor sit amet, ...",
   "image": "ar://7De6dRLDaMhMeC6Utm9bB9PRbcvKdi-rw_sDM8pJSMU",
-  "external_url": "https://ip-nft.com/1",
+  "external_url": "https://testnet.mint.molecule.to/ipnft/76",
+  "terms_signature": "0x...",
   "properties": {
     "type": "IP-NFT",
     "agreements": [
@@ -263,7 +264,7 @@ An IP-NFT metadata's `agreements` item can store the encrypted symmetric key and
 
 ### Using Multisig Wallet Signers
 
-Due to the high value nature of IP-NFTs you might feel tempted to use a multisig wallet for the minting process, maybe because you'd like to prove that the IP-NFT has been created by a dedicated group of individuals. This works fine for all contract function invocations but is not supported by Lit protocol. Multisig wallets (or contract wallets to be precise) cannot sign messages in the way it's required to authenticate against Lit nodes because they're not based on a private key. This might once be possible by utilizing [EIP-1271](https://eips.ethereum.org/EIPS/eip-1271) compatible wallet signatures but [is not supported](https://discord.com/channels/896185694857343026/916383445784096839/1058018912010248232) at the time of writing.
+Due to the high value nature of IP-NFTs you might feel tempted to use a multisig wallet for the minting process, maybe because you'd like to prove that the IP-NFT has been created by a dedicated group of individuals. This works fine for all contract function invocations but is not supported by Lit protocol. Multisig wallets (or contract wallets to be precise) cannot sign messages in the way it's required to authenticate against Lit nodes because they're not based on a private key. This might once be possible by utilizing [EIP-1271](https://eips.ethereum.org/EIPS/eip-1271) compatible wallet signatures but [was not supported](https://discord.com/channels/896185694857343026/916383445784096839/1058018912010248232) earlier. We're going to add [support for it](https://developer.litprotocol.com/SDK/Explanation/WalletSigs/authSig#how-to-structure-the-authsig) soon.
 
 The recommended workaround is to denote a dedicated trusted member of the multisig that's supposed to intially own the minted IP-NFT. This could be the researcher, a core contributor or maintainer of the project. The IP-NFT contract's `mintReservation` function takes a recipient parameter (`to`) that defines the NFT's initial owner. Note, that the account that _invokes_ the mint function is required to hold a mint pass, not the receiver.
 
@@ -359,6 +360,37 @@ const verifyChecksum = async (
 })();
 
 ```
+
+## Let users sign off legal terms and agreements' content
+
+Some of the attached legal PDF documents might contain a reference on being only valid when being digitally signed by an individual party. For IP-NFTs minted from within the Molecule ecosystem we're requesting minters to sign an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) compatible message with a personal signature. We refer to that structure as `TermsSig` and it essentially could contain anything that proves that a party has agreed to terms shown on a website or mentioned in legal contracts.
+
+A `TermsSig` V1 contains the following information
+
+- a "banner"
+- a list of terms the minter has agreed to sign
+- a list of document hashes, keyed by their document type
+- a version indicator
+- the chain id on which this signature should be considered valid
+
+Eample:
+
+```
+I accept the IP-NFT minting terms
+
+I have read and agreed to the terms of the IP-NFT Assignment Agreement
+I understand that the IP-NFT represents legal rights to IP and data of the project in my Research Agreement
+I understand that this in an irreversible and publicly traceable transaction on the Ethereum Blockchain
+I understand this is beta software and agree to the Terms of Service and assume all risks of minting this IP-NFT
+
+Sponsored Research Agreement Hash: bagaaiera7ftqs3jmnoph3zgq67bgjrszlqtxkk5ygadgjvnihukrqioipndq
+Assignment Agreement Hash: bagaaiera7ftqs3jmnoph3zgq67bgjrszlqtxkk5ygadgjvnihukrqioipndq
+
+Version: 1
+Chain ID: 5
+```
+
+You can use any EIP-191 compatible [ecrecover](https://docs.ethers.org/v5/api/utils/address/#utils-recoverAddress) function to prove who has signed these terms. Etherscan [comes with a dedicated feature](https://etherscan.io/verifySig/14176) to publicly prove messages and signatures to simplify this process.
 
 ## Putting it all together: The IP-NFT Minting Flow for Developers
 
