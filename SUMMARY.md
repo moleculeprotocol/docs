@@ -8,12 +8,17 @@
 ## IP-NFT Protocol
 
 * [⚡ Intro to IP-NFT](ip-nft-protocol/intro-to-ip-nft.md)
-* [❓ Why mint IP as an NFT?](ip-nft-protocol/why-mint-ip-as-an-nft.md)
-* [⚖ What are risks of IP-NFTs?](ip-nft-protocol/what-are-risks-of-ip-nfts.md)
+* [🏛 IP-NFT legal structure](ip-nft-protocol/ip-nft-legal-structure.md)
 * [✨ How to mint an IP-NFT?](ip-nft-protocol/how-to-mint-an-ip-nft.md)
 * [🛠 Technical Components of IP-NFTs](ip-nft-protocol/technical-components-of-ip-nfts/README.md)
   * [⚙ Technical Details for Developers](ip-nft-protocol/technical-components-of-ip-nfts/technical-details-for-developers.md)
   * [📭 Smart Contract Addresses](ip-nft-protocol/technical-components-of-ip-nfts/smart-contract-addresses.md)
+* [❓ Why mint an IP-NFT?](ip-nft-protocol/why-mint-an-ip-nft.md)
+* [➗ What is IP-NFT fractionalization?](ip-nft-protocol/what-is-ip-nft-fractionalization.md)
+* [🫂 What are FAM?](ip-nft-protocol/what-are-fam.md)
+* [🤝 What are FRENS?](ip-nft-protocol/what-are-frens.md)
+* [✨ How to fractionalize an IP-NFT?](ip-nft-protocol/how-to-fractionalize-an-ip-nft.md)
+* [⚖ What are risks of IP-NFTs?](ip-nft-protocol/what-are-risks-of-ip-nfts.md)
 
 ## Molecule Discovery
 
