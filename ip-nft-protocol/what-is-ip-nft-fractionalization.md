@@ -24,13 +24,9 @@ The FAM agreement establishes that FAM holders are members of IP Commons around 
 
 FAM are a team charged with developing an IP Commons from the fractionalized IP-NFT.
 
-Read more about FAM in the next section, "What are FAM?"\
-\
-
-
 ## Fractionalization Smart Contracts
 
-&#x20;\[\[WIP FAM smart contract]]
+Read about IP-NFT fractionalization smart contracts in [Molecule's Github](https://github.com/moleculeprotocol/IPNFT).
 
 
 
