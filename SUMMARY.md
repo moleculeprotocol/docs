@@ -9,11 +9,11 @@
 
 * [⚡ Intro to IP-NFT](ip-nft-protocol/intro-to-ip-nft.md)
 * [🏛 IP-NFT legal structure](ip-nft-protocol/ip-nft-legal-structure.md)
+* [❓ Why mint an IP-NFT?](ip-nft-protocol/why-mint-an-ip-nft.md)
 * [✨ How to mint an IP-NFT?](ip-nft-protocol/how-to-mint-an-ip-nft.md)
 * [🛠 Technical Components of IP-NFTs](ip-nft-protocol/technical-components-of-ip-nfts/README.md)
   * [⚙ Technical Details for Developers](ip-nft-protocol/technical-components-of-ip-nfts/technical-details-for-developers.md)
   * [📭 Smart Contract Addresses](ip-nft-protocol/technical-components-of-ip-nfts/smart-contract-addresses.md)
-* [❓ Why mint an IP-NFT?](ip-nft-protocol/why-mint-an-ip-nft.md)
 * [➗ What is IP-NFT fractionalization?](ip-nft-protocol/what-is-ip-nft-fractionalization.md)
 * [🫂 What are FAM?](ip-nft-protocol/what-are-fam.md)
 * [🤝 What are FRENS?](ip-nft-protocol/what-are-frens.md)
