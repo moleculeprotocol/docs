@@ -12,17 +12,27 @@ Just like IP-NFT minting, IP-NFT fractionalization happens through a mixture of 
 
 ### FAM Agreement
 
-The legal contract for the first phase of fractionalization we are rolling out is the Fractional Asset Member (FAM) agreement.&#x20;
+The legal contract for the first phase of fractionalization is the Fractional Asset Member (FAM) agreement.&#x20;
 
-We tailor built FAM for DeSci as a new asset class enabling novel ways of organizing around IP development.
+We tailor built FAM for DeSci to enable novel ways of organizing around IP development.
 
 Read our [model FAM agreement here](https://docs.google.com/document/d/1Iu3ALQzUa8LhIe4LIl972eGTfT296sWZZjGbtN4RbFA/edit).&#x20;
 
-In order to fractionalize an IP-NFT, the user must click to agree to the terms of the FAM agreement.&#x20;
+In order to fractionalize an IP-NFT, the user must click to agree to the terms of the FAM agreement and then generate non-fungible tokens called FAM.&#x20;
 
-The FAM agreement establishes that FAM holders are members of IP Commons around the IP-NFT, distributing managerial interests and financial incentives across a group of people, a.k.a. Commoners, FAM in Commons, or just "FAM."
+The FAM agreement establishes that FAM holders are members of IP Commons around the IP-NFT, distributing managerial interests and financial incentives across a group of people, a.k.a. Commoners, FAM in Commons, or just "FAM."&#x20;
 
 FAM are a team charged with developing an IP Commons from the fractionalized IP-NFT.
+
+### FRENS Agreement&#x20;
+
+The legal contract for the second phase of fractionalization is the Fair, Reasonable, Ethical, & Non-Discriminatory Sublicense (FRENS).
+
+We tailor built FRENS for to enable novel ways of organizing communities around ethical IP development using fungible tokens called FRENS.&#x20;
+
+Read our [model FRENS agreement here](https://docs.google.com/document/d/1b6LQ6hzSpW3yt1zlA2xzvDvLQPnHSeI8JHP63e1peBU/edit?usp=sharing).&#x20;
+
+FRENS are still under development and with no certain release date.&#x20;
 
 ## Fractionalization Smart Contracts
 
