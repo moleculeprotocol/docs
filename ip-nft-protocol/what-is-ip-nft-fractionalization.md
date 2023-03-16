@@ -6,7 +6,13 @@ A user fractionalizes an IP-NFT by locking that IP-NFT and minting tokens on Eth
 
 IP-NFT fractionalization solves an issue for BioDAO members. When a BioDAO such as [VitaDAO](https://www.vitadao.com) holds an IP-NFT, the BioDAO members do not have direct exposure to economic upside from the commercialization of the IP, NIPIA, or R\&D data rights attached to the IP-NFT because any proceeds from commercialization are returned to the VitaDAO treasury to fund additional longevity research, much like proceeds from IP commercialization out of a university is returned to the university in order to fund further research at the university. Proceeds are not distributed to VitaDAO members because VitaDAO is a non-profit organization, and so are other BioDAOs.  &#x20;
 
-IP-NFT fractionalization is a solution because it solves enables BioDAO members people to obtain direct exposure to IP-NFTs through its fraction tokens.&#x20;
+When a DAO such as [VitaDAO](https://www.vitadao.com) holds an IP-NFT, the DAO members govern the IP-NFT by proxy, but those members do not have direct exposure to economic upside from the commercialization of the IP, NIPIA, or R\&D data rights attached to the IP-NFT. Instead any proceeds are returned to the VitaDAO treasury (much like proceeds from IP commercialization out of a university is returned to the university in order to fund further research) to fund additional longevity research, not distributed to DAO members, because VitaDAO is a non-profit organization. &#x20;
+
+IP-NFT fractionalization enables people to obtain direct exposure to IP-NFTs through distribution of tokenized rights that apply directly to the IP, NIPIA, and R\&D data attached to the IP-NFT. This is direct exposure to the IP-NFT, not indirect exposure through membership in a non-profit VitaDAO-style DAO.&#x20;
+
+## What is the fractionalization structure?
+
+Just like IP-NFT minting, IP-NFT fractionalization happens through a mixture of legal contracts and smart contracts.
 
 IP-NFT fractionalization happens through a mixture of legal contracts and smart contracts.
 

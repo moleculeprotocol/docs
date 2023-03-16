@@ -1,10 +1,10 @@
 # 🏛 IP-NFT legal structure
 
-The legal structure of an IP-NFT is a set of two legal contracts attached to a smart contract, enabling on-chain registration of IP and R\&D data rights.&#x20;
+The IP-NFT combines two legal contracts with a smart contract.&#x20;
 
-The legal contracts consist of a Sponsored Research Agreement (SRA) (or a similar type of contract such as a Joint Development Agreement (JDA)) and an Assignment Agreement. The Assignment Agreement assigns the SRA (or JDA, etc.) to the owner of the smart contract, the IP-NFT.&#x20;
+This hybrid legal-smart contract structure enables on-chain registration and management of IP and R\&D data rights.&#x20;
 
-This blending of legal contracts with a smart contract is the basic structure of the IP-NFT.&#x20;
+The two legal contracts are Sponsored Research Agreement (SRA) (or a similar type of contract such as a Joint Development Agreement (JDA)) and an Assignment Agreement. The Assignment Agreement assigns the SRA (or JDA, etc.) to the owner of the smart contract. The smart contract is the IP-NFT.&#x20;
 
 ## Legal Contract 1: The SRA (or JDA, etc.)
 

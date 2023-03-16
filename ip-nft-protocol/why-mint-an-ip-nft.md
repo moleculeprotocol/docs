@@ -1,18 +1,8 @@
 # ❓ Why mint an IP-NFT?
 
-A researcher, biotech company, or research sponsor can mint and IP-NFT in order to gain functionality from attaching IP and R\&D rights to a smart contract on Ethereum.&#x20;
+A researcher, biotech company, or research sponsor mints IP-NFT to attach IP and R\&D data rights to a smart contract on Ethereum. When the user transfers that IP-NFT, those rights transfer along with it.&#x20;
 
-Those gains of function, described in the "Intro to IP-NFT" section, include:
-
-As smart contracts on Ethereum, IP-NFTs can be permissionlessly transferred peer-to-peer; made [composable](https://blog.aragon.org/what-is-composability/) with DeFi; fractionalized to distribute licenses and governance to to groups of people; built on to unlock new ways to interact with and develop IP, R\&D data, and [NIPIA](https://www.aaup.org/sites/default/files/files/IntangibleAssets.pdf) (Non-IP Intangible Assets like trade secrets and publicity rights); used to empower crowd control of ethics in commercialization based on [FRAND](https://en.wikipedia.org/wiki/Reasonable\_and\_non-discriminatory\_licensing) terms; and create unprecedented liquidity in IP markets.&#x20;
-
-Moreover, IP-NFTs unlock non-dilutive funding opportunities by enabling researchers to access capital by selling IP and data rights without having to apply for grants or sell shares of spin-off companies.&#x20;
-
-Once a user has minted an IP-NFT, that user has attached the IP, NIPIA, and R\&D data rights specified in the attached legal contract to a non-fungible token on Ethereum. When the user transfers that IP-NFT, those rights transfer along with it.&#x20;
-
-That ease of transferability and the blockchain-based verified ownership of rights that comes with it is one of the primary reasons to mint an IP-NFT.
-
-Several other reasons to mint IP-NFTs are as follows:&#x20;
+As smart contracts on Ethereum, IP-NFTs can be permissionlessly transferred peer-to-peer; made [composable](https://blog.aragon.org/what-is-composability/) with DeFi; fractionalized to distribute licenses and governance to to groups of people; built on to unlock new ways to interact with and develop IP, R\&D data, and [NIPIA](https://www.aaup.org/sites/default/files/files/IntangibleAssets.pdf) (Non-IP Intangible Assets like trade secrets and publicity rights); used to empower crowd control of ethics in commercialization based on [FRAND](https://en.wikipedia.org/wiki/Reasonable\_and\_non-discriminatory\_licensing) terms; and create unprecedented liquidity in IP markets. IP-NFTs also unlock new and non-dilutive funding opportunities by enabling researchers to access capital by selling IP and data rights without having to apply for grants and sell shares.&#x20;
 
 ## **IP-NFTs are DeSci legos composable with DeFi** <a href="#docs-internal-guid-a7f27ada-7fff-de6a-56de-162f60c1fbd2" id="docs-internal-guid-a7f27ada-7fff-de6a-56de-162f60c1fbd2"></a>
 

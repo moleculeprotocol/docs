@@ -1,6 +1,6 @@
 # ⚡ Intro to IP-NFT
 
-IP-NFT is an acronym for Intellectual Property - Non-Fungible Token.&#x20;
+**IP-NFTs connect Intellectual Property to Non-Fungible Tokens.**&#x20;
 
 The first IP-NFTs were minted by Molecule for [VitaDAO](https://www.vitadao.com/) to register its IP and R\&D data rights to its sponsored research into longevity therapeutics.&#x20;
 
