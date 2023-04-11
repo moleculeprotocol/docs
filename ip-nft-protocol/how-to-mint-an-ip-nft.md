@@ -2,14 +2,15 @@
 
 Minting of IP-NFTs on Molecule is in closed beta, so you need to request a mintpass. Request a mintpass [via this form](https://airtable.com/shr9QN0tPPeK4GGjA) and join our [Discord](https://discord.gg/trQd6MJM3H). &#x20;
 
-{% embed url="https://www.loom.com/share/0d815b0e818b4f548fc461c82cf8eed8" %}
-Demo of how to mint an IP-NFT on Göerli
+{% embed url="https://www.loom.com/share/eafffeb92b7d423daf43609d2b737be1" %}
+Minting an IP-NFT on Göerli
 {% endembed %}
 
 * **Prepare your Research Agreement:** Two parties negotiate and sign a legal contract (Research Agreeent). The **Research Agreement** states the rights of the asset holder (dataset, future IP, etc.) and the price paid for the asset. In our case, these agreements are often lined out as Sponsored Research Agreements (SRAs) but they could be any other kind of legal agreement.
 * **Access the** [**Molecule IP-NFT Minting Front-End**](https://mint.molecule.to)**:** Visit the minting front-end and connect your wallet to get started with the process. Before starting, make sure you have ether on your wallet for gas fees, which vary based on traffic. If you are looking to mint an IP-NFT on testnet, visit the [Goerli Faucet](https://goerlifaucet.com/). &#x20;
+* **Connect your wallet:** The first thing you will need to do to mint an IP-NFT is connect a wallet. It is important that this wallet is an [externally-owned account](https://ethereum.org/en/developers/docs/accounts/) (EOA) and not a smart contract wallet, such as a Gnosis Multisig. This is to ensure your Research Agreement can be encrypted with a private key prior to pinning on decentralized storage.
 * **Reserve an IP-NFT:** Once you have acquired a mintpass, you can reserve an IP-NFT TokenID. This TokenID will be used to let our access control infrastructure know that only the owner of the TokenID should have access to the data behind the NFT.&#x20;
-* **Project Details:** Add information about your IP-NFT. Select what kind of agreement will be connected to the IP-NFT. All information in this step will be saved in the metadata of the IP-NFT and will be publicly available. ****&#x20;
+* **Project Details:** Add information about your IP-NFT. Select what kind of agreement will be connected to the IP-NFT. All information in this step will be saved in the metadata of the IP-NFT and will be publicly available.&#x20;
 * **Research Agreement:** Upload the Research Agreement mentioned in Step 1, and add Contract Title, Agreement Date, Contract Owner (Assignor), and Contract Type. It is important that these data elements match what is represented in the Research Agreement, and are referenced in Assignment Agreement in the next step. The Research Agreement will be encrypted, so don't worry if it has confidential information.&#x20;
 * **Assignment Agreement:** This agreement assigns the rights of the Research Agreement (Step 5) to the holder of the IP-NFT. Sign your legal name, specify the organization you are assigning the rights to (DAO name), and specify the target wallet address (default is the connected wallet). If you are minting the IP-NFT to a different wallet, make sure to change that wallet address here. **PLEASE DOUBLE CHECK THE WALLET ADRESS**. After minting, this target address will be the IP-NFT holder, and is the legal assignee of the Research Agreement. The Assignment Agreement will be publicly viewable to ensure rights are properly assigned.&#x20;
 * **Artwork:** Upload an image to commemorate the research. This image will be public, so please follow the content guidelines and upload appropriate images.
