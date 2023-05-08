@@ -1,8 +1,8 @@
 # 🤝 What are FRENS?
 
-FRENS is an acronym of Fair, Reasonable, Ethical, & Non-Discriminatory Sublicense (FRENS). &#x20;
+FRENS is an acronym of Fair, Reasonable, Ethical, & Non-Discriminatory Sublicense (FRENS), another adhesion contract for Molecules. &#x20;
 
-FRENS, still under development and with no certain release date, are intended to be an ethical governance layer for IP commons operating in concert with FAM in a two-token  system for fractionalized IP-NFTs.&#x20;
+FRENS, still under development and with no certain release date, are intended to be an ethical governance layer for IP pools based on FRAND licensing.&#x20;
 
 You can read the "hello world" post about FRENS at the link below.&#x20;
 
