@@ -6,9 +6,9 @@ A user fractionalizes an IP-NFT by locking that IP-NFT and minting tokens on Eth
 
 ## Why fractionalize an IP-NFT?
 
-When a BioDAO such as [VitaDAO](https://www.vitadao.com) holds an IP-NFT, the BioDAO members do not have direct exposure to economic upside from the commercialization of the IP, NIPIA, or R\&D data rights attached to the IP-NFT because any proceeds from commercialization are returned to the VitaDAO treasury to fund additional longevity research, much like proceeds from IP commercialization out of a university is returned to the university in order to fund further research at the university. Proceeds are not distributed to VitaDAO members because VitaDAO is a non-profit organization.  &#x20;
+When a BioDAO such as [VitaDAO](https://www.vitadao.com) holds an IP-NFT, the BioDAO members have no incentive structure to continue jointly developing the IP. VitaDAO members do not have direct exposure to economic upside from the commercialization of the IP, NIPIA, or R\&D data rights attached to the IP-NFT because any proceeds from commercialization are returned to the VitaDAO treasury to fund additional longevity research, much like proceeds from IP commercialization out of a university is returned to the university in order to fund further research at the university. Proceeds are not distributed to VitaDAO members because VitaDAO is a non-profit organization.  &#x20;
 
-IP-NFT fractionalization enables people to obtain direct exposure to IP-NFTs through distribution of tokenized rights that apply directly to the IP, NIPIA, and R\&D data attached to the IP-NFT.&#x20;
+IP-NFT fractionalization enables members to incentivize and administer a cooperative program for IP development through the issuance of tokenized rights, including royalty rights, that apply directly to the IP, NIPIA, and R\&D data attached to the IP-NFT.&#x20;
 
 IP-NFT fractionalization happens through a mixture of legal contracts and smart contracts.
 
