@@ -1,3 +1,3 @@
-# ✨ How to fractionalize an IP-NFT?
+# ✨ How to synthesize Molecules from an IP-NFT?
 
-Fractionalizing IP-NFTs on Molecule is in closed alpha, so watch this space for the product roll-out.&#x20;
+Synthesizing Molecules from IP-NFTs is in closed alpha, so watch this space for the product roll-out.&#x20;

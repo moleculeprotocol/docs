@@ -1,14 +1,16 @@
 # 🫂 What are Molecules?
 
-Molecules are fractions of IP-NFTs with rights given by adhesion contracts. The first model adhesion contract for Molecules is the FAM Agreement.&#x20;
+Molecules are IP pool governance tokens minted by IP-NFT owners with rights given by adhesion contracts.&#x20;
 
-Read our [model FAM agreement here](https://docs.google.com/document/d/1Iu3ALQzUa8LhIe4LIl972eGTfT296sWZZjGbtN4RbFA/edit).&#x20;
+Molecules unite token holders in the common purpose of constructing and developing an [IP pool](https://discovery.ucl.ac.uk/id/eprint/1325659/1/1325659.pdf) for their IP-NFT.&#x20;
 
-Molecules are tokens minted as IP-NFT fractions uniting token holders in the common purpose of constructing and developing an [IP pool](https://discovery.ucl.ac.uk/id/eprint/1325659/1/1325659.pdf) for their IP-NFT.&#x20;
-
-Fractionalization of IP-NFTs takes IP-NFTs to the next level. By unlocking powers of co-managing IP pools, participating in novel incentivization programs, advancing IP development and experimentation, and building blueprints for innovative IP networks, Molecules serve as a keystone in helping to ensure that the future of medicine belongs to everyone.&#x20;
+By unlocking powers of co-managing IP pools, participating in novel incentivization programs, advancing IP development and experimentation, and building blueprints for innovative IP networks, Molecules serve as a keystone in helping to ensure that the future of medicine belongs to everyone.&#x20;
 
 As described herein, Molecules come with governance rights over IP licenses and monetary incentives for successful experimentation, support, and development of IP-NFTs.
+
+The first model adhesion contract for Molecules is the FAM Agreement.&#x20;
+
+Read our [model FAM agreement here](https://docs.google.com/document/d/1Iu3ALQzUa8LhIe4LIl972eGTfT296sWZZjGbtN4RbFA/edit).&#x20;
 
 ## IP licenses
 

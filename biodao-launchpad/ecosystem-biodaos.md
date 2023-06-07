@@ -2,7 +2,7 @@
 
 Here are several decentralised autonomous organisations (DAOs) advancing research in the field of biopharma.&#x20;
 
-****
+
 
 ### **VitaDAO:** **Longevity research**&#x20;
 
@@ -12,7 +12,7 @@ Here are several decentralised autonomous organisations (DAOs) advancing researc
 
 {% embed url="https://www.labdao.com" %}
 
-### **PsyDAO:** Psychedelic research ****&#x20;
+### **PsyDAO:** Psychedelic research&#x20;
 
 {% embed url="https://www.psydao.io" %}
 

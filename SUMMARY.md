@@ -14,11 +14,10 @@
 * [🛠 Technical Components of IP-NFTs](ip-nft-protocol/technical-components-of-ip-nfts/README.md)
   * [⚙ Technical Details for Developers](ip-nft-protocol/technical-components-of-ip-nfts/technical-details-for-developers.md)
   * [📭 Smart Contract Addresses](ip-nft-protocol/technical-components-of-ip-nfts/smart-contract-addresses.md)
-* [➗ What is IP-NFT fractionalization?](ip-nft-protocol/what-is-ip-nft-fractionalization.md)
 * [🫂 What are Molecules?](ip-nft-protocol/what-are-fam.md)
-* [🤝 What are FRENS?](ip-nft-protocol/what-are-frens.md)
-* [✨ How to fractionalize an IP-NFT?](ip-nft-protocol/how-to-fractionalize-an-ip-nft.md)
-* [⚖ What are risks of IP-NFTs?](ip-nft-protocol/what-are-risks-of-ip-nfts.md)
+* [➗ What is synthesizing Molecules?](ip-nft-protocol/what-is-ip-nft-fractionalization.md)
+* [✨ How to synthesize Molecules from an IP-NFT?](ip-nft-protocol/how-to-fractionalize-an-ip-nft.md)
+* [⚖ What are risks of IP-NFTs and Molecules?](ip-nft-protocol/what-are-risks-of-ip-nfts.md)
 
 ## Molecule Discovery
 

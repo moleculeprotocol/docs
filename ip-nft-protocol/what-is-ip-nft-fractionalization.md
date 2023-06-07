@@ -1,30 +1,32 @@
-# ➗ What is IP-NFT fractionalization?
+# ➗ What is synthesizing Molecules?
 
-IP-NFT fractionalization is a method for directly distributing rights to IP-NFTs to groups of token holders such as members of a BioDAO.&#x20;
+Synthesizing Molecules from an IP-NFT is a method for directly distributing rights to IP-NFTs to groups of token holders such as members of a BioDAO.&#x20;
 
-A user fractionalizes an IP-NFT by locking that IP-NFT and minting tokens on Ethereum representing fractions of it. &#x20;
+A user mints Molecules from an IP-NFT using the Synthesizer smart contract, minting ERC20 tokens on Ethereum representing memberships in an IP pool unique to that IP-NFT. &#x20;
 
-## Why fractionalize an IP-NFT?
+## Why use an IP-NFT to mint Molecules?
 
-When a BioDAO such as [VitaDAO](https://www.vitadao.com) holds an IP-NFT, the BioDAO members have no incentive structure to continue jointly developing the IP. VitaDAO members do not have direct exposure to economic upside from the commercialization of the IP, NIPIA, or R\&D data rights attached to the IP-NFT because any proceeds from commercialization are returned to the VitaDAO treasury to fund additional longevity research, much like proceeds from IP commercialization out of a university is returned to the university in order to fund further research at the university. Proceeds are not distributed to VitaDAO members because VitaDAO is a non-profit organization.  &#x20;
+When a BioDAO such as [VitaDAO](https://www.vitadao.com) holds an IP-NFT, the BioDAO members do not have direct governance over the commercialization of the IP, NIPIA, or R\&D data rights attached to the IP-NFT.&#x20;
 
-IP-NFT fractionalization enables members to incentivize and administer a cooperative program for IP development through the issuance of tokenized rights, including royalty rights, that apply directly to the IP, NIPIA, and R\&D data attached to the IP-NFT.&#x20;
+Any proceeds from commercialization are returned to the VitaDAO treasury to fund additional longevity research, much like proceeds from IP commercialization out of a university is returned to the university in order to fund further research at the university. Proceeds are not distributed to VitaDAO members because VitaDAO is a non-profit organization.  &#x20;
 
-IP-NFT fractionalization happens through a mixture of legal contracts and smart contracts.
+IP-NFT Molecules enable people to obtain direct governance to IP-NFTs through distribution of tokenized rights that apply directly to the IP, NIPIA, and R\&D data attached to the IP-NFT.&#x20;
+
+Minting Molecules happens through a mixture of legal contracts and smart contracts.
 
 ### Legal Contract 1: FAM agreement
 
-The legal contract for the first phase of fractionalization is an adhesion contract called the the Fractional Association Member (FAM) agreement.&#x20;
+The first legal contract for Molecules is an adhesion contract called the the Free Association of Molecules (FAM) membership agreement.&#x20;
 
 Read our [model FAM agreement here](https://docs.google.com/document/d/18mWC\_8Q0pfKP0zSjvG09JFbI0W5DHLDqySmjNz2lURY/edit?usp=sharing).&#x20;
 
-We tailored this agreement for DeSci to enable novel ways of organizing around IP development. FAM are members of an IP pool for the fractionalized IP-NFT.
+We tailored this agreement for DeSci to enable novel ways of organizing around IP development. FAM are members of an IP pool for the IP-NFT.
 
-In order to fractionalize an IP-NFT, the user mints fraction tokens from the fractionalization smart contract. Those tokens are governed by the FAM agreement, which establishes that the token holders are members of IP pool distributing managerial interests and potential financial incentives. &#x20;
+In order to mint Molecules from an IP-NFT, the user mints tokens from the Synthetizer smart contract. Those tokens are governed by the FAM agreement, which establishes that the token holders are members of IP pool distributing managerial interests and potential financial incentives. &#x20;
 
 ### Legal Contract 2: FRENS agreement&#x20;
 
-The legal contract for the second phase of fractionalization is the Fair, Reasonable, Ethical, & Non-Discriminatory Sublicense (FRENS).
+The second legal contract for Molecules is the Fair, Reasonable, Ethical, & Non-Discriminatory Sublicense (FRENS).
 
 We tailor built FRENS for to enable novel ways of organizing communities around ethical IP development using fungible sublicenses.&#x20;
 
@@ -32,7 +34,7 @@ Read our [model FRENS agreement here](https://docs.google.com/document/d/1b6LQ6h
 
 FRENS are still under development.&#x20;
 
-## Fractionalization Smart Contracts
+## Smart Contracts
 
-Read about IP-NFT fractionalization smart contracts in [Molecule's Github](https://github.com/moleculeprotocol/IPNFT).
+Read about the smart contracts for Molecules in [Molecule's Github](https://github.com/moleculeprotocol/IPNFT).
 
