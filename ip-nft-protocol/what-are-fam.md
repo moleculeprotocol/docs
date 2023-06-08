@@ -1,42 +1,30 @@
 # 🫂 What are Molecules?
 
-Molecules are ERC-20 tokens synthesized from an IP-NFT.  &#x20;
+Molecules are a unique variant of the ERC-20 tokens that are derived from Intellectual Property Non-Fungible Tokens (IP-NFTs). Acting as governance tokens for an IP pool, they represent an extension of the intricate legal and blockchain-based contracts that constitute the IP-NFT Protocol. Molecules gather token holders under a shared objective: to construct and cultivate an IP pool linked to their specific IP-NFT.
 
-They are IP pool governance tokens.&#x20;
+The role of Molecules extends beyond mere governance. They empower token holders to co-manage IP pools, engage in innovative incentivization schemes, facilitate IP development and experimentation, and contribute to the formulation of ground-breaking IP networks.
 
-Comprised of an extension of the legal and smart contracts that make up IP-NFTs, Molecules unite token holders in the common purpose of constructing and developing an [IP pool](https://discovery.ucl.ac.uk/id/eprint/1325659/1/1325659.pdf) for their IP-NFT.&#x20;
-
-By unlocking powers of co-managing IP pools, participating in novel incentivization programs, advancing IP development and experimentation, and building blueprints for innovative IP networks, Molecules serve as a keystone in helping to ensure that the future of medicine belongs to everyone.&#x20;
+In essence, Molecules are pivotal in steering the future of medicine towards a more inclusive and accessible landscape, reinforcing the belief that advancements in this field should be universally beneficial.
 
 ## Governance rights
 
-Holders of Molecules govern the IP pools of their parent IP-NFTs.&#x20;
+Individuals possessing Molecule tokens exercise governance over the IP pools associated with their respective parent IP Non-Fungible Tokens (IP-NFTs). Their participation in the IP pool is governed by an adhesion contract referred to as the Free Association of Molecules (FAM) Membership Agreement. You can familiarize yourself with our standard FAM Membership Agreement by following [this link](https://docs.google.com/document/d/1Iu3ALQzUa8LhIe4LIl972eGTfT296sWZZjGbtN4RbFA/edit).
 
-Their membership in the IP pool is subject to the terms of adhesion contract called the Free Association of Molecules (FAM) Membership Agreement. Read our [model FAM Membership Agreement here](https://docs.google.com/document/d/1Iu3ALQzUa8LhIe4LIl972eGTfT296sWZZjGbtN4RbFA/edit).&#x20;
-
-Holders of Molecules govern the IP licensing function, controlling the parties and the terms of IP licenses and the use of proceeds from those licenses.&#x20;
+Molecule token holders exert control over the IP licensing process, which includes determining the parties involved and the terms of IP licenses, as well as managing the utilization of proceeds derived from these licenses. By holding Molecules, individuals have a direct influence on the way IP licenses are handled, ensuring a fair and transparent process.
 
 ## Economic rights
 
-Unlike holders of fractions of NFTs (e.g. holders of DOG token, fractions of [The Doge NFT](https://doge.pleasr.org/) from PleasrDAO), holders of Molecules do not have hard-coded economic rights. That means they have no contractual right to proceeds in the event of the sale of the IP-NFT.&#x20;
+Contrary to the holders of fractional NFTs, holders of Molecules are not inherently entitled to economic benefits. This means they do not have a predetermined, contractual right to receive any proceeds following the sale of an IP-NFT. Instead, holders of Molecules are endowed with governance rights. They must actively participate in voting to decide on the allocation of proceeds derived from IP licenses, sales, and other activities related to both the IP and the data within their IP pool.
 
-Instead, holders of Molecules have a governance right and must vote through their exercise of such rights on the use of proceeds from IP licenses, sales, and other activity related to the IP and R\&D data in their IP pool.&#x20;
-
-Careful consideration should be given before proposing or passing such a vote because a vote to enact a payout right will likely change the regulatory classification of the token. For example, if holders of a group of Molecules vote to approve royalty rights to themselves to receive proceeds of a license of a drug in their IP pool, then their tokens with such contractual rights would likely be considered asset tokens, securities, and similar depending on the jurisdictions of the holders.&#x20;
+It is essential to thoroughly consider the implications before initiating or approving a vote to enable a payout right, as it could potentially alter the regulatory status of the token. For instance, suppose the holders of a specific Molecule token category decide to grant themselves royalty rights, permitting them to profit from the licensing of a drug contained in their IP pool. In that case, the tokens associated with these contractual rights would most likely be classified as asset tokens or securities, among other possible classifications, contingent on the jurisdiction of the token holders. This change in classification could bring new regulatory responsibilities and consequences that need to be understood and adhered to.
 
 ## IP licenses
 
-Holders of Molecules govern the licensing of the IP-NFT's IP and R\&D data.
+Individuals possessing Molecules exercise administrative control over the licensing of the IP and data connected to their respective IP-NFTs. In the context of IP licenses tied to the IP and R\&D data of an IP-NFT, these must be directed and consented to by the Molecule token holders associated with that specific IP-NFT.
 
-IP licenses attached to the IP and R\&D data of an IP-NFT must be governed in and agreed upon by holders of that IP-NFT's Molecules. &#x20;
-
-For example, if a holder of Molecules finds a potential licensor of the IP, then the holder can propose to license the IP to that buyer. Other holders vote to license, then the license gets issued.&#x20;
+For instance, if a Molecule token holder identifies a potential licensor for the IP, they have the ability to suggest licensing the IP to that particular entity. Following this, other Molecule token holders will have the opportunity to vote on whether to issue the license, thereby creating an inclusive and democratic process for IP licensing.
 
 ## IP non-ownership
 
-Joint ownership of IP is [messy](https://www.ipeg.com/avoid-jointly-owned-intellectual-property/), so the IP developed through the IP pool remains owned and controlled by the owner of the IP-NFT.&#x20;
-
-IP ownership laws conflict with each other across jurisdictions and when it comes time to transferring or exclusively licensing IP to commercial manufacturers, so joint ownership can create major inefficiencies and headaches.&#x20;
-
-As a result, holders of Molecules don’t own the IP developed through the IP pool, but they do control that IP through governance rights over the IP licensing function.&#x20;
+Given the complexities and conflicts in joint IP ownership, the IP developed within the IP pool is retained and controlled by the IP-NFT owner. This approach avoids inefficiencies and complications arising from conflicting IP ownership laws across jurisdictions. While Molecule holders do not possess direct ownership of the IP, they exert control over it through governance rights governing the IP licensing process.
 
