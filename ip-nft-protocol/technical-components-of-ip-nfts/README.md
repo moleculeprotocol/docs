@@ -2,7 +2,7 @@
 
 Molecule uses a host of services to enable the transacting of intellectual property in the form of NFTs. Below you can find a list of third-party projects and their corresponding application in the IP-NFT tech stack:
 
-<figure><img src="https://lh3.googleusercontent.com/2H3rZNjLyZUfCDBOvgNblFIJB8CmEIrqRFDIjE87HGScZcEBZG7z_S-EpUmJAnj1auYpzF0vDZvJKDsp0jKF4xhRmy6WU4tUN6HjLjUWmDg-yA5R4_GJcX_Hrf_AugPgC1AmFwXllAKT5L_DFfbfPSqePLocO077JFD26ETvXoHn2okAYHngnVp9kIjIdg" alt=""><figcaption><p>Diagram showing the process of IP-NFT minting</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/63a05d9d450d4f845d5dcd28_p8nRCWh2MvRFgtJk9VG_aQRUZXMFASVVIZl46lzfptT8gVujU8pEDHGdXXhnHrR7W0po3_JSoEQFamm2U6L0PC1Vcjf6KG_efWFQW1LHgTsjiKOSSqSUoPUHznP6oeohmzmTPtb9l8GkGPIViks4vALfqZHtem8WaxMeWQetLczYDhFXLylE1yHRzgCK (1).png" alt=""><figcaption><p>Diagram showing the process of IP-NFT minting</p></figcaption></figure>
 
 ### [**Lit Protocol**](https://litprotocol.com/) **(Access Control Module)**
 
