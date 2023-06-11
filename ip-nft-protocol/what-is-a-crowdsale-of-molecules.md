@@ -1,12 +1,12 @@
-# What is a Crowdsale of Molecules?
+# 👨👩👧👦 What is a Crowdsale of Molecules?
 
-Step 1 · Submit a bid
+## Step 1 · Submit a bid
 
 You'll need to stake and lock Staked Tokens to submit a bid in the auction for [Molecules](https://docs.molecule.to/documentation/ip-nft-protocol/what-are-fam), which are governance tokens of an [IP-NFT](https://docs.molecule.to/documentation/ip-nft-protocol/intro-to-ip-nft). Importantly, **your bid amount cannot exceed the value of Staked tokens** you're willing to stake.
 
 **The more you bid, the larger your final allocation of Molecules will be**, should the sale be successful (meeting its fundraising goal). If the auction is unsuccessful (doesn’t meet its fundraising goal), then all of your tokens can be claimed as a refund.
 
-Step 2 · Claim your locked tokens
+## Step 2 · Claim your locked tokens
 
 If the sale is successful then **your bid will be settled pro rata**. This means your final allocation of Molecules will depend on your bid's proportion to the total amount bid.
 
@@ -14,7 +14,7 @@ After the sale period, visit the page where the sale took place (or access the c
 
 **The Molecules you purchase will be vesting along with the Staked tokens you locked** when you made your bid. You'll receive a vesting token, which is non-transferable and allows you to participate in governance, until you claim the vested Molecules and Staked Tokens.
 
-Step 3 · Claim your vested tokens
+## Step 3 · Claim your vested tokens
 
 **Once the vesting period is over, return to the sale page** to claim your tokens.
 

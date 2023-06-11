@@ -18,7 +18,7 @@
 * [➗ What is synthesizing Molecules?](ip-nft-protocol/what-is-ip-nft-fractionalization.md)
 * [✨ How to synthesize Molecules from an IP-NFT?](ip-nft-protocol/how-to-fractionalize-an-ip-nft.md)
 * [⚖ What are risks of IP-NFTs and Molecules?](ip-nft-protocol/what-are-risks-of-ip-nfts.md)
-* [What is a Crowdsale of Molecules?](ip-nft-protocol/what-is-a-crowdsale-of-molecules.md)
+* [👨👩👧👦 What is a Crowdsale of Molecules?](ip-nft-protocol/what-is-a-crowdsale-of-molecules.md)
 
 ## Molecule Discovery
 
