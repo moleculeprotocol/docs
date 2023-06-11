@@ -18,7 +18,7 @@ These risks can be mitigated by using liability-limitation devices called DAO wr
 
 ## Risks of Securities
 
-There is a risk that IP-NFTs or their Molecules, if sold in the wrong way, could be considered securities.&#x20;
+There is a risk that IP-NFTs or their Molecules, if sold in a certain way, could be considered securities.&#x20;
 
 An excellent analysis of securities laws as they apply to tokens can be found here, in [The Ineleuctable Modality of Securities Law: Why Fungible Crypto Assets are Not Securities](https://papers.ssrn.com/sol3/papers.cfm?abstract\_id=4282385), by DLx Law. A major takeaway from it is this: there is a difference between the asset itself, e.g. a fungible crypto token or an orange grove and the offering or sale of that asset. The asset, whether a token or an orange grove, may not be a security, but the offering, whether an initial coin offering (ICO) or an advertisement for shares of future profits from the orange grove, likely is a security.&#x20;
 
