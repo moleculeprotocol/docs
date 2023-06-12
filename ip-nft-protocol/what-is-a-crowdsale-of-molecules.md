@@ -28,4 +28,4 @@ After the sale period, visit the page where the sale took place (or access the c
 
 Here, you'll be able to swap your vesting Staking tokens for Staking tokens and your vesting Molecules for Molecules.
 
-Participating in an auction for Molecules is an opportunity to support projects you believe in, but please make sure you understand the process and the risks involved by reading the relevant [whitepaper](https://docs.google.com/document/d/1otAhZSDouPE6X-q-vra3WExwMMLDYOPwBgbfoDoG\_q8/edit?usp=sharing), and don't hesitate to ask for help on Discord **if you have any questions.**
+Participating in an auction for Molecules is an opportunity to support projects you believe in, but please make sure you understand the process and the risks involved by reading the documentation of the original project, and don't hesitate to ask for help on Discord **if you have any questions.**
