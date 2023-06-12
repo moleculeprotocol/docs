@@ -14,7 +14,7 @@ You'll need to stake and lock Staked Tokens to submit a bid in the auction for [
 
 **The more you bid, the larger your final allocation of Molecules will be**, should the sale be successful (meeting its fundraising goal). If the auction is unsuccessful (doesn’t meet its fundraising goal), then all of your tokens can be claimed as a refund.
 
-## Step 2 · Claim Tokens and Refund
+## Step 2 · Claim Tokens and Refunds
 
 If the sale is successful then **your bid will be settled pro rata**. This means your final allocation of Molecules will depend on your bid's proportion to the total amount bid.
 
