@@ -14,11 +14,15 @@
 * [🛠 Technical Components of IP-NFTs](ip-nft-protocol/technical-components-of-ip-nfts/README.md)
   * [⚙ Technical Details for Developers](ip-nft-protocol/technical-components-of-ip-nfts/technical-details-for-developers.md)
   * [📭 Smart Contract Addresses](ip-nft-protocol/technical-components-of-ip-nfts/smart-contract-addresses.md)
-* [🫂 What are Molecules?](ip-nft-protocol/what-are-fam.md)
-* [➗ What is synthesizing Molecules?](ip-nft-protocol/what-is-ip-nft-fractionalization.md)
-* [✨ How to synthesize Molecules from an IP-NFT?](ip-nft-protocol/how-to-fractionalize-an-ip-nft.md)
-* [⚖ What are risks of IP-NFTs and Molecules?](ip-nft-protocol/what-are-risks-of-ip-nfts.md)
-* [👨👩👧👦 What is a Crowdsale of Molecules?](ip-nft-protocol/what-is-a-crowdsale-of-molecules.md)
+
+## 🧑🔬 Molecules
+
+* [🫂 What are Molecules?](molecules/what-are-fam.md)
+* [➗ What is synthesizing Molecules?](molecules/what-is-ip-nft-fractionalization.md)
+* [✨ How to synthesize Molecules from an IP-NFT?](molecules/how-to-fractionalize-an-ip-nft.md)
+* [⚖ What are risks of IP-NFTs and Molecules?](molecules/what-are-risks-of-ip-nfts.md)
+* [👨👩👧👦 What is a Crowdsale of Molecules?](molecules/what-is-a-crowdsale-of-molecules.md)
+* [✨ How to participate in a Crowdsale of Molecules?](molecules/how-to-participate-in-a-crowdsale-of-molecules.md)
 
 ## Molecule Discovery
 
