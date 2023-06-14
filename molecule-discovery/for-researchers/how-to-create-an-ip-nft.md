@@ -9,8 +9,8 @@ To achieve your goal of having funding acquired via Molecule several steps are r
 5. **Align on legal terms:** Reach out to the Molecule team (info@molecule.to) to start the IP-NFT process. We will provide you with legal documents and help you fit them to your use cases. If needed, we support you in the process of aligning with your local TTO.&#x20;
 6. **Mint an IP-NFT:** Once you created the legal agreement for your research project follow the guide on how to mint an IP-NFT in our IP-NFT protocol section :arrow\_down:
 
-{% content-ref url="../../ip-nft-protocol/how-to-mint-an-ip-nft.md" %}
-[how-to-mint-an-ip-nft.md](../../ip-nft-protocol/how-to-mint-an-ip-nft.md)
+{% content-ref url="../../ip-nfts/how-to-mint-an-ip-nft.md" %}
+[how-to-mint-an-ip-nft.md](../../ip-nfts/how-to-mint-an-ip-nft.md)
 {% endcontent-ref %}
 
 Our team is happy to assist you in walking you through the steps and answer any open questions. Please reach out via [Discord](https://discord.gg/E6uJJerh) to reach us the quickest.&#x20;

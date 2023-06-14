@@ -5,15 +5,15 @@
 * [🔬 What is Molecule?](README.md)
 * [💡 Why Molecule?](introduction/why-molecule.md)
 
-## IP-NFT Protocol
+## IP-NFTs
 
-* [⚡ Intro to IP-NFT](ip-nft-protocol/intro-to-ip-nft.md)
-* [🏛 IP-NFT legal structure](ip-nft-protocol/ip-nft-legal-structure.md)
-* [❓ Why mint an IP-NFT?](ip-nft-protocol/why-mint-an-ip-nft.md)
-* [✨ How to mint an IP-NFT?](ip-nft-protocol/how-to-mint-an-ip-nft.md)
-* [🛠 Technical Components of IP-NFTs](ip-nft-protocol/technical-components-of-ip-nfts/README.md)
-  * [⚙ Technical Details for Developers](ip-nft-protocol/technical-components-of-ip-nfts/technical-details-for-developers.md)
-  * [📭 Smart Contract Addresses](ip-nft-protocol/technical-components-of-ip-nfts/smart-contract-addresses.md)
+* [⚡ Intro to IP-NFT](ip-nfts/intro-to-ip-nft.md)
+* [🏛 IP-NFT legal structure](ip-nfts/ip-nft-legal-structure.md)
+* [❓ Why mint an IP-NFT?](ip-nfts/why-mint-an-ip-nft.md)
+* [✨ How to mint an IP-NFT?](ip-nfts/how-to-mint-an-ip-nft.md)
+* [🛠 Technical Components of IP-NFTs](ip-nfts/technical-components-of-ip-nfts/README.md)
+  * [⚙ Technical Details for Developers](ip-nfts/technical-components-of-ip-nfts/technical-details-for-developers.md)
+  * [📭 Smart Contract Addresses](ip-nfts/technical-components-of-ip-nfts/smart-contract-addresses.md)
 
 ## 🧑🔬 Molecules
 
