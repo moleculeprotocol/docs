@@ -367,11 +367,11 @@ Some of the attached legal PDF documents might contain a reference on being only
 
 A `TermsSig` V1 contains the following information
 
-- a "banner"
-- a list of terms the minter has agreed to sign
-- a list of document hashes, keyed by their document type
-- a version indicator
-- the chain id on which this signature should be considered valid
+* a "banner"
+* a list of terms the minter has agreed to sign
+* a list of document hashes, keyed by their document type
+* a version indicator
+* the chain id on which this signature should be considered valid
 
 Eample:
 
