@@ -1,6 +1,6 @@
 # ➗ What is synthesizing Molecules?
 
-The IP-NFT Protocol hopes to create a world in which IP rights aren't held solely by a select few but are instead shared amongst many passionate and knowledgeable contributors. That's what Molecules offer. Molecules are the dawn of a new era in IP management — they provide fractional governance of IP assets.&#x20;
+The IP-NFT Protocol hopes to create a world in which IP rights aren't held solely by a select few but are instead shared amongst many passionate contributors. That's what Molecules offer. Molecules are the dawn of a new era in IP management — they provide fractional governance of IP assets.&#x20;
 
 Harnessing the power of Molecules provides a platform to democratize the rights of IP-NFTs, distributing them across groups of token holders. This process is brought to life through the Synthesizer smart contract, which enables an IP-NFT holder to synthesize Molecules.
 
