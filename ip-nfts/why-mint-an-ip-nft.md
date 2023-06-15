@@ -1,7 +1,7 @@
 ---
 description: >-
   A researcher, biotech company, or research sponsor mints an IP-NFT to tokenize
-  their IP and R&D on Ethereum, an immutable record of ownership.
+  their IP and research data on Ethereum.
 ---
 
 # ❓ Why mint an IP-NFT?
