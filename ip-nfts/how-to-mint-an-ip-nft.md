@@ -2,9 +2,9 @@
 
 Minting of IP-NFTs on Molecule is in closed beta, so you need to request a mintpass. Request a mintpass [via this form](https://airtable.com/shr9QN0tPPeK4GGjA) and join our [Discord](https://discord.gg/trQd6MJM3H). &#x20;
 
-{% file src="../.gitbook/assets/https___testnet.mint.molecule.to - 11 April 2023.mp4" %}
-Minting an IP-NFT on Göerli
-{% endfile %}
+{% embed url="https://www.loom.com/share/eafffeb92b7d423daf43609d2b737be1" %}
+Minting an IP-NFT on testnet.
+{% endembed %}
 
 * **Prepare your Research Agreement:** Two parties negotiate and sign a legal contract (Research Agreeent). The **Research Agreement** states the rights of the asset holder (dataset, future IP, etc.) and the price paid for the asset. In our case, these agreements are often lined out as Sponsored Research Agreements (SRAs) but they could be any other kind of legal agreement.
 * **Access the** [**Molecule IP-NFT Minting Front-End**](https://mint.molecule.to)**:** Visit the minting front-end and connect your wallet to get started with the process. Before starting, make sure you have ether on your wallet for gas fees, which vary based on traffic. If you are looking to mint an IP-NFT on testnet, visit the [Goerli Faucet](https://goerlifaucet.com/). &#x20;
