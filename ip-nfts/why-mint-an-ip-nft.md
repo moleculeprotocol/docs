@@ -1,6 +1,10 @@
-# ❓ Why mint an IP-NFT?
+---
+description: >-
+  A researcher, biotech company, or research sponsor mints an IP-NFT to tokenize
+  their IP and R&D on Ethereum, an immutable record of ownership.
+---
 
-A researcher, biotech company, or research sponsor mints IP-NFT to tokenize their IP and R\&D on Ethereum, an immutable record of ownership. Why is are tokenized rights useful?
+# ❓ Why mint an IP-NFT?
 
 ### **Novel Funding Opportunities**
 
