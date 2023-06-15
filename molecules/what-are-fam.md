@@ -4,7 +4,7 @@ description: Molecules are ERC-20 tokens that enable fractional governance over 
 
 # 🫂 What are Molecules?
 
-Molecules are a unique variant of the ERC-20 tokens that are derived from Intellectual Property Non-Fungible Tokens (IP-NFTs). Acting as governance tokens for an IP commons, they represent an extension of the intricate legal and blockchain-based contracts that constitute the IP-NFT Protocol. Molecules gather token holders under a shared objective: to construct and cultivate valuable IP.
+Molecules are unique ERC-20 tokens that are synthesized from IP-NFTs. Acting as governance tokens for an IP commons, they represent an extension of the intricate legal and blockchain-based contracts that constitute the IP-NFT Protocol. Molecules gather token holders under a shared objective: to construct and cultivate valuable IP.
 
 The role of Molecules extends beyond mere governance. They empower token holders to co-manage IP commons, engage in innovative incentivization schemes, facilitate IP development and experimentation, and contribute to the formulation of ground-breaking IP networks.
 
@@ -12,7 +12,7 @@ In essence, Molecules are pivotal in steering the future of medicine towards a m
 
 ## Governance rights
 
-Individuals possessing Molecule tokens exercise governance over the IP commons associated with their respective parent IP Non-Fungible Tokens (IP-NFTs). Their participation in the IP commons is governed by an adhesion contract referred to as the Free Association of Molecules (FAM) Membership Agreement. You can familiarize yourself with our standard [FAM Membership Agreement](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/FAM%20Agreements/FAM%20Agreement.pdf).
+Individuals possessing Molecules exercise governance over the IP commons associated with their respective parent IP Non-Fungible Tokens (IP-NFTs). Their participation in the IP commons is governed by an adhesion contract referred to as the Free Association of Molecules (FAM) Membership Agreement. You can familiarize yourself with our standard [FAM Membership Agreement](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/FAM%20Agreements/FAM%20Agreement.pdf).
 
 Molecule token holders exert control over the IP licensing process, which includes determining the parties involved and the terms of IP licenses, as well as managing the utilization of proceeds derived from these licenses. By holding Molecules, individuals have a direct influence on the way IP licenses are handled, ensuring a fair and transparent process.
 
