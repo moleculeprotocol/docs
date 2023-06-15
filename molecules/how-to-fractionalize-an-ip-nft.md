@@ -1,5 +1,9 @@
 # ✨ How to synthesize Molecules from an IP-NFT?
 
+{% embed url="https://www.loom.com/share/f35771c266dd4159832853c5e93cc117" %}
+Synthesizing Molecules from an IP-NFT on testnet.
+{% endembed %}
+
 The Synthesizer is an advanced tool, enabling IPNFT owners to create a tailored Molecules ERC20 contract. Think of it as a cryptographic key unlocking fractional rights associated with an IPNFT - a significant stride towards a decentralized IP landscape.
 
 But Molecules are more than mere tokens. They can potentially facilitate distributed governance, access to privileged documents, proprietary data, or even claim shares from other revenue streams. These capabilities aren't inherent in all IPNFT contracts, but can be configured by third-party developers leveraging Molecules ownership. A bit like tailoring your own suit, you get the perfect fit for your needs.
