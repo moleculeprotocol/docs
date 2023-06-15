@@ -6,6 +6,10 @@ description: >-
 
 # ✨ How to participate in a crowdsale of molecules?
 
+{% embed url="https://www.loom.com/share/adf95754c5d045f2a2510e1136009dea" %}
+Participating in a crowdsale on testnet.
+{% endembed %}
+
 ### Introduction
 
 The StakedLockingCrowdsale is an innovative way to support scientific research and projects you believe in. This guide aims to explain how you can participate in this process and what it means for your donation.
