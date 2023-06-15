@@ -13,6 +13,7 @@
 
 * IP-NFT [https://goerli.etherscan.io/address/0x36444254795ce6E748cf0317EEE4c4271325D92A#code](https://goerli.etherscan.io/address/0x36444254795ce6E748cf0317EEE4c4271325D92A#code)
 * SchmackoSwap [https://goerli.etherscan.io/address/0x2365BEDC04Fb449718D3143C88aF73ad83d7b9B6#code](https://goerli.etherscan.io/address/0x2365BEDC04Fb449718D3143C88aF73ad83d7b9B6#code)
+* Synthesizer: [https://goerli.etherscan.io/address/0xb12494eea6b992d0a1db3c5423be7a2d2337f58c](https://goerli.etherscan.io/address/0xb12494eea6b992d0a1db3c5423be7a2d2337f58c)
 * Mintpass [https://goerli.etherscan.io/address/0xaf0f99dcc64e8a6549d32013ac9f2c3fa7834688#code](https://goerli.etherscan.io/address/0xaf0f99dcc64e8a6549d32013ac9f2c3fa7834688#code)
 * HeadlessDispenser [https://goerli.etherscan.io/address/0x0F1Bd197c5dCC6bC7E8025037a7780010E2Cd22A#code](https://goerli.etherscan.io/address/0x0F1Bd197c5dCC6bC7E8025037a7780010E2Cd22A#code)
 * Subgraph: [https://api.thegraph.com/subgraphs/name/dorianwilhelm/ip-nft-subgraph-goerli/graphql](https://api.thegraph.com/subgraphs/name/dorianwilhelm/ip-nft-subgraph-goerli/graphql)
