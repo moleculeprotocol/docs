@@ -1,7 +1,7 @@
 ---
 description: >-
   Crowdsales of molecules enable researchers to raise funds for development of
-  an IP-NFT
+  an IP-NFT.
 ---
 
 # ✨ How to participate in a crowdsale of molecules?
