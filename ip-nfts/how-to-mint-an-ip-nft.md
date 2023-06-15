@@ -1,5 +1,5 @@
 ---
-description: http://www.mint.molecule.to
+description: https://mint.molecule.to/
 ---
 
 # ✨ How to mint an IP-NFT?

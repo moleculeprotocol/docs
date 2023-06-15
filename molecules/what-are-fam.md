@@ -1,3 +1,7 @@
+---
+description: Molecules are ERC-20 tokens that enable fractional governance over IP-NFTs.
+---
+
 # 🫂 What are Molecules?
 
 Molecules are a unique variant of the ERC-20 tokens that are derived from Intellectual Property Non-Fungible Tokens (IP-NFTs). Acting as governance tokens for an IP commons, they represent an extension of the intricate legal and blockchain-based contracts that constitute the IP-NFT Protocol. Molecules gather token holders under a shared objective: to construct and cultivate an IP commons linked to their specific IP-NFT.
