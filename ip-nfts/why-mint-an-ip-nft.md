@@ -8,7 +8,11 @@ description: >-
 
 ### **Novel Funding Opportunities**
 
-IP-NFTs present a fresh pathway for researchers to receive funding, specifically useful for researchers focusing on diseases affecting people worldwide, or diseases not funded by traditional funding mechanisms (NIH, venture capital, etc.). Traditionally, funding research is a laborious process involving bureaucratic organizations and/or length legal negotiations, limited to investors or philanthropists in one's personal network and jurisdiction. In contrast, raising research funding via IP-NFTs provides access to an internet-native, globally-sourced capital pool, with the click of a few buttons. No more waiting for months to hear back from bureaucratic organizations who only fund projects that fit their biases, no more pulling out of term sheets at the last second by investors, just execution of instantaneous and immutable smart contracts. Researchers can now leverage the global interest of patients and related stakeholders. This means they can acquire the necessary resources to continue their work, execute on the highest impact (not the most likely to get funded), and create a global community of supporters.&#x20;
+IP-NFTs present a fresh pathway for researchers to receive funding, specifically useful for researchers focusing on diseases affecting people worldwide, or diseases not funded by traditional funding mechanisms (NIH, venture capital, etc.).&#x20;
+
+Traditionally, funding research is a laborious process involving bureaucratic organizations and/or length legal negotiations, limited to investors or philanthropists in one's personal network and jurisdiction. In contrast, raising research funding via IP-NFTs provides access to an internet-native, globally-sourced capital pool, with the click of a few buttons.&#x20;
+
+No more waiting for months to hear back from bureaucratic organizations who only fund projects that fit their biases, no more pulling out of term sheets at the last second by investors, just execution of instantaneous and immutable smart contracts. Researchers can leverage the global interest of patients and related stakeholders to continue their work, execute on the highest impact (not the most likely to get funded), and create a global community of supporters.&#x20;
 
 ### **Streamlining Collaboration**
 
@@ -23,7 +27,5 @@ IP-NFTs can dramatically enhance liquidity in typically stagnant IP markets, tra
 IP-NFTs enable the development of early-stage IP markets. By bundling potential IP from an upcoming R\&D project into an early-stage IP-NFT, researchers can trade IP rights more efficiently, even before incurring the costs associated with filing patent protections. As a project progresses, late-stage IP-NFTs can encapsulate rights to trade secrets and patents, introducing innovative mechanisms for decentralized IP ownership, governance, and commercialization.
 
 Through their compatibility with decentralized finance (DeFi) components, IP-NFTs can be integrated with other digital assets and software components. They also contribute to the growth of 'DeSci', the decentralized science movement. While still in its early stages, DeSci has the potential to revolutionize scientific collaboration and research, potentially involving billions of participants globally.
-
-
 
 Minting an IP-NFT thus represents an exciting evolution in the management and commercialization of IP and R\&D data, offering benefits from improved transparency and efficiency to novel funding and market creation opportunities.

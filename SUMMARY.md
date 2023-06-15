@@ -17,11 +17,11 @@
 
 ## 🧑🔬 Molecules
 
-* [🫂 What are Molecules?](molecules/what-are-fam.md)
-* [✨ How to synthesize Molecules from an IP-NFT?](molecules/how-to-fractionalize-an-ip-nft.md)
-* [⚖ What are risks of IP-NFTs and Molecules?](molecules/what-are-risks-of-ip-nfts.md)
-* [👨👩👧👦 What is a Crowdsale of Molecules?](molecules/what-is-a-crowdsale-of-molecules.md)
-* [✨ How to participate in a Crowdsale of Molecules?](molecules/how-to-participate-in-a-crowdsale-of-molecules.md)
+* [🫂 What are molecules?](molecules/what-are-fam.md)
+* [✨ How to synthesize molecules from an IP-NFT?](molecules/how-to-fractionalize-an-ip-nft.md)
+* [⚖ What are risks of IP-NFTs and molecules?](molecules/what-are-risks-of-ip-nfts.md)
+* [👨👩👧👦 What is a crowdsale of molecules?](molecules/what-is-a-crowdsale-of-molecules.md)
+* [✨ How to participate in a crowdsale of molecules?](molecules/how-to-participate-in-a-crowdsale-of-molecules.md)
 
 ## Molecule Discovery
 
