@@ -4,6 +4,7 @@
 
 * IP-NFT: [https://etherscan.io/address/0x0dccd55fc2f116d0f0b82942cd39f4f6a5d88f65#code](https://etherscan.io/address/0x0dccd55fc2f116d0f0b82942cd39f4f6a5d88f65#code)
 * SchmackoSwap: [https://etherscan.io/address/0xc09b8577c762b5e97a7d640f242e1d9bfaa7eb9d#code](https://etherscan.io/address/0xc09b8577c762b5e97a7d640f242e1d9bfaa7eb9d#code)
+* Synthesizer: [https://etherscan.io/address/0x58EB89C69CB389DBef0c130C6296ee271b82f436](https://etherscan.io/address/0x58EB89C69CB389DBef0c130C6296ee271b82f436)
 * LockedStakedCrowdsale: [https://etherscan.io/address/0x35Bce29F52f51f547998717CD598068Afa2B29B7](https://etherscan.io/address/0x35Bce29F52f51f547998717CD598068Afa2B29B7)
 * Mintpass: [https://etherscan.io/address/0x0ecff38f41ecd1e978f1443ed96c0c22497d73cb#code](https://etherscan.io/address/0x0ecff38f41ecd1e978f1443ed96c0c22497d73cb#code)
 * Subgraph: [https://api.thegraph.com/subgraphs/name/moleculeprotocol/ip-nft-mainnet](https://api.thegraph.com/subgraphs/name/moleculeprotocol/ip-nft-mainnet)
