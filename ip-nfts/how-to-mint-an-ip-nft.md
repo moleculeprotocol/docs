@@ -1,3 +1,7 @@
+---
+description: http://www.mint.molecule.to
+---
+
 # ✨ How to mint an IP-NFT?
 
 Minting of IP-NFTs on Molecule is in closed beta, so you need to request a mintpass. Request a mintpass [via this form](https://airtable.com/shr9QN0tPPeK4GGjA) and join our [Discord](https://discord.gg/trQd6MJM3H). &#x20;
