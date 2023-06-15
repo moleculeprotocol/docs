@@ -1,6 +1,8 @@
-# ⚡ Intro to IP-NFT
+---
+description: IP-NFTs connect Intellectual Property to Non-Fungible Tokens.
+---
 
-**IP-NFTs connect Intellectual Property to Non-Fungible Tokens.**&#x20;
+# ⚡ Intro to IP-NFT
 
 IP-NFTs form a bridge between Intellectual Property (IP) and cryptocurrency, specifically Non-Fungible Tokens (NFTs), empowering scientists to embrace a new source of funding for their research and new means for transacting on their discoveries. By merging legal contracts, such as sponsored research agreements and patent licenses, with Ethereum smart contracts, IP-NFTs introduce a quantum leap in the evolution of scientific agreements.
 

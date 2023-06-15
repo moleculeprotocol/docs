@@ -1,10 +1,10 @@
+---
+description: The IP-NFT combines two legal contracts with a smart contract.
+---
+
 # 🏛 IP-NFT legal structure
 
-The IP-NFT combines two legal contracts with a smart contract.&#x20;
-
-This hybrid legal-smart contract structure enables on-chain registration and management of IP and R\&D data rights.&#x20;
-
-The two legal contracts are the Research Agreement (Sponsored Research Agreement or a similar type of contract such as a Joint Development Agreement) and an Assignment Agreement. The Assignment Agreement assigns the Research Agreement to the owner of a Non-Fungible Token (NFT). The NFT becomes an IP-NFT.&#x20;
+This hybrid legal-smart contract structure enables on-chain registration and management of IP and R\&D data rights. The two legal contracts are the Research Agreement (Sponsored Research Agreement or a similar type of contract such as a Joint Development Agreement) and an Assignment Agreement. The Assignment Agreement assigns the Research Agreement to the owner of a Non-Fungible Token (NFT). The NFT becomes an IP-NFT.&#x20;
 
 ## Legal Contract 1: The Research Agreement
 
