@@ -12,5 +12,5 @@ The first legal contract for Molecules is an adhesion contract called the the Fr
 
 ## Smart Contracts
 
-Read about the smart contracts for Molecules in [Molecule's Github](https://github.com/moleculeprotocol/IPNFT).
+Read about the smart contracts for Molecules in our [Github repo](https://github.com/moleculeprotocol/IPNFT/tree/main).
 
