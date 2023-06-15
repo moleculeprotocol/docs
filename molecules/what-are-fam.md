@@ -10,25 +10,43 @@ Molecules are not merely elements of governance; they are a catalyst to democrat
 
 Envision a [Biotech DAO](https://docs.molecule.to/bio.xyz/biodao-bible/biodaos#biodaos) as a pirate ship - within its robust hull lie the glittering treasures of IP-NFTs, representing groundbreaking scientific inventions; the ship's lively crew comprises DAO members, contributing their unique skills and knowledge; Molecules act as the ship's rudder, strategically directing the vessel and, by extension, the future trajectory of medicines towards an expansive horizon of human health and progress. Molecules emphasize the crucial role of patients and researchers - previously treated as cargo of the ship - are now empowered with hands on the wheel. As the generators of the most valuable pharmaceutical data - not only are they deserving of a more substantial share in the governance of medicines - but providing them with this power via Molecules will increase the quality of medicines and the efficiency of their development. This shift in governance underscores the conviction that medical advancements should serve a universal good, leading to better healthcare for all.
 
-## Governance rights
+### Governance rights
 
 Individuals possessing Molecules exercise governance over the IP commons associated with the IP-NFT from which they were synthesized. Their participation in the IP commons is governed by an adhesion contract referred to as the Free Association of Molecules (FAM) Membership Agreement. You can familiarize yourself with our standard [FAM Membership Agreement](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/FAM%20Agreements/FAM%20Agreement.pdf).
 
 Molecule token holders exert control over the IP licensing process, which includes determining the parties involved and the terms of IP licenses, as well as managing the utilization of proceeds derived from these licenses. By holding Molecules, individuals have a direct influence on the way IP licenses are handled, ensuring a fair and transparent process.
 
-## Economic rights
+### Economic rights
 
 Contrary to the holders of fractional NFTs, holders of Molecules are not inherently entitled to economic benefits. This means they do not have a predetermined, contractual right to receive any proceeds following the sale of an IP-NFT. Instead, holders of Molecules are endowed with governance rights. They must actively participate in voting to decide on the allocation of proceeds derived from IP licenses, sales, and other activities related to both the IP and the data within their IP commons.
 
 It is essential to thoroughly consider the implications before initiating or approving a vote to enable economic rights, as this action could potentially alter the regulatory status of the Molecules. For instance, suppose the holders of specific Molecules category decide to grant themselves royalty rights, permitting them to profit from the licensing of a drug contained in their IP commons. In that case, the tokens associated with these contractual rights would most likely be classified as asset tokens or securities, among other possible classifications, contingent on the jurisdiction of the token holders. This change in classification could bring new regulatory responsibilities and consequences that need to be understood and adhered to.
 
-## IP licenses
+### IP licenses
 
 Individuals possessing Molecules exercise administrative control over the licensing of the IP and data connected to their respective IP-NFTs. In the context of IP licenses tied to the IP and R\&D data of an IP-NFT, these must be directed and consented to by the Molecules token holders associated with that specific IP-NFT.
 
 For instance, if a token holder of Molecules identifies a potential licensor for the IP, they have the ability to suggest licensing the IP to that particular entity. Following this, other Molecules token holders will have the opportunity to vote on whether to issue the license, thereby creating an inclusive and democratic process for IP licensing.
 
-## IP non-ownership
+### IP non-ownership
 
 Given the complexities and conflicts in joint IP ownership, the IP developed within the IP commons is retained and controlled by the IP-NFT owner. This approach avoids inefficiencies and complications arising from conflicting IP ownership laws across jurisdictions. While holders of Molecules do not possess direct ownership of the IP, they exert control over it through governance rights governing the IP licensing process.
+
+
+
+## Synthesizing Molecules
+
+With Molecules, we hope to create a world in which IP rights aren't held solely by a select few but are instead shared amongst many passionate contributors. Molecules are the dawn of a new era in IP management — they provide direct and decentralized governance of IP assets.&#x20;
+
+Harnessing the power of Molecules provides a platform to democratize the rights of IP-NFTs, distributing them across a group of token holders. This process is brought to life through the [`Synthesizer`](https://github.com/moleculeprotocol/IPNFT/blob/main/src/Synthesizer.sol) smart contract, which enables an IP-NFT holder to synthesize Molecules.
+
+But these Molecules aren't just digital tokens; they're memberships, invitations to be part of an IP commons that is unique to their parent IP-NFT. They represent the community's voice, a share in decision-making, and the collaborative shaping of IP's future. This leap towards the future is much more than a technological development; it's a manifestation of collective governance, empowerment, and a shared sense of ownership. Welcome to the future of IP management, where inventors, empowered by censorship-resistant code, shape the destiny of their creations, select worthy stakeholders, and dictate the course of governance in an innovative blend of creativity and technology.
+
+### Free Association of Molecules (FAM) Membership Agreement
+
+The first legal contract for Molecules is an adhesion contract called the the Free Association of Molecules (FAM) Membership Agreement. We tailored this agreement for DeSci to enable novel ways of organizing around IP development through IP commons. IP commons memberships are represented as Molecules and governed by the FAM agreement. Read our [model FAM agreement here](https://docs.google.com/document/d/18mWC\_8Q0pfKP0zSjvG09JFbI0W5DHLDqySmjNz2lURY/edit?usp=sharing).&#x20;
+
+## Smart Contracts
+
+Read about the smart contracts for Molecules in our [Github repo](https://github.com/moleculeprotocol/IPNFT/tree/main).
 

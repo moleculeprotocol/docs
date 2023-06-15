@@ -18,7 +18,6 @@
 ## 🧑🔬 Molecules
 
 * [🫂 What are Molecules?](molecules/what-are-fam.md)
-* [➗ What is synthesizing Molecules?](molecules/what-is-ip-nft-fractionalization.md)
 * [✨ How to synthesize Molecules from an IP-NFT?](molecules/how-to-fractionalize-an-ip-nft.md)
 * [⚖ What are risks of IP-NFTs and Molecules?](molecules/what-are-risks-of-ip-nfts.md)
 * [👨👩👧👦 What is a Crowdsale of Molecules?](molecules/what-is-a-crowdsale-of-molecules.md)
