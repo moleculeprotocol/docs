@@ -1,6 +1,11 @@
-# ⚖ What are risks of IP-NFTs and Molecules?
+---
+description: >-
+  IP-NFTs and their Molecules merge two different fields of risk: traditional IP
+  risk and all of the risks that come with experimentation using blockchain
+  technology.
+---
 
-IP-NFTs and their Molecules merge two different fields of risk: traditional IP risk and all of the risks that come with experimentation using blockchain technology.&#x20;
+# ⚖ What are risks of IP-NFTs and Molecules?
 
 ## Risks of Control
 
