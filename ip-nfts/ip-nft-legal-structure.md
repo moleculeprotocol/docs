@@ -14,11 +14,7 @@ The Research Agreement sets out the terms and conditions under which the sponsor
 
 The purpose of a Research Agreement is to establish a formal relationship between the sponsor and the researcher to ensure that the research is conducted in accordance with the sponsor's requirements and expectations. It includes provisions for confidentiality, intellectual property rights, data ownership, and publication of results. It may also specify the terms of any licenses or patents that may result from the research.
 
-In addition to specifying the research activities to be undertaken, a Research Agreement may provide for the sponsorship of related activities such as conferences, seminars, and workshops.
-
-A Research Agreement is a key tool for establishing a mutually beneficial relationship between a sponsor and a researcher to facilitate the advancement of scientific knowledge and promote innovation.
-
-Templates of SRAs (and JDAs, etc.) are available in the [Molecule Github](https://github.com/moleculeprotocol/Legal-Contracts).  &#x20;
+In addition to specifying the research activities to be undertaken, a Research Agreement may provide for the sponsorship of related activities such as conferences, seminars, and workshops. A Research Agreement is a key tool for establishing a mutually beneficial relationship between a sponsor and a researcher to facilitate the advancement of scientific knowledge and promote innovation. Templates of SRAs (and JDAs, etc.) are available in the [Molecule Github](https://github.com/moleculeprotocol/Legal-Contracts).  &#x20;
 
 ## Legal Contract 2: The Assignment Agreement
 
