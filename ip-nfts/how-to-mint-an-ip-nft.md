@@ -1,5 +1,8 @@
 ---
-description: https://mint.molecule.to/
+description: >-
+  Mainnet:
+  https://mint.molecule.to/                                                              
+  Testnet: https://dev-testnet.mint.molecule.to/
 ---
 
 # ✨ How to mint an IP-NFT?
