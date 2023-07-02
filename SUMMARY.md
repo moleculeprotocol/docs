@@ -17,7 +17,7 @@
 
 ## 🧑🔬 Decentralized IP Tokens (dIPs)
 
-* [🫂 What are dIPs?](decentralized-ip-tokens-dips/what-are-fam.md)
+* [💊 What are dIPs?](decentralized-ip-tokens-dips/what-are-fam.md)
 * [✨ How to synthesize dIPs from an IP-NFT?](decentralized-ip-tokens-dips/how-to-fractionalize-an-ip-nft.md)
 * [⚖ What are risks of IP-NFTs and dIPs?](decentralized-ip-tokens-dips/what-are-risks-of-ip-nfts.md)
 * [👨👩👧👦 What is a crowdsale of dIPs?](decentralized-ip-tokens-dips/what-is-a-crowdsale-of-dips.md)
