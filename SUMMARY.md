@@ -15,13 +15,13 @@
   * [⚙ Technical Details for Developers](ip-nfts/technical-components-of-ip-nfts/technical-details-for-developers.md)
   * [📭 Smart Contract Addresses](ip-nfts/technical-components-of-ip-nfts/smart-contract-addresses.md)
 
-## 🧑🔬 Molecules
+## 🧑🔬 Decentralized IP Tokens (dIPs)
 
-* [🫂 What are molecules?](molecules/what-are-fam.md)
-* [✨ How to synthesize molecules from an IP-NFT?](molecules/how-to-fractionalize-an-ip-nft.md)
-* [⚖ What are risks of IP-NFTs and molecules?](molecules/what-are-risks-of-ip-nfts.md)
-* [👨👩👧👦 What is a crowdsale of molecules?](molecules/what-is-a-crowdsale-of-molecules.md)
-* [✨ How to participate in a crowdsale of molecules?](molecules/how-to-participate-in-a-crowdsale-of-molecules.md)
+* [🫂 What are dIPs?](decentralized-ip-tokens-dips/what-are-fam.md)
+* [✨ How to synthesize dIPs from an IP-NFT?](decentralized-ip-tokens-dips/how-to-fractionalize-an-ip-nft.md)
+* [⚖ What are risks of IP-NFTs and dIPs?](decentralized-ip-tokens-dips/what-are-risks-of-ip-nfts.md)
+* [👨👩👧👦 What is a crowdsale of dIPs?](decentralized-ip-tokens-dips/what-is-a-crowdsale-of-dips.md)
+* [✨ How to participate in a crowdsale of dIPs?](decentralized-ip-tokens-dips/how-to-participate-in-a-crowdsale-of-dips.md)
 
 ## Molecule Discovery
 
