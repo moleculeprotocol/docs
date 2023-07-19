@@ -31,7 +31,7 @@ Below is a guide on how to Tokenize an IP-NFT as a researcher or university. If 
 3. **Press Release:** For maximum reach, we recommend a press release in collaboration between the DAO, the university technology transfer office, and the researcher. Examples are [here](https://www.lifespan.io/news/vitadao-launches-vita-fast-tokens/) and [here](https://longevity.technology/news/vitadao-launches-vita-fast-tokens-building-on-2000-initial-oversubscription/).&#x20;
 4. **Participate in Governance: \[add more]**
 
-FAQs
+### FAQs
 
 1. Is ownership of the IP/results defined wholly by who controls the wallet the IP-NFT is in?
 2. IP-NFT holders can mint and sell governance tokens for the IP-NFT, but are these strictly limited to governance of the parent IP-NFT (including licensing and revenue distribution) and not fractional ownership of the IP-NFT (and therefore IP)? So in effect the IP tokens represent democratisation of governance/decision-making and not direct ownership/revenue share?
