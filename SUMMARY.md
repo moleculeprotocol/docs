@@ -17,7 +17,7 @@
 
 ## 🧑🔬 IP Tokens
 
-* [💊 What are IP Tokens?](ip-tokens/what-are-fam.md)
+* [💊 What are IP Tokens?](ip-tokens/what-are-ipts.md)
 * [✨ How to synthesize IPTs from an IP-NFT?](ip-tokens/how-to-fractionalize-an-ip-nft.md)
 * [⚖ What are risks of IP-NFTs and IPTs?](ip-tokens/what-are-risks-of-ip-nfts.md)
 * [👨👩👧👦 What is a crowdsale of IPTs?](ip-tokens/what-is-a-crowdsale-of-ipts.md)
@@ -32,10 +32,9 @@
   * [How to create an IP-NFT?](molecule-discovery/for-researchers/how-to-create-an-ip-nft.md)
 * [👨💼 👨💼 👨💼 For Funders](molecule-discovery/for-funders/README.md)
   * [How to fund research](molecule-discovery/for-funders/how-to-fund-research.md)
+* [🕸 What is a BioDAO](molecule-discovery/ecosystem-biodaos.md)
 * [⁉ FAQ](molecule-discovery/faq.md)
 
-## BioDAO Launchpad
+## IP Tokenization Guide
 
-* [🌐 What is a BioDAO?](biodao-launchpad/what-is-a-biodao.md)
-* [📘 BioDAO LaunchPad](biodao-launchpad/biodao-launchpad.md)
-* [🕸 Ecosystem BioDAOs](biodao-launchpad/ecosystem-biodaos.md)
+* [🗺 IP Tokenization Guide](ip-tokenization-guide/what-is-a-biodao.md)

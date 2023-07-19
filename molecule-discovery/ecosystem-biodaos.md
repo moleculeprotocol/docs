@@ -1,6 +1,6 @@
-# 🕸 Ecosystem BioDAOs
+# 🕸 What is a BioDAO
 
-Here are several decentralised autonomous organisations (DAOs) advancing research in the field of biopharma.&#x20;
+Here are several decentralized autonomous organizations (DAOs) advancing research in the field of biopharma.&#x20;
 
 
 
@@ -8,7 +8,7 @@ Here are several decentralised autonomous organisations (DAOs) advancing researc
 
 {% embed url="https://vitadao.com" %}
 
-### **LabDAO:** Network of decentralised labs
+### **LabDAO:** Network of decentralized labs
 
 {% embed url="https://www.labdao.com" %}
 
@@ -27,3 +27,11 @@ Here are several decentralised autonomous organisations (DAOs) advancing researc
 ### ValleyDAO: Synthetic biology
 
 {% embed url="https://www.valleydao.bio/" %}
+
+### CryoDAO: Cryonics
+
+{% embed url="https://www.cryodao.org/" %}
+
+### Bio.xyz: A DAO of BioDAOs
+
+{% embed url="https://docs.molecule.to/bio.xyz/biodao-bible/biodaos" %}
