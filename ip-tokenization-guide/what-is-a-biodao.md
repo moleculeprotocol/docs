@@ -16,6 +16,7 @@ Below is a guide on how to Tokenize an IP-NFT as a researcher or university. If 
 4. **Lab Tour:** Though not required, a [lab tour](https://moleculecloud.box.com/v/korolchuk-lab-tour) is an effective way to bring the community closer to your lab and research. We suggest highlighting the work and team that will be funded, as well as the instruments that will be used to conduct experiments.
 5. **Press Release:** For maximum reach, we recommend a press release in collaboration between the DAO, the university technology transfer office, and the researcher. Examples are [here](https://www.lifespan.io/news/vitadao-launches-vita-fast-tokens/) and [here](https://longevity.technology/news/vitadao-launches-vita-fast-tokens-building-on-2000-initial-oversubscription/).&#x20;
 6. **Create a wallet:** If the researcher will be receiving IP Tokens, those tokens will need to be held in a wallet connected to the Ethereum blockchain. We suggest holding them in a [non-custodial wallet](https://www.gemini.com/cryptopedia/crypto-wallets-custodial-vs-noncustodial#section-custodial-crypto-wallets-pro-and-cons) such as [Metamask](https://metamask.io/download/) or [Rabby](https://rabby.io/). You will have to share your wallet address (0x...) with the DAO so they can send the IP tokens to the correct wallet.
+7. **Participate in Governance: \[add more]**
 
 ### Research Organization Checklist
 
@@ -28,4 +29,17 @@ Below is a guide on how to Tokenize an IP-NFT as a researcher or university. If 
    6. [VitaDAO launches VITA-FAST tokens building on 2000% initial oversubscription](https://longevity.technology/news/vitadao-launches-vita-fast-tokens-building-on-2000-initial-oversubscription/)
 2. **Create a wallet:** If the research agreement between the DAO and the research organization states that the research organization has an ownership stake in any IP that comes from the research, then the research organization should expect to receive IP tokens. The IP tokens will need to be held in a wallet connected to the Ethereum blockchain. We suggest holding them in a [multi-signature wallet](https://www.coindesk.com/learn/what-is-a-multisig-wallet/) such as [SAFE](https://safe.global/). You will have to share your wallet address (0x...) with the DAO so they can send the IP tokens to the correct wallet.
 3. **Press Release:** For maximum reach, we recommend a press release in collaboration between the DAO, the university technology transfer office, and the researcher. Examples are [here](https://www.lifespan.io/news/vitadao-launches-vita-fast-tokens/) and [here](https://longevity.technology/news/vitadao-launches-vita-fast-tokens-building-on-2000-initial-oversubscription/).&#x20;
+4. **Participate in Governance: \[add more]**
+
+FAQs
+
+1. Is ownership of the IP/results defined wholly by who controls the wallet the IP-NFT is in?
+2. IP-NFT holders can mint and sell governance tokens for the IP-NFT, but are these strictly limited to governance of the parent IP-NFT (including licensing and revenue distribution) and not fractional ownership of the IP-NFT (and therefore IP)? So in effect the IP tokens represent democratisation of governance/decision-making and not direct ownership/revenue share?
+3. If any revenue is generated will there be a governance vote for the Molecule/token holders where they could vote, for example, for equal distribution of revenue? Will there be safeguards to prevent a whale from voting to distribute all the funds to themselves?      &#x20;
+4. The future model involves scientists directly minting and selling IP-NFTs to raise research funds – how will this work where IP belongs to the institution and not the individual scientist?
+5. What due diligence will be in place to ensure the party minting an IP-NFT has rights to transfer ownership?
+6. If sending the IP-NFT to a another party, do they need to sign some sort of agreement in addition to just holding the IP-NFT in a wallet they control to take full legal ownership?
+7. What’s the main motivation for doing this? Is it to raise more funds or to move the platform to the next phase?
+
+&#x20;
 
