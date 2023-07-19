@@ -37,9 +37,14 @@ Below is a guide on how to Tokenize an IP-NFT as a researcher or university. If 
 
 A: The scenario of multiple IP owners presents complex challenges. In order to streamline this process, there is a singular owner designated as the holder of the IP-NFT, who is responsible for the distribution of governance rights pertaining to the licensing function of the IP. This strategy ensures a more efficient and less convoluted management of IP rights and licenses.
 
-1. IP-NFT holders can mint and sell governance tokens for the IP-NFT, but are these strictly limited to governance of the parent IP-NFT (including licensing and revenue distribution) and not fractional ownership of the IP-NFT (and therefore IP)? So in effect the IP tokens represent democratisation of governance/decision-making and not direct ownership/revenue share?
-2. If any revenue is generated will there be a governance vote for the Molecule/token holders where they could vote, for example, for equal distribution of revenue? Will there be safeguards to prevent a whale from voting to distribute all the funds to themselves?      &#x20;
-3. The future model involves scientists directly minting and selling IP-NFTs to raise research funds – how will this work where IP belongs to the institution and not the individual scientist?
-4. What due diligence will be in place to ensure the party minting an IP-NFT has rights to transfer ownership?
-5. If sending the IP-NFT to another party, does the other party need to sign some sort of agreement in addition to just holding the IP-NFT in a wallet they control to take full legal ownership?
-6. What’s the main motivation for doing this? Is it to raise more funds or to move the platform to the next phase?
+**Q: The future model involves scientists directly minting and selling IP-NFTs to raise research funds – how will this work where IP belongs to the institution and not the individual scientist?**
+
+So long as research happens at universities or private labs, that is where the IP must be licensed. Even in the case that a researcher is being funded directly, a legal entity is the likely owner and counter-party for any IP licensing agreements.&#x20;
+
+**Q: What due diligence will be in place to ensure the party minting an IP-NFT has rights to transfer ownership?**
+
+This is the burden of the licensee. However, validating IP ownership and ensuring the IP is truly owned by the minter of an IP-NFT is a service that can be provided by Molecule. Until IP is enforced entirely on the blockchain, there will always have to be some degree of manual diligence required.
+
+**Q: If sending the IP-NFT to another party, does the other party need to sign some sort of agreement in addition to just holding the IP-NFT in a wallet they control to take full legal ownership?**
+
+Just holding the IP-NFT is sufficient to be assigned the rights to the IP. That said, an unlawful transfer (e.g. someone steals the IP-NFT) would still be invalid.
