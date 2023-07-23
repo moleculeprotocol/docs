@@ -37,4 +37,4 @@
 
 ## IP Tokenization Guide
 
-* [🗺 IP Tokenization Guide](ip-tokenization-guide/what-is-a-biodao.md)
+* [🗺 IP Tokenization Guide](ip-tokenization-guide/ip-tokenization-guide.md)
