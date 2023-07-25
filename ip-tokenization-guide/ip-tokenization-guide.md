@@ -6,7 +6,7 @@ description: >-
 
 # 🗺 IP Tokenization Guide
 
-Below is a guide on how to Tokenize an IP-NFT as a researcher or university. If you are unfamiliar with [IP-NFTs](https://docs.molecule.to/documentation/ip-nfts/intro-to-ip-nft) or [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts), we highly recommend you read over those sections before proceeding. This guide will go over the logistics of tokenizing an IP-NFT to further [fundraise](https://docs.molecule.to/documentation/ip-tokens/what-is-a-crowdsale-of-ipts) for the research originally funded by an IP-NFT. In short, Tokenizing an IP-NFT into IP Tokens means that the rights of a research program were originally held by a single entity (a DAO), and IP Tokens are the decentralization of those rights directly to individuals. The IP Token holders will have governance rights over the research, and selling IP Tokens via a Crowdsale is an effective way to raise funding for the research.
+Below is a guide on how to tokenize an IP-NFT as a researcher or university. If you are unfamiliar with [IP-NFTs](https://docs.molecule.to/documentation/ip-nfts/intro-to-ip-nft) or [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts), we highly recommend you read over those sections before proceeding. This guide will go over the logistics of tokenizing an IP-NFT to further [fundraise](https://docs.molecule.to/documentation/ip-tokens/what-is-a-crowdsale-of-ipts) for the research originally funded by an IP-NFT. In short, tokenizing an IP-NFT into IP Tokens means that the rights of a research program were originally held by a single entity (a DAO), and IP Tokens are the decentralization of those rights directly to individuals. The IP Token holders will have governance rights over the research, and selling IP Tokens via a Crowdsale is an effective way to raise funding for the research.
 
 ### Researcher Checklist
 
@@ -20,7 +20,7 @@ Below is a guide on how to Tokenize an IP-NFT as a researcher or university. If 
 
 ### Research Organization Checklist
 
-1. **Get approval:** Whether you are at a university or a private lab, legal approval for IP Tokenization is the first requirement. To help de-risk the opportunity for your research organization, the following articles may be useful collateral for convincing key decision makers.
+1. **Get approval:** Whether you are at a university or a private lab, legal approval for IP tokenization is the first requirement. To help de-risk the opportunity for your research organization, the following articles may be useful collateral for convincing key decision makers.
    1. [What is decentralized science (DeSci)?](https://ethereum.org/en/desci/)
    2. [Pfizer backs VitaDAO’s $4.1m funding for decentralized science](https://www.ledgerinsights.com/pfizer-vitadao-decentralized-science/)
    3. [VitaDAO Closes $4.1M Funding Round With Pfizer Ventures for Longevity Research](https://www.coindesk.com/web3/2023/01/30/vitadao-closes-41m-funding-round-with-pfizer-ventures-for-longevity-research/)
