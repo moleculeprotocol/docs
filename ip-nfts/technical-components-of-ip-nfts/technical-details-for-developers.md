@@ -10,11 +10,9 @@ You can find all relevant IP-NFT contract sources on our official [Github repo](
 
 ## Non Fungible Tokens in a Nutshell
 
-Non fungible tokens ([NFTs](https://ethereum.org/en/nft/)) are smart contract based assets that associate a unique token identifier with the blockchain address of its respective owner. The underlying smart contract defines rules on how they are minted (brought into existence), transferred, or burnt (destroyed). It also can restrict their ability to be transferred or offer features that are unlocked for individual token holders.
+Non fungible tokens ([NFTs](https://ethereum.org/en/nft/)) are smart contract based assets that associate a unique token identifier with the blockchain address of its respective owner. The underlying smart contract defines rules on how they are minted (brought into existence), transferred, or burned (destroyed). It also can restrict their ability to be transferred or offer features that are unlocked for individual token holders.
 
-IP-NFTs are based on [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155) which allows users to mint and distribute several tokens of the same "kind", not unlike several instances of a rare - but not unique - gem. An ERC-1155 token kind with only one instance effectively represents assets in the same way as [ERC-721](https://eips.ethereum.org/EIPS/eip-721) does.
-
-The IP-NFT collection contract is deployed on Mainnet and on Görli Testnet, you can find the addresses [here](smart-contract-addresses.md). Each token's metadata is stored as a file descriptor URI (e.g. `ar://HxXKCIE0skR4siRNYeLKI61Vwg_TJ5PJTbxQmtO0EPo`) that must be resolved client side, e.g. by using decentralized storage network gateways ([Arweave](https://arweave.news/introduction-to-the-most-important-infrastructure-in-the-ar-ecosystem-ar-gateway/) or [IPFS](https://ipfs.github.io/public-gateway-checker/)). The contract is non-enumerable, i.e. users can't simply query their owned assets on-chain but instead must rely on reading the respective event logs to build their own off-chain state. We've deployed TheGraph subgraphs [on mainnet](https://api.thegraph.com/subgraphs/name/moleculeprotocol/ip-nft-mainnet) and [on Görli](https://thegraph.com/explorer/subgraph/dorianwilhelm/ip-nft-subgraph-goerli) that can be queried for asset ownership and other IP-NFT related information.
+IP-NFTs use the common [ERC-721](https://eips.ethereum.org/EIPS/eip-721) NFT standard with minting, burning and metadata extensions. The IP-NFT collection contract is deployed on Mainnet and on Görli Testnet, you can find the addresses [here](smart-contract-addresses.md). Each token's metadata is stored as a file descriptor URI (e.g. `ar://HxXKCIE0skR4siRNYeLKI61Vwg_TJ5PJTbxQmtO0EPo`) that must be resolved client side, e.g. by using decentralized storage network gateways ([Arweave](https://arweave.news/introduction-to-the-most-important-infrastructure-in-the-ar-ecosystem-ar-gateway/) or [IPFS](https://ipfs.github.io/public-gateway-checker/)). The contract is non-enumerable, i.e. users can't simply query their owned assets on-chain but instead must rely on reading the respective event logs to build their own off-chain state. We've deployed TheGraph subgraphs [on mainnet](https://api.thegraph.com/subgraphs/name/moleculeprotocol/ip-nft-mainnet) and [on Görli](https://api.thegraph.com/subgraphs/name/elmariachi111/schrotti-galoppi-schmacko-1/graphql) that can be queried for asset ownership and other IP-NFT related information.
 
 {% hint style="info" %}
 Read more about [TheGraph, subgraphs](https://thegraph.com/docs/en/about/#what-the-graph-is) and [how to query them](https://thegraph.com/docs/en/querying/querying-the-graph/) from your application.
@@ -38,7 +36,7 @@ Variables:
 
 ```json
 {
-  "owner": "0xd1f5B9Dc9F5d55523aB25839f8785aaC74EDE98F"
+  "owner": "0xf7990cd398dafb4fe5fd6b9228b8e6f72b296555"
 }
 ```
 
@@ -48,29 +46,28 @@ Result:
 {
   "data": {
     "ipnfts": [
-      ...
       {
-        "id": "21",
-        "owner": "0xd1f5b9dc9f5d55523ab25839f8785aac74ede98f",
-        "createdAt": "1671818892",
-        "tokenURI": "ar://HxXKCIE0skR4siRNYeLKI61Vwg_TJ5PJTbxQmtO0EPo"
+        "id": "2",
+        "owner": "0xf7990cd398dafb4fe5fd6b9228b8e6f72b296555",
+        "createdAt": "1686582803",
+        "tokenURI": "ipfs://bafkreig274nfj7srmtnb5wd5wlwm3ig2s63wovlz7i3noodjlfz2tm3n5q"
       }
     ]
   }
 }
 ```
 
-We've deployed the contracts as [UUPS proxies](https://docs.openzeppelin.com/contracts/4.x/api/proxy#UUPSUpgradeable) owned by the Molecule developer team, thus the contract you're interacting with and the contract that contains the current logic are different. Make sure to always invoke functions on the UUPS proxy - its official addresses can be found [here](smart-contract-addresses.md). The implementation contracts have been verified on Etherscan, so you can [easily retrieve their ABIs](https://etherscan.io/address/0xa4ed1346ba6a4231e35677e73eb7866c05d61725#code).
+We've deployed the contracts as [UUPS proxies](https://docs.openzeppelin.com/contracts/4.x/api/proxy#UUPSUpgradeable) owned by the [Molecule developer team's multisig](https://app.safe.global/transactions/history?safe=eth:0xCfA0F84660fB33bFd07C369E5491Ab02C449f71B), thus the contract you're interacting with and the contract that contains the current logic are different. Make sure to always invoke functions on the UUPS proxy - its official addresses can be found [here](smart-contract-addresses.md). The implementation contracts have been verified on Etherscan, so you can [easily retrieve their ABIs](https://etherscan.io/address/0x6b179dffac5e190c670176606f552cb792847f80#code).
 
-## Reserving Token IDs & Acquiring Mintpasses
+## Reserve an IP-NFT Token ID
 
-IP-NFTs can generally be minted by arbitrary accounts. However, to keep the collection's items as clean and valid as possible, we added a guard in front of the `mintReservation` method that requires a minter to hold a valid mintpass. To retrieve a mintpass for Mainnet usage, users can submit [this self service form](https://airtable.com/shr9QN0tPPeK4GGjA) that notifies the Molecule team to drop a new mintpass for the requestor. On testnets users can issue mintpasses for themselves, either by following the interactive flow [on the official IP-NFT minting UI](https://ip-nft.molecule.to) or by calling one of our [dedicated mintpass dispenser contract](https://goerli.etherscan.io/address/0x0F1Bd197c5dCC6bC7E8025037a7780010E2Cd22A#writeContract)'s `dispense` methods on-chain.
+IP-NFTs can generally be minted by any account. The first step on the minting journey is to reserve an IP-NFT token id by calling the IP-NFT contract's `reserve()` method. This capturing step is necessary because the legal documents attached to the final IP-NFT are referring to the NFT's token id that only becomes available after the mint has occurred. Minters will use the token id to craft the legal documents that outline the rights and obligations of owning that NFT in the real world.&#x20;
 
-Once holding a mintpass, the next step on the minting journey is to reserve an IP-NFT token id by calling the IP-NFT contract's `reserve()` method. This capturing step is necessary because the legal documents attached to the final IP-NFT are referring to the NFT's token id that only becomes available after the mint has occurred. Minters will use the token id to craft the legal documents that outline the rights and obligations of owning that NFT in the real world. A selection of premade contract templates for IP-NFTs can be found [on Github](https://github.com/moleculeprotocol/Legal-Contracts).
+When minting an IP-NFT using the molecule frontend, the reserved token id will be inserted in the autogenerated Assignment Agreement. If you're minting IP-NFTs on your own, make sure to correctly mention them in your legal attachments. A selection of premade contract templates for IP-NFTs can be found [on Github](https://github.com/moleculeprotocol/Legal-Contracts).
 
 ## Assemble and Upload Metadata
 
-The JSON metadata documents behind IP-NFTs are required to strictly validate against a [well defined JSON schema that's](https://bafybeibxovb2ihsjmd6tjjzq3ftllftfken655koypnkakxcd6fs427mwi.ipfs.w3s.link/ipnft.schema.json) flexible enough to cover many relevant use cases. [Here's a visual tool](https://jsonschema.dev/s/i9UZ3) to investigate a valid IP-NFT's metadata interactively. Note that the generic fields `name`, `image` and `description` are located on the document's root level [as required by ERC-1155](https://eips.ethereum.org/EIPS/eip-1155#metadata), whereas the `agreements` and `project_details` structures are modelled as rich property definitions.
+The JSON metadata documents behind IP-NFTs are required to strictly validate against a [well defined JSON schema that's](https://ipfs.io/ipfs/bafybeihvql52zxnkksedcad5i6ptimpquu4oiek56ojldkm3ndkfoevmf4/ipnft.schema.json) flexible enough to cover many relevant use cases. [Here's a visual tool](https://jsonschema.dev/s/ciB7W) to investigate a valid IP-NFT's metadata interactively. Note that the generic fields `name`, `image` and `description` are located on the document's root level, whereas the `agreements` and `project_details` structures are modelled as rich property definitions.
 
 ```json
 {
@@ -91,12 +88,18 @@ The JSON metadata documents behind IP-NFTs are required to strictly validate aga
       }
     ],
     "project_details": {
-      "industry": "Pharmaceutical R&D",
-      "organization": "Newcastle University, UK",
-      "topic": "Aging",
+      "industry": "Space Exploration",
+      "organization": "NASA",
+      "topic": "Wormholes",
+      "funding_amount": {
+        "value": 123456789,
+        "decimals": 2,
+        "currency": "USD",
+        "currency_type": "ISO4217"
+      },
       "research_lead": {
-        "name": "Chuck Norris",
-        "email": "chuck@norris.com"
+        "name": "Carl Sagan",
+        "email": "carl@example.com"
       }
     }
   }
@@ -125,7 +128,7 @@ import addFormats from "ajv-formats";
 
 ### Link to External Resources
 
-IP-NFT metadata documents require you to refer to external resources, e.g. the `image` or `agreements[].url` fields. While you can choose to go with the well known `https://` protocol, it's advisable to use web3-native decentralized storage pointers like `ar://` or `ipfs://` instead. Clients are supposed to resolve them to their respective http gateway counterparts and most NFT related services and frontends can handle them. You don't need to run an Arweave or IPFS node yourself - [Ardrive](https://app.ardrive.io) or web3.storage are excellent helper services that get the job done and our official IP-NFT minting UI uses [Bundlr](https://bundlr.network/) to efficiently upload files to the Arweave network with [near instant finalization](https://docs.bundlr.network/docs/FAQs/Dev-FAQ#what-is-optimistic-finalization).
+IP-NFT metadata documents require you to refer to external resources, e.g. the `image` or `agreements[].url` fields. While you can choose to go with the well known `https://` protocol, it's advisable to use web3-native decentralized storage pointers like `ar://` or `ipfs://` instead. Clients are supposed to resolve them to their respective http gateway counterparts and most NFT related services and frontends can handle them. You don't need to run an Arweave or IPFS node yourself - [Ardrive](https://app.ardrive.io) or web3.storage are excellent helper services that get the job done and our official IP-NFT minting UI uses web3.storage to publish IPFS documents to a reliable storage backend and automatically create storage deals on Filecoin.
 
 Here's a nodejs example on how to upload a JSON document using web3.storage (it's simpler to do this [within a browser context](https://web3.storage/docs/how-tos/store/#preparing-files-for-upload), though):
 
@@ -195,13 +198,13 @@ Lit runs a network of nodes that derive signing and encryption keys by multipart
   accessControlConditions = {
       conditionType: 'evmBasic',
       contractAddress: tokenContractAddress,
-      standardContractType: 'ERC1155',
+      standardContractType: 'ERC721',
       chain: "ethereum",
-      method: 'balanceOf',
-      parameters: [':userAddress', tokenId],
+      method: 'ownerOf',
+      parameters: [tokenId],
       returnValueTest: {
-        comparator: '>',
-        value: '0' // user owns more than 0 of this token id
+        comparator: '=',
+        value: ':userAddress'
       }
     }
 
@@ -216,7 +219,7 @@ Lit runs a network of nodes that derive signing and encryption keys by multipart
   
 ```
 
-A user who wants to decrypt the content must again initialize the SDK using a signed message that proves control over their address. Next, they ask several network nodes to present their key shares of the encrypted key by presenting the access control conditions and the encrypted symmetric key to the network. If the network nodes find that the account matches the given conditions, each one yields its key share for the encrypted decryption key. With that, the SDK decrypts the key the content has initially been encrypted with.
+A user who wants to decrypt the content must again initialize the Lit SDK using a signed message that proves control over their address. Next, they ask several network nodes to present their key shares of the encrypted key by presenting the access control conditions and the encrypted symmetric key to the network. If the network nodes find that the account matches the given conditions, each one yields its key share for the encrypted decryption key. With that, the SDK decrypts the key the content has initially been encrypted with.
 
 ```typescript
 const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain: "ethereum" });
@@ -243,17 +246,16 @@ An IP-NFT metadata's `agreements` item can store the encrypted symmetric key and
       "access_control_conditions": [
         {
           "conditionType": "evmBasic",
-          "contractAddress": "0xa1c301d77f701037f491c074e1bd9d4ac24cf5e5",
-          "standardContractType": "ERC1155",
+          "contractAddress": "0xaf7358576C9F7cD84696D28702fC5ADe33cce0e9",
+          "standardContractType": "ERC721",
           "chain": "goerli",
-          "method": "balanceOf",
+          "method": "ownerOf",
           "parameters": [
-            ":userAddress",
             "6"
           ],
           "returnValueTest": {
-            "comparator": ">",
-            "value": "0"
+            "comparator": "=",
+            "value": ":userAddress"
           }
         }
       ]
@@ -270,7 +272,7 @@ The recommended workaround is to denote a dedicated trusted member of the multis
 
 ### Granting Read Access to Third Parties
 
-Another shortcoming related to Lit's requirement of private key based authentication signatures is that multisig token holders cannot prove their address to the protocol. To allow multisig members to decrypt the accompanying agreement documents, the IP-NFT contract contains a [`grantReadAccess`](https://goerli.etherscan.io/address/0x36444254795ce6E748cf0317EEE4c4271325D92A#writeProxyContract#F3). It can be invoked by the current token holder (e.g. a multisig) to grant certain accounts (e.g. some of their members or potential buyers) read access to the underlying content for a limited amount of time. Its counterpart [`canRead`](https://goerli.etherscan.io/address/0x36444254795ce6E748cf0317EEE4c4271325D92A#readProxyContract#F3) yields a boolean whether the `reader` is currently allowed access. For the current owner of an IP-NFT this method always returns `true`.
+Another shortcoming related to Lit's requirement of private key based authentication signatures is that multisig token holders cannot prove their address to the protocol. To allow multisig members to decrypt the accompanying agreement documents, the IP-NFT contract contains a [`grantReadAccess`](https://goerli.etherscan.io/address/0x36444254795ce6E748cf0317EEE4c4271325D92A#writeProxyContract#F3) function that can only be invoked by the current token holder (e.g. a multisig) to grant certain accounts (e.g. some of their members or potential buyers) read access to the underlying content for a limited amount of time. Its counterpart [`canRead`](https://goerli.etherscan.io/address/0x36444254795ce6E748cf0317EEE4c4271325D92A#readProxyContract#F3) yields a boolean whether the `reader` is currently allowed access. For the current owner of an IP-NFT this method always returns `true`.
 
 To make read grants work inside Lit protocol, one can craft a [custom contract access control condition](https://developer.litprotocol.com/coreConcepts/accessControl/EVM/customContractCalls) that not only takes the current IP-NFT ownership into account but also lets users pass that currently are granted read access:
 
@@ -282,7 +284,7 @@ To make read grants work inside Lit protocol, one can craft a [custom contract a
     {
       "conditionType": "evmContract",
       //the IP-NFT UUPS proxy contract address
-      "contractAddress": "0x36444254795ce6E748cf0317EEE4c4271325D92A",
+      "contractAddress": "0xaf7358576C9F7cD84696D28702fC5ADe33cce0e",
       "chain": "goerli",
       "functionName": "canRead",
       "functionParams": [
@@ -323,11 +325,11 @@ To make read grants work inside Lit protocol, one can craft a [custom contract a
 }
 ```
 
-## Proving Content Integrity
+### Proving Content Integrity
 
 Since agreement documents are encrypted before being stored, each agreement item may contain a `content_hash` that downloaders can use to prove the legal documents' content integrity after they've decrypted it. When using IPFS as storage layer this hash is not adding much value since the network's content ids already provide an untamperable way of guaranteeing content integrity, however [they're not derived from the original content](https://docs.ipfs.tech/concepts/hashing/#content-identifiers-are-not-file-hashes) and hard to prove without an IPFS node at hand.
 
-The `content_hash` field shall contain the sha-256 digest of the attachment's binary content, encoded as a multihash compatible to CIDv1. This allows clients to decode the content hash and verify a document's content without being aware of the hashing algorithm used. This is how it looks like in Typescript using the [multiformats NPM package](https://www.npmjs.com/package/multiformats):
+The `content_hash` field shall contain the sha-256 digest of the attachment's binary content, encoded as a multihash compatible to CIDv1. This allows users to decode the content hash and verify document's content without being aware of the hashing algorithm used. This is how it looks like in Typescript using the [multiformats NPM package](https://www.npmjs.com/package/multiformats):
 
 ```typescript
 import { CID } from "multiformats/cid";
@@ -361,9 +363,11 @@ const verifyChecksum = async (
 
 ```
 
-## Let users sign off legal terms and agreements' content
+## Terms and Validation signatures&#x20;
 
-Some of the attached legal PDF documents might contain a reference on being only valid when being digitally signed by an individual party. For IP-NFTs minted from within the Molecule ecosystem we're requesting minters to sign an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) compatible message with a personal signature. We refer to that structure as `TermsSig` and it essentially could contain anything that proves that a party has agreed to terms shown on a website or mentioned in legal contracts.
+### Sign off legal terms and agreements' content
+
+Some of the attached legal PDF documents might contain a reference on being only valid when being digitally signed by an individual party. IP-NFTs that are minted from within the Molecule ecosystem must carry an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) compatible message with a personal signature. We refer to this structure as `TermsSig.` It proves that a party has agreed to terms shown on a website or mentioned in legal contracts.
 
 A `TermsSig` V1 contains the following information
 
@@ -373,7 +377,7 @@ A `TermsSig` V1 contains the following information
 * a version indicator
 * the chain id on which this signature should be considered valid
 
-Eample:
+Example:
 
 ```
 I accept the IP-NFT minting terms
@@ -392,23 +396,94 @@ Chain ID: 5
 
 You can use any EIP-191 compatible [ecrecover](https://docs.ethers.org/v5/api/utils/address/#utils-recoverAddress) function to prove who has signed these terms. Etherscan [comes with a dedicated feature](https://etherscan.io/verifySig/14176) to publicly prove messages and signatures to simplify this process.
 
-## Putting it all together: The IP-NFT Minting Flow for Developers
+### Verify and sign off final metadata
+
+There's no way for the IP-NFT contract to verify that the metadata one provides is valid. To ensure its formal validity and completeness, we're therefore running a service that's signing off valid metadata with a signature that must be presented to the `mintReservation` function. These are the accounts and service endpoints of signers trusted by the IP-NFT contracts:&#x20;
+
+* mainnet\
+  [https://mint.molecule.to/api/signoffMetadata](https://mint.molecule.to/api/signoffMetadata) \
+  0x3D30452c48F2448764d5819a9A2b684Ae2CC5AcF
+* testnet (görli)\
+  [https://testnet.mint.molecule.to/api/signoffMetadata](https://testnet.mint.molecule.to/api/signoffMetadata)\
+  0xbCeb6b875513629eFEDeF2A2D0b2f2a8fd2D4Ea4
+
+Here's a sample request
+
+```http
+POST https://mint.molecule.to/api/signoffMetadata
+Content-Type: application/json
+
+{
+  "network": "homestead",
+  "minter": "0xcB0b20A55e188eD52F1af694e2a3bCb9e81e3911",
+  "to": "0xD920E60b798A2F5a8332799d8a23075c9E77d5F8",
+  "reservationId": 2,
+  "tokenURI": "ipfs://bafkreibkvbe5n4iub7jac4cuhlokmdpt6fkv64x4huhy3gvgpbjf6ggzpa"
+}
+```
+
+* `network` the network alias the IP-NFT is being minted on (`homestead` for mainnet)
+* `minter` the minter's account that has signed the terms included in the metadata
+* `tokenURI` the final, resolvable metadata URI
+* `to` the minting recipient address
+* `reservationId` the reservation id that's going to minted (becomes the IP-NFT id after mint)&#x20;
+
+The signoff service will
+
+* download the metadata from the provided `tokenURI` (which proves its availability)
+* check whether the metadata conforms to the IP-NFT metadata schema
+* checks whether the metadata's `terms_signature` recovers to the `minter` address&#x20;
+
+If that's the case, it will sign `keccak256(minter, to, reservationId, tokenURI)`  with an account the IP-NFT contract accepts as verifier and yield it as response.&#x20;
+
+```json
+{
+  "status": "ok",
+  "tokenURI": "ipfs://bafkreibkvbe5n4iub7jac4cuhlokmdpt6fkv64x4huhy3gvgpbjf6ggzpa",
+  "authorization": "0x171e5282e55f178eb384723d6b9e52181cab154ecf399ff1940211a1b80f1c7f0590103a49ea47dca7c4d7667a7ab640f3e836141b32c06aeb8819daec2d673c1c",
+  "signer": "0x3d30452c48f2448764d5819a9a2b684ae2cc5acf"
+}
+```
+
+The response's `authorization` signature bytes are then provided as the IP-NFTs `mintReservation` function's authorization parameter&#x20;
+
+## Call the mint function
+
+The remaining final step to mint an IP-NFT is calling the smart contract's `mintReservation` function:
+
+```solidity
+function mintReservation(
+  address to, 
+  uint256 reservationId, 
+  string calldata _tokenURI, 
+  string calldata _symbol, 
+  bytes calldata authorization
+) external payable override whenNotPaused returns (uint256)
+```
+
+with the parameters:&#x20;
+
+* `to` the recipient of the new IP-NFT (e.g. a multisig wallet)
+* `reservationId` the reserved IP-NFT id as received by the initial call to `reserve()`
+* `_tokenURI` the URI that resolves to the metadata
+* `_symbol` a short symbol that identifies the IP-NFT and its derivatives
+* `authorization` a bytes encoded signature by the validation service
+
+and a `value` of `0.001 ether`that deals as symbolic minting fee.
+
+## Putting it all together: The IP-NFT Minting Flow
 
 To sum up, minting an IP-NFT technically requires the following steps:
 
-* Get a Mintpass for the account that's supposed to finally invoke the `mintReservation` function.
 * invoke the IP-NFT contract's `reserve()` function to reserve a token id
-  * it will revert if the caller is not holding a valid mintpass
-  * get the reserved token id by parsing the method's event log
+  * get the reserved token id by parsing the method's event log or use the subgraph
 * upload an image to a (de)centralised network of your choice
 * use the token id and the IP-NFT contract's address to create legal documents
 * compute a checksum over the original documents
 * optionally encrypt the documents with a Lit access control condition
 * assemble a metadata structure containing the file pointers, access control conditions, encrypted symmetric key and checksum
-* verify that this metadata structure is valid
+* craft a `TermsSig` message, sign it off by the minting account and add it to the metadata
+* verify that the metadata validates against the publicly known IPNFT schema
 * upload the metadata to a (de)centralised network of your choice
-* invoke `mintReservation` on the IP-NFT contract with
-  * `address to`: the recipient of the minted NFT (e.g. a multisig wallet)
-  * `uint256 reservationId`: the token id you've reserved
-  * `uint256 mintPassId`: the mintpass id that's going to be redeemed during the mint
-  * `string memory tokenURI`: the URI that resolves to the metadata
+* call the molecule validation service with your metadata URI to sign it off  &#x20;
+* invoke `mintReservation` on the IP-NFT contract
