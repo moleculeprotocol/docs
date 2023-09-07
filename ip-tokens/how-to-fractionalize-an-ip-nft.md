@@ -16,9 +16,9 @@ IPTs have various functional groups; they can effectuate distributed governance,
 
 By executing the `synthesizeIpnft(uint256 ipnftId, uint256 moleculesAmount, string calldata agreementCid)` function, an IP-NFT owner initializes the creation of a new IPT supply. This is akin to sparking a digital forge, producing a minimal clone of the current IPT implementation and appointing the Synthesizer contract as its owner. It's the conductor leading the symphony of code.
 
-The original IP-NFT owner has the authority to instruct the`Synthesizer` to mint an arbitrary quantity of IPTs via the issue function. However, token holders need to be aware of possible dilution at the discretion of the IP-NFT holder - it's a little like adding water to a concentrated solution. New emissions are managed by the governance layer overseeing the multisignature wallet retaining the IP-NFT.
+The original IP-NFT owner has the authority to instruct the `Synthesizer` to mint an arbitrary quantity of IPTs via the issue function. However, token holders need to be aware of possible dilution at the discretion of the IP-NFT holder - it's a little like adding water to a concentrated solution. New emissions are managed by the governance layer overseeing the multisignature wallet retaining the IP-NFT.
 
-An original owner can designate a IPTs contract as capped, effectively setting a supply limit. This condition is often a requirement for a SalesShareDistributor of that token.
+An original owner can designate an IPTs contract as capped, effectively setting a supply limit. This condition is often a requirement for a SalesShareDistributor of that token.
 
 While the initial distribution of IPTs to other accounts falls outside the `Synthesizer`'s remit, IPTs holders retain the freedom to transfer their tokens at will.
 

@@ -109,7 +109,7 @@ The JSON metadata documents behind IP-NFTs are required to strictly validate aga
 
 ### Validate Metadata Correctness
 
-To validate IP-NFT metatadata documents against that schema, you can use arbitrary JSON schema tools. [Ajv](https://ajv.js.org/guide/getting-started.html) is one of the most powerful ones in Javascript. We're omitting [the code](https://github.com/moleculeprotocol/ipnft-samples/blob/main/verifyMetadata.mts) to retrieve schema or documents for brevity's sake but in a nutshell validation boils down to:
+To validate IP-NFT metadata documents against that schema, you can use arbitrary JSON schema tools. [Ajv](https://ajv.js.org/guide/getting-started.html) is one of the most powerful ones in Javascript. We're omitting [the code](https://github.com/moleculeprotocol/ipnft-samples/blob/main/verifyMetadata.mts) to retrieve schema or documents for brevity's sake but in a nutshell validation boils down to:
 
 ```typescript
 import Ajv from "ajv";
@@ -268,7 +268,7 @@ An IP-NFT metadata's `agreements` item can store the encrypted symmetric key and
 
 Due to the high value nature of IP-NFTs you might feel tempted to use a multisig wallet for the minting process, maybe because you'd like to prove that the IP-NFT has been created by a dedicated group of individuals. This works fine for all contract function invocations but is not supported by Lit protocol. Multisig wallets (or contract wallets to be precise) cannot sign messages in the way it's required to authenticate against Lit nodes because they're not based on a private key. This might once be possible by utilizing [EIP-1271](https://eips.ethereum.org/EIPS/eip-1271) compatible wallet signatures but [was not supported](https://discord.com/channels/896185694857343026/916383445784096839/1058018912010248232) earlier. We're going to add [support for it](https://developer.litprotocol.com/SDK/Explanation/WalletSigs/authSig#how-to-structure-the-authsig) soon.
 
-The recommended workaround is to denote a dedicated trusted member of the multisig that's supposed to intially own the minted IP-NFT. This could be the researcher, a core contributor or maintainer of the project. The IP-NFT contract's `mintReservation` function takes a recipient parameter (`to`) that defines the NFT's initial owner. Note, that the account that _invokes_ the mint function is required to hold a mint pass, not the receiver.
+The recommended workaround is to denote a dedicated trusted member of the multisig that's supposed to initially own the minted IP-NFT. This could be the researcher, a core contributor or maintainer of the project. The IP-NFT contract's `mintReservation` function takes a recipient parameter (`to`) that defines the NFT's initial owner. Note, that the account that _invokes_ the mint function is required to hold a mint pass, not the receiver.
 
 ### Granting Read Access to Third Parties
 
@@ -384,7 +384,7 @@ I accept the IP-NFT minting terms
 
 I have read and agreed to the terms of the IP-NFT Assignment Agreement
 I understand that the IP-NFT represents legal rights to IP and data of the project in my Research Agreement
-I understand that this in an irreversible and publicly traceable transaction on the Ethereum Blockchain
+I understand that this is an irreversible and publicly traceable transaction on the Ethereum Blockchain
 I understand this is beta software and agree to the Terms of Service and assume all risks of minting this IP-NFT
 
 Sponsored Research Agreement Hash: bagaaiera7ftqs3jmnoph3zgq67bgjrszlqtxkk5ygadgjvnihukrqioipndq
@@ -469,7 +469,7 @@ with the parameters:&#x20;
 * `_symbol` a short symbol that identifies the IP-NFT and its derivatives
 * `authorization` a bytes encoded signature by the validation service
 
-and a `value` of `0.001 ether`that deals as symbolic minting fee.
+and a `value` of `0.001 ether` that deals as symbolic minting fee.
 
 ## Putting it all together: The IP-NFT Minting Flow
 

@@ -8,7 +8,7 @@ But these Molecules aren't just digital tokens; they're memberships, invitations
 
 ### Free Association of Molecules (FAM) Membership Agreement
 
-The first legal contract for Molecules is an adhesion contract called the the Free Association of Molecules (FAM) Membership Agreement. We tailored this agreement for DeSci to enable novel ways of organizing around IP development through IP commons. IP commons memberships are represented as Molecules and governed by the FAM agreement. Read our [model FAM agreement here](https://docs.google.com/document/d/18mWC\_8Q0pfKP0zSjvG09JFbI0W5DHLDqySmjNz2lURY/edit?usp=sharing).&#x20;
+The first legal contract for Molecules is an adhesion contract called the Free Association of Molecules (FAM) Membership Agreement. We tailored this agreement for DeSci to enable novel ways of organizing around IP development through IP commons. IP commons memberships are represented as Molecules and governed by the FAM agreement. Read our [model FAM agreement here](https://docs.google.com/document/d/18mWC\_8Q0pfKP0zSjvG09JFbI0W5DHLDqySmjNz2lURY/edit?usp=sharing).&#x20;
 
 ## Smart Contracts
 
