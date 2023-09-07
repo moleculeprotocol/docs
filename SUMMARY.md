@@ -18,7 +18,7 @@
 ## 🧑🔬 IP Tokens
 
 * [💊 What are IP Tokens?](ip-tokens/what-are-ipts.md)
-* [✨ How to synthesize IPTs from an IP-NFT?](ip-tokens/how-to-fractionalize-an-ip-nft.md)
+* [✨ How to tokenize IPTs from an IP-NFT?](ip-tokens/how-to-fractionalize-an-ip-nft.md)
 * [⚖ What are risks of IP-NFTs and IPTs?](ip-tokens/what-are-risks-of-ip-nfts.md)
 * [👨👩👧👦 What is a crowdsale of IPTs?](ip-tokens/what-is-a-crowdsale-of-ipts.md)
 * [✨ How to participate in a crowdsale of IPTs?](ip-tokens/how-to-participate-in-a-crowdsale-of-ipts.md)
