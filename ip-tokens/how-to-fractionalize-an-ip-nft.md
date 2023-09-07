@@ -5,7 +5,7 @@ description: The process of minting IP Tokens from an IP-NFT.
 # ✨ How to tokenize IPTs from an IP-NFT?
 
 {% embed url="https://www.loom.com/share/f35771c266dd4159832853c5e93cc117" %}
-Synthesizing IPTs from an IP-NFT on testnet.
+Creating IPTs from an IP-NFT on testnet.
 {% endembed %}
 
 The `Tokenizer` is a smart contract enabling IP-NFT owners to create a tailored IPT ERC20 contract. Think of it as a cryptographic key that unlocks fractional rights associated with an IP-NFT - a significant stride towards a future of decentralized IP management.&#x20;
