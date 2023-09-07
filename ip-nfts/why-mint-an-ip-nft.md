@@ -16,7 +16,7 @@ No more waiting for months to hear back from bureaucratic organizations who only
 
 ### **Streamlining Collaboration**
 
-Utilizing IP-NFTs introduces a well-coordinated method for the supervision and transference of both IP and R\&D data rights, fostering a platform for productive scientific collaboration. IP-NFTs intrinsically carry legal rights, and ensure those rights are seamlessly linked with the tokens throughout any exchanges. This consolidation of data rights generates aligned incentives and trustless collaboration between among scientific communities. With faster exchange of incentives, scientific collaboration can move at the speed of information.&#x20;
+Utilizing IP-NFTs introduces a well-coordinated method for the supervision and transference of both IP and R\&D data rights, fostering a platform for productive scientific collaboration. IP-NFTs intrinsically carry legal rights, and ensure those rights are seamlessly linked with the tokens throughout any exchanges. This consolidation of data rights generates aligned incentives and trustless collaboration among scientific communities. With faster exchange of incentives, scientific collaboration can move at the speed of information.&#x20;
 
 With an on-chain record of ownership and management details, IP-NFTs can significantly streamline due diligence in IP licensing. The transparency and immutability of blockchain records can drive down the costs and complexities of confirming patent holders, tracking licensees, and researching prior valuations, bypassing the need for intermediaries. No more fear over another scientist stealing your ideas, just building on top of others' ideas with a ledger of record of attribution and value.&#x20;
 
