@@ -48,7 +48,7 @@ Welcome to the future of IP management, where inventors, empowered by censorship
 
 ### IPT Membership Agreement
 
-The first legal contract for IPTs is an adhesion contract called IPT Membership Agreement. We tailored this agreement for DeSci to enable novel ways of organizing around IP development through IP pooling. IP pool memberships are represented as IPTs and governed by the IPT Membership Agreement. Read our IPT Membership Agreement[ here](https://docs.google.com/document/d/18mWC\_8Q0pfKP0zSjvG09JFbI0W5DHLDqySmjNz2lURY/edit?usp=sharing).&#x20;
+The first legal contract for IPTs is an adhesion contract called IPT Membership Agreement. We tailored this agreement for DeSci to enable novel ways of organizing around IP development through IP pooling. IP pool memberships are represented as IPTs and governed by the IPT Membership Agreement. Read our IPT Membership Agreement [here](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/IPT%20Membership%20Agreements/Model%20IPT%20Membership%20Agreement.pdf).&#x20;
 
 ## Smart Contracts
 
