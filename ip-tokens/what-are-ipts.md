@@ -16,7 +16,7 @@ IPTs emphasize the crucial role of patients and researchers - previously treated
 
 ### Governance rights
 
-Individuals possessing IPTs exercise governance over the IP pool associated with the IP-NFT from which they were minted. Their participation in the IP pool is governed by an adhesion contract, the IPT Membership Agreement. You can familiarize yourself with our standard IPT[ Membership Agreement](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/FAM%20Agreements/FAM%20Agreement.pdf).
+Individuals possessing IPTs exercise governance over the IP pool associated with the IP-NFT from which they were minted. Their participation in the IP pool is governed by an adhesion contract, the IPT Membership Agreement. You can familiarize yourself with our standard IPT[ Membership Agreement](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/IPT%20Membership%20Agreements/Model%20IPT%20Membership%20Agreement.pdf).
 
 IPT holders exert control over the IP licensing process, which includes determining the parties involved and the terms of IP licenses, as well as managing the utilization of proceeds derived from these licenses. By holding IPTs, individuals have a direct influence on the way IP licenses are handled, ensuring a fair and transparent process.
 
