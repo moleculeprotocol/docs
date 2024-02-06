@@ -23,18 +23,6 @@
 * [👨👩👧👦 What is a crowdsale of IPTs?](ip-tokens/what-is-a-crowdsale-of-ipts.md)
 * [✨ How to participate in a crowdsale of IPTs?](ip-tokens/how-to-participate-in-a-crowdsale-of-ipts.md)
 
-## Molecule Discovery
-
-* [🔎 Molecule Discovery](molecule-discovery/molecule-discovery.md)
-* [🔐 Accounts on Molecule](molecule-discovery/accounts-on-molecule.md)
-* [👩🔬 👩🔬 👩🔬 For Researchers](molecule-discovery/for-researchers/README.md)
-  * [Intellectual property NFTs (IP-NFTs)](molecule-discovery/for-researchers/intellectual-property-nfts-ip-nfts.md)
-  * [How to create an IP-NFT?](molecule-discovery/for-researchers/how-to-create-an-ip-nft.md)
-* [👨💼 👨💼 👨💼 For Funders](molecule-discovery/for-funders/README.md)
-  * [How to fund research](molecule-discovery/for-funders/how-to-fund-research.md)
-* [🕸 What is a BioDAO](molecule-discovery/ecosystem-biodaos.md)
-* [⁉ FAQ](molecule-discovery/faq.md)
-
 ## IP Tokenization Guide
 
 * [🗺 IP Tokenization Guide](ip-tokenization-guide/ip-tokenization-guide.md)
