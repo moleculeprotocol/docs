@@ -26,5 +26,3 @@ Catalyst aims to bridge the funding gap in early-stage biotech research, address
 5. If backers decide to accept the research agreement, funds are released.
 6. If an agreement is approved, IP rights are assigned according to the SRA, researchers receive the funds to kickoff their work, and backers receive IP tokens.
 7. If the fundraising goal is unmet or the SRA negotiation fails, backers are refunded their contributions.
-
-\[INSERT DIAGRAM HERE]
