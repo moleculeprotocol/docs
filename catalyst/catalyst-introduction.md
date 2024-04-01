@@ -23,6 +23,6 @@ Catalyst aims to bridge the funding gap in early-stage biotech research, address
 2. Experts collaborate with sourcers to develop the research idea into a feasible R\&D program, receiving compensation for their contributions.
 3. Backers conduct due diligence, and contribute funds to promising projects.
 4. If the funding goal is reached, sourcers, backers, and Molecule negotiate and finalize a research agreement.
-5. If backers decide to accept the research agreement, funds are released.
-6. If an agreement is approved, IP rights are assigned according to the SRA, researchers receive the funds to kickoff their work, and backers receive IP tokens.
+5. If backers decide to accept the research agreement, an [IP-NFT](https://docs.molecule.to/documentation/ip-nfts/intro-to-ip-nft) is minted and funds are released.
+6. If an agreement is approved, IP rights are assigned according to the SRA, researchers receive the funds to kickoff their work, and backers receive [IP tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts).
 7. If the fundraising goal is unmet or the SRA negotiation fails, backers are refunded their contributions.
