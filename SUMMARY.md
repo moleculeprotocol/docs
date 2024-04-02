@@ -26,6 +26,7 @@
 ## IP Tokenization Guide
 
 * [🗺️ IP Tokenization Guide](ip-tokenization-guide/ip-tokenization-guide.md)
+* [🏦 Wallets](ip-tokenization-guide/wallets.md)
 
 ## Catalyst
 
