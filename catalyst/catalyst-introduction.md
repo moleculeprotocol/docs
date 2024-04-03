@@ -15,7 +15,9 @@ Catalyst aims to bridge the funding gap in early-stage biotech research, address
 * **Funders** can find and fund promising projects and directly govern research-related IP.
 * **Experts** have the chance to discover projects that can benefit from their expertise, and apply it to guide academic research towards successful commercialization.
 
-<figure><img src="https://lh7-us.googleusercontent.com/HoVFGSSXF0sUlj5XxweYKqKM-BdA2eaIFVlINouU1Y8tanQtQIkSjBp5_LGsCe0pzm6vP9M8G2-EwKhB0iQE9GndBZv7jyBOxxXpomTvDsMaeSNOY-9J6a08KezoXEhUqaPCsg9iieFpTj4ZojFA_Ak" alt=""><figcaption><p>Catalyst Diagram</p></figcaption></figure>
+
+
+<figure><img src="../.gitbook/assets/Funding Projects - Large Text (1).jpg" alt=""><figcaption><p>Catalyst Diagram</p></figcaption></figure>
 
 ### How Catalyst Works
 
