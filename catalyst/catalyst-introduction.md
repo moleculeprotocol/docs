@@ -2,7 +2,7 @@
 
 ### What is Catalyst
 
-Catalyst is a platform that accelerates translational research by bringing researchers, experts, and funders together to streamline the discovery, refinement, and funding of early-stage ideas into intellectual property.
+Catalyst accelerates translational research by bringing researchers, experts, and funders onto a single platform to streamline discovery, refinement, and funding of early-stage research ideas.
 
 ### Objective
 
@@ -10,21 +10,17 @@ Catalyst aims to bridge the funding gap in early-stage biotech research, address
 
 ### Key Benefits
 
-* **Researchers** can fund their research ideas and receive contributions from industry experts to refine their idea into a viable R\&D program.
-* **Sourcers** can earn income by launching funding campaigns, rally a team of collaborators, and create promising R\&D programs.
-* **Funders** can find and fund promising projects and directly govern research-related IP.
-* **Experts** have the chance to discover projects that can benefit from their expertise, and apply it to guide academic research towards successful commercialization.
+* **Researchers & Project Sourcers** secure funding for research ideas and receive valuable advice from biotech experts.
+* **Experts** leverage their unique skill sets to guide research with translational potential.
+* **Funders** find promising projects, getting front-row insights and connecting directly with researchers.
 
-
-
-<figure><img src="../.gitbook/assets/Funding Projects - Large Text (1).jpg" alt=""><figcaption><p>Catalyst Diagram</p></figcaption></figure>
+<figure><img src="https://assets-global.website-files.com/5fcf3f3d3283226f94ef2d03/661547112898021c44e8e6ee_Funding%20Projects%20-%20Large%20Text%20(2).jpg" alt=""><figcaption><p>Catalyst Diagram</p></figcaption></figure>
 
 ### How Catalyst Works
 
-1. Sourcers publish research projects, seeking expertise and funding.
-2. Experts collaborate with sourcers to develop the research idea into a feasible R\&D program, receiving compensation for their contributions.
-3. Backers conduct due diligence, and contribute funds to promising projects.
-4. If the funding goal is reached, sourcers, backers, and Molecule negotiate and finalize a research agreement.
-5. If backers decide to accept the research agreement, an [IP-NFT](https://docs.molecule.to/documentation/ip-nfts/intro-to-ip-nft) is minted and funds are released.
-6. If an agreement is approved, IP rights are assigned according to the SRA, researchers receive the funds to kickoff their work, and backers receive [IP tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts).
-7. If the fundraising goal is unmet or the SRA negotiation fails, backers are refunded their contributions.
+1. Researchers & Project Sourcers publish research projects onto the platform, seeking expertise and funding.
+2. Experts collaborate with Researchers and/or Sourcers to develop the research idea into the best possible research and development program, receiving compensation for their contributions.
+3. Funders do due diligence and contribute funds to promising projects.
+4. When the project reaches the funding goal, the parties finalize a research agreement. Molecule is available to help with negotiations.
+5. Once the parties accept the research agreement, funders get intellectual property rights in the form of intellectual property tokens (IPTs) and researchers receive funds for their project.
+6. If the project does not meet the fundraising goal or the research agreement negotiation fails, the protocol refunds funders' contributions.​​
