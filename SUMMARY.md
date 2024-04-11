@@ -31,4 +31,6 @@
 ## Catalyst
 
 * [🌱 Catalyst Introduction](catalyst/catalyst-introduction.md)
+* [💰 How to get funding via Catalyst?](catalyst/how-to-get-funding-via-catalyst/README.md)
+  * [How to prepare a strong funding application?](catalyst/how-to-get-funding-via-catalyst/how-to-prepare-a-strong-funding-application.md)
 * [❔ Why Catalyst?](catalyst/why-catalyst.md)
