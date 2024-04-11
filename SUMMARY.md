@@ -31,3 +31,4 @@
 ## Catalyst
 
 * [🌱 Catalyst Introduction](catalyst/catalyst-introduction.md)
+* [❔ Why Catalyst?](catalyst/why-catalyst.md)
