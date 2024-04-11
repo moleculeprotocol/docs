@@ -57,10 +57,6 @@ Leveraging market dynamics, distributed ledger technology, and wisdom of the cro
 
 #### Funders: _Translational research patrons who want a stake in the research they fund._
 
-**Direct Support:** Choose and fund research projects with significant impact, aligning with personal interests or values.
-
-**Community Engagement:** Connect with other funders and researchers, contributing to a collaborative ecosystem.
-
-**IP Governance:** Gain governance rights over the research IP and any financial proceeds, ensuring a stake in the research outcomes.
-
-\
+* **Direct Support:** Choose and fund research projects with significant impact, aligning with personal interests or values.
+* **Community Engagement:** Connect with other funders and researchers, contributing to a collaborative ecosystem.
+* **IP Governance:** Gain governance rights over the research IP and any financial proceeds, ensuring a stake in the research outcomes.\
