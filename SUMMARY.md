@@ -31,6 +31,12 @@
 ## Catalyst
 
 * [🌱 Catalyst Introduction](catalyst/catalyst-introduction.md)
-* [💰 How to get funding via Catalyst?](catalyst/how-to-get-funding-via-catalyst/README.md)
-  * [How to prepare a strong funding application?](catalyst/how-to-get-funding-via-catalyst/how-to-prepare-a-strong-funding-application.md)
-* [❔ Why Catalyst?](catalyst/why-catalyst.md)
+* [💁‍♀️ Getting Started: Create an Account](catalyst/getting-started-create-an-account.md)
+* [🧑‍🔬 How to get funding? \[WIP\]](catalyst/how-to-get-funding-wip/README.md)
+  * [Preparing project files and materials \[WIP\]](catalyst/how-to-get-funding-wip/preparing-project-files-and-materials-wip.md)
+  * [Inviting Reviewers \[WIP\]](catalyst/how-to-get-funding-wip/inviting-reviewers-wip.md)
+* [💲 How to fund projects? \[WIP\]](catalyst/how-to-fund-projects-wip/README.md)
+  * [Why buy Seed tokens? \[WIP\]](catalyst/how-to-fund-projects-wip/why-buy-seed-tokens-wip.md)
+* [🕵️‍♂️ How to review projects? \[WIP\]](catalyst/how-to-review-projects-wip.md)
+* [🤔 Why Catalyst? \[WIP\]](catalyst/why-catalyst-wip.md)
+* [❔ FAQs \[WIP\]](catalyst/faqs-wip.md)
