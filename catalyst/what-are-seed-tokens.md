@@ -18,7 +18,7 @@ Seed tokens are cryptographic tokens generated on [Base](https://www.base.org/),
 
 Upon the initiation of a project and Seed token creation, the first 100 Seed tokens, representing .1% of the total potential supply, are pre-minted and allocated to the Sourcer. Thereafter, Seed tokens are available for purchase via a [bonding curve](https://www.coinbase.com/learn/advanced-trading/what-is-a-bonding-curve) mechanism, where the price of tokens increases linearly with each purchase. This dynamic pricing is determined by a linear bonding curve using native ETH as currency. Notably, 95% of each contribution directly supports the project funding, with the remaining 5% temporarily held as escrow fees.
 
-
+For more info on Seed token pricing dynamics, please see [this section](https://docs.molecule.to/documentation/catalyst/how-to-fund-projects-wip/how-do-seed-tokens-work-technically-and-economically).
 
 ***
 

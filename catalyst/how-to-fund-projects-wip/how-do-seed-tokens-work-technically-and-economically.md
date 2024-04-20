@@ -42,26 +42,30 @@ Contrary to traditional bonding curves, Catalyst imposes a unique model for toke
 
 <figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption><p>Illustrative Bonding Curve: This graph represents the price-supply relationship of Seed tokens on Catalyst. The curve starts with a pre-minted amount 'p' at the initial price point. It then linearly increases, reflecting the price 'P(s)' for each subsequent Seed token 's'. The shaded areas represent the funding stages: 'Under' indicates the amount below the funding goal, 'Over' indicates funding beyond the goal, and 'F' marks the funding goal in ETH. The slope 'm' indicates the rate at which the price increases with the supply.</p></figcaption></figure>
 
-**Economic Implications** The linear nature of the bonding curve has several economic implications for project valuation and funding stability:
+**Economic Implications**&#x20;
 
-* **Predictable Valuation**: As the price increases in a known linear fashion, funders can easily calculate the current and future value of tokens. This predictability attracts confident investment as funders can anticipate growth.
-* **Funding Stability**: The incremental price increase encourages early funding, as early participants can acquire tokens at a lower price. This helps projects to gain initial capital quickly, contributing to funding momentum and stability.
-* **Market Sentiment Reflection**: The linear curve reflects real-time market sentiment and commitment towards the project. As more participants buy in, the rising curve demonstrates increasing collective valuation of the project.
-* **Long-Term Incentivization**: The inability to sell tokens above the purchase price, as per Catalyst's unique model, discourages short-term speculation and promotes long-term investment in the project’s success.
+The nature of the bonding curve has several economic implications:
+
+* **Stable Liquidity Mechanism:** Unlike [automated market maker (AMM)](https://docs.uniswap.org/concepts/uniswap-protocol) systems, which are common in cryptocurrency trading, bonding curves provide a more stable and predictable source of liquidity. Bonding curves eliminate reliance on individual liquidity providers who can influence the market by providing or withdrawing liquidity. This feature is particularly valuable in the early stages of funding when liquidity is typically lower, ensuring that participants can buy and sell Seed tokens without the worry of unpredictable and sudden liquidity shortages.
+* **Market Indicator:** The bonding curve also acts as a signal for project momentum. As tokens are purchased and the price increases along the curve, it indicates growing interest and commitment to the project. The change in price acts as an indicator of attention and development progress, providing a measure of engagement into the project.
+* **Temporary Market Structure:** The role of the bonding curve is transitory. It is designed to serve as an initial funding mechanism until the project reaches its funding goal. Upon achieving this milestone, the bonding curve market is closed, and the Seed tokens transition to a different market structure suitable for [IP tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts). This shift highlights the bonding curve's purpose: to facilitate early-stage funding and to establish a foundational market for funding, not dictate the long-term market dynamics for the resultant IP tokens. It paves the way for a more mature market structure that reflects the evolving nature of the project and its IP.
+
+**Transfer Restrictions**
+
+The Seed token contracts enforce specific transfer restrictions to maintain a unified market for project funding. During critical funding phases, tokens are non-transferable, ensuring that all funds contributed in exchange for Seed tokens are directed solely towards the project's funding goal, rather than to secondary traders. This policy is crucial to uphold the principle that buying a Seed token is inherently a form of project support, rather than a speculative investment. By restricting transfers, Catalyst ensures that the Seed tokens remain a tool for project fundraising and that the token's liquidity directly correlates to the project's genuine backing, rather than speculative trading activities.
+
+These limitations are lifted once the project moves beyond the initial funding stage, transitioning Seed tokens into a new market structure. At this stage, the tokens may become transferable under certain conditions, which will be outlined in subsequent stages of the project's lifecycle. It's important for users to be fully aware of these liquidity conditions to understand how and when their tokens can be transferred, reflecting the project's transition from fundraising to further development or success realization stages.
 
 
 
-1. **Usage and Limitations**:
-   * **Roles of Tokens**: Explain the different uses of Seed tokens in the platform, such as governance, funding, and potentially rewards if applicable.
-   * **Transfer Restrictions**: Explicitly state the non-transferability of tokens during certain phases, which is crucial to ensure users understand their liquidity conditions.
-2. **Exit and Refund Mechanisms**:
+1. **Exit and Refund Mechanisms**:
    * **Selling Back Tokens**: Go into detail about the conditions under which tokens can be sold back to the platform and the financial return users can expect, emphasizing the designed protection against speculative behavior.
    * **Refund Processes**: Clarify the process for obtaining refunds, particularly in scenarios where a project expires or fails to meet its funding goal.
-3. **Integration with Broader Ecosystem**:
+2. **Integration with Broader Ecosystem**:
    * **Interactions with Other Platform Components**: Describe how Seed tokens interact with other elements of the Catalyst ecosystem, such as the project creation phase, funding mechanisms, and potential integration with other decentralized finance (DeFi) protocols.
    * **Legal and Regulatory Considerations**: Briefly touch on any legal or regulatory considerations relevant to the issuance and management of these tokens, particularly if they might affect token holders.
-4. **FAQs and Troubleshooting**:
+3. **FAQs and Troubleshooting**:
    * **Common Issues and Questions**: Provide a brief FAQ section addressing common questions and potential issues users might face with Seed tokens.
-5. **Glossary of Terms**: Include a glossary for key terms used in the documentation to help both crypto/web3-savvy users and newcomers understand the specialized vocabulary.
+4. **Glossary of Terms**: Include a glossary for key terms used in the documentation to help both crypto/web3-savvy users and newcomers understand the specialized vocabulary.
 
 \
