@@ -8,7 +8,7 @@ description: >-
 
 ### Am I a good fit to fund projects via Catalyst?
 
-Catalyst projects are funded by patients, scientists, philanthropists, and web3 users alike. IHere are a few criteria to consider before funding projects on Catalyst:
+Catalyst projects are funded by patients, scientists, philanthropists, and web3 users alike. Here are a few criteria to consider before funding projects on Catalyst:
 
 * You want to support early stage scientific research with biotech applications
 * You are interested in funding research via a novel mechanism: tokenization of intellectual property
@@ -23,7 +23,7 @@ If you meet the above criteria, follow the steps below to fund projects on Catal
 
 **If you have:**
 
-* ETH on Base (on a different wallet) or&#x20;
+* ETH on Base (Ethereum Layer 2) or&#x20;
 * ETH on on a centralized exchange (Coinbase, Binance, etc.)
 
 **Here's how to send ETH to your Catalyst wallet:**
@@ -62,5 +62,11 @@ If you don't have ETH on an exchange or wallet, you can still on-ramp money onto
 3. Follow the instructions there to put in your bank or card details and your ID.&#x20;
 
 ### Step 2: Contribute ETH to a project
+
+Once you have loaded your wallet with ETH, you can purchase Seed tokens. If you would like to purchase Seed tokens:&#x20;
+
+1. Find a project you would like to contribute to
+2. Click the _Buy Seed Tokens_ button
+3. Confirm the transaction by signing all prompted transactions
 
 ### Step 3: Remove contribution from a project (optional)

@@ -25,9 +25,9 @@ This section draws inspiration from [_Understanding science funding in tech, 201
 
 ### How can Catalyst solve these challenges?
 
-Leveraging market dynamics, distributed ledger technology, and wisdom of the crowd, Catalyst directly confronts the challenges highlighted previously, paving a new path for research funding. Here's how Catalyst proposes to address these pressing issues:
+Leveraging market dynamics, blockchain technology, and wisdom of the crowd, Catalyst directly confronts the challenges highlighted previously, paving a new path for research funding. Here's how Catalyst proposes to address these pressing issues:
 
-**Streamlining the Funding Process:** Catalyst introduces a market-based approach to funding scientific research by leveraging decentralized technologies. By listing their ideas on a crowdfunding platform dedicated to translational research, researchers gain direct access to a global pool of funders. This not only circumvents the traditional, sluggish funding mechanisms but also democratizes the funding process, ensuring that innovative ideas receive the support they need swiftly and efficiently. In addition, it ensures that enthusiastic supporters of particular research
+**Streamlining the Funding Process:** Catalyst introduces a market-based approach to funding scientific research by leveraging decentralized technologies. By listing their ideas on a crowdfunding platform dedicated to translational research, researchers gain direct access to a global pool of funders. This not only circumvents the traditional, sluggish funding mechanisms but also democratizes the funding process, ensuring that innovative ideas receive the support they need swiftly and efficiently.
 
 **Aligning Incentives with Global Needs:** The Catalyst model addresses the misalignment of incentives in the scientific community by facilitating funding based on the potential impact of research on market need, rather than purely on credentials. By focusing on need and the potential for alleviating suffering, Catalyst ensures that capital allocation more accurately reflects potential societal benefit. This alignment encourages research in areas that are traditionally underfunded or overlooked, bridging the gap between capital allocation and the actual global disease burden.
 

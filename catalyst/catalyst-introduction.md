@@ -1,4 +1,4 @@
-# 🌱 Catalyst Introduction
+# ⭐ Catalyst Introduction
 
 ### What is Catalyst?
 
@@ -24,7 +24,3 @@ Catalyst aims to bridge the funding gap in early-stage biotech research, address
 4. When the project reaches the funding goal, the parties finalize a research agreement. Molecule is available to help with negotiations.
 5. Once the parties accept the research agreement, funders get intellectual property rights in the form of intellectual property tokens (IPTs) and researchers receive funds for their project.
 6. If the project does not meet the fundraising goal or the research agreement negotiation fails, the protocol refunds funders' contributions.​​
-
-### What value do seed tokens have?
-
-1.

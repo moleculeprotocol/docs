@@ -11,8 +11,6 @@ What is the benefit of being a token holder? \
 What is the relationship between the sponsor and the execution team? \
 What is the best way to inform the community that you want to be part of the execution team? How will you get selected?"
 
-What are the requirements to use the product - do they have to be affiliated with a university?
-
 So is it the case or we are still focusing on something that has translational potential, but is there any minimal criteria to expect from a project? It can't be like a pure fundamental research because people just try to ponder upon different things and try to explore the intricacies of nature, but there should be a little threshold to build on top of it, right? What is that if you have something?
 
 How do BioDAOs interact with Catalyst?

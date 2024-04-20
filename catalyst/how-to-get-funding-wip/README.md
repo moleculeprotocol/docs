@@ -10,7 +10,7 @@ description: >-
 
 Catalyst projects are created by **researchers** or **sourcers**, research associates who list a researcher's project for funding on their behalf. Here are a few criteria to consider before applying for funding on Catalyst:
 
-* You (or a colleague) have a promising translational research idea and seek funding to develop it
+* You (or a colleague) have a promising translational research idea and need funding to develop it
 * You are looking for collaborators to develop your research idea with
 * You are willing to negotiate a research agreement with the funders / sponsors and your organization
 * You are comfortable communicating and sharing regular research updates with your research funders
