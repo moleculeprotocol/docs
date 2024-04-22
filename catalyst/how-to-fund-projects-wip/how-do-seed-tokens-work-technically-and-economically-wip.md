@@ -70,4 +70,4 @@ The Catalyst platform incorporates a fee system in its Seed token economy, servi
 3. **Rationale**:
    * **Sustainable Platform Growth**: Fees are essential for the ongoing development and maintenance of the Catalyst platform. They ensure that the ecosystem has a steady stream of funding to support continuous improvement, and the introduction of new features.
    * **Risk Mitigation**: The exit fee discourages speculative behavior by ensuring that there is a cost associated with entering and exiting funding positions. This creates a more stable environment for project funding and encourages long-term funding in the project’s success rather than short-term trading.
-   * **Resource Allocation**: Fees collected can be redistributed in ways that add value back to the ecosystem, such as providing liquidity.
+   * **Liquidity Provisioning**: Fees collected can be used to provide liquidity and support trading of IP Tokens.
