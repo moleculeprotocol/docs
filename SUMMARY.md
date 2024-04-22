@@ -41,7 +41,7 @@
   * [👩‍💻 Inviting Reviewers \[WIP\]](catalyst/how-to-get-funding-wip/inviting-reviewers-wip.md)
   * [💸 How do I improve my chances of being funded? \[WIP\]](catalyst/how-to-get-funding-wip/how-do-i-improve-my-chances-of-being-funded-wip.md)
 * [💲 How to fund projects? \[WIP\]](catalyst/how-to-fund-projects-wip/README.md)
-  * [Sending ETH to your catalyst wallet \[WIP\]](catalyst/how-to-fund-projects-wip/sending-eth-to-your-catalyst-wallet-wip.md)
+  * [Sending ETH to your Catalyst wallet \[WIP\]](catalyst/how-to-fund-projects-wip/sending-eth-to-your-catalyst-wallet-wip.md)
   * [How to choose whether a project is promising? \[WIP\]](catalyst/how-to-fund-projects-wip/how-to-choose-whether-a-project-is-promising-wip.md)
   * [How do Seed tokens work technically & economically? \[WIP\]](catalyst/how-to-fund-projects-wip/how-do-seed-tokens-work-technically-and-economically-wip.md)
   * [How does the numeric notation work? \[WIP\]](catalyst/how-to-fund-projects-wip/how-does-the-numeric-notation-work-wip.md)

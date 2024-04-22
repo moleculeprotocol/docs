@@ -25,6 +25,8 @@ To fund projects on Catalyst, you will need to have ETH tokens on your account. 
 * Send ETH from an existing wallet on Ethereum Mainnet to Base
 * Send fiat currency to Catalyst with your bank account or credit card
 
+If you need help performing any of these, please see the page: [_Sending ETH to your Catalyst wallet_](https://docs.molecule.to/documentation/catalyst/how-to-fund-projects-wip/sending-eth-to-your-catalyst-wallet-wip)
+
 ### Step 2: Contribute ETH to a project
 
 Once you have loaded your wallet with ETH, you can purchase Seed tokens. If you would like to purchase Seed tokens:&#x20;
