@@ -17,7 +17,7 @@ Catalyst projects are funded by patients, scientists, philanthropists, and web3 
 
 If you meet the above criteria, follow the steps below to fund projects on Catalyst.
 
-### Step 1: Load your Catalyst wallet with ETH
+### Load your Catalyst wallet with ETH
 
 To fund projects on Catalyst, you will need to have ETH tokens on your account. There are several options to send ETH to your Catalyst wallet.&#x20;
 
@@ -27,16 +27,27 @@ To fund projects on Catalyst, you will need to have ETH tokens on your account. 
 
 If you need help performing any of these, please see the page: [_Sending ETH to your Catalyst wallet_](https://docs.molecule.to/documentation/catalyst/how-to-fund-projects-wip/sending-eth-to-your-catalyst-wallet-wip)
 
-### Step 2: Contribute ETH to a project
+### Contribute ETH to a project
 
-Once you have loaded your wallet with ETH, you can purchase Seed tokens. If you would like to purchase Seed tokens:&#x20;
+Once you have loaded your Catalyst wallet with ETH, you can contribute to a project via the following steps:&#x20;
 
-1. Find a project you would like to contribute to
+1. Find a project you would like to contribute to and click _Fund_
 2. Click the _Buy Seed Tokens_ button
 3. Confirm the transaction by signing all prompted transactions
 
-### Step 3: Remove contribution from a project (optional)
+### Remove contribution from a project (optional)
 
+If you would like to remove your contribution from a project, you can do so by:
 
+1. Navigate to the project you want to withdraw from and click _Fund_
+2. Click _Withdraw_
+3. Click the _Withdraw Contribution_ button
+4. Confirm the transaction
 
-### Step 4: Claim refunds (optional)
+### Claim refunds (if the project expires)
+
+If a project you contributed to expires (does not reach its funding goal), you must claim your refunds manually. You can claim your refund by:
+
+* Navigate to the project you want to claim your refund from and click _Fund_
+* Click _Claim Refund_
+* Confirm the transaction
