@@ -2,7 +2,7 @@
 description: A deep-dive into the mechanics of Seed tokens
 ---
 
-# How do Seed tokens work technically & economically?
+# How do Seed tokens work technically & economically? \[WIP]
 
 ### Token Specification
 
@@ -21,24 +21,17 @@ Each project on Catalyst is allocated a fixed maximum supply of 10,000 Seed toke
 
 **Token Distribution**
 
-* **Pre-Minting to the Sourcer**: At the start of each project, .1% of the total token supply, or 100 tokens, is pre-minted and granted to the project creator, known as the Sourcer. This initial allocation is strategic:
-  * **Collaborative Engagement**: The pre-minted tokens are primarily used by the Sourcer to engage and incentivize collaborators who can contribute to the project. This might include experts who can enhance the project proposal, community influencers who can help amplify the project’s visibility, or potential backers who might contribute substantial funding.
-  * **Incentive for Contribution**: By distributing these tokens, Sourcers can directly reward contributors for adding value to the project, whether by enhancing the proposal's quality, providing critical reviews, or assisting in outreach efforts to attract more funding.
-* **Purchasing Mechanism**: Following the pre-mint phase, the remaining tokens are made available for purchase through a bonding curve. This pricing mechanism adjusts the cost of tokens based on their buying and selling activity, ensuring a transparent and fair distribution process for all potential investors.
+At the start of each project, .1% of the total token supply, or 100 tokens, is pre-minted and granted to the project creator, known as the Sourcer. This initial allocation is strategic.
 
-**Implications for Project Funding and Sourcer Incentives**
+The pre-minted tokens are primarily used by the Sourcer to engage and incentivize collaborators who can contribute to the project. This might include experts who can enhance the project proposal, community influencers who can help amplify the project’s visibility, or potential backers who might contribute substantial funding. By distributing these tokens, Sourcers can directly reward contributors for adding value to the project, whether by enhancing the proposal's quality, providing critical reviews, or assisting in outreach efforts to attract more funding.
 
-* **Project Viability**: The distribution of pre-minted tokens helps to establish a strong initial network around the project, boosting its likelihood of success.
-* **Aligned Interests**: Sourcers and contributors are incentivized to actively support the project as their token value is tied to its success.
-* **Collaborator Engagement**: This model promotes community involvement, with tokenholders becoming key stakeholders in the project’s outcome.
+Following the pre-mint phase, the remaining tokens are made available for purchase through a bonding curve. This pricing mechanism adjusts the cost of tokens based on their buying and selling activity, ensuring a transparent and fair distribution process for all potential investors.
 
 ### **Bonding Curve Dynamics**
 
 **Detailed Pricing Mechanism**&#x20;
 
-Catalyst employs a linear bonding curve to determine the price of Seed tokens as their supply increases. The curve starts at a base price corresponding to the pre-minted amount for the Sourcer and ascends linearly, indicating a direct proportionality between the number of tokens sold and the price per token. The price function `P(s) = m * (s - p)` calculates the cost for any given token 's', where 'm' represents the slope of the curve, 's' the current supply, and 'p' the pre-minted amount. Each new purchase or sale moves the price point along this curve.
-
-Contrary to traditional bonding curves, Catalyst imposes a unique model for token resale. Should a user decide to sell their Seed tokens, they can only withdraw the initial amount of their contribution, rather than selling at the prevailing market price. This mechanism is designed to ensure alignment between funders' interests and the project's success, encouraging funding rather than trading.
+Catalyst employs a linear bonding curve to determine the price of Seed tokens as their supply increases. The curve starts at a base price of 0, corresponding to the pre-minted amount for the Sourcer and ascends linearly, indicating a direct proportionality between the number of tokens sold and the price per token. The price function `P(s) = m * (s - p)` calculates the cost for any given token 's', where 'm' represents the slope of the curve, 's' the current supply, and 'p' the pre-minted amount. Each new purchase or sale moves the price point along this curve.
 
 <figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption><p>Illustrative Bonding Curve: This graph represents the price-supply relationship of Seed tokens on Catalyst. The curve starts with a pre-minted amount 'p' at the initial price point. It then linearly increases, reflecting the price 'P(s)' for each subsequent Seed token 's'. The shaded areas represent the funding stages: 'Under' indicates the amount below the funding goal, 'Over' indicates funding beyond the goal, and 'F' marks the funding goal in ETH. The slope 'm' indicates the rate at which the price increases with the supply.</p></figcaption></figure>
 
@@ -56,16 +49,26 @@ The Seed token contracts enforce specific transfer restrictions to maintain a un
 
 These limitations are lifted once the project moves beyond the initial funding stage, transitioning Seed tokens into a new market structure. At this stage, the tokens may become transferable under certain conditions, which will be outlined in subsequent stages of the project's lifecycle. It's important for users to be fully aware of these liquidity conditions to understand how and when their tokens can be transferred, reflecting the project's transition from fundraising to further development or success realization stages.
 
+**Exiting Seed Tokens & Withdrawing Contributions**
 
+Catalyst has a unique resale model that deviates from traditional bonding curves. When participants choose to sell their Seed tokens, they are eligible to receive only the initial ETH amount they contributed. This approach is deliberately designed to realign the participant's focus from trading to supporting the project's success. By restricting the sale price to the original contribution amount (before a project reaches its funding goal), Catalyst ensures that the primary incentive for purchasing Seed tokens is to fund the project, rather than to engage in trading.
 
-1. **Exit and Refund Mechanisms**:
-   * **Selling Back Tokens**: Go into detail about the conditions under which tokens can be sold back to the platform and the financial return users can expect, emphasizing the designed protection against speculative behavior.
-   * **Refund Processes**: Clarify the process for obtaining refunds, particularly in scenarios where a project expires or fails to meet its funding goal.
-2. **Integration with Broader Ecosystem**:
-   * **Interactions with Other Platform Components**: Describe how Seed tokens interact with other elements of the Catalyst ecosystem, such as the project creation phase, funding mechanisms, and potential integration with other decentralized finance (DeFi) protocols.
-   * **Legal and Regulatory Considerations**: Briefly touch on any legal or regulatory considerations relevant to the issuance and management of these tokens, particularly if they might affect token holders.
-3. **FAQs and Troubleshooting**:
-   * **Common Issues and Questions**: Provide a brief FAQ section addressing common questions and potential issues users might face with Seed tokens.
-4. **Glossary of Terms**: Include a glossary for key terms used in the documentation to help both crypto/web3-savvy users and newcomers understand the specialized vocabulary.
+**Refund Processes**
 
-\
+In instances where a project does not reach its funding goal by the specified deadline (referred to as 'Expired'), Seed token holders may claim a refund. The refund amount is equivalent to the initial contribution minus fees incurred during the purchase. The process for claiming refunds is straightforward and is initiated directly on the platform, providing a clear exit strategy for funders in the case of expired projects. This mechanism provides a safety net for participants, allowing them to recover their funds if projects fail to reach their funding goal by the funding deadline. It is important for users to understand these processes thoroughly to manage their participation in the platform effectively.
+
+**Fee Structure and Rationale**
+
+The Catalyst platform incorporates a fee system in its Seed token economy, serving several critical functions:
+
+1. **Fee Implementation**:
+   * Upon purchasing Seed tokens, a 5% fee is deducted from the contributed ETH.&#x20;
+   * When Seed tokens are sold back to the platform, a 5% exit fee is similarly applied.
+2. **Fee Allocation**:
+   * If a project is successfully funded, and terms of funding are successfully negotiated, the sourcer claims all project fees.&#x20;
+   * If a project does not reach funding goal before funding deadline&#x20;
+3. **Rationale**:
+   * **Sustainable Platform Growth**: Fees are essential for the ongoing development and maintenance of the Catalyst platform. They ensure that the ecosystem has a steady stream of funding to support operations, continuous improvement, and the introduction of new features.
+   * **Community Governance and Incentives**: By allocating a portion of fees for governance, the platform incentivizes active community participation. It creates a pool of resources that can be deployed to support projects and initiatives that align with the community's interests and the platform's long-term objectives.
+   * **Risk Mitigation**: The exit fee discourages speculative behavior by ensuring that there is a cost associated with entering and exiting funding positions. This creates a more stable environment for project funding and encourages long-term investment in the project’s success rather than short-term trading.
+   * **Resource Allocation**: Fees collected can be redistributed in ways that add value back to the ecosystem, such as providing emergency liquidity in times of high market volatility or supporting projects that may have significant scientific but not immediate commercial value.

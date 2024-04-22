@@ -70,3 +70,7 @@ Once you have loaded your wallet with ETH, you can purchase Seed tokens. If you 
 3. Confirm the transaction by signing all prompted transactions
 
 ### Step 3: Remove contribution from a project (optional)
+
+
+
+### Step 4: Claim refunds (optional)
