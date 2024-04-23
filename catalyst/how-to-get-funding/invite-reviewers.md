@@ -22,7 +22,7 @@ Inviting a reviewer to your project on Catalyst
 
 Every Catalyst user has a wallet address (starting with 0x). This will be the address you use to identify and invite them. If the user is not yet a Catalyst user, they will first have to [create an account](https://docs.molecule.to/documentation/catalyst/getting-started-create-an-account). Assuming they are already a user, have them send you their wallet address by clicking the top right button, followed by the double squares next to their wallet address.&#x20;
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Step 2: Navigate to the 'Invite' tab
 
