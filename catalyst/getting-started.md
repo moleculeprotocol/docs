@@ -1,18 +1,29 @@
 ---
-description: Catalyst enables users to login with social or web3 accounts.
+description: >-
+  To access Catalyst, click the 'Connect Wallet' button at the top-right of the
+  homepage. Choose from traditional logins like email or Google, or connect a
+  web3 wallet.
 ---
 
-# 💁‍♀️ Getting Started: Create an Account
+# 💁‍♀️ Getting Started
+
+### **Introduction**
+
+Each account created on Catalyst automatically generates a wallet address that is capable of holding and managing tokens. This means that your account serves a dual function: it verifies your identity and provides you with a blockchain wallet for token transactions.&#x20;
+
+Accounts on Catalyst are non-custodial, meaning you have full control over your wallet and its security. As a core tenet of web3, the responsibility for safeguarding access to your account rests solely with users; Molecule cannot recover lost passwords or access your wallet, highlighting the importance of secure password management.
+
+### **Login & Creating an Account**
 
 {% embed url="https://drive.google.com/file/d/10r_55jx0PGT56ReMBbE8AYwmrRmrNsDy/view" %}
 Creating an account on Catalyst
 {% endembed %}
 
-### **Step 1: Go to** [**Catalyst**](https://app.catalyst.molecule.xyz/)
+#### **Step 1: Go to** [**Catalyst**](https://app.catalyst.molecule.xyz/)
 
-### Step 2: Click the 'Connect Wallet' button (top-right corner)
+#### Step 2: Click the 'Connect Wallet' button (top-right corner)
 
-### Step 3: Select your login of choice
+#### Step 3: Select your login of choice
 
 * **If you don't have an Ethereum wallet:** You can login with your email address or social login to create a Privy embedded wallet. However, this wallet will be unique to Catalyst, and you will not be able to use it across other applications. If you are interested in creating an externally-owned account, that you can use with other applications, learn more [here](https://docs.molecule.to/documentation/ip-tokenization-guide/wallets).
 * **If you already have an Ethereum wallet:** Click 'Continue with a wallet' and connect your wallet there.
@@ -21,12 +32,12 @@ _Note: Catalyst is still in closed beta. If you are participating in the early-a
 
 <figure><img src="../.gitbook/assets/Screenshot 2024-04-11 at 2.00.13 PM.png" alt=""><figcaption><p>Privy authentication modal</p></figcaption></figure>
 
-### Step 4: Edit your profile
+#### Step 4: Edit your profile
 
 * If you are logged in, click the top-right button showing your wallet address (0x...) to open the dropdown menu
 * Click **Profile**
   * This is your profile page, where you can see the projects you own tokens in (**My Portfolio**), and projects you have created (**My Projects**)
   * At the top of the screen, you can see how many projects you have created **(Projects Launched**), joined (**Projects Joined**), and your total contributions to all projects (**Total Contributions**).
 * In the top-right hand corner, click the button called **Edit Profile**
-  * Set a username, which will be used across Catalyst
+  * Set a username
   * Connect your email (if you haven't already)

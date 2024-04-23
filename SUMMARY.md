@@ -31,10 +31,10 @@
 ## Catalyst
 
 * [⭐ Catalyst Introduction](catalyst/catalyst-introduction/README.md)
-  * [🤔 Why Catalyst? \[WIP\]](catalyst/catalyst-introduction/why-catalyst-wip.md)
-  * [🌱 What are Seed tokens? \[WIP\]](catalyst/catalyst-introduction/what-are-seed-tokens-wip.md)
-  * [♻️ What is the lifecycle of a project? \[WIP\]](catalyst/catalyst-introduction/what-is-the-lifecycle-of-a-project-wip.md)
-* [💁‍♀️ Getting Started: Create an Account \[WIP\]](catalyst/getting-started-create-an-account-wip.md)
+  * [🤔 Why Catalyst?](catalyst/catalyst-introduction/why-catalyst.md)
+  * [🌱 What are Seed tokens?](catalyst/catalyst-introduction/what-are-seed-tokens.md)
+  * [♻️ What is the lifecycle of a project?](catalyst/catalyst-introduction/what-is-the-lifecycle-of-a-project.md)
+* [💁‍♀️ Getting Started](catalyst/getting-started.md)
 * [🧑‍🔬 How to get funding? \[WIP\]](catalyst/how-to-get-funding-wip/README.md)
   * [📂 Prepare project files and materials \[WIP\]](catalyst/how-to-get-funding-wip/prepare-project-files-and-materials-wip.md)
   * [▶️ Submit a project proposal \[WIP\]](catalyst/how-to-get-funding-wip/submit-a-project-proposal-wip.md)
