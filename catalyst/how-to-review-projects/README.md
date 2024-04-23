@@ -4,7 +4,7 @@ description: >-
   product.
 ---
 
-# 🕵️‍♂️ How to review projects? \[WIP]
+# 🧐 How to review projects? 🚧
 
 ### Am I a good fit to review projects via Catalyst?
 

@@ -1,8 +1,8 @@
 ---
-description: A deep-dive into the mechanics of Seed tokens
+description: A deep-dive into the economic and technical aspects of Seed tokens.
 ---
 
-# How do Seed tokens work technically & economically? \[WIP]
+# How do Seed tokens work?
 
 ### Token Specification
 

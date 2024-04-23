@@ -1,4 +1,4 @@
-# ❔ FAQs \[WIP]
+# ❔ FAQs 🚧
 
 What is the difference between a sponsor and a person being part of the execution team? \
 What separates them in terms of motivation and responsibilities what happens when people don't execute on the governance proposals? \
@@ -21,6 +21,18 @@ How are reviewers vetted? How is their reputation measured?
 "And I had a question so there's the deadline for the funding but is this set by the person that brings the project like the researcher is it like there's an Okay."\
 \
 
+
+_How many tokens should I send to each reviewer?_
+
+_Do I have to buy tokens in a project I created to send them to reviewers?_
+
+_Can other users invite reviewers to my project or just me?_
+
+_How do reviewers get vetted on platform?_
+
+_How should reviewers be selected?_
+
+_Can reviewers sell their tokens if I send it to them?_
 
 * Who can launch a Project?
 * What do you need to launch a project?

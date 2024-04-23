@@ -4,7 +4,7 @@ description: >-
   project's success.
 ---
 
-# 👩‍💻 Inviting Reviewers \[WIP]
+# 👩‍💻 Invite Reviewers
 
 ### Why would I invite others to my project?
 
@@ -24,27 +24,11 @@ Every Catalyst user has a wallet address (starting with 0x). This will be the ad
 
 <figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
-### Step 2: Navigate to the Invite tab of your project
+### Step 2: Navigate to the 'Invite' tab
 
 ### Step 3: Input the recipient's wallet address and number of tokens
 
 1. Paste the address of the recipient retrieved in Step 1 into the 'Recipient' input field.&#x20;
 2. In the 'Amount' input field, put in the number of tokens you would like to send to the reviewer.&#x20;
 3. Click Send and confirm the transaction
-
-### FAQs
-
-_How many tokens should I send to each reviewer?_
-
-
-
-_Do I have to buy tokens in a project I created to send them to reviewers?_
-
-_Can other users invite reviewers to my project or just me?_
-
-_How do reviewers get vetted on platform?_
-
-_How should reviewers be selected?_
-
-_Can reviewers sell their tokens if I send it to them?_
 
