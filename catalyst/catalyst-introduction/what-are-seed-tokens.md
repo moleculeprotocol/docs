@@ -14,7 +14,7 @@ Seed tokens are cryptographic tokens generated on [Base](https://www.base.org/),
 
 * **Grant Access to Discussions**: Seed tokens provide exclusive access to private chats and forums dedicated to specific projects.
 * **Enable Governance**: Seed token holders can influence project decisions, including the terms of funding and selecting the project execution team.
-* **Reserve IP Tokens**: If the project is successfully tokenized, Seed token holders can swap their IP Seed tokens for [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts), which grant direct IP governance rights.
+* **Reserve IP Tokens**: If the project is successfully tokenized, Seed token holders can swap their Seed tokens for [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts), which grant direct IP governance rights.
 * **Signal Market Interest**: The trading and value of Seed tokens reflect real-time market interest and viability of projects.
 * **Facilitate Liquidity and Trading**: Seed tokens are always exchangeable, providing continuous liquidity that enables backers to reallocate their contributions.
 
@@ -36,7 +36,7 @@ For more info on Seed token pricing dynamics, please see [this section](https://
 
 ### As a reviewer, why are seed tokens useful to me?
 
-* **Earn Rewards**: Receive tokens as compensation for reviewing and contributing to project improvements, which can be held or traded.
+* **Earn Rewards**: Receive tokens as compensation for reviewing and contributing to project improvements, which can be held or traded. If the project is successfully tokenized, you receive [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts) in exchange for Seed Tokens.
 * **Influence Projects**: Use tokens to exercise governance power, influencing project direction and implementation.
 * **Access Cutting-Edge Research**: Engage directly with the latest research and maintain expertise at the forefront of your field.
 * **Expand Professional Network**: Collaborate with leading scientists and biotech industry experts, enhancing your professional standing and influence.
@@ -46,5 +46,6 @@ For more info on Seed token pricing dynamics, please see [this section](https://
 * **Support Breakthrough Research**: Directly fund research projects in areas you are passionate about and see your contributions lead to scientific advancements.
 * **Exclusive Insights**: Gain early and exclusive access to research outcomes and discussions, staying informed about the projects you support.
 * **Governance Rights**: Participate in the governance of projects, including decisions on fund allocation and project direction.
+* **Reserve IP Tokens**: If the project is successfully tokenized, you receive [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts).
 * **Liquidity**: Trade your tokens on the market, providing flexibility to manage your project portfolio.
 * **Market Signals**: Benefit from market signals that indicate the popularity and potential success of funded projects.
