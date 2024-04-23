@@ -2,7 +2,7 @@
 description: What Seed tokens are, how they work, and how they derive value.
 ---
 
-# 🌱 What are Seed tokens? \[WIP]
+# 🌱 What are Seed tokens?
 
 Seed tokens are the core of Catalyst and the substrate that drives the success of projects. These tokens have several utility functions that are both general to all users of Catalyst and specific to individual user types.
 
@@ -13,7 +13,8 @@ Seed tokens are cryptographic tokens generated on [Base](https://www.base.org/),
 ### What do seed tokens do?
 
 * **Grant Access to Discussions**: Seed tokens provide exclusive access to private chats and forums dedicated to specific projects.
-* **Enable Governance**: Token holders can influence project decisions, including the terms of funding and selecting the project execution team.
+* **Enable Governance**: Seed token holders can influence project decisions, including the terms of funding and selecting the project execution team.
+* **Reserve IP Tokens**: If the project is successfully tokenized, Seed token holders can swap their IP Seed tokens for [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts), which grant direct IP governance rights.
 * **Signal Market Interest**: The trading and value of Seed tokens reflect real-time market interest and viability of projects.
 * **Facilitate Liquidity and Trading**: Seed tokens are always exchangeable, providing continuous liquidity that enables backers to reallocate their contributions.
 
