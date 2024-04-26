@@ -5,7 +5,7 @@ description: >-
   ETH if you don't have any.
 ---
 
-# Sending ETH to your catalyst wallet \[WIP]
+# How do I send ETH to my Catalyst wallet?
 
 ### Options for sending ETH to Catalyst
 
@@ -22,9 +22,13 @@ description: >-
 
 **Here's how to send ETH to your Catalyst wallet:**
 
+{% embed url="https://www.youtube.com/watch?t=21s&v=x-r4P4-iOMw" %}
+A video on how to send ETH from Coinbase to Base ETH
+{% endembed %}
+
 1. Copy your Catalyst wallet address by clicking the top right button,&#x20;
 2. Click the double-squares next to the wallet address. This will copy the address to your clipboard.&#x20;
-3. Once copied, send ETH to this wallet address when prompted to do so by your Base wallet or when withdrawing from an exchange.
+3. Once copied, send ETH to this wallet address when prompted to do so by your Base wallet or when withdrawing from an exchange like Coinbase.
 
 Note**:** Catalyst operates on the Base. Don't send your funds to Ethereum mainnet. If you do have ETH on a wallet on Ethereum mainnet, see _Send ETH from Ethereum Mainnet to Base_ below.
 
