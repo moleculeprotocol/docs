@@ -22,17 +22,21 @@ description: >-
 
 **Here's how to send ETH to your Catalyst wallet:**
 
+<figure><img src="../../.gitbook/assets/Screenshot 2024-04-12 at 4.01.40 PM (1).png" alt=""><figcaption><p>The button to copy your Catalyst wallet address</p></figcaption></figure>
+
+Step 1: Copy your Catalyst wallet address by clicking the top right button
+
+Step 2: Click the double-squares next to the wallet address. This will copy the address to your clipboard.&#x20;
+
 {% embed url="https://www.youtube.com/watch?t=21s&v=x-r4P4-iOMw" %}
 A video on how to send ETH from Coinbase to Base ETH
 {% endembed %}
 
-1. Copy your Catalyst wallet address by clicking the top right button,&#x20;
-2. Click the double-squares next to the wallet address. This will copy the address to your clipboard.&#x20;
-3. Once copied, send ETH to this wallet address when prompted to do so by your Base wallet or when withdrawing from an exchange like Coinbase.
+Step 3: Once copied, send ETH to this wallet address when prompted to do so by your Base wallet or when withdrawing from an exchange like Coinbase.
 
-Note**:** Catalyst operates on the Base. Don't send your funds to Ethereum mainnet. If you do have ETH on a wallet on Ethereum mainnet, see _Send ETH from Ethereum Mainnet to Base_ below.
-
-<figure><img src="../../.gitbook/assets/Screenshot 2024-04-12 at 4.01.40 PM (1).png" alt=""><figcaption><p>The button to copy your Catalyst wallet address</p></figcaption></figure>
+{% hint style="info" %}
+Catalyst operates on the Base. Don't send your funds to Ethereum mainnet. If you do have ETH on a wallet on Ethereum mainnet, see the section: [_Send ETH from Ethereum Mainnet to Base_](https://docs.molecule.to/documentation/catalyst/how-to-fund-projects/how-do-i-send-eth-to-my-catalyst-wallet#send-eth-from-an-existing-wallet-on-ethereum-mainnet-to-base).
+{% endhint %}
 
 ### Send ETH from an existing wallet on Ethereum Mainnet to Base
 
