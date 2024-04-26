@@ -29,7 +29,7 @@ Step 1: Copy your Catalyst wallet address by clicking the top right button
 Step 2: Click the double-squares next to the wallet address. This will copy the address to your clipboard.&#x20;
 
 {% embed url="https://www.youtube.com/watch?t=21s&v=x-r4P4-iOMw" %}
-A video on how to send ETH from Coinbase to Base ETH
+A video on how to send ETH from Coinbase to your Catalyst wallet. Make sure to paste the address from Step 1&2 as the "Send ETH to" wallet.&#x20;
 {% endembed %}
 
 Step 3: Once copied, send ETH to this wallet address when prompted to do so by your Base wallet or when withdrawing from an exchange like Coinbase.
