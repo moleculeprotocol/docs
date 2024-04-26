@@ -4,7 +4,7 @@ description: What Seed tokens are, how they work, and how they derive value.
 
 # 🌱 What are Seed tokens?
 
-Seed tokens are the core of Catalyst and the substrate that drives the success of projects. These tokens have several utility functions that are both general to all users of Catalyst and specific to individual user types.
+Seed tokens are digital assets that represent early contributions to research projects, providing both funding for the project and exclusive access to discussions with the researchers.
 
 ### **What are Seed tokens?**
 
