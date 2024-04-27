@@ -49,4 +49,3 @@
 * [🧐 How to review projects? 🚧](catalyst/how-to-review-projects/README.md)
   * [How do I leave a review? 🚧](catalyst/how-to-review-projects/how-do-i-leave-a-review.md)
   * [What should I include in my review?  🚧](catalyst/how-to-review-projects/what-should-i-include-in-my-review.md)
-* [❔ FAQs 🚧](catalyst/faqs.md)
