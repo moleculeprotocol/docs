@@ -46,6 +46,4 @@
   * [How do I send ETH to my Catalyst wallet?](catalyst/how-to-fund-projects/how-do-i-send-eth-to-my-catalyst-wallet.md)
   * [How do Seed tokens work?](catalyst/how-to-fund-projects/how-do-seed-tokens-work.md)
   * [How does the numeric notation work?](catalyst/how-to-fund-projects/how-does-the-numeric-notation-work.md)
-* [🧐 How to review projects? 🚧](catalyst/how-to-review-projects/README.md)
-  * [How do I leave a review? 🚧](catalyst/how-to-review-projects/how-do-i-leave-a-review.md)
-  * [What should I include in my review?  🚧](catalyst/how-to-review-projects/what-should-i-include-in-my-review.md)
+* [🧐 How to review projects?](catalyst/how-to-review-projects.md)

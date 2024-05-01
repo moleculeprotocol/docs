@@ -4,11 +4,11 @@ description: What Seed tokens are, how they work, and how they derive value.
 
 # 🌱 What are Seed tokens?
 
-Seed tokens are digital assets that represent early contributions to research projects, providing both funding for the project and exclusive access to discussions with the researchers.
+_Seed tokens are digital assets that represent early contributions to research projects, providing both funding for the project and exclusive access to discussions with project contributors._
 
 ### **What are Seed tokens?**
 
-Seed tokens are cryptographic tokens generated on [Base](https://www.base.org/), an Ethereum Layer 2 blockchain. Each Seed token instance is uniquely associated with a project on Catalyst. Project creators, or 'Sourcers', initiate a new instance of Seed tokens when they launch a fundraising campaign.
+Seed tokens are cryptographic tokens generated on [Base](https://www.base.org/), an Ethereum Layer 2 blockchain. Each Seed token instance is unique to each project on Catalyst. Project creators, or 'Sourcers', initiate a new instance of Seed tokens when they launch a fundraising campaign.
 
 ### What do seed tokens do?
 
