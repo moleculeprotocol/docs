@@ -8,7 +8,7 @@ description: >-
 
 ### Am I a good fit to review projects via Catalyst?
 
-Catalyst projects are reviewed by experts in a particular field. Here are a few criteria to consider before signing up to review projects on Catalyst:
+Projects can be reviewed by experts in a particular field. Here are a few criteria to consider before signing up to review projects on Catalyst:
 
 * If you consider yourself an expert in a particular field relevant to projects on Catalyst
 * If you are comfortable being compensated in cryptocurrency-based tokens
