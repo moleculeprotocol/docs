@@ -33,13 +33,3 @@ This likely means you don't hold at least one Seed token and need to purchase on
 #### Step 5: Enter a title, write your review, and click Submit
 
 <figure><img src="../.gitbook/assets/Screenshot 2024-05-01 at 5.23.35 PM.png" alt=""><figcaption></figcaption></figure>
-
-### What should I include in my review?
-
-What you include in your review on Catalyst should depend on your area of expertise. For example, if you are a **scientist**, note the scientific risks, how they can be addressed, and highlight key missing details in the planned experiments.&#x20;
-
-* Different types of risk
-* Stay in your zone of competency&#x20;
-* Try and back up any claims you make with data or publications
-* Link / cite relevant references
-* Be constructive - remember the Seed tokens only become worth something if the project is funded and tokenized - try and make your feedback not constructively critical
