@@ -6,15 +6,6 @@ description: >-
 
 # 🧐 How to review projects?
 
-### Am I a good fit to review projects via Catalyst?
-
-Projects can be reviewed by experts in a particular field. Here are a few criteria to consider before signing up to review projects on Catalyst:
-
-* If you consider yourself an expert in a particular field relevant to projects on Catalyst
-* If you are comfortable being compensated in cryptocurrency-based tokens
-* If you want to make connections with other ecosystem participants
-* If you want to participate in a more open and collaborative funding mechanism for research
-
 ### How to leave a review?
 
 **Step 1: Navigate to the project you wish to review**
