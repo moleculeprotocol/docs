@@ -4,7 +4,13 @@ description: >-
   contributing ETH to projects.
 ---
 
-# 💲 How to fund projects? \[WIP]
+# 💲 How to fund projects?
+
+### How to fund projects
+
+1. Get on the Beta whitelist by filling out [this form](https://moleculeprotocol.typeform.com/to/ccjED8E2#source=Catalyst%20Docs).
+2. [Load your Catalyst wallet with ETH](./#load-your-catalyst-wallet-with-eth)
+3. [Contribute ETH to a project](./#contribute-eth-to-a-project)
 
 ### Am I a good fit to fund projects via Catalyst?
 
