@@ -8,7 +8,13 @@ _Seed tokens are digital assets that represent early contributions to research p
 
 ### **What are Seed tokens?**
 
-Seed tokens are cryptographic tokens generated on [Base](https://www.base.org/), an Ethereum Layer 2 blockchain. Each Seed token instance is unique to each project on Catalyst. Project creators, or 'Sourcers', initiate a new instance of Seed tokens when they launch a fundraising campaign.
+Seed tokens are cryptographic tokens generated on [Base](https://www.base.org/), an Ethereum Layer 2 blockchain. Each Seed token instance is created for each project on Catalyst. Project creators, or 'Sourcers', initiate a new instance of Seed tokens when they launch a fundraising campaign.
+
+{% hint style="info" %}
+_Explain like I'm five_
+
+Imagine a research project is like going on an airplane trip. Seed tokens are like boarding passes that reserve your seat. Before the trip can start, a few items are needed: a team to do the research (the plane's crew), a project lead (the captain), funding (jet fuel), and a place to work (like the airplane itself). When these elements are ready, Seed tokens ensure your place in the project’s journey towards its research objectives.
+{% endhint %}
 
 ### What do seed tokens do?
 
