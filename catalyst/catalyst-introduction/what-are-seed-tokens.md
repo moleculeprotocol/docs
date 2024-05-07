@@ -13,7 +13,7 @@ Seed tokens are cryptographic tokens generated on [Base](https://www.base.org/),
 {% hint style="info" %}
 _Explain like I'm five_
 
-Imagine a research project is like going on an airplane trip. Seed tokens are like boarding passes that reserve your seat. Before the trip can start, a few items are needed: a team to do the research (the plane's crew), a project lead (the captain), funding (jet fuel), and a place to work (like the airplane itself). When these elements are ready, Seed tokens ensure your place in the project’s journey towards its research objectives.
+Imagine a research project is like going on an airplane trip. Seed tokens are like boarding passes that reserve your seat. Before the trip can start, a few items are needed: a team to do the research (the plane's crew), a project lead (the captain), funding (jet fuel), and a place to work (like the airplane itself). When these elements are ready, Seed tokens ensure you have an actual seat ([IP Token](../../ip-tokens/what-are-ipts.md)) in the project’s journey towards its research objectives.
 {% endhint %}
 
 ### What do seed tokens do?
