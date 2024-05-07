@@ -45,8 +45,12 @@ If you meet your funding goal, consider converting the ETH you've raised to USDC
 
 **Step 6: Finalize Research Agreement and Funding Terms**&#x20;
 
-Once funding goal is reached, draft a research agreement using the templates provided by DeSci.Codes or your research institution. Share it in the project forum for feedback and approval from funders. This agreement needs to be finalized before the three-month deadline.
+Once funding goal is reached, draft a research agreement using the templates provided by DeSci.Codes or your research institution. Share it in the project forum for feedback and approval from funders. The Molecule team can help you negotiate the agreement with your research institution, need be. This agreement needs to be finalized before the three-month deadline.&#x20;
 
 **Step 7: Mint IP-NFT and Distribute IP Tokens and Funding**&#x20;
 
 After the agreement is in place, mint an IP-NFT to tokenize the agreement and distribute IP Tokens that represent IP governance rights to funders, team members, and your organization. Finally, convert the raised funds into fiat currency and transfer them to your institution.
+
+**Step 8: Claim Rewards**
+
+Once a project is successfully funded, tokenized, and IP Tokens have been distributed, the sourcer can claim the project fees. These fees serve as a reward for successfully bringing a funded project to fruition on the platform.
