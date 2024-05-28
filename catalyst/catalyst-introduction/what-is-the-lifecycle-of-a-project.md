@@ -8,10 +8,10 @@ description: >-
 # ♻️ What is the lifecycle of a project?
 
 1. **Project Creation**:
-   * **Onchain**: A project is initiated on the Catalyst platform with the creation of a project proposal and a new instance of Seed tokens.
+   * **Onchain**: A project is initiated on the Catalyst platform with the creation of a project proposal..
    * **Offchain**: Researchers or sourcers prepare the necessary documentation and project plans needed to launch and present their research idea to potential backers.
 2. **Open**:
-   * **Onchain**:  The project is active for funding. Seed tokens can be purchased by backers via a bonding curve, directly contributing to the project's funding goal.
+   * **Onchain**:  The project is active for funding. IP Tokens can be purchased by backers via a bonding curve, directly contributing to the project's funding goal.
    * **Offchain**: Simultaneously, project initiators engage with the community, promote their project, and seek support from potential funders and collaborators.
 3. **Funded (Negotiating)**:
    * **On-Chain**: The funding goal is reached before the deadline. The project transitions to the Funded state, where funds are held in escrow until the project is successfully negotiated. With the funders' permission, the sourcer may claim the funds and swap them to stable coins (such as USDC) to reduce the impact of ETH volatility.

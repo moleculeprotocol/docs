@@ -38,7 +38,7 @@ If you need help performing any of these, please see the page: [_Sending ETH to 
 Once you have loaded your Catalyst wallet with ETH, you can contribute to a project via the following steps:&#x20;
 
 1. Find a project you would like to contribute to and click _Fund_
-2. Click the _Buy Seed Tokens_ button
+2. Contribute ETH to Project
 3. Confirm the transaction by signing all prompted transactions
 
 ### Remove contribution from a project (optional)

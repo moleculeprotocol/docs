@@ -32,7 +32,6 @@
 
 * [⭐ Catalyst Introduction](catalyst/catalyst-introduction/README.md)
   * [🤔 Why Catalyst?](catalyst/catalyst-introduction/why-catalyst.md)
-  * [🌱 What are Seed tokens?](catalyst/catalyst-introduction/what-are-seed-tokens.md)
   * [♻️ What is the lifecycle of a project?](catalyst/catalyst-introduction/what-is-the-lifecycle-of-a-project.md)
 * [💁‍♀️ Getting Started](catalyst/getting-started.md)
 * [🧑‍🔬 How to get funding?](catalyst/how-to-get-funding/README.md)
@@ -47,3 +46,4 @@
   * [How do Seed tokens work?](catalyst/how-to-fund-projects/how-do-seed-tokens-work.md)
   * [How does the numeric notation work?](catalyst/how-to-fund-projects/how-does-the-numeric-notation-work.md)
 * [🧐 How to review projects?](catalyst/how-to-review-projects.md)
+* [🌱 What are Seed tokens?](catalyst/what-are-seed-tokens.md)
