@@ -14,8 +14,6 @@ Catalyst aims to bridge the funding gap in early-stage biotech research, address
 * **Experts** leverage their unique skill sets to guide research with translational potential.
 * **Funders** find promising projects, getting front-row insights and connecting directly with researchers.
 
-<figure><img src="https://assets-global.website-files.com/5fcf3f3d3283226f94ef2d03/661547112898021c44e8e6ee_Funding%20Projects%20-%20Large%20Text%20(2).jpg" alt=""><figcaption><p>Catalyst Diagram</p></figcaption></figure>
-
 ### How does Catalyst work?
 
 1. Researchers publish research projects onto the platform, seeking expertise and funding.
