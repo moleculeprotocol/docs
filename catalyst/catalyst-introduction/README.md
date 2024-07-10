@@ -2,23 +2,11 @@
 
 ### What is Catalyst?
 
-Catalyst accelerates translational research by bringing researchers, experts, and funders onto a single platform to streamline discovery, refinement, and funding of early-stage research ideas.
+\
+Catalyst is an integral part of the Molecule ecosystem, serving as a decentralized platform that empowers innovators and researchers to bring their projects to life. Through Catalyst, projects can gain the necessary access to funding while engaging with a community of patrons of science backers who believe in their vision.
 
-### The Challenge
+### Purpose:
 
-Catalyst aims to bridge the funding gap in early-stage biotech research, addressing the mismatch between research impact and funding, and navigating the challenges of translating academic research to market-ready solutions.
-
-### Key Benefits
-
-* **Researchers & Project Sourcers** secure funding for research ideas and receive valuable advice from biotech experts.
-* **Experts** leverage their unique skill sets to guide research with translational potential.
-* **Funders** find promising projects, getting front-row insights and connecting directly with researchers.
-
-### How does Catalyst work?
-
-1. Researchers publish research projects onto the platform, seeking expertise and funding.
-2. Expert reviewers collaborate with the Researchers to develop the research idea into the best possible research and development program, receiving compensation for their contributions.
-3. Funders perform due diligence and contribute funds to promising projects.
-4. When the project reaches the funding goal, the parties finalize a research agreement. Molecule is available to help with negotiations.
-5. Once the parties accept the research agreement, funders get intellectual property rights in the form of intellectual property tokens (IPTs) and researchers receive funds for their project.
-6. If the project does not meet the fundraising goal or the research agreement negotiation fails, the protocol refunds funders' contributions.​​
+1. **Facilitate Funding:** Catalyst aims to democratize access to funding for scientific and technological projects, reducing barriers and fostering innovation.
+2. **Community Engagement:** It enables researchers and innovators to connect with a broader community, creating a collaborative environment that supports project success.
+3. **Transparency and Accountability:** By leveraging blockchain technology, Catalyst ensures transparent and accountable management of funds, fostering trust among all participants.
