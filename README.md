@@ -1,19 +1,16 @@
 # 🔬 What is Molecule?
 
-**1.** **Molecule the protocol:** Molecule created a hybrid legal-smart contract primitive called an IP-NFT. The IP-NFT protocol brings rights to IP and R\&D data on-chain, unifying the legal rights, data access, and economics around research projects into cryptographic tokens on Ethereum.
+Our mission is to reduce human suffering by advancing scientific research. We aim to support translational science and transform discoveries into cures through the tokenization of intellectual property.\
 
-{% embed url="https://molecule.to/blog/ip-nfts-for-researchers-a-new-biomedical-funding-paradigm" %}
-Dig deeper into the new funding paradigm called IP-NFTs&#x20;
-{% endembed %}
 
-**2. Molecule the marketplace:** On top of this new primitive, Molecule is building a marketplace that enables matchmaking between researchers and funders for translational research projects. Researchers and funders meet on Molecule Discovery to propose and evaluate research proposals, negotiate terms, and come to agreements.&#x20;
+We envision a future where the public directly stewards the best scientific research to market. In this future, the best translational science is funded and developed by communities with aligned incentives. Researchers can spend more time conducting research and less time applying for funding. We aspire to create a global, interoperable intellectual property system that enables fast and fair collaboration.\
+
+
+Molecule focuses on using emerging technologies in biotechnology and translational research. We have created a decentralized platform, Catalyst, dedicated to revolutionizing the access to funding and the development of scientific research. By leveraging blockchain technology, Molecule facilitates the tokenization of intellectual property (IP), transforming them into liquid, tradable assets. This new approach empowers researchers, patients, and investors to collaboratively fund and govern scientific innovation.
+
+
 
 {% embed url="https://app.catalyst.molecule.xyz" %}
 Molecule Catalyst
 {% endembed %}
 
-**3. Molecule the BioDAO launchpad:** To foster demand and supply for the marketplace, Molecule builds and incubates bioDAOs, a new class of decentralized biotech IP and R\&D organizations, through an incubator/accelerator program called [bio.xyz](http://bio.xyz/). BioDAO communities consist of patients, researchers, and enthusiasts coming together to fund research in specific therapeutic areas.&#x20;
-
-{% embed url="http://bio.xyz/" %}
-Learn more about the bioDAO launchpad at bio.xyz
-{% endembed %}

@@ -1,13 +1,18 @@
 # 💡 Why Molecule?
 
-**Disrupting early-stage bio-pharma can change the world.**&#x20;
+Molecule develops products that addresses the inefficiencies and funding gaps in traditional scientific research. It enables fractional governance of IP through novel technological solutions such as IP-NFTs and IP Tokens (IPTs), facilitating a more democratic and transparent funding process. This empowers researchers by providing new avenues for funding while allowing investors and the public to directly support and benefit from scientific advancements.
 
-Molecule's mission is to empower patients to govern therapeutic development and has a vision of mitigating human suffering.
+Pillars:
 
-Ineffective incentive alignment means potentially promising scientific research projects all too often are abandoned for lack of funding before they get off the ground. For new drugs, the gap between foundational research and clinical trials is called "the valley of death."&#x20;
+* **Transparency**: All transactions and ownership records are stored on the blockchain, ensuring complete transparency and trust.&#x20;
+* **Liquidity**: Tokenizing IP allows for easier buying, selling, and trading, providing liquidity to an otherwise illiquid market.
+* **Accessibility**: Molecule opens up opportunities for a broader range of investors to participate in IP markets, democratizing access to innovation.
+* **Security**: Blockchain technology ensures the security and immutability of IP records, protecting against fraud and unauthorized changes.
 
-Molecule aims to cross "valley of death" by making markets for funding science and building tools for researchers to manage rights and permissions to their IP and R\&D data using cryptography on [Ethereum](https://www.ethereum.org).&#x20;
+Our core:
 
-This is decentralized science building bottom-up biotech.&#x20;
+* Decentralization: Unlike traditional IP management systems, Molecule operates on a decentralized network, reducing reliance on intermediaries.
+* Smart Contracts: Automated smart contracts streamline transactions and enforce agreements, reducing administrative burdens and costs.
+* Global Reach: Molecule's platform connects innovators with a global network of investors and collaborators, enhancing the potential for cross-border partnerships and funding, fostering scientific breakthroughs
 
 {% embed url="https://medium.com/molecule-blog/an-open-bazaar-for-drug-development-molecule-protocol-a47978dd914" %}
