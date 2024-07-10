@@ -32,7 +32,7 @@ IPT holders have the right to participate in the governance of the IP-NFT and it
 ### Economic Rights:
 
 \
-IPT holders are not inherently entitled to any economic benefits. They do not have a predetermined, contractual right to receive any proceeds following the sale of an IP-NFT or its IP. Instead, IPT holders have governance rights and must actively participate in voting to decide on the management of IP licenses, sales, and other activities related to the IP together with the IP-NFT owner. Example of Membership Agreement available [here](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/IPT%20Membership%20Agreements/Model%20IPT%20Membership%20Agreement.pdf).&#x20;
+IPT holders are not inherently entitled to any economic benefits. They do not have a predetermined, contractual right to receive any proceeds following the sale of an IP-NFT or its IP. Instead, IPT holders have governance rights and must actively participate in voting to decide on the management of IP licenses, sales, and other activities related to the IP together with the IP-NFT owner. Example of IPT Membership Agreement available [here](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/IPT%20Membership%20Agreements/Model%20IPT%20Membership%20Agreement.pdf).&#x20;
 
 
 
