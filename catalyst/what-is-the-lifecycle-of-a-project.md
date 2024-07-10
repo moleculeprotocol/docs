@@ -5,7 +5,7 @@ description: >-
   project is in its lifecycle.
 ---
 
-# ♻️ What is the lifecycle of a project?
+# ➰ What is the lifecycle of a project?
 
 1. **Project Creation**:
    * **Onchain**: A project is initiated on the Catalyst platform with the creation of a project proposal.

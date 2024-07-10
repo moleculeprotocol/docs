@@ -17,9 +17,9 @@
 
 ## Catalyst
 
-* [⭐ Catalyst Introduction](catalyst/catalyst-introduction/README.md)
-  * [💲 How to fund projects?](catalyst/catalyst-introduction/how-to-fund-projects.md)
-  * [♻️ What is the lifecycle of a project?](catalyst/catalyst-introduction/what-is-the-lifecycle-of-a-project.md)
+* [🌟 Intro to Catalyst](catalyst/intro-to-catalyst.md)
+* [💲 How to fund projects?](catalyst/how-to-fund-projects.md)
+* [➰ What is the lifecycle of a project?](catalyst/what-is-the-lifecycle-of-a-project.md)
 
 ## 🧑‍🔬 IP Tokens
 
