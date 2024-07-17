@@ -23,7 +23,7 @@ description: >-
 #### Contribute to a Project:
 
 * On the project page, enter the amount of Base ETH you wish to contribute.
-* To get Base ETH, you can onramp funds directly using Moonpay / Coinbase or bridge funds
+* To get Base ETH, you can onramp funds directly using [Moonpay](https://www.moonpay.com/buy) / [Coinbase](https://login.coinbase.com/signin?client\_id=2aa38c3b0beb30cc6c026e398882317c94df842df08a043f3312416dd7a29aed\&oauth\_challenge=b4a479c2-87d6-46e7-a142-8a2a8f2d930b) or bridge funds from mainnet to Base.&#x20;
 * Confirm the transaction in your wallet and wait for it to be processed.
 
 ### **Step 3 - Receive** [**IPTs**](broken-reference)
