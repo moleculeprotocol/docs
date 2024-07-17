@@ -9,7 +9,7 @@
 
 * [🌟 Intro to Catalyst](catalyst/intro-to-catalyst.md)
 * [💲 How to fund projects?](catalyst/how-to-fund-projects.md)
-* [➰ What is the lifecycle of a project?](catalyst/what-is-the-lifecycle-of-a-project.md)
+* [➿ Project Lifecycle](catalyst/project-lifecycle.md)
 * [↗️ Catalyst Bonding Curve](catalyst/catalyst-bonding-curve.md)
 * [👛 Fee Structure](catalyst/fee-structure.md)
 

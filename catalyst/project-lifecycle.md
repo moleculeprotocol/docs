@@ -5,7 +5,7 @@ description: >-
   project is in its lifecycle.
 ---
 
-# ➰ What is the lifecycle of a project?
+# ➿ Project Lifecycle
 
 ### ⚪️ **Project Creation - Preview**:
 
