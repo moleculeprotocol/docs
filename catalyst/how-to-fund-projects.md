@@ -26,7 +26,7 @@ description: >-
 * To get Base ETH, you can onramp funds directly using Moonpay / Coinbase or bridge funds
 * Confirm the transaction in your wallet and wait for it to be processed.
 
-### **Step 3 - Receive IPTs**
+### **Step 3 - Receive** [**IPTs**](broken-reference)
 
 Post-Funding Process: Once the funding goal of the selected project is reached, the negotiation phase begins. This phase can last a maximum of 12 weeks. During the negotiation phase funds are locked in the project's wallet. After the negotiation is completed, the IP-NFT will be minted and 1.000.000 IPTs will be issued.
 
@@ -36,6 +36,8 @@ Post-Funding Process: Once the funding goal of the selected project is reached, 
 * These tokens will be sent to your wallet and can be managed or traded.
 
 Refund Policy: If the project does not reach its funding goal before the deadline, you’ll get a full refund of your contributed ETH.&#x20;
+
+
 
 
 

@@ -7,7 +7,7 @@ description: The IP-NFT combines two legal contracts with a smart contract.
 ### Legal-Smart Contract Structure:
 
 \
-The IP-NFT combines two legal contracts with a smart contract to enable on-chain registration and management of IP and R\&D data rights. The two legal contracts involved are the (a) Research Agreement (Sponsored Research Agreement and (b) Assignment Agreement. The Assignment Agreement assigns the Research Agreement to the owner of a Non-Fungible Token (NFT), thereby transforming the NFT into an IP-NFT​​.\
+The IP-NFT combines two legal contracts with a smart contract to enable on-chain registration and management of IP and R\&D data rights. The two legal contracts involved are the (a) Research Agreement (Sponsored Research Agreement) and (b) Assignment Agreement. The Assignment Agreement assigns the Research Agreement to the owner of a Non-Fungible Token (NFT), thereby transforming the NFT into an IP-NFT​​.\
 \
 
 
@@ -20,7 +20,7 @@ This agreement is entered into between the researcher and the sponsor or funder 
 * Timeline: The schedule for the research project.
 * Budget: The financial plan for the project.
 
-The Sponsored Research Agreement ensures also that the research is conducted according to the sponsor's requirements and includes provisions for confidentiality, intellectual property rights, data ownership, and the publication of results. It may also include terms for any licenses or patents resulting from the research and may sponsor related activities such as conferences and workshops.&#x20;
+The Sponsored Research Agreement ensures also that the research is conducted according to the sponsor's requirements and includes provisions for confidentiality, intellectual property rights, data ownership, and the publication of results. It may also include terms for any licenses or patents resulting from the research and may sponsor related activities such as overheads costs, conferences and workshops.&#x20;
 
 
 
