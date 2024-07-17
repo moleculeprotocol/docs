@@ -16,7 +16,7 @@ description: >-
 #### Review Projects:
 
 * Browse the available projects on Catalyst.
-* Select a project you are interested in and review the project details, including information about the lead researcher, funding goals, research impact, and go-to-market strategy and more.
+* Select a project you are interested in and review the project details, including information about the lead researcher, funding goals, research impact, go-to-market strategy and more.
 
 ### **Step 2 - Contribute Base ETH**
 
