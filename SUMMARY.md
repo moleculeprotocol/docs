@@ -5,6 +5,14 @@
 * [🔬 What is Molecule?](README.md)
 * [💡 Why Molecule?](introduction/why-molecule.md)
 
+## Catalyst
+
+* [🌟 Intro to Catalyst](catalyst/intro-to-catalyst.md)
+* [💲 How to fund projects?](catalyst/how-to-fund-projects.md)
+* [➰ What is the lifecycle of a project?](catalyst/what-is-the-lifecycle-of-a-project.md)
+* [↗️ Catalyst Bonding Curve](catalyst/catalyst-bonding-curve.md)
+* [👛 Fee Structure](catalyst/fee-structure.md)
+
 ## IP-NFTs
 
 * [⚡ Intro to IP-NFT](ip-nfts/intro-to-ip-nft.md)
@@ -14,14 +22,6 @@
 * [🛠️ Technical Components of IP-NFTs](ip-nfts/technical-components-of-ip-nfts/README.md)
   * [⚙️ Technical Details for Developers](ip-nfts/technical-components-of-ip-nfts/technical-details-for-developers.md)
   * [📭 Smart Contract Addresses](ip-nfts/technical-components-of-ip-nfts/smart-contract-addresses.md)
-
-## Catalyst
-
-* [🌟 Intro to Catalyst](catalyst/intro-to-catalyst.md)
-* [💲 How to fund projects?](catalyst/how-to-fund-projects.md)
-* [➰ What is the lifecycle of a project?](catalyst/what-is-the-lifecycle-of-a-project.md)
-* [↗️ Catalyst Bonding Curve](catalyst/catalyst-bonding-curve.md)
-* [👛 Fee Structure](catalyst/fee-structure.md)
 
 ## 🧑‍🔬 IP Tokens
 
