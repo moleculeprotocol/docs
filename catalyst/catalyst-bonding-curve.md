@@ -1,4 +1,4 @@
-# ⤴️ Page 1
+# ↗️ Catalyst Bonding Curve
 
 Catalyst uses a price curve that defines the relationship between the price and supply of a token. In Catalyst, this mechanism ensures dynamic pricing and transparent funding for projects.\
 \
