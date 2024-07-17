@@ -19,11 +19,11 @@
 
 * [🌟 Intro to Catalyst](catalyst/intro-to-catalyst.md)
 * [💲 How to fund projects?](catalyst/how-to-fund-projects.md)
-* [💊 What are IP Tokens?](catalyst/what-are-ipts.md)
 * [➰ What is the lifecycle of a project?](catalyst/what-is-the-lifecycle-of-a-project.md)
 
 ## 🧑‍🔬 IP Tokens
 
+* [💊 What are IP Tokens?](ip-tokens/what-are-ipts.md)
 * [✨ How to tokenize IPTs from an IP-NFT?](ip-tokens/how-to-fractionalize-an-ip-nft.md)
 * [⚖️ What are risks of IP-NFTs and IPTs?](ip-tokens/what-are-risks-of-ip-nfts.md)
 * [👨‍👩‍👧‍👦 What is a crowdsale of IPTs?](ip-tokens/what-is-a-crowdsale-of-ipts.md)
