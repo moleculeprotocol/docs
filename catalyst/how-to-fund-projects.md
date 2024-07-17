@@ -28,7 +28,7 @@ description: >-
 
 ### **Step 3 - Receive** [**IPTs**](broken-reference)
 
-Post-Funding Process: Once the funding goal of the selected project is reached, the negotiation phase begins. This phase can last a maximum of 12 weeks. During the negotiation phase funds are locked in the project's wallet. After the negotiation is completed, the IP-NFT will be minted and 1.000.000 IPTs will be issued.
+Post-Funding Process: Once the funding goal of the selected project is reached, the negotiation phase begins. This phase can last a maximum of 12 weeks. During the negotiation phase, funds are locked in the project's wallet. After the negotiation is completed, the IP-NFT will be minted and one million IPTs will be issued.
 
 #### Receive Tokens:
 

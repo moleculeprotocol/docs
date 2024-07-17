@@ -20,6 +20,8 @@
 * [🌟 Intro to Catalyst](catalyst/intro-to-catalyst.md)
 * [💲 How to fund projects?](catalyst/how-to-fund-projects.md)
 * [➰ What is the lifecycle of a project?](catalyst/what-is-the-lifecycle-of-a-project.md)
+* [⤴️ Page 1](catalyst/page-1.md)
+* [Fee Structure of Catalyst](catalyst/fee-structure-of-catalyst.md)
 
 ## 🧑‍🔬 IP Tokens
 
