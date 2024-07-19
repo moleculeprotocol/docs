@@ -19,7 +19,7 @@ description: >-
 
 ### **🟣 Funded - Negotiation**:
 
-* **On-Chain**: The funding goal is reached before the deadline. Ffunds are held in escrow until the project is successfully negotiated. With the funders' permission, the sourcer may claim the funds and swap them to stable coins (such as USDC) to reduce the impact of ETH volatility.
+* **On-Chain**: The funding goal is reached before the deadline. Funds are held in escrow until the project is successfully negotiated. With the funders' permission, the sourcer may claim the funds and swap them to stable coins (such as USDC) to reduce the impact of ETH volatility.
 * **Off-Chain**: Negotiations occur regarding IP licensing terms between the researcher, their research organization, and the sourcer, who are all responsible for finalizing a research agreement, such as a sponsored research agreement. To receive the funding, this agreement must be reached before the negotiation deadline.
 
 ### **🟢 Tokenized**:
