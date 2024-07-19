@@ -24,7 +24,7 @@ description: >-
 
 ### **🟢 Tokenized**:
 
-* **On-Chain**: Upon successfully hitting the funding goal prior to the funding deadline, and a fully executed research agreement prior to the negotiating deadline, the project is updated to the Success state. An [IP-NFT](https://docs.molecule.to/documentation/ip-nfts/intro-to-ip-nft) and [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts) can be minted and transferred to the project funders, research organization, and researcher. The sourcer may offramp the stablecoins to fiat currency, and wire the funds to the researcher's organization.
+* **On-Chain**: Upon successfully hitting the funding goal prior to the funding deadline, and a fully executed research agreement prior to the negotiating deadline, the project is updated to the Success state. An [IP-NFT](https://docs.molecule.to/documentation/ip-nfts/intro-to-ip-nft) and [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts) can be minted and transferred to the project funders, research organization, and researcher. The sourcer may offramp the stablecoins to fiat currency, and wire the funds based on milestone payment schedule to the researcher's organization.
 * **Off-Chain**: Local currency is wired to the research organization and the research can begin.
 
 ### **⚫️ Expired**:
