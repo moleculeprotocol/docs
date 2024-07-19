@@ -22,7 +22,7 @@ Here's an in-depth look at how this works.
 #### **3. Dynamic Pricing:**
 
 * The bonding curve adjusts token prices in real-time based on current supply and demand.
-* The unidirectional, functional pricing model allows users to contribute at a predictable price increase and also comes with a builtin slippage protection.
+* The unidirectional, functional pricing model allows users to contribute at a predictable price increase and also comes with a built-in slippage protection.
 
 #### **4. Incentives for Participation:**
 
