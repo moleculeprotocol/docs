@@ -1,37 +1,29 @@
----
-description: >-
-  IP-Tokens (IPTs) are ERC-20 tokens that enable fractional governance over
-  IP-NFTs.
----
-
 # 💊 What are IP Tokens?
 
-## Definition&#x20;
+IP Tokens (IPTs) represent fractional governance rights over the intellectual property (IP) generated. These tokens offer stakeholders a unique opportunity to participate directly in the development, decision-making, and future directions of the research.
 
-Intellectual Property Tokens (IPTs) are [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) that are minted using IP-NFTs. IPTs are an extension of the legal and blockchain-based contracts that constitute the IP-NFT Protocol. IPTs enable governance over IP-NFTs and their attached IP, gathering token holders under a shared objective: to proactively drive the development and advancement of valuable IP.
+### **How IPTs Work**:
 
-### Significance:
+When you acquire IPTs, you are gaining a stake in the IP generated from the research, which includes patents on novel compounds, proprietary screening systems, and potentially even therapeutic methods. However, it’s important to note that IPTs do not entitle holders to guaranteed financial returns or revenue sharing from the commercialization of these assets. Instead, IPT holders benefit from the following:
 
-* **On-chain Opportunities:** IPTs open up new avenues for supporting cutting-edge research and development projects on-chain​, as on-chain portfolios can contain IP rights related to innovative scientific research.\
+* **Governance Rights:** IPT holders can participate in key decisions related to the development, management, and licensing of the intellectual property. This includes voting on important milestones, strategic partnerships, and the allocation of research funds, allowing the community to have a direct influence on the direction of the project.\
 
-* **Market Liquidity:** by tokenizing IP rights, IPTs enable increased liquidity and market accessibility. This creates a dynamic marketplace where IP assets can be transferred, thus enhancing their utility.\
+* **Access to Exclusive Information:** IPT holders may receive updates and detailed reports on the progress of the research and the development of IP, providing them with a deeper understanding of the project's trajectory and potential.\
 
-* **Access to Funding:** IPTs allow IP owners to raise funds by selling governance rights. This makes it easier for researchers and innovators to obtain the necessary resources to advance their projects without relying solely on traditional funding mechanisms.
+* **Early Access and Benefits:** Depending on the project's development and partnerships, IPT holders may gain early or preferential access to innovations, collaborations, or future opportunities related to the IP, although this is not guaranteed and varies by project.\
 
-### Governance Rights:
+* **No Guaranteed Returns:** It's up to the IP owner whether the IPT holders get paid if the IP gets commercialized, and while they could decide to award IPT holders based on the success of the project, they would carefully consider regulatory implications before doing so.
 
-\
-Individuals possessing IPTs exercise governance over the IP-NFT from which they were minted. Their participation is governed by an adhesion contract, the IPT Membership Agreement.
+### **The Role of IPTs in Decentralised Science (DeSci)**:
 
-IPT holders have the right to participate in the governance of the IP-NFT and its development, in compliance with applicable laws. These governance rights include:
+In the decentralized science (DeSci) ecosystem, IPTs serve as a vital tool for enabling broader community involvement in scientific research. By tokenizing intellectual property, IPTs democratize access to and control over scientific advancements, fostering a transparent, collaborative environment where the community can contribute to and influence the development of cutting-edge therapies.
 
-* Voting on proposed licenses for the attached IP.
-* Deciding on the distribution of any proceeds earned from the IP-NFT and its IP.
-* Participating in the termination of agreements related to the IP-NFT and its IP.
+### **Future Prospects**
+
+While IPTs do not offer direct financial returns, their value is inherently tied to the success and impact of Project Transfidelity. As the research progresses and potentially groundbreaking IP is developed, IPT holders will have played a crucial role in steering and supporting innovations that could transform the treatment of neurodegenerative diseases. The long-term benefits of holding IPTs lie in the influence and engagement within a pioneering scientific initiative that could reshape how we approach age-related disorders
 
 ### Economic Rights:
 
-\
 IPT holders are not inherently entitled to any economic benefits. They do not have a predetermined, contractual right to receive any proceeds following the sale of an IP-NFT or its IP. Instead, IPT holders have governance rights and must actively participate in voting to decide on the management of IP licenses, sales, and other activities related to the IP together with the IP-NFT owner. Example of [IPT Membership Agreement](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/IPT%20Membership%20Agreements/Model%20IPT%20Membership%20Agreement.pdf).
 
 
