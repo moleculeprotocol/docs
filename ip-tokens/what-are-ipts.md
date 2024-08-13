@@ -18,10 +18,6 @@ When you acquire IPTs, you are gaining a stake in the IP generated from the rese
 
 In the decentralized science (DeSci) ecosystem, IPTs serve as a vital tool for enabling broader community involvement in scientific research. By tokenizing intellectual property, IPTs democratize access to and control over scientific advancements, fostering a transparent, collaborative environment where the community can contribute to and influence the development of cutting-edge therapies.
 
-### **Future Prospects**
-
-While IPTs do not offer direct financial returns, their value is inherently tied to the success and impact of Project Transfidelity. As the research progresses and potentially groundbreaking IP is developed, IPT holders will have played a crucial role in steering and supporting innovations that could transform the treatment of neurodegenerative diseases. The long-term benefits of holding IPTs lie in the influence and engagement within a pioneering scientific initiative that could reshape how we approach age-related disorders
-
 ### Economic Rights:
 
 IPT holders are not inherently entitled to any economic benefits. They do not have a predetermined, contractual right to receive any proceeds following the sale of an IP-NFT or its IP. Instead, IPT holders have governance rights and must actively participate in voting to decide on the management of IP licenses, sales, and other activities related to the IP together with the IP-NFT owner. Example of [IPT Membership Agreement](https://github.com/moleculeprotocol/Legal-Contracts/blob/main/IPT%20Membership%20Agreements/Model%20IPT%20Membership%20Agreement.pdf).
