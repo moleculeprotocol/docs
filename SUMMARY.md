@@ -12,6 +12,7 @@
 * [➿ Project Lifecycle](catalyst/project-lifecycle.md)
 * [↗️ Catalyst Bonding Curve](catalyst/catalyst-bonding-curve.md)
 * [👛 Fee Structure](catalyst/fee-structure.md)
+* [🧑‍🔬 Submit a Project](catalyst/submit-a-project.md)
 
 ## IP-NFTs
 
