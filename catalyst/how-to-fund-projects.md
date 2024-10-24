@@ -50,7 +50,7 @@ If your ETH on Base token balance is below the minimum amount required to partic
 
 #### **1. Explore Projects**
 
-Find projects that are currently live in Catalyst. Select the ones that is Fundraising.
+Find projects that are currently live in Catalyst. You can support projects that show show a "Fundraising" status tag.
 
 {% embed url="https://drive.google.com/file/d/1OLg7GCg2D4NSHlD1_kSGnDQaMy2gKSO4/view?t=7" %}
 
@@ -62,15 +62,17 @@ On the project page, enter the amount of ETH on Base you wish to contribute. Con
 
 ### **Part #3. Receive** [**IPTs**](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts)
 
-Post-Funding Process: Once the funding goal of the selected project is reached, the negotiation phase begins. This phase can last a maximum of 12 weeks. During the negotiation phase, funds are locked in the project's wallet. After the negotiation is completed, the project’s IP-NFT will be minted and one million IPTs will be issued.
+Post-Funding Process: Once the funding goal of the selected project is reached, the negotiation phase begins. This phase can last a maximum of 12 weeks\*. During the negotiation phase, funds are locked in the project's wallet. After the negotiation is completed, the project’s IP-NFT will be minted and IP Tokens will be issued.
 
 #### **1. Receive Tokens**
 
-* You'll receive IPTs that correspond to the ETH amount you contributed.
+* You'll receive IP Tokens that correspond to the ETH amount you contributed.
 * These tokens will be sent to your wallet and can be managed or traded.
 
 {% hint style="info" %}
 **Refund Policy**: If the project does not reach its funding goal before the deadline, you’ll get a full refund of your contributed ETH. If you withdraw your funds while the fundraise is still running, a 5% fee will be deducted.
 {% endhint %}
+
+\*Negotiation phase could vary depending on the project.&#x20;
 
 [https://catalyst.molecule.xyz/](https://catalyst.molecule.xyz/)
