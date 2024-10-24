@@ -6,39 +6,71 @@ description: >-
 
 # 💲 How to fund projects?
 
-### Step 1 - Discover a Project&#x20;
+## **How To Guide**
 
-#### Set Up or Connect a Wallet:
+In this How-to Guide, we will walk you through the steps to fund science on Catalyst. We'll cover wallet connecting, discovery, funding a project and receiving IP Tokens.
 
-* Make sure you have a compatible cryptocurrency wallet set up and funded with Base ETH. Recommended wallets include[ MetaMask](https://metamask.io/), Coinbase Wallet, and[ Rainbow Wallet](https://rainbow.me/), among others that support ERC-20 tokens. Catalyst also supports embedded wallets via social login, such as email.
-* Connect your wallet to the Catalyst platform using the provided connect button. Ensure you are on the correct network,[ Base Network](https://www.base.org/).
+Let's get started! \
+\
+Visit: [https://catalyst.molecule.xyz/](https://catalyst.molecule.xyz/)
 
-#### Review Projects:
+### **Part #1. Get Ready to fund science!**
 
-* Browse the available projects on Catalyst.
-* Select a project you are interested in and review the project details, including information about the lead researcher, funding goals, research impact, go-to-market strategy and more.
+#### **1. Connect your wallet**
 
-### **Step 2 - Contribute Base ETH**
+The first step is to connect your Ethereum wallet. Start by clicking the connect button.
 
-#### Contribute to a Project:
+If you already have a wallet, you can select it from the list of available options. If you don’t have a wallet, you can log in with email or a social account and a wallet will be created for you.
 
-* On the project page, enter the amount of Base ETH you wish to contribute.
-* To get Base ETH, you can onramp funds directly using [Moonpay](https://www.moonpay.com/buy) / [Coinbase](https://login.coinbase.com/signin?client\_id=2aa38c3b0beb30cc6c026e398882317c94df842df08a043f3312416dd7a29aed\&oauth\_challenge=b4a479c2-87d6-46e7-a142-8a2a8f2d930b) or bridge funds from mainnet to Base.&#x20;
-* Confirm the transaction in your wallet and wait for it to be processed.
+Alternatively, you can create your own [Coinbase Wallet](https://www.coinbase.com/en-gb/wallet).
 
-### **Step 3 - Receive** [**IPTs**](broken-reference)
+{% embed url="https://drive.google.com/file/d/1glvkfg3T9Dc4L9CSFGSqG6dqTni8p0cN/view?t=7" %}
 
-Post-Funding Process: Once the funding goal of the selected project is reached, the negotiation phase begins. This phase can last a maximum of 12 weeks. During the negotiation phase, funds are locked in the project's wallet. After the negotiation is completed, the IP-NFT will be minted and one million IPTs will be issued.
+#### **2. Ensure your wallet holds ETH on Base**
 
-#### Receive Tokens:
+{% hint style="info" %}
+**ETH on Base.** Refers to the native cryptocurrency, Ether (ETH), used on the Base blockchain network.
+{% endhint %}
+
+After connecting and accepting the terms & conditions, you will need ETH on Base to fund projects. To get ETH on Base, we offer some quick links. After connecting the wallet you can open the wallet dropdown and find a “Get ETH” button. On the Project Page you’ll find also the “Get ETH” button this will redirect you to a service where you can purchase or bridge it.
+
+* Via a centralized exchange, like [Coinbase](https://coinbase.com/) or [Binance](https://www.binance.us/)
+* Via a decentralized exchange, like [UniSwap](https://app.uniswap.org/) or [Balancer](https://balancer.fi/)
+* Via an on-ramping service, like [Ramp](https://ramp.network/buy) or [Moonpay](https://www.moonpay.com/buy)
+
+You can also bridge tokens from Mainnet to Base.
+
+* Via a bridge service, like like [Brid.gg](https://www.brid.gg/base?token=ETH\&originChainId=1\&amount=)
+
+If your ETH on Base token balance is below the minimum amount required to participate, the interface will prompt you to purchase or to bridge tokens.
+
+{% embed url="https://drive.google.com/file/d/1GRDEguhtmvkBc6Ltu47TcHbQRuDIVWda/view?t=2" %}
+
+### **Part #2. Fund Science**
+
+#### **1. Explore Projects**
+
+Find projects that are currently live in Catalyst. Select the ones that is Fundraising.
+
+{% embed url="https://drive.google.com/file/d/1OLg7GCg2D4NSHlD1_kSGnDQaMy2gKSO4/view?t=7" %}
+
+#### **2. Fund a Project**
+
+On the project page, enter the amount of ETH on Base you wish to contribute. Confirm the transaction in your wallet and wait for it to be processed. After the transaction is confirmed you’ll find your wallet address and the amount funded visible in the Activity tab in the Funders section.
+
+{% embed url="https://drive.google.com/file/d/131qhKma9W4SanhLllKnjkUuL9IJf7izs/view?t=2" %}
+
+### **Part #3. Receive** [**IPTs**](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts)
+
+Post-Funding Process: Once the funding goal of the selected project is reached, the negotiation phase begins. This phase can last a maximum of 12 weeks. During the negotiation phase, funds are locked in the project's wallet. After the negotiation is completed, the project’s IP-NFT will be minted and one million IPTs will be issued.
+
+#### **1. Receive Tokens**
 
 * You'll receive IPTs that correspond to the ETH amount you contributed.
 * These tokens will be sent to your wallet and can be managed or traded.
 
-Refund Policy: If the project does not reach its funding goal before the deadline, you’ll get a full refund of your contributed ETH.&#x20;
+{% hint style="info" %}
+**Refund Policy**: If the project does not reach its funding goal before the deadline, you’ll get a full refund of your contributed ETH. If you withdraw your funds while the fundraise is still running, a 5% fee will be deducted.
+{% endhint %}
 
-
-
-
-
-{% embed url="https://app.catalyst.molecule.xyz/" %}
+[https://catalyst.molecule.xyz/](https://catalyst.molecule.xyz/)
