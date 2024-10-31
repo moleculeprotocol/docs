@@ -6,7 +6,7 @@
 
 ### **Subgraph**
 
-[s://subgraph.satsuma-prod.com/742d8952ab24/molecule--4039244/ip-nft-mainnet/api](https://subgraph.satsuma-prod.com/742d8952ab24/molecule--4039244/ip-nft-mainnet/api)
+[https://subgraph.satsuma-prod.com/742d8952ab24/molecule--4039244/ip-nft-mainnet/api](https://subgraph.satsuma-prod.com/742d8952ab24/molecule--4039244/ip-nft-mainnet/api)
 
 
 
