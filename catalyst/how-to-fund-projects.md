@@ -70,7 +70,13 @@ Post-Funding Process: Once the funding goal of the selected project is reached, 
 * These tokens will be sent to your wallet and can be managed or traded.
 
 {% hint style="info" %}
-**Refund Policy**: If the project does not reach its funding goal before the deadline, you’ll get a full refund of your contributed ETH. If you withdraw your funds while the fundraise is still running, a 5% fee will be deducted.
+**Refund Policy**: \
+\
+-> If you withdraw your funds while the fundraise is still running, a 5% fee will be deducted.\
+\
+-> If the project does not reach its funding goal before the deadline, you can withdraw your contribution and  get a full refund of your contributed ETH. \
+\
+-> If the project does not reach a successful negotiation before the deadline, you can withdraw your contribution and  get a full refund of your contributed ETH.&#x20;
 {% endhint %}
 
 \*Negotiation phase could vary depending on the project.&#x20;
