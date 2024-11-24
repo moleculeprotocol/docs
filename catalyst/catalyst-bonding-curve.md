@@ -37,4 +37,11 @@ Here's an in-depth look at how this works.
 * Predictable Funding: Provides a predictable and transparent funding mechanism for projects.\
 
 
-By leveraging a bonding curve, Catalyst creates a dynamic and fair environment for funding innovative projects.
+By leveraging a bonding curve, Catalyst creates a dynamic and fair environment for funding innovative projects.\
+\
+For further reading on the topic, you may explore additional resources, articles, or books that provide a deeper understanding and more comprehensive insights.\
+
+
+{% embed url="https://www.linumlabs.com/articles/bonding-curves-the-what-why-and-shapes-behind-it" %}
+
+{% embed url="https://yos.io/about/" %}
