@@ -60,16 +60,19 @@ On the project page, enter the amount of ETH on Base you wish to contribute. Con
 
 {% embed url="https://drive.google.com/file/d/131qhKma9W4SanhLllKnjkUuL9IJf7izs/view?t=2" %}
 
-### **Part #3. Receive** [**IPTs**](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts)
+### **Part #3. Claim** [**IPTs**](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts)
 
 Post-Funding Process: Once the funding goal of the selected project is reached, the negotiation phase begins. This phase can last a maximum of 12 weeks\*. During the negotiation phase, funds are locked in the project's wallet. After the negotiation is completed, the project’s IP-NFT will be minted and IP Tokens will be issued.
 
 #### **1. Receive Tokens**
 
-* You'll receive IP Tokens that correspond to the ETH amount you contributed.
-* These tokens will be sent to your wallet and can be managed or traded.
+* You'll be able to claim IP Tokens that correspond to the ETH amount you contributed.
+* These tokens need to be added to your wallet where then can be managed or traded.
 
-{% hint style="info" %}
+<figure><img src="../.gitbook/assets/Screenshot 2024-11-24 at 12.54.19.png" alt=""><figcaption></figcaption></figure>
+
+
+
 **Refund Policy**: \
 \
 -> If you withdraw your funds while the fundraise is still running, a 5% fee will be deducted.\
@@ -77,8 +80,9 @@ Post-Funding Process: Once the funding goal of the selected project is reached, 
 -> If the project does not reach its funding goal before the deadline, you can withdraw your contribution and  get a full refund of your contributed ETH. \
 \
 -> If the project does not reach a successful negotiation before the deadline, you can withdraw your contribution and  get a full refund of your contributed ETH.&#x20;
-{% endhint %}
+
+<figure><img src="../.gitbook/assets/Screenshot 2024-11-24 at 12.58.43.png" alt=""><figcaption></figcaption></figure>
+
+{% embed url="https://catalyst.molecule.xyz/" %}
 
 \*Negotiation phase could vary depending on the project.&#x20;
-
-[https://catalyst.molecule.xyz/](https://catalyst.molecule.xyz/)
