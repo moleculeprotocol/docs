@@ -4,7 +4,7 @@ Catalyst App incorporates a fee system, serving several critical functions to en
 
 ### Fee Implementation
 
-* **On Contributing Funds:** The funding goal includes a 5% mark-up to be used to create a liquidity pool to enable trading of IPTs.&#x20;
+* **On Contributing Funds:** The funding goal includes a 5% mark-up to be used by Molecule to create a liquidity pool to enable trading of IPTs.&#x20;
 * **On Withdrawing Funds:** A 5% exit fee is applied in case contribution is withdrawn.&#x20;
 * **Preminted IPTs:** 5% of the IPTs are reserved through a pre-mint at the beginning of the funding and used to create a liquidity pool after the negotiation is completed and the IPTs are distributed to all the funders.
 
