@@ -12,7 +12,7 @@ Catalyst App incorporates a fee system, serving several critical functions to en
 
 **Successful Project Funding:**&#x20;
 
-The mark-up from contributed ETH and preminted IPTs are used to create a liquidity pool after the negotiation phase, enabling IPT trading.
+The mark-up from contributed ETH and preminted IPTs are used by Molecule to create a liquidity pool after the negotiation phase, enabling IPT trading.
 
 **Unsuccessful Project Funding:**
 
