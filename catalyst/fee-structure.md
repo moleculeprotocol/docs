@@ -16,4 +16,4 @@ The mark-up from contributed ETH and preminted IPTs are used to create a liquidi
 
 **Unsuccessful Project Funding:**
 
-If a project does not reach its funding goal or the negotiation fails, the initial ETH contributions are paid back completely. However, any withdrawal fees accrued during the funding process are taken by Molecule.
+If a project does not reach its funding goal or the negotiation fails, the initial ETH contributions are paid back completely, funders will manually have to withdraw funds. However, any withdrawal fees accrued during the funding process are taken by Molecule.
