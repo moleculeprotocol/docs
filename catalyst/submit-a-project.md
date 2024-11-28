@@ -12,7 +12,7 @@ The process is structured in phases from project preparation to successful fundi
 **Preparation**
 
 1. Prepare project materials either alone or in collaboration with a community
-2. Submit Project to Catalyst via this form
+2. [Submit Project to Catalyst](https://moleculeprotocol.typeform.com/to/lBapA57t)&#x20;
 3. Review materials & Prepare for fundraise &#x20;
 
 **After Launch**
