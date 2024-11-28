@@ -12,16 +12,16 @@ The process is structured in phases from project preparation to successful fundi
 **Preparation**
 
 1. Prepare project materials either alone or in collaboration with a community
-2. Upload project materials on Catalyst&#x20;
+2. Submit Project to Catalyst via this form
+3. Review materials & Prepare for fundraise &#x20;
 
-**Launch**
+**After Launch**
 
-3. Launch project
-4. Project is live and open for funding for your desired amount of time
+3. Project is live and open for funding for your desired amount of time
 
 #### Success&#x20;
 
-5. Sponsored Research Agreement (or similar) is negotiated with university TTO&#x20;
+5. Sponsored Research Agreement (or similar) is negotiated with university TTO and Sponsor
 6. Agreement is signed and funds are transferred according to the payment schedule
 
 #### Ongoing&#x20;
