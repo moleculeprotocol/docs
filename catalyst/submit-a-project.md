@@ -93,11 +93,7 @@ Until project completion
 
 <table data-header-hidden data-full-width="true"><thead><tr><th width="197"></th><th></th><th></th></tr></thead><tbody><tr><td><br></td><td><strong>Why Catalyst</strong></td><td><strong>Why not Catalyst</strong></td></tr><tr><td>Type of Research</td><td>Translational research</td><td>Fundamental research</td></tr><tr><td>IP</td><td>The project will result in IP that will be licensed by a Sponsor* on Catalyst</td><td>The project will not result in IP, or there isn’t a desire to license the IP to a sponsor</td></tr><tr><td>Project size**</td><td>&#x3C;$50k is needed to complete project milestones, milestones take no longer than 6-12 months to complete  </td><td>>$50k is needed to complete project milestones, milestones take > 12 months to complete</td></tr><tr><td>Project structure</td><td>Project with defined milestones, deadlines, and deliverables. Project can be >$50k in total size, as long as raising in $50k tranches provides meaningful progress and completion of milestones in 6-12 months. Total project size includes expenses and overhead costs.</td><td>Exploratory project, long time horizon to achieve a milestone. Project that is >50k in total size and needs >$50k per funding tranche</td></tr><tr><td>Researcher profile</td><td><ul><li>Entrepreneurial focus</li><li>Wants to engage with a community of people interested in their work</li><li>Understands the requirements of a sponsored or contract research agreement</li></ul></td><td><ul><li>Academic focus</li><li>Wants to continue working mostly within existing contacts and ecosystem</li><li>Prefers to work under a grant structure and does not want to engage in sponsored or contract research</li></ul></td></tr><tr><td>Openness and community</td><td>Researcher accepts that all project proposal materials will be publicly visible on Catalyst, emphasizing openness and transparency. You will never be asked to share confidential information that would jeopardize the IP position in your proposal or to the community.</td><td>Researcher prefers the traditional academic structure and way of working without direct community engagement. </td></tr></tbody></table>
 
-
-
-_\*Molecule currently sponsors all projects on Catalyst_
-
-_\*\*Based on current size of ecosystem; ideally this number grows as the community grows_\
+_\*Based on current size of ecosystem; ideally this number grows as the community grows_\
 
 
 ***
@@ -134,9 +130,7 @@ All materials should be sent to <mark style="color:purple;">**logan@molecule.to*
 
 Once the materials have been submitted, they will be assessed for completeness. If a document or section is missing, Molecule will ask you to update the document and re-submit it. Molecule reserves the right not to publish any projects for funding that would be considered harmful or illegal.
 
-
-
-The materials review and approval process will take 1-5 days. After successful review, the project will be listed on Catalyst. Molecule is not responsible for the accuracy of the content of the projects, nor does it endorse any of the projects listed.&#x20;
+The materials review and approval process will take 1-4 weeks. After successful review, the project will be listed on Catalyst. Molecule is not responsible for the accuracy of the content of the projects, nor does it endorse any of the projects listed.&#x20;
 
 For more info on please check [Supplemental documentation: Application details](https://docs.google.com/document/d/11zRncHlwVxWFyMorbEyrKnI5cbyDHSolAQ-x1hS4E4o/edit#heading=h.coa66fz7ide1).
 
