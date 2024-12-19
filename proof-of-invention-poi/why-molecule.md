@@ -1,8 +1,8 @@
-# 💡 Intro to Proof of Idea (PoI)
+# 💡 Intro to Proof of Invention (PoI)
 
 ### **What is Proof of Idea?**
 
-Proof of Idea (PoI) is a blockchain-based tool that allows inventors to securely timestamp their ideas and inventions, generating cryptographic proof of their concept’s existence at a specific moment in time. This timestamp acts as verifiable evidence, inventors can later mint an IP-NFT from their Proof of Idea (PoI) generating an inmutable record and establish legitimate ownership of their invention.
+Proof of Invention (PoI) is a blockchain-based tool that allows inventors to securely timestamp their ideas and inventions, generating cryptographic proof of their concept’s existence at a specific moment in time. This timestamp acts as verifiable evidence, inventors can later mint an IP-NFT from their Proof of Invention (PoI) generating an inmutable record and establish legitimate ownership of their invention.&#x20;
 
 ### **Purpose**
 
