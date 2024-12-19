@@ -7,8 +7,8 @@
 
 ## Proof of Idea (PoI)
 
-* [💡 Intro to Proof of Idea (PoI)](proof-of-idea-poi/why-molecule.md)
-* [💮 How to register ideas?](proof-of-idea-poi/why-molecule-1.md)
+* [💡 Intro to Proof of Idea (PoI)](proof-of-idea-poi/intro-to-proof-of-idea-poi.md)
+* [💮 How to register ideas?](proof-of-idea-poi/how-to-register-ideas.md)
 
 ## Catalyst
 
