@@ -11,7 +11,7 @@
 4. **Verify ownership**\
    When needed, you can easily prove to the system and to others ownership of the idea by revealing only a portion of the proof (e.g., a specific file), without disclosing the entire set of files or original content. This allows you to maintain confidentiality while validating your claim to the idea. It’s important to keep an original and exact copy of the files you presented to prove that you are the original creator.
 5. **Mint an IP-NFT (Optional)**\
-   If you decide to take the next step in protecting your idea, you can mint an IPNFT from a Proof of Idea (PoI). This IP-NFT will ensure you have legitimate ownership over Intellectual Property\* rights associated with your idea, enabling you to tokenize your intellectual property and engage in future transactions or collaborations.&#x20;
+   If you decide to take the next step in protecting your idea, you can mint an IPNFT from a Proof of Idea (PoI). This IP-NFT will ensure you have legitimate ownership over Intellectual Property rights associated with your idea, enabling you to tokenize your intellectual property and engage in future transactions or collaborations.&#x20;
 
 {% hint style="info" %}
 **Important Note:**\
