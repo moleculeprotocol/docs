@@ -5,7 +5,7 @@
 1. **Connect** \
    To get started, visit and connect to the [Proof of](https://poi.molecule.xyz/)[ Idea App](https://poi.molecule.xyz/). Your wallet will serve as your _identity_ for idea registration.
 2. **Present your Idea**\
-   Drop your idea as digital files—these can include docs, sketches or images, code, or other formats. The content of your idea remains private and secure, as it is not uploaded to any service. You are simply presenting your confidential files, not sharing them with third parties.
+   Drop your idea as digital files—these can include docs, sketches or images, code, or other formats. The content of your idea remains private and secure, as it is not uploaded to any service. You are simply presenting your confidential files.
 3. **Create a timestamped proof**\
    After presenting your digital files, the system generates a unique hash and anchors it on-chain, creating a transaction that links your idea to your wallet. This hash serves as an immutable record of your idea, timestamped to the exact moment of creation. The proof cannot be altered, ensuring the integrity of your idea.
 4. **Verify ownership**\
