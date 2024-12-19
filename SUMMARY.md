@@ -5,6 +5,11 @@
 * [🔬 What is Molecule?](README.md)
 * [💡 Why Molecule?](introduction/why-molecule.md)
 
+## Proof of Idea (PoI)
+
+* [💡 Intro to Proof of Idea (PoI)](proof-of-idea-poi/why-molecule.md)
+* [💮 How to register ideas?](proof-of-idea-poi/why-molecule-1.md)
+
 ## Catalyst
 
 * [🌟 Intro to Catalyst](catalyst/intro-to-catalyst.md)
