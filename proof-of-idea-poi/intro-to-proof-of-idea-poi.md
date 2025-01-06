@@ -11,6 +11,8 @@ Proof of Idea (PoI) is a blockchain-based tool that allows inventors to securely
 * **Facilitates IP Tokenization**: If the inventor decides to pursue further protection, the on-chain proof can be used later in the IP-NFT minting process, enabling tokenization of their intellectual property.
 * **Compatible with traditional IP systems**: PoI aligns with existing IP systems, allowing inventors to use it as evidence when filing patents or presenting their idea in legal proceedings.
 
+<figure><img src="../.gitbook/assets/From IP to (1) (1).jpg" alt=""><figcaption><p>Molecule IP Protocol </p></figcaption></figure>
+
 ***
 
 ###
