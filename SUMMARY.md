@@ -5,10 +5,10 @@
 * [🔬 What is Molecule?](README.md)
 * [💡 Why Molecule?](introduction/why-molecule.md)
 
-## Proof of Idea (PoI)
+## Proof of Invention (PoI)
 
-* [💡 Intro to Proof of Idea (PoI)](proof-of-idea-poi/intro-to-proof-of-idea-poi.md)
-* [💮 How to register ideas?](proof-of-idea-poi/how-to-register-ideas.md)
+* [💡 Intro to Proof of Invention (PoI)](proof-of-invention-poi/intro-to-proof-of-invention-poi.md)
+* [💮 How to register inventions?](proof-of-invention-poi/how-to-register-inventions.md)
 
 ## Catalyst
 
