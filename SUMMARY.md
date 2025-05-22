@@ -9,6 +9,7 @@
 
 * [💡 Intro to Proof of Invention (PoI)](proof-of-invention-poi/intro-to-proof-of-invention-poi.md)
 * [💮 How to register inventions?](proof-of-invention-poi/how-to-register-inventions.md)
+* [⚙️ API Access (Beta)](proof-of-invention-poi/api-access-beta.md)
 
 ## Catalyst
 
