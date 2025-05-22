@@ -2,6 +2,10 @@
 
 IP Tokens (IPTs) represent fractional governance rights over the intellectual property (IP) generated. These tokens offer stakeholders a unique opportunity to participate directly in the development, decision-making, and future directions of the research.
 
+{% embed url="https://molecule.xyz/" %}
+Discover IPTs&#x20;
+{% endembed %}
+
 ### **How IPTs Work**:
 
 When you acquire IPTs, you are gaining a stake in the IP generated from the research, which includes patents on novel compounds, proprietary screening systems, and potentially even therapeutic methods. However, it’s important to note that IPTs do not entitle holders to guaranteed financial returns or revenue sharing from the commercialization of these assets. Instead, IPT holders benefit from the following:
