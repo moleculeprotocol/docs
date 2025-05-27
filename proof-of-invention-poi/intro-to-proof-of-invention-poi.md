@@ -13,8 +13,4 @@ Proof of Invention (PoI) is a blockchain-based tool that allows inventors to sec
 
 <figure><img src="../.gitbook/assets/From_IP_to.png" alt=""><figcaption></figcaption></figure>
 
-***
-
-###
-
-{% embed url="https://medium.com/molecule-blog/an-open-bazaar-for-drug-development-molecule-protocol-a47978dd914" %}
+{% embed url="https://www.molecule.to/blog/quick-start-guide-to-registering-your-proof-of-invention" %}

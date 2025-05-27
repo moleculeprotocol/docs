@@ -15,4 +15,8 @@ Our value proposition:
 2. **Smart Contracts**: Automated smart contracts streamline transactions and enforce agreements, reducing administrative burdens and costs.
 3. **Global Reach**: Molecule's connects innovators with a global network of funders and collaborators, enhancing the potential for cross-border partnerships and funding, fostering scientific breakthroughs.
 
-{% embed url="https://medium.com/molecule-blog/an-open-bazaar-for-drug-development-molecule-protocol-a47978dd914" %}
+
+
+{% embed url="https://www.molecule.to/blog/the-discovery-engine-for-tokenized-science" %}
+
+{% embed url="https://www.molecule.to/blog/dr-jack-scannell-pharmas-evolving-landscape" %}

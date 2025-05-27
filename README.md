@@ -12,9 +12,6 @@ Molecule focuses on using emerging technologies in biotechnology and translation
 [Broken link](broken-reference)
 {% endcontent-ref %}
 
+{% embed url="https://www.molecule.to/" %}
 
-
-{% embed url="https://app.catalyst.molecule.xyz" %}
-Molecule Catalyst
-{% endembed %}
-
+{% embed url="https://www.molecule.to/blog/the-emerging-field-of-decentralized-science" %}
