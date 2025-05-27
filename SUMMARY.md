@@ -11,14 +11,14 @@
 * [💮 How to register inventions?](proof-of-invention-poi/how-to-register-inventions.md)
 * [⚙️ API Access (Beta)](proof-of-invention-poi/api-access-beta.md)
 
-## Catalyst
+## MOLECULE LABS
 
-* [🌟 Intro to Catalyst](catalyst/intro-to-catalyst.md)
-* [💲 How to fund projects?](catalyst/how-to-fund-projects.md)
-* [➿ Project Lifecycle](catalyst/project-lifecycle.md)
-* [↗️ Catalyst Bonding Curve](catalyst/catalyst-bonding-curve.md)
-* [👛 Fee Structure](catalyst/fee-structure.md)
-* [🧑‍🔬 Submit a Project](catalyst/submit-a-project.md)
+* [🧪 Intro to Molecule Labs](molecule-labs/intro-to-molecule-labs.md)
+* [💲 How to fund projects?](molecule-labs/how-to-fund-projects.md)
+* [➿ Project Lifecycle](molecule-labs/project-lifecycle.md)
+* [↗️ Catalyst Bonding Curve](molecule-labs/catalyst-bonding-curve.md)
+* [👛 Fee Structure](molecule-labs/fee-structure.md)
+* [🧑‍🔬 Submit a Project](molecule-labs/submit-a-project.md)
 
 ## IP-NFTs
 

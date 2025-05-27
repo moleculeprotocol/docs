@@ -3,6 +3,7 @@ description: >-
   Once a project is created, it is in one of the following states, described
   below: Open, Funded, Successful, or Expired. This state describes where the
   project is in its lifecycle.
+hidden: true
 ---
 
 # ➿ Project Lifecycle

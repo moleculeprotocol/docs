@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # 👛 Fee Structure
 
 Catalyst App incorporates a fee system, serving several critical functions to ensure sustainability and growth. Here's a detailed breakdown of the fee structure and its rationale.

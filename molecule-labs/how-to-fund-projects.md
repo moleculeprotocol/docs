@@ -1,7 +1,8 @@
 ---
 description: >-
-  If you want to fund research projects via Catalyst, you can do so by
-  contributing ETH to projects.
+  If you want to fund research projects via , you can do so by contributing ETH
+  to projects.
+hidden: true
 ---
 
 # 💲 How to fund projects?

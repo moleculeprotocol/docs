@@ -13,6 +13,6 @@ Our value proposition:
 
 1. **Decentralization**: Unlike traditional IP management systems, Molecule operates on a decentralized network, reducing reliance on intermediaries.
 2. **Smart Contracts**: Automated smart contracts streamline transactions and enforce agreements, reducing administrative burdens and costs.
-3. **Global Reach**: Molecule's platform connects innovators with a global network of funders and collaborators, enhancing the potential for cross-border partnerships and funding, fostering scientific breakthroughs
+3. **Global Reach**: Molecule's connects innovators with a global network of funders and collaborators, enhancing the potential for cross-border partnerships and funding, fostering scientific breakthroughs.
 
 {% embed url="https://medium.com/molecule-blog/an-open-bazaar-for-drug-development-molecule-protocol-a47978dd914" %}
