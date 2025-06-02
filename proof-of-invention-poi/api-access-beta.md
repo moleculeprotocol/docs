@@ -46,9 +46,8 @@ curl -X POST \
 ```json
 {
   "success": true,
-  "result": {
-    "root": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-    "merkleTree": {
+  "data": {
+    "proof": {
       "format": "simple-v1",
       "tree": [
         "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -67,8 +66,8 @@ curl -X POST \
       ]
     },
     "transaction": {
-      "payload": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-      "recipient": "0x1DEA29b04a59000b877979339a457d5aBE315b52"
+      "data": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      "to": "0x1DEA29b04a59000b877979339a457d5aBE315b52"
     }
   },
   "metadata": {
