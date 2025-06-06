@@ -19,6 +19,7 @@
 * [↗️ Catalyst Bonding Curve](molecule-labs/catalyst-bonding-curve.md)
 * [👛 Fee Structure](molecule-labs/fee-structure.md)
 * [🧑‍🔬 Submit a Project](molecule-labs/submit-a-project.md)
+* [📁 How is data stored immutably, prevented from loss, and made verifiable?](molecule-labs/how-is-data-stored-immutably-prevented-from-loss-and-made-verifiable.md)
 
 ## IP-NFTs
 
