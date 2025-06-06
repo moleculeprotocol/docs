@@ -1,4 +1,4 @@
-# 📁 How is data stored immutably, prevented from loss, and made verifiable?
+# 📁 How is data stored?
 
 Molecule Labs leverages **Kamu** to ensure that all project data is stored in a fully decentralized, tamper-proof manner. By integrating Kamu’s Web3-native storage capabilities, Molecule Labs provides researchers and communities with reliable, auditable, and reproducible data access—eliminating single points of failure and guaranteeing data integrity over time.
 
