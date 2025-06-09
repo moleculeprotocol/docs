@@ -1,6 +1,6 @@
 # 📁 How is data stored?
 
-Molecule Labs integrates **Kamu**, a Web3-native data engine, to give every research project an iron-clad memory. Together, they create a decentralized backbone where datasets live in many places at once, record their own histories, and can’t be quietly altered. Researchers and community members always see the same numbers—and can prove it.
+Molecule Labs integrates Kamu, a Web3-native data engine, to give every research project a trust layer, creating a decentralized backbone where datasets live in many places at once, record their own histories, and can’t be quietly altered. Researchers and community members always see the same numbers—and can prove it.
 
 #### How the Integration Works
 
