@@ -7,7 +7,7 @@ Molecule Labs integrates Kamu, a Web3-native data engine, to give every research
 * **Immutable Ledgers** – Each update adds a new, permanent “page” instead of overwriting the old one.
 * **Cryptographic Fingerprints** – Every page is sealed with a unique hash; if anything changes later, the seal breaks and tampering is obvious.
 * **Redundant Storage** – Identical copies of the data live across multiple independent networks, eliminating single points of failure.
-* **Instant Time Travel** – Roll back to any past version of the dataset to reproduce results or track progress.
+* **Versioning** – Roll back to any past version of the dataset to reproduce results or track progress.
 
 ### Purpose of Molecule Labs
 
