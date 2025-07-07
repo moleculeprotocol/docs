@@ -34,7 +34,7 @@ Creates a merkle tree from uploaded files and returns the merkle root along with
 
 ```bash
 curl -X POST \
-  https://poi.molecule.xyz/api/v1/inventions \
+  https://molecule.xyz/api/v1/inventions \
   -H 'Authorization: Bearer YOUR_API_KEY' \
   -H 'Content-Type: multipart/form-data' \
   -F 'files=@document1.pdf' \
