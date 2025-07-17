@@ -17,14 +17,6 @@
 * [🧑‍🔬 Submit a Project](molecule-labs/submit-a-project.md)
 * [📁 How is data stored?](molecule-labs/how-is-data-stored.md)
 
-## MOLECULE LABS (OLD)
-
-* [🧪 Intro to Molecule Labs](molecule-labs-old/intro-to-molecule-labs.md)
-* [💲 How to fund projects?](molecule-labs-old/how-to-fund-projects.md)
-* [➿ Project Lifecycle](molecule-labs-old/project-lifecycle.md)
-* [↗️ Catalyst Bonding Curve](molecule-labs-old/catalyst-bonding-curve.md)
-* [👛 Fee Structure](molecule-labs-old/fee-structure.md)
-
 ## IP-NFTs
 
 * [⚡ Intro to IP-NFT](ip-nfts/intro-to-ip-nft.md)
