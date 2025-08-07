@@ -34,6 +34,8 @@ description: Molecule Insights & Research Assistant
 * **OpenAI GPT‑4o**: Powers both local logic (evaluation) and web‑augmented generation.
 * **Langfuse**: Monitors performance metrics and feedback to refine [MIRA](https://mira.molecule.xyz/).
 
+Check our [MIRA Github Repo](https://github.com/moleculeprotocol/mira-ai-prototype-v0) for more info.
+
 ### Context & Strategy
 
 * **Genesis**: Announced in July 2025, MIRA v0 marks Molecule’s first foray into AI‑driven tools to democratize access to DeSci knowledge.
