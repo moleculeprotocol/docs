@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # 🧑‍🔬 Submit a Project
 
 Our mission at Molecule is to expedite translational R\&D by providing funding and support to research areas and stages currently underserved by traditional grants and venture capital funding. We seek to support scientific projects with commercial potential, especially those leading to tangible biomedical products like therapeutics and diagnostics. \
