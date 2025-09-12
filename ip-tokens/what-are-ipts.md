@@ -8,7 +8,7 @@ Discover IPTs&#x20;
 
 ### **How IPTs Work**:
 
-When you acquire IPTs, you are gaining a stake in the IP generated from the research, which includes patents on novel compounds, proprietary screening systems, and potentially even therapeutic methods. However, it’s important to note that IPTs do not entitle holders to guaranteed financial returns or revenue sharing from the commercialization of these assets. Instead, IPT holders benefit from the following:
+When you acquire IPTs, you are gaining governance rights over IP, which includes patents on novel compounds, proprietary screening systems, and potentially even therapeutic methods. However, it’s important to note that IPTs do not entitle holders ownership or guaranteed financial returns or revenue sharing from the commercialization of these assets. Instead, IPT holders benefit from the following:
 
 * **Governance Rights:** IPT holders can participate in key decisions related to the development, management, and licensing of the intellectual property. This includes voting on important milestones, strategic partnerships, and the allocation of research funds, allowing the community to have a direct influence on the direction of the project.\
 
