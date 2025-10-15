@@ -2,6 +2,7 @@
 description: >-
   A brief primer on multi-signature wallets - the way organizations can interact
   with Molecule's decentralized applications (dApps).
+hidden: true
 ---
 
 # 🏦 Wallets
