@@ -30,16 +30,12 @@
 ## 🧑‍🔬 IP Tokens
 
 * [💊 What are IP Tokens?](ip-tokens/what-are-ipts.md)
-* [💊 What are IP Tokens?](ip-tokens/what-are-ipts-1.md)
 * [✨ How to tokenize IPTs from an IP-NFT?](ip-tokens/how-to-fractionalize-an-ip-nft.md)
 * [🌟 How to buy or trade IPTs](ip-tokens/how-to-buy-or-trade-ipts.md)
 * [⚖️ What are risks of IP-NFTs and IPTs?](ip-tokens/what-are-risks-of-ip-nfts.md)
-* [👨‍👩‍👧‍👦 What is a crowdsale of IPTs?](ip-tokens/what-is-a-crowdsale-of-ipts.md)
-* [✨ How to participate in a crowdsale of IPTs?](ip-tokens/how-to-participate-in-a-crowdsale-of-ipts.md)
 
 ## IP Tokenization Guide
 
-* [🗺️ IP Tokenization Guide](ip-tokenization-guide/ip-tokenization-guide.md)
 * [🏦 Wallets](ip-tokenization-guide/wallets.md)
 
 ## 🌌 MIRA
