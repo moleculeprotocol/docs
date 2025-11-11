@@ -2,9 +2,10 @@
 description: >-
   A guide for DAOs to tokenize their IP in partnership with a researcher and
   their affiliated organization.
+hidden: true
 ---
 
-# 🗺 IP Tokenization Guide
+# 🗺️ IP Tokenization Guide
 
 Below is a checklist of items that will be needed to tokenize an IP-NFT. If you are unfamiliar with [IP-NFTs](https://docs.molecule.to/documentation/ip-nfts/intro-to-ip-nft) or [IP Tokens](https://docs.molecule.to/documentation/ip-tokens/what-are-ipts), we highly recommend you read over those sections before proceeding. This guide will go over the logistics required to tokenize an IP-NFT, and for further information on the technical protocol, please read [here](https://docs.molecule.to/documentation/ip-tokens/what-is-a-crowdsale-of-ipts).&#x20;
 
@@ -16,7 +17,7 @@ Tokenizing an IP-NFT into IP Tokens enables the IP rights to be decentralized di
 2. **Whitepaper:** The Whitepaper describes the project in detail, and includes items like the project's background, research plans, risks, budget, timelines, tokenomics, and disclaimers. It is meant to have broad coverage for the curious funder interested in understanding the project deeply. Example whitepapers can be found [here](https://drive.google.com/file/d/1L39FEWw777lFpGvDEb1HOjFzupCq1duw/view) and [here](https://moleculecloud.app.box.com/v/VITAFASTWhitepaper).
 3. **Pitch Deck:** The data room should contain a [pitch deck](https://moleculecloud.app.box.com/v/vitafastdataroom/file/1235382249866) to summarize the research program, showing (blinded) data generated to date, and plans for future research. This pitch deck is likely the most important piece of collateral to be created in preparation for the IP Token [Crowdsale](https://docs.molecule.to/documentation/ip-tokens/what-is-a-crowdsale-of-ipts).
 4. **Presentation:** We recommend a [video recording](https://moleculecloud.app.box.com/v/vitafastdataroom/file/1234473893672) to go along with the pitch deck, to educate the community about the research.
-5. **Ask-me-anything (AMA):** After the Presentation has been released, a [community call](https://www.youtube.com/watch?v=f9SdhUY4\_gU) for funders to engage directly with the researcher may be useful as an efficient means of getting the diligence questions answered.&#x20;
+5. **Ask-me-anything (AMA):** After the Presentation has been released, a [community call](https://www.youtube.com/watch?v=f9SdhUY4_gU) for funders to engage directly with the researcher may be useful as an efficient means of getting the diligence questions answered.&#x20;
 6. **Lab Tour:** Though not required, a [lab tour](https://moleculecloud.app.box.com/v/vitafastdataroom/file/1233367577070) is an effective way to bring the community closer to your lab and research. We suggest highlighting the work and team that will be funded, as well as the instruments that will be used to conduct experiments.
 7. **Press Release:** For maximum reach, we recommend a press release in collaboration between the DAO, the university technology transfer office, and the researcher. Examples are [here](https://www.lifespan.io/news/vitadao-launches-vita-fast-tokens/) and [here](https://longevity.technology/news/vitadao-launches-vita-fast-tokens-building-on-2000-initial-oversubscription/).&#x20;
 8. **Researcher Wallet:** If the researcher will be receiving IP Tokens, those tokens will need to be held in a wallet connected to the Ethereum blockchain. We suggest holding them in a [non-custodial wallet](https://www.gemini.com/cryptopedia/crypto-wallets-custodial-vs-noncustodial#section-custodial-crypto-wallets-pro-and-cons) such as [Metamask](https://metamask.io/download/) or [Rabby](https://rabby.io/). You will have to share your wallet address (0x...) with the DAO so they can send the IP tokens to the correct wallet.

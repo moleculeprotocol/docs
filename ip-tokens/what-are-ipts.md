@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # 💊 What are IP Tokens?
 
 IP Tokens (IPTs) represent fractional governance rights over the intellectual property (IP) generated. These tokens offer stakeholders a unique opportunity to participate directly in the development, decision-making, and future directions of the research.

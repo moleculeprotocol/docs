@@ -2,6 +2,7 @@
 description: >-
   Crowdsales of IPTs enable researchers to raise funds for development of an
   IP-NFT.
+hidden: true
 ---
 
 # ✨ How to participate in a crowdsale of IPTs?
