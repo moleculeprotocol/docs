@@ -16,6 +16,7 @@
 * [🧪 Intro to Molecule Labs](molecule-labs/intro-to-molecule-labs.md)
 * [🧑‍🔬 Submit a Project](molecule-labs/submit-a-project.md)
 * [📁 How is data stored?](molecule-labs/how-is-data-stored.md)
+* [⚙️ Programmatic Access](molecule-labs/programmatic-access.md)
 
 ## IP-NFTs
 
@@ -41,3 +42,10 @@
 ## 🌌 MIRA
 
 * [✨ MIRA](mira/mira.md)
+
+## API Reference
+
+* [📡 API Overview](api-reference/README.md)
+* [📊 Data API](api-reference/data-api.md)
+* [🔐 Tokenization API](api-reference/tokenization-api.md)
+* [📁 Labs API](api-reference/labs-api.md)
