@@ -6,15 +6,15 @@ The Programmatic File Upload API allows developers to automate file uploads to M
 
 ### Use Cases
 
-* **Automated Data Pipelines**: Schedule regular data synchronization from research systems
-* **CI/CD Integration**: Automatically publish build artifacts and test results
-* **External System Integration**: Connect third-party tools and platforms to your Lab
-* **Batch Operations**: Upload multiple files programmatically
-* **Monitoring & Alerting**: Automated upload of logs and metrics
+- **Automated Data Pipelines**: Schedule regular data synchronization from research systems
+- **CI/CD Integration**: Automatically publish build artifacts and test results
+- **External System Integration**: Connect third-party tools and platforms to your Lab
+- **Batch Operations**: Upload multiple files programmatically
+- **Monitoring & Alerting**: Automated upload of logs and metrics
 
 > **Ready for Production**: This API is production-ready and actively used by projects for automated data management. To request API access, please join our [Discord community](https://t.co/L0VEiy4Bjk) and reach out to our team.
 
-***
+---
 
 ## Authentication
 
@@ -29,14 +29,14 @@ To obtain access credentials:
 
 1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
 2. Contact the Molecule team and provide:
-   * Your wallet address (will be linked to the service token)
-   * Intended use case / service name
-   * Which lab/dataroom you need access to
-   * Desired token expiration period
+   - Your wallet address (will be linked to the service token)
+   - Intended use case / service name
+   - Which lab/dataroom you need access to
+   - Desired token expiration period
 3. The team will generate and provide you with:
-   * **API Key** - Used for all Molecule APIs
-   * **Service Token** (JWT string) - Grants access to specific lab
-   * **Token ID** - For management operations
+   - **API Key** - Used for all Molecule APIs
+   - **Service Token** (JWT string) - Grants access to specific lab
+   - **Token ID** - For management operations
 
 ### Using Your Credentials
 
@@ -48,18 +48,19 @@ X-Service-Token: YOUR_SERVICE_TOKEN
 ```
 
 **Why two tokens?**
-* **API Key**: Authenticates you as a valid Molecule API user
-* **Service Token**: Identifies which specific lab/dataroom you have access to
+
+- **API Key**: Authenticates you as a valid Molecule API user
+- **Service Token**: Identifies which specific lab/dataroom you have access to
 
 **Security Warnings:**
 
-* Service tokens are shown only once during generation - store them securely immediately
-* Never commit tokens or API keys to version control
-* Never log credentials in application logs
-* Store in environment variables or secure secret management systems
-* Rotate tokens regularly (quarterly recommended)
+- Service tokens are shown only once during generation - store them securely immediately
+- Never commit tokens or API keys to version control
+- Never log credentials in application logs
+- Store in environment variables or secure secret management systems
+- Rotate tokens regularly (quarterly recommended)
 
-***
+---
 
 ## API Endpoints
 
@@ -109,11 +110,11 @@ mutation InitiateFileUpload(
 
 **Parameters:**
 
-| Parameter       | Type     | Required | Description                                                                         |
-| --------------- | -------- | -------- | ----------------------------------------------------------------------------------- |
-| ipnftUid        | String   | Yes      | IP-NFT unique identifier in format `contractAddress_tokenId` (e.g., `0xcaD...1_37`) |
-| contentType     | String   | Yes      | MIME type of the file (e.g., `application/pdf`, `image/png`)                      |
-| contentLength   | Int      | Yes      | File size in bytes                                                                  |
+| Parameter     | Type   | Required | Description                                                                         |
+| ------------- | ------ | -------- | ----------------------------------------------------------------------------------- |
+| ipnftUid      | String | Yes      | IP-NFT unique identifier in format `contractAddress_tokenId` (e.g., `0xcaD...1_37`) |
+| contentType   | String | Yes      | MIME type of the file (e.g., `application/pdf`, `image/png`)                        |
+| contentLength | Int    | Yes      | File size in bytes                                                                  |
 
 **Example Request (curl):**
 
@@ -233,20 +234,20 @@ mutation FinishFileUpload(
 
 **Parameters:**
 
-| Parameter    | Type       | Required | Description                                                                |
-| ------------ | ---------- | -------- | -------------------------------------------------------------------------- |
-| ipnftUid     | String     | Yes      | Same IP-NFT identifier used in Step 1                                      |
-| uploadToken  | String     | Yes      | Token received from Step 1                                                 |
-| path         | String     | No*      | File name for NEW files (e.g., `research-data.pdf`)                       |
-| ref          | String     | No*      | Dataset ID for NEW VERSIONS of existing files                              |
-| accessLevel  | String     | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`                          |
-| changeBy     | String     | Yes      | Wallet address of user making the change                                   |
-| description  | String     | No       | Optional file description                                                  |
-| tags         | [String]   | No       | Optional tags for categorization                                           |
-| categories   | [String]   | No       | Optional categories for organization                                       |
-| contentText  | String     | No       | Optional searchable text content (used for semantic search)                |
+| Parameter   | Type     | Required | Description                                                 |
+| ----------- | -------- | -------- | ----------------------------------------------------------- |
+| ipnftUid    | String   | Yes      | Same IP-NFT identifier used in Step 1                       |
+| uploadToken | String   | Yes      | Token received from Step 1                                  |
+| path        | String   | No\*     | File name for NEW files (e.g., `research-data.pdf`)         |
+| ref         | String   | No\*     | Dataset ID for NEW VERSIONS of existing files               |
+| accessLevel | String   | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`            |
+| changeBy    | String   | Yes      | Wallet address of user making the change                    |
+| description | String   | No       | Optional file description                                   |
+| tags        | [String] | No       | Optional tags for categorization                            |
+| categories  | [String] | No       | Optional categories for organization                        |
+| contentText | String   | No       | Optional searchable text content (used for semantic search) |
 
-_*Use `path` for new files OR `ref` for versions - not both_
+_\*Use `path` for new files OR `ref` for versions - not both_
 
 **Example Request (curl):**
 
@@ -288,7 +289,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 }
 ```
 
-***
+---
 
 ### Update File Metadata
 
@@ -329,15 +330,15 @@ mutation UpdateFileMetadata(
 
 **Parameters:**
 
-| Parameter    | Type     | Required | Description                                                      |
-| ------------ | -------- | -------- | ---------------------------------------------------------------- |
-| ipnftUid     | String   | Yes      | IP-NFT unique identifier                                         |
-| ref          | String   | Yes      | File reference (DID) from `finishCreateOrUpdateFileV2` response |
-| accessLevel  | String   | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`                |
-| description  | String   | No       | Updated file description                                         |
-| tags         | [String] | No       | Updated tags for categorization                                  |
-| categories   | [String] | No       | Updated categories for organization                              |
-| contentText  | String   | No       | Updated searchable text content                                  |
+| Parameter   | Type     | Required | Description                                                     |
+| ----------- | -------- | -------- | --------------------------------------------------------------- |
+| ipnftUid    | String   | Yes      | IP-NFT unique identifier                                        |
+| ref         | String   | Yes      | File reference (DID) from `finishCreateOrUpdateFileV2` response |
+| accessLevel | String   | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`                |
+| description | String   | No       | Updated file description                                        |
+| tags        | [String] | No       | Updated tags for categorization                                 |
+| categories  | [String] | No       | Updated categories for organization                             |
+| contentText | String   | No       | Updated searchable text content                                 |
 
 > **Note**: The `changeBy` field (wallet address) is automatically derived from your authentication and does not need to be provided as a parameter.
 
@@ -362,7 +363,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
-***
+---
 
 ### Delete File
 
@@ -371,16 +372,8 @@ Remove a file from the dataroom permanently.
 **GraphQL Mutation:**
 
 ```graphql
-mutation DeleteFile(
-  $ipnftUid: String!
-  $path: String!
-  $changeBy: String!
-) {
-  deleteDataRoomFileV2(
-    ipnftUid: $ipnftUid
-    path: $path
-    changeBy: $changeBy
-  ) {
+mutation DeleteFile($ipnftUid: String!, $path: String!, $changeBy: String!) {
+  deleteDataRoomFileV2(ipnftUid: $ipnftUid, path: $path, changeBy: $changeBy) {
     ipnftUid
     filePath
     isSuccess
@@ -395,11 +388,11 @@ mutation DeleteFile(
 
 **Parameters:**
 
-| Parameter | Type   | Required | Description                              |
-| --------- | ------ | -------- | ---------------------------------------- |
-| ipnftUid  | String | Yes      | IP-NFT unique identifier                 |
-| path      | String | Yes      | File path to delete                      |
-| changeBy  | String | Yes      | Wallet address making the deletion       |
+| Parameter | Type   | Required | Description                        |
+| --------- | ------ | -------- | ---------------------------------- |
+| ipnftUid  | String | Yes      | IP-NFT unique identifier           |
+| path      | String | Yes      | File path to delete                |
+| changeBy  | String | Yes      | Wallet address making the deletion |
 
 > **Warning**: This is a destructive operation. The file will be permanently deleted from the dataroom and cannot be recovered.
 
@@ -420,7 +413,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
-***
+---
 
 ### Create Announcement
 
@@ -454,12 +447,12 @@ mutation CreateAnnouncement(
 
 **Parameters:**
 
-| Parameter    | Type     | Required | Description                                         |
-| ------------ | -------- | -------- | --------------------------------------------------- |
-| ipnftUid     | String   | Yes      | IP-NFT unique identifier                            |
-| headline     | String   | Yes      | Announcement title/headline                         |
-| body         | String   | Yes      | Announcement body (supports Markdown)               |
-| attachments  | [String] | No       | Array of file DIDs to attach to the announcement    |
+| Parameter   | Type     | Required | Description                                      |
+| ----------- | -------- | -------- | ------------------------------------------------ |
+| ipnftUid    | String   | Yes      | IP-NFT unique identifier                         |
+| headline    | String   | Yes      | Announcement title/headline                      |
+| body        | String   | Yes      | Announcement body (supports Markdown)            |
+| attachments | [String] | No       | Array of file DIDs to attach to the announcement |
 
 **Example Request:**
 
@@ -479,7 +472,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
-***
+---
 
 ### Querying Projects and Files
 
@@ -611,23 +604,116 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 #### Project Activity Feed
 
-Get activity timeline for a specific project.
+Get activity timeline for a specific project including file events and announcements.
 
 **GraphQL Query:**
 
 ```graphql
 query GetActivity($ipnftUid: ID!, $page: Int, $perPage: Int) {
   projectActivityV2(ipnftUid: $ipnftUid, page: $page, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      currentPage
+      totalPages
+    }
     nodes {
       __typename
       ... on ProjectEventFileAddedV2 {
-        entry { ref }
+        entry {
+          ref
+        }
       }
       ... on ProjectEventAnnouncementV2 {
         announcement {
+          id
           headline
           body
           systemTime
+          changeBy
+          attachments {
+            id
+            did
+            path
+            name
+            contentType
+            accessLevel
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+> **⚠️ Breaking Change**: Announcement `attachments` changed from `[String!]!` (array of DIDs) to `[DataRoomFile!]!` (array of file objects). This enables querying file metadata directly without separate API calls.
+
+**Example Request:**
+
+```bash
+curl -X POST https://production.graphql.api.molecule.xyz/graphql \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
+  -d '{
+    "query": "query GetActivity($ipnftUid: ID!, $page: Int) { projectActivityV2(ipnftUid: $ipnftUid, page: $page, perPage: 20) { pageInfo { hasNextPage currentPage totalPages } nodes { __typename ... on ProjectEventAnnouncementV2 { announcement { headline attachments { did path contentType } } } } } }",
+    "variables": {
+      "ipnftUid": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37",
+      "page": 0
+    }
+  }'
+```
+
+**Performance Note**: Attachment fields in `projectActivityV2` are limited to essential display fields (did, path, name, contentType, accessLevel) for optimal performance. For full attachment metadata including downloadUrl and encryption details, use `projectAnnouncementsV2` instead.
+
+#### Project Announcements (Dedicated Endpoint)
+
+Get announcements for a specific project with full attachment details. More efficient than `projectActivityV2` when you only need announcements.
+
+**GraphQL Query:**
+
+```graphql
+query GetProjectAnnouncements($ipnftUid: String!, $page: Int, $perPage: Int) {
+  projectAnnouncementsV2(ipnftUid: $ipnftUid, page: $page, perPage: $perPage) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      currentPage
+      totalPages
+    }
+    nodes {
+      id
+      headline
+      body
+      systemTime
+      eventTime
+      changeBy
+      project {
+        ipnftUid
+        ipnftSymbol
+        ipnftAddress
+        ipnftTokenId
+      }
+      attachments {
+        id
+        did
+        path
+        name
+        contentType
+        accessLevel
+        version
+        contentHash
+        description
+        categories
+        tags
+        downloadUrl
+        downloadUrlExpiry
+        encryptionMetadata {
+          dataToEncryptHash
+          encryptedBy
+          chain
+          litNetwork
         }
       }
     }
@@ -643,15 +729,23 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'x-api-key: YOUR_API_KEY' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "query GetActivity($ipnftUid: ID!, $page: Int) { projectActivityV2(ipnftUid: $ipnftUid, page: $page, perPage: 20) { nodes { __typename } } }",
+    "query": "query GetProjectAnnouncements($ipnftUid: String!, $page: Int, $perPage: Int) { projectAnnouncementsV2(ipnftUid: $ipnftUid, page: $page, perPage: $perPage) { totalCount pageInfo { hasNextPage currentPage } nodes { headline body attachments { did path contentType downloadUrl } } } }",
     "variables": {
       "ipnftUid": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37",
-      "page": 0
+      "page": 0,
+      "perPage": 20
     }
   }'
 ```
 
-#### All Announcements
+**Use Cases:**
+
+- Announcement detail pages requiring full file metadata
+- Download links for announcement attachments
+- Encrypted file access with Lit Protocol
+- Projects with many announcements (efficient pagination)
+
+#### All Announcements (Global Feed)
 
 Get all announcements across all projects.
 
@@ -670,12 +764,22 @@ query GetAllAnnouncements($page: Int, $perPage: Int) {
         ipnftUid
         ipnftSymbol
       }
+      attachments {
+        id
+        did
+        path
+        name
+        contentType
+        accessLevel
+      }
     }
   }
 }
 ```
 
-***
+> **Note**: Attachment fields in `activitiesV2` are limited for performance. Use `projectAnnouncementsV2` for full attachment metadata including downloadUrl.
+
+---
 
 ### Searching Labs
 
@@ -722,6 +826,14 @@ query SearchLabs(
           headline
           body
           systemTime
+          attachments {
+            id
+            did
+            path
+            name
+            contentType
+            accessLevel
+          }
         }
         project {
           ipnftUid
@@ -742,22 +854,22 @@ query SearchLabs(
 
 **Parameters:**
 
-| Parameter | Type                | Required | Description                                |
-| --------- | ------------------- | -------- | ------------------------------------------ |
-| prompt    | String              | Yes      | Search query text                          |
-| filters   | SearchLabsFilters   | No       | Filter criteria                            |
-| page      | Int                 | No       | Page number (default: 0)                   |
-| perPage   | Int                 | No       | Results per page (default: 10)             |
+| Parameter | Type              | Required | Description                    |
+| --------- | ----------------- | -------- | ------------------------------ |
+| prompt    | String            | Yes      | Search query text              |
+| filters   | SearchLabsFilters | No       | Filter criteria                |
+| page      | Int               | No       | Page number (default: 0)       |
+| perPage   | Int               | No       | Results per page (default: 10) |
 
 **Available Filters:**
 
-| Filter           | Type      | Description                                    |
-| ---------------- | --------- | ---------------------------------------------- |
-| byIpnftUids      | [String!] | Filter by specific project UIDs                |
-| byTags           | [String!] | Filter files by tags                           |
-| byCategories     | [String!] | Filter files by categories                     |
-| byAccessLevels   | [String!] | Filter files by access level (PUBLIC, HOLDERS, ADMIN) |
-| byKinds          | [String!] | Filter by result type                          |
+| Filter         | Type      | Description                                           |
+| -------------- | --------- | ----------------------------------------------------- |
+| byIpnftUids    | [String!] | Filter by specific project UIDs                       |
+| byTags         | [String!] | Filter files by tags                                  |
+| byCategories   | [String!] | Filter files by categories                            |
+| byAccessLevels | [String!] | Filter files by access level (PUBLIC, HOLDERS, ADMIN) |
+| byKinds        | [String!] | Filter by result type                                 |
 
 **Example - Basic Search:**
 
@@ -799,22 +911,22 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 Search results are returned as a union type. Use the `__typename` field to determine result type:
 
-* **SearchLabsFileHit**: File search result
-  * Access via: `entry.file`
-  * Contains: file metadata, tags, categories, download URL
-* **SearchLabsAnnouncementHit**: Announcement search result
-  * Access via: `announcement`
-  * Contains: headline, body, project reference
+- **SearchLabsFileHit**: File search result
+  - Access via: `entry.file`
+  - Contains: file metadata, tags, categories, download URL
+- **SearchLabsAnnouncementHit**: Announcement search result
+  - Access via: `announcement`
+  - Contains: headline, body, project reference, **typed attachments** (file objects)
 
 **JavaScript Example:**
 
 ```javascript
 const searchResults = await fetch(apiUrl, {
-  method: 'POST',
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
-    'x-api-key': process.env.API_KEY,
-    'X-Service-Token': process.env.SERVICE_TOKEN
+    "Content-Type": "application/json",
+    "x-api-key": process.env.API_KEY,
+    "X-Service-Token": process.env.SERVICE_TOKEN,
   },
   body: JSON.stringify({
     query: `query SearchLabs($prompt: String!) {
@@ -828,29 +940,41 @@ const searchResults = await fetch(apiUrl, {
             }
           }
           ... on SearchLabsAnnouncementHit {
-            announcement { headline }
+            announcement {
+              headline
+              attachments {
+                did
+                path
+                contentType
+                accessLevel
+              }
+            }
           }
         }
         totalCount
       }
     }`,
-    variables: { prompt: "latest results" }
-  })
+    variables: { prompt: "latest results" },
+  }),
 });
 
 const { nodes, totalCount } = (await searchResults.json()).data.searchLabs;
 
 // Handle different result types
-nodes.forEach(node => {
-  if (node.__typename === 'SearchLabsFileHit') {
-    console.log('File:', node.entry.path);
-  } else if (node.__typename === 'SearchLabsAnnouncementHit') {
-    console.log('Announcement:', node.announcement.headline);
+nodes.forEach((node) => {
+  if (node.__typename === "SearchLabsFileHit") {
+    console.log("File:", node.entry.path);
+  } else if (node.__typename === "SearchLabsAnnouncementHit") {
+    console.log("Announcement:", node.announcement.headline);
+    // NEW: Attachments are now full file objects
+    node.announcement.attachments.forEach((file) => {
+      console.log("  Attachment:", file.path, file.contentType);
+    });
   }
 });
 ```
 
-***
+---
 
 ## Complete Example
 
@@ -907,7 +1031,7 @@ async function uploadFileToLabs(filePath, ipnftUid, serviceToken) {
     if (!initiateResult.data?.initiateCreateOrUpdateFileV2?.isSuccess) {
       throw new Error(
         initiateResult.data?.initiateCreateOrUpdateFileV2?.error?.message ||
-          "Failed to initiate upload"
+          "Failed to initiate upload",
       );
     }
 
@@ -979,14 +1103,14 @@ async function uploadFileToLabs(filePath, ipnftUid, serviceToken) {
     if (!finishResult.data?.finishCreateOrUpdateFileV2?.isSuccess) {
       throw new Error(
         finishResult.data?.finishCreateOrUpdateFileV2?.error?.message ||
-          "Failed to finish upload"
+          "Failed to finish upload",
       );
     }
 
     console.log("🎉 File upload completed successfully!");
     console.log(
       "Dataset ID:",
-      finishResult.data.finishCreateOrUpdateFileV2.datasetId
+      finishResult.data.finishCreateOrUpdateFileV2.datasetId,
     );
 
     return {
@@ -1007,7 +1131,7 @@ if (require.main === module) {
 
   if (!filePath || !ipnftUid || !serviceToken) {
     console.error(
-      'Usage: SERVICE_TOKEN="token" WALLET_ADDRESS="0x..." node upload.js <file> <ipnft-uid>'
+      'Usage: SERVICE_TOKEN="token" WALLET_ADDRESS="0x..." node upload.js <file> <ipnft-uid>',
     );
     process.exit(1);
   }
@@ -1024,7 +1148,7 @@ module.exports = { uploadFileToLabs };
 API_KEY="your-api-key" SERVICE_TOKEN="your-service-token" WALLET_ADDRESS="0x..." node upload.js data.pdf 0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37
 ```
 
-***
+---
 
 ## Service Token Management
 
@@ -1101,7 +1225,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
-***
+---
 
 ## Error Handling
 
@@ -1126,82 +1250,82 @@ All API responses follow a consistent error format:
 
 ### Common Error Codes
 
-| Status Code | Error                | Description                                                            |
-| ----------- | -------------------- | ---------------------------------------------------------------------- |
-| 401         | Unauthorized         | Missing or invalid service token                                       |
-| 403         | Forbidden            | Service token does not have access to the specified IP-NFT             |
-| 400         | Bad Request          | Invalid parameters (e.g., missing ipnftUid, invalid contentType)       |
-| 404         | Not Found            | IP-NFT or dataroom not found                                           |
-| 413         | Payload Too Large    | File exceeds size limits                                               |
-| 500         | Internal Server Error| Server error - check if retryable and try again                        |
+| Status Code | Error                 | Description                                                      |
+| ----------- | --------------------- | ---------------------------------------------------------------- |
+| 401         | Unauthorized          | Missing or invalid service token                                 |
+| 403         | Forbidden             | Service token does not have access to the specified IP-NFT       |
+| 400         | Bad Request           | Invalid parameters (e.g., missing ipnftUid, invalid contentType) |
+| 404         | Not Found             | IP-NFT or dataroom not found                                     |
+| 413         | Payload Too Large     | File exceeds size limits                                         |
+| 500         | Internal Server Error | Server error - check if retryable and try again                  |
 
 ### Troubleshooting
 
 **"Missing service token" error:**
 
-* Ensure `X-Service-Token` header is included in requests
-* Verify token is not empty or malformed
+- Ensure `X-Service-Token` header is included in requests
+- Verify token is not empty or malformed
 
 **"Service does not have access to IPNFT" error:**
 
-* Verify your wallet address (linked to service token) has admin access to the IP-NFT/dataroom
-* Check that the ipnftUid format is correct: `contractAddress_tokenId`
+- Verify your wallet address (linked to service token) has admin access to the IP-NFT/dataroom
+- Check that the ipnftUid format is correct: `contractAddress_tokenId`
 
 **"Token expired" error:**
 
-* Request a new token from the Molecule team, or
-* Use `extendServiceToken` mutation to extend expiration
+- Request a new token from the Molecule team, or
+- Use `extendServiceToken` mutation to extend expiration
 
 **Upload to presigned URL fails:**
 
-* Ensure binary file upload (use `--data-binary` in curl)
-* Verify headers match those returned in Step 1
-* Check that presigned URL hasn't expired (expires after ~15 minutes)
+- Ensure binary file upload (use `--data-binary` in curl)
+- Verify headers match those returned in Step 1
+- Check that presigned URL hasn't expired (expires after ~15 minutes)
 
 **"File not found" error (updateFileMetadataV2, deleteDataRoomFileV2):**
 
-* Verify the file `ref` (DID) or `path` is correct
-* Check that the file exists in the specified dataroom
-* Ensure you have access to the dataroom
+- Verify the file `ref` (DID) or `path` is correct
+- Check that the file exists in the specified dataroom
+- Ensure you have access to the dataroom
 
 **"Invalid search filters" error (searchLabs):**
 
-* Verify filter values match expected types (arrays of strings)
-* Check that access level values are: PUBLIC, HOLDERS, or ADMIN
-* Ensure ipnftUid format is correct if using byIpnftUids filter
+- Verify filter values match expected types (arrays of strings)
+- Check that access level values are: PUBLIC, HOLDERS, or ADMIN
+- Ensure ipnftUid format is correct if using byIpnftUids filter
 
-***
+---
 
 ## File Requirements & Limits
 
 ### Storage Limits
 
-* **Default Limit**: 5GB per lab/project
-* **Custom Limits**: Can be increased upon request - contact the Molecule team
+- **Default Limit**: 5GB per lab/project
+- **Custom Limits**: Can be increased upon request - contact the Molecule team
 
 ### Supported File Types
 
-* All file types are supported
-* Common types: PDF, PNG, JPEG, CSV, JSON, ZIP, etc.
+- All file types are supported
+- Common types: PDF, PNG, JPEG, CSV, JSON, ZIP, etc.
 
 ### Access Levels
 
-| Level    | Description                                        |
-| -------- | -------------------------------------------------- |
-| PUBLIC   | Visible to anyone with access to the project      |
-| HOLDERS  | Visible only to IP Token (IPT) holders            |
-| ADMIN    | Visible only to project administrators             |
+| Level   | Description                                  |
+| ------- | -------------------------------------------- |
+| PUBLIC  | Visible to anyone with access to the project |
+| HOLDERS | Visible only to IP Token (IPT) holders       |
+| ADMIN   | Visible only to project administrators       |
 
 ### Optional Metadata
 
 Enhance file discoverability with optional metadata:
 
-* **description**: Human-readable description of the file
-* **tags**: Array of tags for categorization (e.g., `["research", "q4-2024"]`)
-* **categories**: Array of categories for organization (e.g., `["data", "results"]`)
-* **contentText**: Searchable text content for full-text search
+- **description**: Human-readable description of the file
+- **tags**: Array of tags for categorization (e.g., `["research", "q4-2024"]`)
+- **categories**: Array of categories for organization (e.g., `["data", "results"]`)
+- **contentText**: Searchable text content for full-text search
 
-***
+---
 
 ## Advanced: Encrypted File Upload
 
@@ -1233,54 +1357,54 @@ $encryptionMetadata: EncryptionMetadataInput
 
 **When to Use Encryption:**
 
-* Sensitive research data requiring access control
-* Compliance requirements for data protection
-* Conditional access based on token ownership
+- Sensitive research data requiring access control
+- Compliance requirements for data protection
+- Conditional access based on token ownership
 
 For more information about Lit Protocol encryption, visit the [Lit Protocol documentation](https://developer.litprotocol.com/).
 
-***
+---
 
 ## Best Practices
 
 ### Token Security
 
-* **Never commit tokens** to version control (add to `.gitignore`)
-* **Use environment variables** to store tokens
-* **Rotate tokens regularly** (quarterly recommended)
-* **Use secrets management systems** in production (AWS Secrets Manager, HashiCorp Vault, etc.)
-* **Revoke immediately** if a token is compromised
+- **Never commit tokens** to version control (add to `.gitignore`)
+- **Use environment variables** to store tokens
+- **Rotate tokens regularly** (quarterly recommended)
+- **Use secrets management systems** in production (AWS Secrets Manager, HashiCorp Vault, etc.)
+- **Revoke immediately** if a token is compromised
 
 ### Storage Management
 
-* Monitor your 5GB storage limit per project
-* Organize files with meaningful names and metadata
-* Use categories and tags for easy file discovery
-* Clean up old or unnecessary files regularly
+- Monitor your 5GB storage limit per project
+- Organize files with meaningful names and metadata
+- Use categories and tags for easy file discovery
+- Clean up old or unnecessary files regularly
 
 ### Metadata Best Practices
 
-* **Use descriptive tags**: `["experiment-1", "2024-q4", "preliminary"]`
-* **Organize with categories**: `["raw-data", "analysis", "results"]`
-* **Add descriptions**: Help collaborators understand file contents
-* **Include searchable text** (`contentText`): Enables full-text search via `searchLabs`
-* **Update metadata as needed**: Use `updateFileMetadataV2` to refine tags and descriptions without re-uploading files
+- **Use descriptive tags**: `["experiment-1", "2024-q4", "preliminary"]`
+- **Organize with categories**: `["raw-data", "analysis", "results"]`
+- **Add descriptions**: Help collaborators understand file contents
+- **Include searchable text** (`contentText`): Enables full-text search via `searchLabs`
+- **Update metadata as needed**: Use `updateFileMetadataV2` to refine tags and descriptions without re-uploading files
 
 ### Access Control
 
-* Use `ADMIN` for sensitive internal documents
-* Use `HOLDERS` for IPT holder-exclusive content
-* Use `PUBLIC` for community-facing data
-* Review access levels regularly as your project evolves
+- Use `ADMIN` for sensitive internal documents
+- Use `HOLDERS` for IPT holder-exclusive content
+- Use `PUBLIC` for community-facing data
+- Review access levels regularly as your project evolves
 
 ### Search and Discovery
 
-* **Use contentText**: Populate `contentText` field when uploading files to enable full-text search
-* **Tag consistently**: Use consistent tag names across files for better filtering
-* **Filter strategically**: Combine filters (tags + access levels) to narrow search results
-* **Test search queries**: Use `searchLabs` to verify your files are discoverable
+- **Use contentText**: Populate `contentText` field when uploading files to enable full-text search
+- **Tag consistently**: Use consistent tag names across files for better filtering
+- **Filter strategically**: Combine filters (tags + access levels) to narrow search results
+- **Test search queries**: Use `searchLabs` to verify your files are discoverable
 
-***
+---
 
 ## Deprecated Operations
 
@@ -1288,26 +1412,26 @@ The following V1 operations have been replaced by improved V2 versions. **V1 ope
 
 ### Deprecated Queries
 
-| V1 Query                          | V2 Replacement                    | Key Changes                                |
-| --------------------------------- | --------------------------------- | ------------------------------------------ |
-| `projects`                        | `projectsV2`                      | Added systemTime and eventTime fields      |
-| `projectWithDataRoomAndFiles`     | `projectWithDataRoomAndFilesV2`   | Enhanced temporal tracking                 |
-| `dataRoomFile(did: String!)`      | `dataRoomFileV2(ipnftUid, path)`  | Query by IPNFT UID + path instead of DID   |
-| `projectActivity`                 | `projectActivityV2`               | Improved activity feed structure           |
-| `activities`                      | `activitiesV2`                    | Enhanced announcement structure            |
+| V1 Query                      | V2 Replacement                   | Key Changes                              |
+| ----------------------------- | -------------------------------- | ---------------------------------------- |
+| `projects`                    | `projectsV2`                     | Added systemTime and eventTime fields    |
+| `projectWithDataRoomAndFiles` | `projectWithDataRoomAndFilesV2`  | Enhanced temporal tracking               |
+| `dataRoomFile(did: String!)`  | `dataRoomFileV2(ipnftUid, path)` | Query by IPNFT UID + path instead of DID |
+| `projectActivity`             | `projectActivityV2`              | Improved activity feed structure         |
+| `activities`                  | `activitiesV2`                   | Enhanced announcement structure          |
 
 ### Deprecated Mutations
 
-| V1 Mutation             | V2 Replacement                  | Key Changes                                                      |
-| ----------------------- | ------------------------------- | ---------------------------------------------------------------- |
-| `initiateFileUpload`    | `initiateCreateOrUpdateFileV2`  | Simplified parameters, no dataset alias needed                   |
-| `finishFileUpload`      | `finishCreateOrUpdateFileV2`    | Added metadata support (tags, categories, contentText)           |
-| `deleteDataRoomFile`    | `deleteDataRoomFileV2`          | Streamlined parameters                                           |
-| `createAnnouncement`    | `createAnnouncementV2`          | **Breaking**: Removed `moleculeAccessLevel` parameter            |
+| V1 Mutation          | V2 Replacement                 | Key Changes                                            |
+| -------------------- | ------------------------------ | ------------------------------------------------------ |
+| `initiateFileUpload` | `initiateCreateOrUpdateFileV2` | Simplified parameters, no dataset alias needed         |
+| `finishFileUpload`   | `finishCreateOrUpdateFileV2`   | Added metadata support (tags, categories, contentText) |
+| `deleteDataRoomFile` | `deleteDataRoomFileV2`         | Streamlined parameters                                 |
+| `createAnnouncement` | `createAnnouncementV2`         | **Breaking**: Removed `moleculeAccessLevel` parameter  |
 
 ### Migration Guide
 
-**Breaking Change: createAnnouncement → createAnnouncementV2**
+#### Breaking Change 1: createAnnouncement → createAnnouncementV2
 
 The `moleculeAccessLevel` parameter has been removed in V2:
 
@@ -1330,9 +1454,87 @@ The `moleculeAccessLevel` parameter has been removed in V2:
 + )
 ```
 
+#### Breaking Change 2: Announcement Attachments Type Change
+
+**⚠️ BREAKING CHANGE**: Announcement attachments changed from string arrays to full file objects.
+
+**Previous Structure (V1):**
+
+```json
+{
+  "announcement": {
+    "attachments": ["did:kamu:fed01...", "did:kamu:abc23..."]
+  }
+}
+```
+
+**New Structure (V2):**
+
+```json
+{
+  "announcement": {
+    "attachments": [
+      {
+        "id": "file-1",
+        "did": "did:kamu:fed01...",
+        "path": "/research-data.pdf",
+        "name": "research-data.pdf",
+        "contentType": "application/pdf",
+        "accessLevel": "PUBLIC"
+      },
+      {
+        "id": "file-2",
+        "did": "did:kamu:abc23...",
+        "path": "/results.csv",
+        "name": "results.csv",
+        "contentType": "text/csv",
+        "accessLevel": "HOLDERS"
+      }
+    ]
+  }
+}
+```
+
+**Migration Required**: If you query announcements via `projectActivityV2`, `activitiesV2`, `searchLabs`, or `projectAnnouncementsV2`, update your code to handle attachment objects instead of strings:
+
+**Before:**
+
+```javascript
+announcement.attachments.forEach((did) => {
+  // Had to make separate API call to get file details
+  fetchFileByDid(did).then((file) => displayFile(file));
+});
+```
+
+**After:**
+
+```javascript
+announcement.attachments.forEach((file) => {
+  // File details already available
+  displayFile(file);
+  console.log(file.contentType, file.accessLevel);
+});
+```
+
+**Benefits:**
+
+- ✅ No additional API calls needed for file metadata
+- ✅ Better developer experience
+- ✅ Reduced API load
+- ✅ Type-safe attachment handling
+
+**Field Availability by Query:**
+
+| Query                    | Attachment Fields Available                                        |
+| ------------------------ | ------------------------------------------------------------------ |
+| `projectActivityV2`      | Minimal (did, path, name, contentType, accessLevel)                |
+| `activitiesV2`           | Minimal (did, path, name, contentType, accessLevel)                |
+| `searchLabs`             | Minimal (did, path, name, contentType, accessLevel)                |
+| `projectAnnouncementsV2` | **Full** (includes downloadUrl, encryptionMetadata, version, etc.) |
+
 **All other V1 → V2 migrations are backward-compatible** with additional optional parameters in V2.
 
-***
+---
 
 ## Getting Support
 
@@ -1343,6 +1545,166 @@ If you encounter any issues or have questions about the Programmatic File Upload
 3. Join our [Discord community](https://t.co/L0VEiy4Bjk) for support
 4. Contact the Molecule Labs development team directly
 
-***
+---
 
-_Last updated: December 2024_
+## Recent Updates (January 2025)
+
+### New Features
+
+#### 🔍 New Query: `searchLabs`
+
+Semantic search across all IP-NFT projects, files, and announcements:
+
+- Full-text search with AI-powered relevance ranking
+- Filter by tags, categories, access levels, project UIDs
+- Returns unified results (files + announcements)
+- Paginated results with totalCount
+
+**Benefits:**
+
+- Discover content across all Labs projects
+- Filter by multiple criteria simultaneously
+- Unified search experience
+- Support for complex queries
+
+See [Searching Labs](#searching-labs) section for complete documentation.
+
+#### 📝 New Mutation: `updateFileMetadataV2`
+
+Update file metadata without creating a new version:
+
+- Modify description, tags, categories, contentText
+- Update access level (PUBLIC, HOLDERS, ADMIN)
+- No file re-upload required
+- Preserves version history
+
+**Benefits:**
+
+- Refine file metadata after upload
+- Improve searchability with updated contentText
+- Reorganize files with new tags/categories
+- Adjust access control as needed
+
+See [Update File Metadata](#update-file-metadata) section for complete documentation.
+
+#### ✨ New Query: `projectAnnouncementsV2`
+
+Added dedicated announcements endpoint with full attachment metadata:
+
+- Fetches ONLY announcements (no file events) for better performance
+- Includes complete attachment details (downloadUrl, encryptionMetadata, etc.)
+- Efficient pagination with totalCount
+- **Use this instead of projectActivityV2 when you only need announcements**
+
+**Benefits over projectActivityV2:**
+
+- Faster response times
+- Full attachment metadata available
+- Direct pagination support
+- No file events to filter through
+
+#### 📊 Pagination Enhancement: `projectActivityV2`
+
+Added `pageInfo` object to `projectActivityV2` results:
+
+```graphql
+{
+  pageInfo {
+    hasNextPage
+    hasPreviousPage
+    currentPage
+    totalPages
+  }
+  nodes { ... }
+}
+```
+
+Enables proper client-side pagination with total page count.
+
+### Breaking Changes
+
+#### ⚠️ Announcement Attachments Type Change (IP-1025)
+
+**Affected Queries**: `projectActivityV2`, `activitiesV2`, `searchLabs`, `projectAnnouncementsV2`
+
+**What Changed:**
+
+- Attachments field type: `[String!]!` → `[DataRoomFile!]!`
+- Instead of array of DIDs, you now get full file objects
+
+**Before (Old):**
+
+```json
+"attachments": ["did:kamu:fed01...", "did:kamu:abc23..."]
+```
+
+**After (New):**
+
+```json
+"attachments": [
+  {
+    "did": "did:kamu:fed01...",
+    "path": "/data.pdf",
+    "contentType": "application/pdf",
+    "accessLevel": "PUBLIC"
+  }
+]
+```
+
+**Why This Change:**
+
+- ✅ Eliminates need for separate API calls to resolve file details
+- ✅ Improves developer experience
+- ✅ Reduces API load and complexity
+- ✅ Type-safe file handling
+
+**Migration:**
+Update your code to access file properties directly instead of using DIDs to fetch file details:
+
+```javascript
+// OLD CODE (no longer works)
+announcement.attachments.forEach(async (did) => {
+  const file = await fetchFile(did); // Extra API call needed
+  renderFile(file);
+});
+
+// NEW CODE (current)
+announcement.attachments.forEach((file) => {
+  renderFile(file); // File object already has all details
+});
+```
+
+**Field Availability:**
+
+- **Activity queries** (projectActivityV2, activitiesV2, searchLabs): Minimal fields (6 fields for performance)
+- **Announcements query** (projectAnnouncementsV2): Full fields (20+ fields including downloadUrl)
+
+### Performance Improvements
+
+#### 🚀 Optimized Activity Query Performance
+
+Reduced attachment fields in activity/search queries to prevent Lambda timeouts:
+
+**Minimal Fields (Activity Queries):**
+
+- Essential: `id`, `did`, `path`, `name`, `contentType`, `accessLevel`
+- Removed: `downloadUrl`, `encryptionMetadata`, `contentText`, `version`, `contentHash`, etc.
+
+**Result**: Faster response times, no timeout issues
+
+**Full Fields Available**: Use `projectAnnouncementsV2` when you need downloadUrl, encryptionMetadata, or other detailed fields.
+
+### Internal Improvements
+
+#### 🔧 Path Field Consistency (IP-1352)
+
+Fixed inconsistency where the `path` field differed between queries:
+
+- Now consistently uses Kamu's native `path` field
+- Improved `name` field priority: `dataset.name` → `description` → `path-derived`
+
+**Impact**: More consistent file paths across all queries
+
+---
+
+_Last updated: January 2025_
