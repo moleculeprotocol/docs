@@ -1555,7 +1555,7 @@ If you encounter any issues or have questions about the Programmatic File Upload
 
 Semantic search across all IP-NFT projects, files, and announcements:
 
-- Full-text search with AI-powered relevance ranking
+- Full-text search with relevance ranking
 - Filter by tags, categories, access levels, project UIDs
 - Returns unified results (files + announcements)
 - Paginated results with totalCount
