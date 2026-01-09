@@ -47,8 +47,11 @@ Upload files to project datarooms for secure, decentralized research data storag
 * Integrate with data pipelines and CI/CD
 * Batch upload research data
 * Manage file versions and metadata
+* Query projects and files (public access)
 
-**Authentication:** API Key + Service Token required
+**Authentication:**
+* **Read operations** (queries): API Key only - `projectsV2` and `projectWithDataRoomAndFilesV2` are public
+* **Write operations** (mutations): API Key + Service Token required
 
 [View Labs API Documentation →](labs-api.md)
 
@@ -72,11 +75,14 @@ All Molecule APIs require authentication with an API key. To request access:
 |-----|-----------------|---------|
 | **Data API** | `x-api-key` | `x-api-key: YOUR_API_KEY` |
 | **Tokenization API** | `x-api-key` | `x-api-key: YOUR_API_KEY` |
-| **Labs API** | `x-api-key`<br/>`X-Service-Token` | `x-api-key: YOUR_API_KEY`<br/>`X-Service-Token: YOUR_SERVICE_TOKEN` |
+| **Labs API (queries)** | `x-api-key` | `x-api-key: YOUR_API_KEY` |
+| **Labs API (mutations)** | `x-api-key`<br/>`X-Service-Token` | `x-api-key: YOUR_API_KEY`<br/>`X-Service-Token: YOUR_SERVICE_TOKEN` |
 
-**Why Labs API needs two tokens:**
-* **API Key**: General API authentication
-* **Service Token**: Identifies which specific lab/dataroom you have access to
+**Labs API Authentication Details:**
+* **Public queries** (`projectsV2`, `projectWithDataRoomAndFilesV2`): Only API Key required
+* **Protected mutations** (file uploads, deletions, announcements): API Key + Service Token required
+* **Service Token**: Identifies which specific lab/dataroom you have write access to
+* File-level access control is handled via Lit Protocol encryption, not query authentication
 
 ***
 
@@ -141,4 +147,4 @@ If you encounter any issues or have questions about the APIs:
 
 ***
 
-_Last updated: December 2024_
+_Last updated: January 2025_
