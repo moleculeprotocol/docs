@@ -50,8 +50,8 @@ Upload files to project datarooms for secure, decentralized research data storag
 * Query projects and files (public access)
 
 **Authentication:**
-* **Read operations** (queries): API Key only - `projectsV2` and `projectWithDataRoomAndFilesV2` are public
-* **Write operations** (mutations): API Key + Service Token required
+* **All queries** (read operations): API Key only - all queries are public
+* **All mutations** (write operations): API Key + Service Token required
 
 [View Labs API Documentation →](labs-api.md)
 
@@ -79,8 +79,8 @@ All Molecule APIs require authentication with an API key. To request access:
 | **Labs API (mutations)** | `x-api-key`<br/>`X-Service-Token` | `x-api-key: YOUR_API_KEY`<br/>`X-Service-Token: YOUR_SERVICE_TOKEN` |
 
 **Labs API Authentication Details:**
-* **Public queries** (`projectsV2`, `projectWithDataRoomAndFilesV2`): Only API Key required
-* **Protected mutations** (file uploads, deletions, announcements): API Key + Service Token required
+* **All queries are public**: Only API Key required for any read operation
+* **All mutations are protected**: API Key + Service Token required for any write operation
 * **Service Token**: Identifies which specific lab/dataroom you have write access to
 * File-level access control is handled via Lit Protocol encryption, not query authentication
 
