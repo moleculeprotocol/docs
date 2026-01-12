@@ -18,10 +18,46 @@ The Programmatic File Upload API allows developers to automate file uploads to M
 
 ## Authentication
 
-The Labs API requires **two authentication headers** for all requests:
+The Labs API has different authentication requirements depending on the operation type:
+
+> **Simple Rule**: All **queries** are public (API Key only). All **mutations** are protected (API Key + Service Token).
+
+### Public Queries (Read-Only)
+
+**All queries** are public and only require an API Key:
+- `projectsV2` - List all projects with pagination
+- `projectWithDataRoomAndFilesV2` - Get project details and files
+- `projectActivityV2` - Get activity feed for a project
+- `projectAnnouncementsV2` - Get announcements for a project
+- `activitiesV2` - Get global activity feed
+- `dataRoomFileV2` - Get file by path
+- `searchLabs` - Search across projects, files, and announcements
+
+```bash
+x-api-key: YOUR_API_KEY
+```
+
+### Protected Mutations (Write Operations)
+
+**All mutations** require authentication with **two headers**:
 
 1. **API Key** - For general API authentication
-2. **Service Token** - For lab-specific access control
+2. **Service Token** - For lab-specific write access control
+
+**Protected mutations include:**
+- `initiateCreateOrUpdateFileV2` - Initiate file upload
+- `finishCreateOrUpdateFileV2` - Complete file upload
+- `updateFileMetadataV2` - Update file metadata
+- `deleteDataRoomFileV2` - Delete a file
+- `createAnnouncementV2` - Create an announcement
+- `dataRoomPassphrase` - Get Telegram bot passphrase for a dataroom
+- `extendServiceToken` - Extend service token expiration
+- `revokeServiceToken` - Revoke a service token
+
+```bash
+x-api-key: YOUR_API_KEY
+X-Service-Token: YOUR_SERVICE_TOKEN
+```
 
 ### Obtaining API Key and Service Token
 
@@ -40,17 +76,21 @@ To obtain access credentials:
 
 ### Using Your Credentials
 
-**Both headers are required** for all Labs API requests:
+**For all queries** (read-only operations):
+```bash
+x-api-key: YOUR_API_KEY
+```
 
+**For all mutations** (write operations):
 ```bash
 x-api-key: YOUR_API_KEY
 X-Service-Token: YOUR_SERVICE_TOKEN
 ```
 
-**Why two tokens?**
+**Why two tokens for mutations?**
 
 - **API Key**: Authenticates you as a valid Molecule API user
-- **Service Token**: Identifies which specific lab/dataroom you have access to
+- **Service Token**: Identifies which specific lab/dataroom you have write access to
 
 **Security Warnings:**
 
@@ -480,30 +520,49 @@ Query operations for browsing projects, viewing files, and checking activity.
 
 #### List All Projects
 
-Get all IP-NFT projects available to you.
+Get all IP-NFT projects. This is a **public endpoint** - no authentication required.
+
+> **🔓 Public Endpoint**: The `projectsV2` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed.
 
 **GraphQL Query:**
 
 ```graphql
-query ListProjects {
-  projectsV2 {
-    ipnftUid
-    ipnftSymbol
-    ipnftAddress
-    ipnftTokenId
-    systemTime
-    eventTime
-    account {
-      accountName
+query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
+  projectsV2(walletAddress: $walletAddress, page: $page, perPage: $perPage) {
+    nodes {
+      ipnftUid
+      ipnftSymbol
+      ipnftAddress
+      ipnftTokenId
+      systemTime
+      eventTime
+      account {
+        accountName
+      }
+      dataRoom {
+        id
+        alias
+        status
+      }
     }
-    dataRoom {
-      id
-      alias
-      status
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      currentPage
+      totalPages
     }
   }
 }
 ```
+
+**Parameters:**
+
+| Parameter     | Type   | Required | Description                                              |
+| ------------- | ------ | -------- | -------------------------------------------------------- |
+| walletAddress | String | No       | Filter projects by admin wallet address                  |
+| page          | Int    | No       | Page number (0-indexed, default: 0)                      |
+| perPage       | Int    | No       | Results per page (default: 20, max: 100)                 |
 
 **Example Request:**
 
@@ -511,15 +570,20 @@ query ListProjects {
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "query { projectsV2 { ipnftUid ipnftSymbol dataRoom { id alias } } }"
+    "query": "query ListProjects($page: Int, $perPage: Int) { projectsV2(page: $page, perPage: $perPage) { nodes { ipnftUid ipnftSymbol dataRoom { id alias } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
+    "variables": {
+      "page": 0,
+      "perPage": 20
+    }
   }'
 ```
 
 #### Get Single Project with Files
 
-Retrieve complete details for a specific project including all files.
+Retrieve complete details for a specific project including all files. This is a **public endpoint** - no authentication required.
+
+> **🔓 Public Endpoint**: The `projectWithDataRoomAndFilesV2` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed. File-level access control is handled via encryption rather than query-level authentication.
 
 **GraphQL Query:**
 
@@ -553,7 +617,6 @@ query GetProject($ipnftUid: ID!) {
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query GetProject($ipnftUid: ID!) { projectWithDataRoomAndFilesV2(ipnftUid: $ipnftUid) { ipnftUid ipnftSymbol dataRoom { id files { path contentType accessLevel tags } } } }",
     "variables": {
@@ -604,7 +667,9 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 #### Project Activity Feed
 
-Get activity timeline for a specific project including file events and announcements.
+Get activity timeline for a specific project including file events and announcements. This is a **public endpoint** - no authentication required.
+
+> **🔓 Public Endpoint**: The `projectActivityV2` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed.
 
 **GraphQL Query:**
 
@@ -654,7 +719,6 @@ query GetActivity($ipnftUid: ID!, $page: Int, $perPage: Int) {
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query GetActivity($ipnftUid: ID!, $page: Int) { projectActivityV2(ipnftUid: $ipnftUid, page: $page, perPage: 20) { pageInfo { hasNextPage currentPage totalPages } nodes { __typename ... on ProjectEventAnnouncementV2 { announcement { headline attachments { did path contentType } } } } } }",
     "variables": {
@@ -668,7 +732,9 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 #### Project Announcements (Dedicated Endpoint)
 
-Get announcements for a specific project with full attachment details. More efficient than `projectActivityV2` when you only need announcements.
+Get announcements for a specific project with full attachment details. More efficient than `projectActivityV2` when you only need announcements. This is a **public endpoint** - no authentication required.
+
+> **🔓 Public Endpoint**: The `projectAnnouncementsV2` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed.
 
 **GraphQL Query:**
 
@@ -727,7 +793,6 @@ query GetProjectAnnouncements($ipnftUid: String!, $page: Int, $perPage: Int) {
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query GetProjectAnnouncements($ipnftUid: String!, $page: Int, $perPage: Int) { projectAnnouncementsV2(ipnftUid: $ipnftUid, page: $page, perPage: $perPage) { totalCount pageInfo { hasNextPage currentPage } nodes { headline body attachments { did path contentType downloadUrl } } } }",
     "variables": {
@@ -747,7 +812,9 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 #### All Announcements (Global Feed)
 
-Get all announcements across all projects.
+Get all announcements across all projects. This is a **public endpoint** - no authentication required.
+
+> **🔓 Public Endpoint**: The `activitiesV2` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed.
 
 **GraphQL Query:**
 
@@ -1227,6 +1294,59 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ---
 
+## Dataroom Utilities
+
+### Get Dataroom Passphrase
+
+Retrieve the Telegram bot passphrase for connecting to a dataroom's notification channel. This passphrase is used to authenticate with the Molecule Telegram bot for receiving real-time updates about dataroom activity.
+
+**GraphQL Mutation:**
+
+```graphql
+mutation GetDataRoomPassphrase($ipnftUid: String!) {
+  dataRoomPassphrase(ipnftUid: $ipnftUid)
+}
+```
+
+**Parameters:**
+
+| Parameter | Type   | Required | Description              |
+| --------- | ------ | -------- | ------------------------ |
+| ipnftUid  | String | Yes      | IP-NFT unique identifier |
+
+**Example Request:**
+
+```bash
+curl -X POST https://production.graphql.api.molecule.xyz/graphql \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
+  -d '{
+    "query": "mutation GetDataRoomPassphrase($ipnftUid: String!) { dataRoomPassphrase(ipnftUid: $ipnftUid) }",
+    "variables": {
+      "ipnftUid": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37"
+    }
+  }'
+```
+
+**Success Response:**
+
+```json
+{
+  "data": {
+    "dataRoomPassphrase": "apple-banana-cherry"
+  }
+}
+```
+
+**Use Case:**
+- Connect the Molecule Telegram bot to receive notifications about file uploads, announcements, and other dataroom activity
+- The passphrase is a 3-word phrase separated by dashes
+
+> **Note**: This is a mutation (not a query) because it may have side effects related to notification channel setup. Requires admin access to the specified IP-NFT.
+
+---
+
 ## Error Handling
 
 All API responses follow a consistent error format:
@@ -1548,6 +1668,102 @@ If you encounter any issues or have questions about the Programmatic File Upload
 ---
 
 ## Recent Updates (January 2025)
+
+### Authentication Changes
+
+#### 🔓 Simplified Authentication Model
+
+**All queries are now public** (API Key only) and **all mutations remain protected** (API Key + Service Token).
+
+| Operation Type | Auth Required | Notes |
+|---------------|---------------|-------|
+| **All Queries** | API Key only | No Service Token needed for read operations |
+| **All Mutations** | API Key + Service Token | Write operations require full authentication |
+
+#### 🔓 Public Query Endpoints
+
+The following queries are now **publicly accessible** and no longer require Service Token authentication:
+
+| Query | Previous Auth | New Auth | Notes |
+|-------|---------------|----------|-------|
+| `projectsV2` | Service Token OR User Auth | **API Key only** | Now supports pagination parameters |
+| `projectWithDataRoomAndFilesV2` | Service Token + Admin Auth | **API Key only** | File access controlled via encryption |
+| `projectActivityV2` | Service Token OR User Auth | **API Key only** | Activity feed for a project |
+| `projectAnnouncementsV2` | Service Token OR User Auth | **API Key only** | Announcements for a project |
+| `activitiesV2` | Service Token OR User Auth | **API Key only** | Global activity feed |
+| `dataRoomFileV2` | Service Token OR User Auth | **API Key only** | Get file by path |
+| `searchLabs` | Service Token OR User Auth | **API Key only** | Search across all content |
+
+#### 🔄 dataRoomPassphrase Converted to Mutation
+
+The `dataRoomPassphrase` operation has been converted from a Query to a Mutation to maintain the pattern that all queries are public:
+
+```diff
+# Before (Query - deprecated)
+- query GetPassphrase($ipnftUid: String!) {
+-   dataRoomPassphrase(ipnftUid: $ipnftUid)
+- }
+
+# After (Mutation - current)
++ mutation GetPassphrase($ipnftUid: String!) {
++   dataRoomPassphrase(ipnftUid: $ipnftUid)
++ }
+```
+
+**Migration Required:** Update your GraphQL operations from `query` to `mutation` for `dataRoomPassphrase`.
+
+**What This Means:**
+- **Simplified Integration**: Query projects and files with just an API key
+- **Reduced Complexity**: No need to manage Service Tokens for read-only operations
+- **File Security Maintained**: Encrypted files remain protected via Lit Protocol - access control moved from query-level to file-level
+
+**Migration Required:**
+If you're currently including `X-Service-Token` headers for these queries, you can safely remove them. The queries will work with just `x-api-key`.
+
+```diff
+# Before (still works, but unnecessary)
+curl -X POST https://production.graphql.api.molecule.xyz/graphql \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: YOUR_API_KEY' \
+- -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
+  -d '{"query": "query { projectsV2 { nodes { ipnftUid } } }"}'
+
+# After (recommended)
+curl -X POST https://production.graphql.api.molecule.xyz/graphql \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: YOUR_API_KEY' \
+  -d '{"query": "query { projectsV2 { nodes { ipnftUid } } }"}'
+```
+
+#### 📊 New Pagination for `projectsV2`
+
+The `projectsV2` query now supports pagination and wallet filtering:
+
+```graphql
+query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
+  projectsV2(walletAddress: $walletAddress, page: $page, perPage: $perPage) {
+    nodes { ... }
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      currentPage
+      totalPages
+    }
+  }
+}
+```
+
+**New Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| walletAddress | String | null | Filter projects by admin wallet address |
+| page | Int | 0 | Page number (0-indexed) |
+| perPage | Int | 20 | Results per page (max: 100) |
+
+**Note:** Invalid pagination values are automatically sanitized (negative page → 0, perPage > 100 → 20).
+
+---
 
 ### New Features
 
