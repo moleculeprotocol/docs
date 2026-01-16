@@ -45,6 +45,7 @@ x-api-key: YOUR_API_KEY
 2. **Service Token** - For lab-specific write access control
 
 **Protected mutations include:**
+- `createProject` - Create a new project/data room for an IP-NFT
 - `initiateCreateOrUpdateFileV2` - Initiate file upload
 - `finishCreateOrUpdateFileV2` - Complete file upload
 - `updateFileMetadataV2` - Update file metadata
@@ -511,6 +512,201 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
     }
   }'
 ```
+
+---
+
+### Create Project
+
+Create a new project/data room for an IP-NFT you own or have authorized access to.
+
+> **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. Users can only create projects for IP-NFTs they own or are authorized signers for.
+
+**GraphQL Mutation:**
+
+```graphql
+mutation CreateProject($ipnftSymbol: String!, $ipnftTokenId: String!) {
+  createProject(input: {
+    ipnftSymbol: $ipnftSymbol
+    ipnftTokenId: $ipnftTokenId
+  }) {
+    isSuccess
+    message
+    error {
+      message
+      code
+      retryable
+    }
+    project {
+      ipnftUid
+      ipnftSymbol
+      ipnftAddress
+      ipnftTokenId
+      systemTime
+      eventTime
+      account {
+        accountName
+      }
+      dataRoom {
+        id
+        alias
+        status
+      }
+    }
+  }
+}
+```
+
+**Parameters:**
+
+| Parameter     | Type   | Required | Description                                                           |
+| ------------- | ------ | -------- | --------------------------------------------------------------------- |
+| ipnftSymbol   | String | Yes      | IP-NFT ticker/symbol (e.g., "APOB", "RARE")                           |
+| ipnftTokenId  | String | Yes      | Token ID as string representation of U256 (e.g., "37", "12345")      |
+
+**Prerequisites:**
+
+1. **IP-NFT Ownership**: You must own the IP-NFT or be an authorized signer for it
+   - For individual wallets: You must be the owner
+   - For multisig/Safe wallets: You must be one of the Safe owners
+   - For ERC-4337 accounts: You must be an authorized account owner
+
+2. **Authentication**: One of the following:
+   - **Service Token** (recommended for automation): Obtain from Molecule team via Discord
+   - **Privy Token** (for user-initiated requests): Use your authenticated Privy session
+
+3. **IP-NFT Must Be Minted**: The IP-NFT must already exist on-chain before creating a project
+
+**Authentication Options:**
+
+**Option 1: Service Token (Recommended for Automation)**
+```bash
+x-api-key: YOUR_API_KEY
+X-Service-Token: YOUR_SERVICE_TOKEN
+```
+
+**Option 2: Privy Token (User-Initiated)**
+```bash
+x-api-key: YOUR_API_KEY
+Authorization: Bearer YOUR_PRIVY_TOKEN
+x-wallet-address: YOUR_WALLET_ADDRESS
+```
+
+**Example Request (Service Token):**
+
+```bash
+curl -X POST https://production.graphql.api.molecule.xyz/graphql \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
+  -d '{
+    "query": "mutation CreateProject($ipnftSymbol: String!, $ipnftTokenId: String!) { createProject(input: { ipnftSymbol: $ipnftSymbol, ipnftTokenId: $ipnftTokenId }) { isSuccess message error { message code retryable } project { ipnftUid ipnftSymbol dataRoom { id alias status } } } }",
+    "variables": {
+      "ipnftSymbol": "APOB",
+      "ipnftTokenId": "37"
+    }
+  }'
+```
+
+**Success Response:**
+
+```json
+{
+  "data": {
+    "createProject": {
+      "isSuccess": true,
+      "message": "Project created successfully",
+      "error": null,
+      "project": {
+        "ipnftUid": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37",
+        "ipnftSymbol": "APOB",
+        "dataRoom": {
+          "id": "did:kamu:...",
+          "alias": "apob-project",
+          "status": "ACTIVE"
+        }
+      }
+    }
+  }
+}
+```
+
+**Error Responses:**
+
+**Not Authorized (No Token):**
+```json
+{
+  "errors": [{
+    "message": "Admin authorization required. Please contact Molecule team for service token access.",
+    "extensions": { "code": "UNAUTHORIZED" }
+  }]
+}
+```
+
+**Not IP-NFT Owner:**
+```json
+{
+  "data": {
+    "createProject": {
+      "isSuccess": false,
+      "message": "User is not authorized for this IP-NFT",
+      "error": {
+        "message": "On-chain verification failed: wallet address is not owner or authorized signer",
+        "code": "OWNERSHIP_VERIFICATION_FAILED",
+        "retryable": false
+      },
+      "project": null
+    }
+  }
+}
+```
+
+**Project Already Exists:**
+```json
+{
+  "data": {
+    "createProject": {
+      "isSuccess": false,
+      "message": "Project already exists for this IP-NFT",
+      "error": {
+        "message": "A project with this ipnftUid already exists",
+        "code": "CONFLICT",
+        "retryable": false
+      },
+      "project": null
+    }
+  }
+}
+```
+
+**How It Works:**
+
+1. **Authentication Check**: Validates service token or Privy token
+2. **On-Chain Verification**: Verifies you own or are authorized for the IP-NFT
+3. **Project Creation**: Creates project in Kamu with IP-NFT metadata
+4. **Whitelist Update**: Automatically adds your wallet address to the project whitelist
+5. **Returns Result**: Project details if successful, error details if failed
+
+**Use Cases:**
+
+- **Automate Project Creation**: Create projects programmatically after minting IP-NFTs
+- **CI/CD Integration**: Automatically set up data rooms for new research projects
+- **Batch Operations**: Create multiple projects for a portfolio of IP-NFTs
+- **User Self-Service**: Allow users to create their own project data rooms
+
+**Getting Service Token Access:**
+
+To obtain a service token for automated project creation:
+
+1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
+2. Contact the Molecule team
+3. Provide:
+   - Your wallet address
+   - Use case description
+   - Intended automation workflow
+4. You'll receive:
+   - API Key (for all APIs)
+   - Service Token (JWT for project creation)
+   - Token expiration date
 
 ---
 
@@ -1837,6 +2033,31 @@ Added `pageInfo` object to `projectActivityV2` results:
 
 Enables proper client-side pagination with total page count.
 
+#### 🏗️ New Mutation: `createProject` (IP-1359)
+
+Added project creation endpoint with on-chain ownership verification:
+
+- Create projects/data rooms for IP-NFTs you own
+- Requires admin authorization (service token or Privy token)
+- On-chain verification via AccessResolver contract
+- Automatic whitelist management
+- Support for multisig and ERC-4337 accounts
+
+**Prerequisites:**
+
+- IP-NFT must be minted on-chain first
+- User must own IP-NFT or be an authorized signer
+- Service token required (obtain from Molecule team)
+
+**Benefits:**
+
+- ✅ Automate project creation workflows
+- ✅ Secure on-chain ownership verification
+- ✅ Eliminate manual whitelist management
+- ✅ Support for complex ownership structures (Safe, ERC-4337)
+
+See [Create Project](#create-project) section for complete documentation.
+
 ### Breaking Changes
 
 #### ⚠️ Announcement Attachments Type Change (IP-1025)
@@ -1923,4 +2144,4 @@ Fixed inconsistency where the `path` field differed between queries:
 
 ---
 
-_Last updated: January 2025_
+_Last updated: January 2026_
