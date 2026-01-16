@@ -23,6 +23,7 @@ For complete API documentation including authentication, endpoints, and code exa
 The Labs API documentation includes:
 
 * Authentication with API keys and service tokens
+* Project creation (createProject mutation)
 * Complete 3-step upload workflow
 * JavaScript/Node.js examples
 * Service token management (extend/revoke)
