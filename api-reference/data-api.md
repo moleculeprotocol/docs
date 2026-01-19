@@ -494,9 +494,11 @@ Sort results by any field:
 
 ### Filtering
 
-Filter results by specific criteria:
+Filter results by specific criteria. The API supports both direct field filtering and nested relation filtering.
 
-**Filter by owner:**
+#### Basic Filtering
+
+**Filter by owner (using user ID):**
 ```javascript
 {
   "filterBy": {
@@ -519,6 +521,139 @@ Filter results by specific criteria:
 {
   "filterBy": {
     "ipnftId": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37_1"
+  }
+}
+```
+
+#### Nested Relation Filtering
+
+The API supports filtering by nested relation properties for more flexible queries.
+
+**Filter IP-NFTs by owner address:**
+```javascript
+{
+  "filterBy": {
+    "owner": {
+      "address": "0x1234567890123456789012345678901234567890"
+    }
+  }
+}
+```
+
+**Filter IP-NFTs by owner ID:**
+```javascript
+{
+  "filterBy": {
+    "owner": {
+      "id": "0x1234567890123456789012345678901234567890"
+    }
+  }
+}
+```
+
+**Filter markets by chain properties:**
+```javascript
+{
+  "filterBy": {
+    "chain": {
+      "chainId": 1  // Ethereum mainnet
+    }
+  }
+}
+```
+
+**Filter markets by token symbol:**
+```javascript
+{
+  "filterBy": {
+    "token": {
+      "metadata": {
+        "symbol": "VITA-IPT"
+      }
+    }
+  }
+}
+```
+
+**Filter IPTs by IPNFT owner (deeply nested):**
+```javascript
+{
+  "filterBy": {
+    "ipnft": {
+      "owner": {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    }
+  }
+}
+```
+
+**Filter IPNFT metadata by research lead:**
+```javascript
+{
+  "filterBy": {
+    "researchLead": {
+      "email": "researcher@university.edu"
+    }
+  }
+}
+```
+
+**Filter IPT metadata by original owner:**
+```javascript
+{
+  "filterBy": {
+    "originalOwner": {
+      "address": "0x1234567890123456789012345678901234567890"
+    }
+  }
+}
+```
+
+#### Combining Filters
+
+You can combine multiple filters in a single query. All filters are combined with AND logic - results must match all criteria.
+
+**Combine scalar and relation filters:**
+```javascript
+{
+  "filterBy": {
+    "chainId": 1,
+    "owner": {
+      "address": "0x1234567890123456789012345678901234567890"
+    }
+  }
+}
+```
+
+**Combine multiple relation filters:**
+```javascript
+{
+  "filterBy": {
+    "owner": {
+      "address": "0x1234567890123456789012345678901234567890"
+    },
+    "metadata": {
+      "topic": "Oncology",
+      "organization": "University Lab"
+    }
+  }
+}
+```
+
+**Combine nested relation filters:**
+```javascript
+{
+  "filterBy": {
+    "chainId": 1,
+    "ipnft": {
+      "owner": {
+        "address": "0x1234567890123456789012345678901234567890"
+      },
+      "metadata": {
+        "topic": "Longevity"
+      }
+    }
   }
 }
 ```
@@ -738,7 +873,9 @@ const response = await fetch('https://production.graphql.api.molecule.xyz/graphq
     `,
     variables: {
       filterBy: {
-        userId: walletAddress
+        owner: {
+          address: walletAddress
+        }
       }
     }
   }),
@@ -746,6 +883,94 @@ const response = await fetch('https://production.graphql.api.molecule.xyz/graphq
 
 const data = await response.json();
 // Calculate total portfolio value
+```
+
+***
+
+## Advanced Filtering
+
+### Relation Filtering vs Direct Filtering
+
+The Data API supports two approaches to filtering:
+
+1. **Direct Field Filtering**: Filter by the ID of a related entity
+2. **Relation Filtering**: Filter by properties of related entities
+
+Both approaches work and can be used based on your needs.
+
+**Example - Finding IP-NFTs by Owner:**
+
+```javascript
+// Approach 1: Direct field filtering (when you know the user ID)
+{
+  "filterBy": {
+    "userId": "0x1234..."
+  }
+}
+
+// Approach 2: Relation filtering (when you want to filter by owner properties)
+{
+  "filterBy": {
+    "owner": {
+      "address": "0x1234..."
+    }
+  }
+}
+```
+
+### Multi-Level Nested Filtering
+
+You can filter through multiple levels of relations:
+
+```javascript
+// Find all IP Tokens whose parent IP-NFT is owned by a specific wallet
+{
+  "filterBy": {
+    "ipnft": {
+      "owner": {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    }
+  }
+}
+
+// Find markets for tokens with a specific symbol
+{
+  "filterBy": {
+    "token": {
+      "metadata": {
+        "symbol": "VITA-IPT"
+      }
+    }
+  }
+}
+```
+
+### Available Relation Filters
+
+| Query Type | Relation Field | Supported Filters | Example |
+|------------|---------------|-------------------|---------|
+| `ipnfts` | `owner` | `id`, `address` | `owner: { address: "0x..." }` |
+| `ipnfts` | `metadata` | All metadata fields | `metadata: { topic: "Oncology" }` |
+| `ipts` | `ipnft` | All IPNFT filters | `ipnft: { owner: { address: "0x..." } }` |
+| `ipts` | `metadata` | All IPT metadata fields | `metadata: { symbol: "VITA" }` |
+| `markets` | `chain` | `chainId`, `name` | `chain: { chainId: 1 }` |
+| `markets` | `token` | All IPT filters | `token: { metadata: { symbol: "..." } }` |
+| `iptMetadata` | `originalOwner` | `id`, `address` | `originalOwner: { address: "0x..." }` |
+| `ipnftMetadata` | `researchLead` | `name`, `email` | `researchLead: { email: "..." }` |
+
+### Filter Matching
+
+All filters use **exact equality matching** by default. For example:
+
+```javascript
+{
+  "filterBy": {
+    "metadata": {
+      "topic": "Longevity"  // Exact match only
+    }
+  }
+}
 ```
 
 ***
