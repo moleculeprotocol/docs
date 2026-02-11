@@ -122,7 +122,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query { ipnfts(limit: 5) { id metadata { name } } }"
+    "query": "query { ipnfts(limit: 5) { id name } }"
   }'
 ```
 
@@ -147,4 +147,4 @@ If you encounter any issues or have questions about the APIs:
 
 ***
 
-_Last updated: January 2025_
+_Last updated: February 2026_
