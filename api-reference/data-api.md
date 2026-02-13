@@ -84,6 +84,8 @@ query ListIPNFTs(
     initialSymbol
     organization
     topic
+    trlValue
+    trlRationale
     fundingAmountCurrency
     fundingAmountValue
     fundingAmountDecimals
@@ -193,6 +195,8 @@ query GetIPNFT($id: ID!) {
     initialSymbol
     organization
     topic
+    trlValue
+    trlRationale
     fundingAmountCurrency
     fundingAmountValue
     fundingAmountDecimals
@@ -972,6 +976,8 @@ You can combine multiple filters in a single query. All filters are combined wit
   initialSymbol: String         // Initial token symbol
   organization: String          // Organization name
   topic: String                 // Research topic
+  trlValue: String              // Technology readiness levels value
+  trlRationale: String          // Technology readiness levels rationale
   fundingAmountCurrency: String // Funding currency code
   fundingAmountValue: String    // Funding amount value
   fundingAmountDecimals: Int    // Funding currency decimals

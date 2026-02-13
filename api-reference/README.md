@@ -122,7 +122,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query { ipnfts(limit: 5) { id name } }"
+    "query": "query { ipnfts(limit: 5) { id name trlValue } }"
   }'
 ```
 
