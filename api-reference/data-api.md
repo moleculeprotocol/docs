@@ -5,9 +5,10 @@
 The Data API provides read-only access to query and browse intellectual property assets across the Molecule Protocol. Use these queries to build marketplaces, token screeners, portfolio trackers, and discovery interfaces for decentralized science projects.
 
 **Features:**
-* Query IP-NFTs (Intellectual Property NFTs) and their metadata
+* Query IP-NFTs (Intellectual Property NFTs) and their project details
 * Browse IP Tokens (IPTs) with market data
 * Access trading metrics and liquidity information
+* Query users, research leads, chains, and agreements
 * Filter, sort, and paginate results
 * Build data-driven applications
 
@@ -70,33 +71,45 @@ query ListIPNFTs(
   ) {
     id
     createdAt
+    updatedAt
     mintedAt
     chainId
     originalOwner
+    tokenUri
+    symbol
+    name
+    description
+    image
+    externalUrl
+    initialSymbol
+    organization
+    topic
+    trlValue
+    trlRationale
+    fundingAmountCurrency
+    fundingAmountValue
+    fundingAmountDecimals
+    fundingAmountCurrencyType
+    schemaVersion
     owner {
       id
       address
     }
-    metadata {
+    researchLead {
       name
-      description
-      image
-      initialSymbol
-      organization
-      topic
-      fundingAmount
-      externalUrl
-      researchLead {
-        name
-        email
-      }
+      email
+    }
+    agreements {
+      id
+      contentHash
+      mimeType
+      type
+      url
     }
     ipt {
       id
-      metadata {
-        symbol
-        totalIssued
-      }
+      symbol
+      totalIssued
     }
   }
 }
@@ -108,9 +121,9 @@ query ListIPNFTs(
 | ---------- | ------------- | --------------------------------------------- |
 | limit      | Int           | Maximum number of results (recommended: 20-50) |
 | skip       | Int           | Number of results to skip (for pagination)    |
-| sortBy     | IPNFTSortBy   | Field to sort by (e.g., `createdAt`, `mintedAt`) |
+| sortBy     | IPNFTSortBy   | Field to sort by (e.g., `createdAt`, `mintedAt`, `name`, `topic`, `fundingAmountValue`) |
 | sortOrder  | SortOrder     | Sort direction: `asc` or `desc`              |
-| filterBy   | IPNFTFilterBy | Filter criteria (owner, chainId, etc.)       |
+| filterBy   | IPNFTFilterBy | Filter criteria (owner, chainId, topic, etc.) |
 
 **Example Request (curl):**
 
@@ -119,7 +132,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query ListIPNFTs($limit: Int, $skip: Int, $sortBy: IPNFTSortBy, $sortOrder: SortOrder) { ipnfts(limit: $limit, skip: $skip, sortBy: $sortBy, sortOrder: $sortOrder) { id createdAt owner { address } metadata { name description image topic organization } ipt { id metadata { symbol } } } }",
+    "query": "query ListIPNFTs($limit: Int, $skip: Int, $sortBy: IPNFTSortBy, $sortOrder: SortOrder) { ipnfts(limit: $limit, skip: $skip, sortBy: $sortBy, sortOrder: $sortOrder) { id createdAt owner { address } name description image topic organization ipt { id symbol } } }",
     "variables": {
       "limit": 20,
       "skip": 0,
@@ -141,18 +154,14 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
         "owner": {
           "address": "0x1234567890123456789012345678901234567890"
         },
-        "metadata": {
-          "name": "Novel Cancer Immunotherapy Research",
-          "description": "Groundbreaking CAR-T cell therapy development",
-          "image": "ipfs://QmXnnyufdzAWL...",
-          "topic": "Oncology",
-          "organization": "Research Institute"
-        },
+        "name": "Novel Cancer Immunotherapy Research",
+        "description": "Groundbreaking CAR-T cell therapy development",
+        "image": "ipfs://QmXnnyufdzAWL...",
+        "topic": "Oncology",
+        "organization": "Research Institute",
         "ipt": {
           "id": "1_0xabcd...",
-          "metadata": {
-            "symbol": "CART-IPT"
-          }
+          "symbol": "CART-IPT"
         }
       }
     ]
@@ -173,42 +182,52 @@ query GetIPNFT($id: ID!) {
   ipnft(id: $id) {
     id
     createdAt
+    updatedAt
     mintedAt
     chainId
     originalOwner
+    tokenUri
+    symbol
+    name
+    description
+    image
+    externalUrl
+    initialSymbol
+    organization
+    topic
+    trlValue
+    trlRationale
+    fundingAmountCurrency
+    fundingAmountValue
+    fundingAmountDecimals
+    fundingAmountCurrencyType
+    schemaVersion
+    userId
     owner {
       id
       address
     }
-    metadata {
+    researchLead {
+      id
       name
-      description
-      image
-      symbol
-      initialSymbol
-      organization
-      topic
-      fundingAmount
-      externalUrl
-      tokenUri
-      researchLead {
-        id
-        name
-        email
-      }
-      agreements
+      email
+    }
+    agreements {
+      id
+      contentHash
+      mimeType
+      type
+      url
     }
     ipt {
       id
       l2TokenAddress
       holderCount
-      metadata {
-        symbol
-        name
-        decimals
-        totalIssued
-        circulatingSupply
-      }
+      symbol
+      name
+      decimals
+      totalIssued
+      circulatingSupply
     }
   }
 }
@@ -221,7 +240,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query GetIPNFT($id: ID!) { ipnft(id: $id) { id metadata { name description topic } ipt { metadata { symbol totalIssued } } } }",
+    "query": "query GetIPNFT($id: ID!) { ipnft(id: $id) { id name description topic symbol owner { address } ipt { symbol totalIssued } agreements { id type url } } }",
     "variables": {
       "id": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37_1"
     }
@@ -253,29 +272,36 @@ query ListIPTs(
   ) {
     id
     createdAt
+    updatedAt
+    mintedAt
     l2TokenAddress
     holderCount
+    symbol
+    name
+    decimals
+    totalIssued
+    circulatingSupply
+    agreementCid
+    agreementMimeType
+    image
+    links
+    capped
+    ipnftId
+    originalOwnerId
     ipnft {
       id
+      name
+      description
+      image
+      topic
+      organization
       owner {
         address
       }
-      metadata {
-        name
-        description
-        image
-        topic
-        organization
-      }
     }
-    metadata {
-      symbol
-      name
-      decimals
-      totalIssued
-      circulatingSupply
-      agreementCid
-      image
+    originalOwner {
+      id
+      address
     }
     markets {
       id
@@ -298,9 +324,9 @@ query ListIPTs(
 | ---------- | ----------- | ------------------------------------------------ |
 | limit      | Int         | Maximum number of results                        |
 | skip       | Int         | Number of results to skip (for pagination)       |
-| sortBy     | IPTSortBy   | Field to sort by (e.g., `createdAt`, `holderCount`) |
+| sortBy     | IPTSortBy   | Field to sort by (e.g., `createdAt`, `holderCount`, `name`, `symbol`) |
 | sortOrder  | SortOrder   | Sort direction: `asc` or `desc`                 |
-| filterBy   | IPTFilterBy | Filter criteria (ipnftId, l2TokenAddress, etc.) |
+| filterBy   | IPTFilterBy | Filter criteria (ipnftId, symbol, originalOwnerId, etc.) |
 
 **Example Request (curl):**
 
@@ -309,7 +335,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query ListIPTs($limit: Int, $sortBy: IPTSortBy, $sortOrder: SortOrder) { ipts(limit: $limit, sortBy: $sortBy, sortOrder: $sortOrder) { id metadata { symbol name totalIssued } markets { usdPrice liquidityUsd tradingVolume24hr } ipnft { metadata { name topic } } } }",
+    "query": "query ListIPTs($limit: Int, $sortBy: IPTSortBy, $sortOrder: SortOrder) { ipts(limit: $limit, sortBy: $sortBy, sortOrder: $sortOrder) { id symbol name totalIssued markets { usdPrice liquidityUsd tradingVolume24hr } ipnft { name topic } } }",
     "variables": {
       "limit": 20,
       "sortBy": "createdAt",
@@ -326,11 +352,9 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
     "ipts": [
       {
         "id": "1_0xabcdef...",
-        "metadata": {
-          "symbol": "CART-IPT",
-          "name": "Cancer Research IP Token",
-          "totalIssued": "1000000000000000000000000"
-        },
+        "symbol": "CART-IPT",
+        "name": "Cancer Research IP Token",
+        "totalIssued": "1000000000000000000000000",
         "markets": [
           {
             "usdPrice": 0.45,
@@ -339,10 +363,8 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
           }
         ],
         "ipnft": {
-          "metadata": {
-            "name": "Novel Cancer Immunotherapy Research",
-            "topic": "Oncology"
-          }
+          "name": "Novel Cancer Immunotherapy Research",
+          "topic": "Oncology"
         }
       }
     ]
@@ -363,23 +385,29 @@ query GetIPT($id: ID!) {
   ipt(id: $id) {
     id
     createdAt
+    updatedAt
+    mintedAt
     l2TokenAddress
     holderCount
+    symbol
+    name
+    decimals
+    totalIssued
+    circulatingSupply
+    agreementCid
+    agreementMimeType
+    image
+    links
+    capped
     ipnft {
       id
-      metadata {
-        name
-        description
-        topic
-      }
-    }
-    metadata {
-      symbol
       name
-      decimals
-      totalIssued
-      circulatingSupply
-      agreementCid
+      description
+      topic
+    }
+    originalOwner {
+      id
+      address
     }
     markets {
       chainId
@@ -417,6 +445,8 @@ query ListMarkets(
     filterBy: $filterBy
   ) {
     id
+    createdAt
+    updatedAt
     name
     pairAddress
     chainId
@@ -425,22 +455,21 @@ query ListMarkets(
     usdPrice
     usdPrice24hrPercentageChange
     marketCapUsd
+    inverted
+    iptId
     token {
       id
-      metadata {
-        symbol
-        name
-      }
+      symbol
+      name
       ipnft {
-        metadata {
-          name
-          topic
-        }
+        name
+        topic
       }
     }
     chain {
       name
       chainId
+      logoUrl
     }
   }
 }
@@ -453,13 +482,245 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query ListMarkets($limit: Int, $sortBy: MarketSortBy, $sortOrder: SortOrder) { markets(limit: $limit, sortBy: $sortBy, sortOrder: $sortOrder) { name usdPrice liquidityUsd tradingVolume24hr token { metadata { symbol } } } }",
+    "query": "query ListMarkets($limit: Int, $sortBy: MarketSortBy, $sortOrder: SortOrder) { markets(limit: $limit, sortBy: $sortBy, sortOrder: $sortOrder) { name usdPrice liquidityUsd tradingVolume24hr token { symbol } chain { name logoUrl } } }",
     "variables": {
       "limit": 10,
       "sortBy": "tradingVolume24hr",
       "sortOrder": "desc"
     }
   }'
+```
+
+***
+
+### Query Users
+
+Query users and their associated IP-NFTs and IPTs.
+
+**GraphQL Query:**
+
+```graphql
+query ListUsers(
+  $limit: Int
+  $skip: Int
+  $sortBy: UserSortBy
+  $sortOrder: SortOrder
+  $filterBy: UserFilterBy
+) {
+  users(
+    limit: $limit
+    skip: $skip
+    sortBy: $sortBy
+    sortOrder: $sortOrder
+    filterBy: $filterBy
+  ) {
+    id
+    createdAt
+    updatedAt
+    address
+    ipnfts {
+      id
+      name
+      topic
+    }
+    ipts {
+      id
+      symbol
+      name
+    }
+  }
+}
+```
+
+**Get Single User:**
+
+```graphql
+query GetUser($id: ID!) {
+  user(id: $id) {
+    id
+    address
+    createdAt
+    updatedAt
+    ipnfts {
+      id
+      name
+      topic
+      organization
+    }
+    ipts {
+      id
+      symbol
+      name
+      totalIssued
+    }
+  }
+}
+```
+
+***
+
+### Query Research Leads
+
+Query research leads associated with IP-NFTs.
+
+**GraphQL Query:**
+
+```graphql
+query ListResearchLeads(
+  $limit: Int
+  $skip: Int
+  $sortBy: ResearchLeadSortBy
+  $sortOrder: SortOrder
+  $filterBy: ResearchLeadFilterBy
+) {
+  researchLeads(
+    limit: $limit
+    skip: $skip
+    sortBy: $sortBy
+    sortOrder: $sortOrder
+    filterBy: $filterBy
+  ) {
+    id
+    createdAt
+    updatedAt
+    name
+    email
+    ipnfts {
+      id
+      name
+      topic
+    }
+  }
+}
+```
+
+**Get Single Research Lead:**
+
+```graphql
+query GetResearchLead($id: ID!) {
+  researchLead(id: $id) {
+    id
+    name
+    email
+    createdAt
+    updatedAt
+    ipnfts {
+      id
+      name
+      topic
+      organization
+    }
+  }
+}
+```
+
+***
+
+### Query Chains
+
+Query blockchain networks where markets are deployed.
+
+**GraphQL Query:**
+
+```graphql
+query ListChains(
+  $limit: Int
+  $skip: Int
+  $sortBy: ChainSortBy
+  $sortOrder: SortOrder
+  $filterBy: ChainFilterBy
+) {
+  chains(
+    limit: $limit
+    skip: $skip
+    sortBy: $sortBy
+    sortOrder: $sortOrder
+    filterBy: $filterBy
+  ) {
+    id
+    createdAt
+    updatedAt
+    name
+    chainId
+    logoUrl
+    markets {
+      id
+      name
+      usdPrice
+      liquidityUsd
+    }
+  }
+}
+```
+
+**Get Single Chain:**
+
+```graphql
+query GetChain($id: ID!) {
+  chain(id: $id) {
+    id
+    name
+    chainId
+    logoUrl
+    createdAt
+    updatedAt
+    markets {
+      id
+      name
+      usdPrice
+      liquidityUsd
+      tradingVolume24hr
+    }
+  }
+}
+```
+
+***
+
+### Query Agreements
+
+Query legal agreements associated with IP-NFTs.
+
+**GraphQL Query:**
+
+```graphql
+query ListAgreements(
+  $limit: Int
+  $skip: Int
+  $sortBy: AgreementSortBy
+  $sortOrder: SortOrder
+  $filterBy: AgreementFilterBy
+) {
+  agreements(
+    limit: $limit
+    skip: $skip
+    sortBy: $sortBy
+    sortOrder: $sortOrder
+    filterBy: $filterBy
+  ) {
+    id
+    contentHash
+    mimeType
+    type
+    url
+    ipnftId
+  }
+}
+```
+
+**Get Single Agreement:**
+
+```graphql
+query GetAgreement($id: ID!) {
+  agreement(id: $id) {
+    id
+    contentHash
+    mimeType
+    type
+    url
+    ipnftId
+  }
+}
 ```
 
 ***
@@ -487,7 +748,7 @@ Sort results by any field:
 
 ```javascript
 {
-  "sortBy": "createdAt",  // or "mintedAt", "updatedAt", etc.
+  "sortBy": "createdAt",  // or "mintedAt", "updatedAt", "name", "topic", etc.
   "sortOrder": "desc"      // or "asc"
 }
 ```
@@ -497,6 +758,15 @@ Sort results by any field:
 Filter results by specific criteria. The API supports both direct field filtering and nested relation filtering.
 
 #### Basic Filtering
+
+**Filter IP-NFTs by topic:**
+```javascript
+{
+  "filterBy": {
+    "topic": "Oncology"
+  }
+}
+```
 
 **Filter by owner (using user ID):**
 ```javascript
@@ -512,6 +782,15 @@ Filter results by specific criteria. The API supports both direct field filterin
 {
   "filterBy": {
     "chainId": 1  // Ethereum mainnet
+  }
+}
+```
+
+**Filter IPTs by symbol:**
+```javascript
+{
+  "filterBy": {
+    "symbol": "VITA"
   }
 }
 ```
@@ -551,6 +830,50 @@ The API supports filtering by nested relation properties for more flexible queri
 }
 ```
 
+**Filter IP-NFTs by research lead:**
+```javascript
+{
+  "filterBy": {
+    "researchLead": {
+      "email": "researcher@university.edu"
+    }
+  }
+}
+```
+
+**Filter IP-NFTs by agreement properties:**
+```javascript
+{
+  "filterBy": {
+    "agreements": {
+      "mimeType": "application/pdf"
+    }
+  }
+}
+```
+
+**Filter IPTs by original owner:**
+```javascript
+{
+  "filterBy": {
+    "originalOwner": {
+      "address": "0x1234567890123456789012345678901234567890"
+    }
+  }
+}
+```
+
+**Filter IPTs by parent IPNFT properties:**
+```javascript
+{
+  "filterBy": {
+    "ipnft": {
+      "topic": "Oncology"
+    }
+  }
+}
+```
+
 **Filter markets by chain properties:**
 ```javascript
 {
@@ -562,14 +885,12 @@ The API supports filtering by nested relation properties for more flexible queri
 }
 ```
 
-**Filter markets by token symbol:**
+**Filter markets by token properties:**
 ```javascript
 {
   "filterBy": {
     "token": {
-      "metadata": {
-        "symbol": "VITA-IPT"
-      }
+      "symbol": "VITA-IPT"
     }
   }
 }
@@ -583,28 +904,6 @@ The API supports filtering by nested relation properties for more flexible queri
       "owner": {
         "address": "0x1234567890123456789012345678901234567890"
       }
-    }
-  }
-}
-```
-
-**Filter IPNFT metadata by research lead:**
-```javascript
-{
-  "filterBy": {
-    "researchLead": {
-      "email": "researcher@university.edu"
-    }
-  }
-}
-```
-
-**Filter IPT metadata by original owner:**
-```javascript
-{
-  "filterBy": {
-    "originalOwner": {
-      "address": "0x1234567890123456789012345678901234567890"
     }
   }
 }
@@ -626,33 +925,29 @@ You can combine multiple filters in a single query. All filters are combined wit
 }
 ```
 
-**Combine multiple relation filters:**
+**Combine multiple field filters:**
 ```javascript
 {
   "filterBy": {
+    "topic": "Oncology",
+    "organization": "University Lab",
     "owner": {
       "address": "0x1234567890123456789012345678901234567890"
-    },
-    "metadata": {
-      "topic": "Oncology",
-      "organization": "University Lab"
     }
   }
 }
 ```
 
-**Combine nested relation filters:**
+**Combine nested relation filters (IPT query):**
 ```javascript
 {
   "filterBy": {
-    "chainId": 1,
+    "symbol": "VITA",
     "ipnft": {
       "owner": {
         "address": "0x1234567890123456789012345678901234567890"
       },
-      "metadata": {
-        "topic": "Longevity"
-      }
+      "topic": "Longevity"
     }
   }
 }
@@ -668,34 +963,51 @@ You can combine multiple filters in a single query. All filters are combined wit
 {
   id: String                    // Unique identifier
   createdAt: DateTime           // Creation timestamp
+  updatedAt: DateTime           // Last update timestamp
   mintedAt: DateTime            // Minting timestamp
   chainId: Int                  // Blockchain network ID
   originalOwner: String         // Original minter address
+  tokenUri: String              // Token metadata URI
+  symbol: String                // Token symbol
+  name: String                  // Project name
+  description: String           // Project description
+  image: String                 // IPFS image URL
+  externalUrl: String           // External project URL
+  initialSymbol: String         // Initial token symbol
+  organization: String          // Organization name
+  topic: String                 // Research topic
+  trlValue: String              // Technology readiness levels value
+  trlRationale: String          // Technology readiness levels rationale
+  fundingAmountCurrency: String // Funding currency code
+  fundingAmountValue: String    // Funding amount value
+  fundingAmountDecimals: Int    // Funding currency decimals
+  fundingAmountCurrencyType: String // Currency type (e.g., "ERC20", "native")
+  schemaVersion: String         // Metadata schema version
+  userId: String                // Owner user ID
+  researchLeadId: String        // Research lead ID
   owner: {                      // Current owner
     id: String
     address: String
+    createdAt: DateTime
+    updatedAt: DateTime
   }
-  metadata: {                   // Project metadata
+  researchLead: {               // Research lead
+    id: String
     name: String
-    description: String
-    image: String               // IPFS URL
-    symbol: String
-    initialSymbol: String
-    organization: String
-    topic: String
-    fundingAmount: JSON
-    externalUrl: String
-    researchLead: {
-      name: String
-      email: String
-    }
+    email: String
   }
+  agreements: [{                // Legal agreements
+    id: String
+    contentHash: String
+    mimeType: String
+    type: String
+    url: String
+    ipnftId: String
+  }]
   ipt: {                        // Associated IP Token (if tokenized)
     id: String
-    metadata: {
-      symbol: String
-      totalIssued: String
-    }
+    symbol: String
+    totalIssued: String
   }
 }
 ```
@@ -706,23 +1018,31 @@ You can combine multiple filters in a single query. All filters are combined wit
 {
   id: String                    // Unique identifier
   createdAt: DateTime           // Creation timestamp
+  updatedAt: DateTime           // Last update timestamp
+  mintedAt: DateTime            // Minting timestamp
   l2TokenAddress: String        // ERC-20 contract address
   holderCount: Int              // Number of token holders
+  symbol: String                // Token symbol
+  name: String                  // Token name
+  decimals: Int                 // Token decimals
+  totalIssued: String           // Total supply (wei format)
+  circulatingSupply: String     // Circulating supply
+  agreementCid: String          // IPFS CID of membership agreement
+  agreementMimeType: String     // Agreement file MIME type
+  image: String                 // Token image URL
+  links: [String]               // Related links
+  capped: Boolean               // Whether token issuance is capped
+  ipnftId: String               // Parent IP-NFT ID
+  originalOwnerId: String       // Original owner user ID
   ipnft: {                      // Parent IP-NFT
     id: String
-    metadata: {
-      name: String
-      description: String
-      topic: String
-    }
-  }
-  metadata: {                   // Token metadata
-    symbol: String
     name: String
-    decimals: Int
-    totalIssued: String         // Total supply (wei format)
-    circulatingSupply: String
-    agreementCid: String        // IPFS CID of membership agreement
+    description: String
+    topic: String
+  }
+  originalOwner: {              // Original token owner
+    id: String
+    address: String
   }
   markets: [{                   // Trading markets
     chainId: Int
@@ -740,6 +1060,8 @@ You can combine multiple filters in a single query. All filters are combined wit
 ```typescript
 {
   id: String                    // Unique identifier
+  createdAt: DateTime           // Creation timestamp
+  updatedAt: DateTime           // Last update timestamp
   name: String                  // Market name
   pairAddress: String           // DEX pair contract address
   chainId: Int                  // Blockchain network ID
@@ -748,17 +1070,72 @@ You can combine multiple filters in a single query. All filters are combined wit
   usdPrice: Float               // Current token price in USD
   usdPrice24hrPercentageChange: Float  // 24h price change %
   marketCapUsd: Float           // Market capitalization in USD
+  inverted: Boolean             // Whether the pair is inverted
+  iptId: String                 // Associated IPT ID
   token: {                      // Associated IPT
     id: String
-    metadata: {
-      symbol: String
-      name: String
-    }
+    symbol: String
+    name: String
   }
   chain: {                      // Blockchain info
+    id: Int
     name: String
     chainId: Int
+    logoUrl: String
   }
+}
+```
+
+### User Type
+
+```typescript
+{
+  id: String                    // Unique identifier
+  createdAt: DateTime           // Creation timestamp
+  updatedAt: DateTime           // Last update timestamp
+  address: String               // Wallet address
+  ipnfts: [IPNFT]              // Owned IP-NFTs
+  ipts: [IPT]                  // Owned IPTs
+}
+```
+
+### ResearchLead Type
+
+```typescript
+{
+  id: String                    // Unique identifier
+  createdAt: DateTime           // Creation timestamp
+  updatedAt: DateTime           // Last update timestamp
+  name: String                  // Research lead name
+  email: String                 // Research lead email
+  ipnfts: [IPNFT]              // Associated IP-NFTs
+}
+```
+
+### Chain Type
+
+```typescript
+{
+  id: Int                       // Unique identifier
+  createdAt: DateTime           // Creation timestamp
+  updatedAt: DateTime           // Last update timestamp
+  name: String                  // Chain name
+  chainId: Int                  // Blockchain network ID (e.g., 1 for Ethereum)
+  logoUrl: String               // Chain logo URL
+  markets: [Market]             // Markets on this chain
+}
+```
+
+### Agreement Type
+
+```typescript
+{
+  id: String                    // Unique identifier
+  contentHash: String           // Content hash
+  mimeType: String              // File MIME type
+  type: String                  // Agreement type
+  url: String                   // Agreement URL
+  ipnftId: String               // Parent IP-NFT ID
 }
 ```
 
@@ -769,7 +1146,7 @@ You can combine multiple filters in a single query. All filters are combined wit
 ### Building a Marketplace UI
 
 ```javascript
-// Fetch recent IP-NFTs with full metadata
+// Fetch recent IP-NFTs with full details
 const response = await fetch('https://production.graphql.api.molecule.xyz/graphql', {
   method: 'POST',
   headers: {
@@ -779,18 +1156,16 @@ const response = await fetch('https://production.graphql.api.molecule.xyz/graphq
   body: JSON.stringify({
     query: `
       query RecentIPNFTs {
-        ipnfts(limit: 20, sortBy: "createdAt", sortOrder: "desc") {
+        ipnfts(limit: 20, sortBy: createdAt, sortOrder: desc) {
           id
-          metadata {
-            name
-            description
-            image
-            topic
-            organization
-          }
+          name
+          description
+          image
+          topic
+          organization
           ipt {
             id
-            metadata { symbol }
+            symbol
           }
         }
       }
@@ -815,11 +1190,9 @@ const response = await fetch('https://production.graphql.api.molecule.xyz/graphq
   body: JSON.stringify({
     query: `
       query TopIPTsByVolume {
-        ipts(limit: 10, sortBy: "createdAt", sortOrder: "desc") {
-          metadata {
-            symbol
-            name
-          }
+        ipts(limit: 10, sortBy: createdAt, sortOrder: desc) {
+          symbol
+          name
           markets {
             usdPrice
             usdPrice24hrPercentageChange
@@ -854,15 +1227,11 @@ const response = await fetch('https://production.graphql.api.molecule.xyz/graphq
       query UserPortfolio($filterBy: IPNFTFilterBy) {
         ipnfts(filterBy: $filterBy) {
           id
-          metadata {
-            name
-            topic
-          }
+          name
+          topic
           ipt {
-            metadata {
-              symbol
-              totalIssued
-            }
+            symbol
+            totalIssued
             markets {
               usdPrice
               marketCapUsd
@@ -938,9 +1307,7 @@ You can filter through multiple levels of relations:
 {
   "filterBy": {
     "token": {
-      "metadata": {
-        "symbol": "VITA-IPT"
-      }
+      "symbol": "VITA-IPT"
     }
   }
 }
@@ -951,13 +1318,12 @@ You can filter through multiple levels of relations:
 | Query Type | Relation Field | Supported Filters | Example |
 |------------|---------------|-------------------|---------|
 | `ipnfts` | `owner` | `id`, `address` | `owner: { address: "0x..." }` |
-| `ipnfts` | `metadata` | All metadata fields | `metadata: { topic: "Oncology" }` |
-| `ipts` | `ipnft` | All IPNFT filters | `ipnft: { owner: { address: "0x..." } }` |
-| `ipts` | `metadata` | All IPT metadata fields | `metadata: { symbol: "VITA" }` |
-| `markets` | `chain` | `chainId`, `name` | `chain: { chainId: 1 }` |
-| `markets` | `token` | All IPT filters | `token: { metadata: { symbol: "..." } }` |
-| `iptMetadata` | `originalOwner` | `id`, `address` | `originalOwner: { address: "0x..." }` |
-| `ipnftMetadata` | `researchLead` | `name`, `email` | `researchLead: { email: "..." }` |
+| `ipnfts` | `researchLead` | `id`, `name`, `email` | `researchLead: { email: "..." }` |
+| `ipnfts` | `agreements` | `id`, `contentHash`, `mimeType`, `type`, `url` | `agreements: { mimeType: "application/pdf" }` |
+| `ipts` | `ipnft` | All IPNFT filter fields | `ipnft: { topic: "Oncology" }` |
+| `ipts` | `originalOwner` | `id`, `address` | `originalOwner: { address: "0x..." }` |
+| `markets` | `chain` | `id`, `chainId`, `name` | `chain: { chainId: 1 }` |
+| `markets` | `token` | All IPT filter fields | `token: { symbol: "VITA" }` |
 
 ### Filter Matching
 
@@ -966,9 +1332,7 @@ All filters use **exact equality matching** by default. For example:
 ```javascript
 {
   "filterBy": {
-    "metadata": {
-      "topic": "Longevity"  // Exact match only
-    }
+    "topic": "Longevity"  // Exact match only
   }
 }
 ```
@@ -1015,4 +1379,190 @@ For questions or issues with the Data API:
 
 ***
 
-_Last updated: December 2024_
+## Recent Updates (February 2026)
+
+### Breaking Changes
+
+#### Schema Flattening — `metadata` wrapper removed from IPNFT and IPT
+
+The intermediate `metadata` wrapper objects (`IPNFTMetadata`, `IPTMetadata`) have been removed. All metadata fields now live directly on the `IPNFT` and `IPT` types.
+
+```diff
+# IPNFT queries — before
+- ipnft {
+-   metadata {
+-     name
+-     description
+-     topic
+-   }
+- }
+
+# IPNFT queries — after
++ ipnft {
++   name
++   description
++   topic
++ }
+
+# IPT queries — before
+- ipt {
+-   metadata {
+-     symbol
+-     name
+-     totalIssued
+-   }
+- }
+
+# IPT queries — after
++ ipt {
++   symbol
++   name
++   totalIssued
++ }
+```
+
+**Migration:** Remove all `metadata { ... }` wrappers and access fields directly on the parent type.
+
+#### `fundingAmount` JSON field decomposed into 4 typed fields
+
+The `fundingAmount` JSON field on IPNFT has been replaced with 4 strongly-typed fields:
+
+```diff
+- ipnft { metadata { fundingAmount } }  // JSON object
++ ipnft {
++   fundingAmountCurrency      // e.g., "USDC"
++   fundingAmountValue         // e.g., "1000000"
++   fundingAmountDecimals      // e.g., 6
++   fundingAmountCurrencyType  // e.g., "ERC20"
++ }
+```
+
+**Migration example:**
+
+```javascript
+// OLD
+const amount = ipnft.metadata.fundingAmount; // JSON object
+
+// NEW
+const amount = {
+  currency: ipnft.fundingAmountCurrency,
+  value: ipnft.fundingAmountValue,
+  decimals: ipnft.fundingAmountDecimals,
+  currencyType: ipnft.fundingAmountCurrencyType
+};
+```
+
+#### `agreements` changed from JSON array to typed relation
+
+The `agreements` field on IPNFT has changed from a JSON array to a queryable typed relation with sub-field selection:
+
+```diff
+- ipnft { metadata { agreements } }  // JSON array
++ ipnft {
++   agreements {  // Typed relation
++     id
++     contentHash
++     mimeType
++     type
++     url
++     ipnftId
++   }
++ }
+```
+
+**Migration:** Update your queries to select specific agreement fields instead of receiving a raw JSON array.
+
+#### Filter changes — nested metadata filters removed
+
+All filter paths that previously went through `metadata` are now direct fields:
+
+```diff
+# Filtering IP-NFTs by topic
+- filterBy: { metadata: { topic: "Oncology" } }
++ filterBy: { topic: "Oncology" }
+
+# Filtering IP-NFTs by organization
+- filterBy: { metadata: { organization: "University Lab" } }
++ filterBy: { organization: "University Lab" }
+
+# Filtering IPTs by symbol
+- filterBy: { metadata: { symbol: "VITA" } }
++ filterBy: { symbol: "VITA" }
+```
+
+#### `researchLead` and `originalOwner` filter paths changed
+
+These relation filters are now direct on the parent type instead of nested inside metadata context:
+
+```diff
+# Filter IPNFT by research lead (now direct on IPNFTFilterBy)
+- filterBy: { metadata: { researchLead: { email: "..." } } }
++ filterBy: { researchLead: { email: "..." } }
+
+# Filter IPT by original owner (now direct on IPTFilterBy)
+- filterBy: { metadata: { originalOwner: { address: "..." } } }
++ filterBy: { originalOwner: { address: "..." } }
+```
+
+### New Features
+
+#### New query types
+
+The following new top-level queries are now available:
+
+| Query | Description |
+|-------|-------------|
+| `user(id)` / `users(...)` | Query users by address, list associated IP-NFTs and IPTs |
+| `researchLead(id)` / `researchLeads(...)` | Query research leads and their associated IP-NFTs |
+| `chain(id)` / `chains(...)` | Query blockchain networks and their markets |
+| `agreement(id)` / `agreements(...)` | Query legal agreements associated with IP-NFTs |
+
+All new queries support `limit`, `skip`, `sortBy`, `sortOrder`, and `filterBy` parameters.
+
+#### New fields on IPNFT
+
+- `updatedAt` — Last update timestamp
+- `tokenUri` — Token metadata URI
+- `symbol` — Token symbol
+- `schemaVersion` — Metadata schema version
+- `userId` — Owner user ID (for direct filtering)
+- `researchLeadId` — Research lead ID (for direct filtering)
+- `fundingAmountCurrency`, `fundingAmountValue`, `fundingAmountDecimals`, `fundingAmountCurrencyType` — Decomposed funding amount fields
+
+#### New fields on IPT
+
+- `updatedAt` — Last update timestamp
+- `mintedAt` — Minting timestamp
+- `agreementMimeType` — Agreement file MIME type
+- `originalOwner` — Full `User` type (with `id`, `address`)
+- `originalOwnerId` — Original owner user ID (for direct filtering)
+- `ipnftId` — Parent IP-NFT ID (for direct filtering)
+- `links` — Related links
+- `capped` — Whether token issuance is capped
+
+#### New fields on Market
+
+- `createdAt`, `updatedAt` — Timestamps
+- `inverted` — Whether the pair is inverted
+- `iptId` — Associated IPT ID (for direct filtering)
+- `chain.logoUrl` — Chain logo URL now available
+
+#### `agreements` queryable as typed relation
+
+Agreements on IP-NFTs are now a fully queryable relation with sub-field selection, filtering, sorting, and pagination:
+
+```graphql
+ipnft {
+  agreements(limit: 10, sortBy: type, sortOrder: asc) {
+    id
+    contentHash
+    mimeType
+    type
+    url
+  }
+}
+```
+
+---
+
+_Last updated: February 2026_
