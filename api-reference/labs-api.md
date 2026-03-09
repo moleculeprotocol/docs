@@ -27,9 +27,8 @@ The Labs API has different authentication requirements depending on the operatio
 **All queries** are public and only require an API Key:
 - `projectsV2` - List all projects with pagination
 - `projectWithDataRoomAndFilesV2` - Get project details and files
-- `projectActivityV2` - Get activity feed for a project
-- `projectAnnouncementsV2` - Get announcements for a project
-- `activitiesV2` - Get global activity feed
+- `projectActivityV2` - Get activity feed for a project, (available filters: ANNOUNCEMENT | FILE)
+- `activitiesV2` - Get global activity feed, (available filters: ANNOUNCEMENT | FILE)
 - `dataRoomFileV2` - Get file by path
 - `searchLabs` - Search across projects, files, and announcements
 
@@ -867,44 +866,96 @@ Get activity timeline for a specific project including file events and announcem
 
 > **🔓 Public Endpoint**: The `projectActivityV2` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed.
 
+> **Filtering**: By default, returns all activity types (file events and announcements). Use the optional `filter` parameter (`ANNOUNCEMENT` or `FILE`) to retrieve only a specific type.
+
 **GraphQL Query:**
 
 ```graphql
-query GetActivity($ipnftUid: ID!, $page: Int, $perPage: Int) {
-  projectActivityV2(ipnftUid: $ipnftUid, page: $page, perPage: $perPage) {
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      currentPage
-      totalPages
-    }
-    nodes {
-      __typename
-      ... on ProjectEventFileAddedV2 {
-        entry {
-          ref
-        }
+  query GetProjectActivityV2($id: ID!, $page: Int!, $perPage: Int!, $filter: ProjectActivityFilter) {
+    projectActivityV2(ipnftUid: $id, page: $page, perPage: $perPage, filter: $filter) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        currentPage
+        totalPages
       }
-      ... on ProjectEventAnnouncementV2 {
-        announcement {
-          id
-          headline
-          body
-          systemTime
-          changeBy
-          attachments {
-            id
-            did
+      nodes {
+        __typename
+        ... on ProjectEventFileAddedV2 {
+          entry {
+            ref
             path
-            name
-            contentType
+            tags
+            description
+            version
             accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventFileUpdatedV2 {
+          entry {
+            ref
+            path
+            tags
+            description
+            version
+            accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventFileRemovedV2 {
+          entry {
+            ref
+            path
+            tags
+            description
+            version
+            accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventAnnouncementV2 {
+          announcement {
+            id
+            headline
+            body
+            attachments {
+              id
+              did
+              path
+              name
+              contentType
+              accessLevel
+            }
+            changeBy
+            systemTime
+            eventTime
           }
         }
       }
     }
   }
-}
 ```
 
 > **⚠️ Breaking Change**: Announcement `attachments` changed from `[String!]!` (array of DIDs) to `[DataRoomFile!]!` (array of file objects). This enables querying file metadata directly without separate API calls.
@@ -924,81 +975,6 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
-**Performance Note**: Attachment fields in `projectActivityV2` are limited to essential display fields (did, path, name, contentType, accessLevel) for optimal performance. For full attachment metadata including downloadUrl and encryption details, use `projectAnnouncementsV2` instead.
-
-#### Project Announcements (Dedicated Endpoint)
-
-Get announcements for a specific project with full attachment details. More efficient than `projectActivityV2` when you only need announcements. This is a **public endpoint** - no authentication required.
-
-> **🔓 Public Endpoint**: The `projectAnnouncementsV2` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed.
-
-**GraphQL Query:**
-
-```graphql
-query GetProjectAnnouncements($ipnftUid: String!, $page: Int, $perPage: Int) {
-  projectAnnouncementsV2(ipnftUid: $ipnftUid, page: $page, perPage: $perPage) {
-    totalCount
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      currentPage
-      totalPages
-    }
-    nodes {
-      id
-      headline
-      body
-      systemTime
-      eventTime
-      changeBy
-      project {
-        ipnftUid
-        ipnftSymbol
-        ipnftAddress
-        ipnftTokenId
-      }
-      attachments {
-        id
-        did
-        path
-        name
-        contentType
-        accessLevel
-        version
-        contentHash
-        description
-        categories
-        tags
-        downloadUrl
-        downloadUrlExpiry
-        encryptionMetadata {
-          dataToEncryptHash
-          encryptedBy
-          chain
-          litNetwork
-        }
-      }
-    }
-  }
-}
-```
-
-**Example Request:**
-
-```bash
-curl -X POST https://production.graphql.api.molecule.xyz/graphql \
-  -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
-  -d '{
-    "query": "query GetProjectAnnouncements($ipnftUid: String!, $page: Int, $perPage: Int) { projectAnnouncementsV2(ipnftUid: $ipnftUid, page: $page, perPage: $perPage) { totalCount pageInfo { hasNextPage currentPage } nodes { headline body attachments { did path contentType downloadUrl } } } }",
-    "variables": {
-      "ipnftUid": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37",
-      "page": 0,
-      "perPage": 20
-    }
-  }'
-```
-
 **Use Cases:**
 
 - Announcement detail pages requiring full file metadata
@@ -1006,41 +982,99 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 - Encrypted file access with Lit Protocol
 - Projects with many announcements (efficient pagination)
 
-#### All Announcements (Global Feed)
+#### Global Activity Feed
 
-Get all announcements across all projects. This is a **public endpoint** - no authentication required.
+Get all activity across all projects. This is a **public endpoint** - no authentication required.
 
 > **🔓 Public Endpoint**: The `activitiesV2` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed.
+
+> **Filtering**: By default, returns all activity types (file events and announcements). Use the optional `filter` parameter (`ANNOUNCEMENT` or `FILE`) to retrieve only a specific type.
 
 **GraphQL Query:**
 
 ```graphql
-query GetAllAnnouncements($page: Int, $perPage: Int) {
-  activitiesV2(page: $page, perPage: $perPage) {
-    isSuccess
-    announcements {
-      id
-      headline
-      body
-      systemTime
-      project {
-        ipnftUid
-        ipnftSymbol
+query GetActivitiesV2($page: Int, $perPage: Int, $filter: ProjectActivityFilter) {
+    activitiesV2(page: $page, perPage: $perPage, filter: $filter) {
+      isSuccess
+      activities {
+        __typename
+        ... on ProjectEventFileAddedV2 {
+          entry {
+            ref
+            path
+            tags
+            description
+            version
+            accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventFileUpdatedV2 {
+          entry {
+            ref
+            path
+            tags
+            description
+            version
+            accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventFileRemovedV2 {
+          entry {
+            ref
+            path
+            tags
+            description
+            version
+            accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventAnnouncementV2 {
+          announcement {
+            id
+            headline
+            body
+            attachments {
+              id
+              did
+              path
+              name
+              contentType
+              accessLevel
+            }
+            changeBy
+            systemTime
+            eventTime
+          }
+        }
       }
-      attachments {
-        id
-        did
-        path
-        name
-        contentType
-        accessLevel
-      }
+      error
     }
   }
-}
 ```
-
-> **Note**: Attachment fields in `activitiesV2` are limited for performance. Use `projectAnnouncementsV2` for full attachment metadata including downloadUrl.
 
 ---
 
@@ -1811,7 +1845,7 @@ The `moleculeAccessLevel` parameter has been removed in V2:
 }
 ```
 
-**Migration Required**: If you query announcements via `projectActivityV2`, `activitiesV2`, `searchLabs`, or `projectAnnouncementsV2`, update your code to handle attachment objects instead of strings:
+**Migration Required**: If you query announcements via `projectActivityV2`, `activitiesV2`, or `searchLabs`, update your code to handle attachment objects instead of strings:
 
 **Before:**
 
@@ -1846,7 +1880,6 @@ announcement.attachments.forEach((file) => {
 | `projectActivityV2`      | Minimal (did, path, name, contentType, accessLevel)                |
 | `activitiesV2`           | Minimal (did, path, name, contentType, accessLevel)                |
 | `searchLabs`             | Minimal (did, path, name, contentType, accessLevel)                |
-| `projectAnnouncementsV2` | **Full** (includes downloadUrl, encryptionMetadata, version, etc.) |
 
 **All other V1 → V2 migrations are backward-compatible** with additional optional parameters in V2.
 
