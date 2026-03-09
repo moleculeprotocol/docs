@@ -1863,7 +1863,255 @@ If you encounter any issues or have questions about the Programmatic File Upload
 
 ---
 
-## Recent Updates (January 2025)
+## Recent Updates (March 2026)
+
+### Breaking Changes
+
+#### ⚠️ projectAnnouncementsV2 query removed and replaced with a filter on the projectAnnouncementV2 query
+
+**projectAnnouncementsV2 should now be replaced with projectActivityV2(ipnftUid, page, perPage, filter: ANNOUNCEMENT)**
+
+**Why This Change:**
+
+- ✅ After adding the `ProjectActivityFilter` filter to `projectActivityV2` (ANNOUNCEMENT / FILE), now we can query both Announcements and File events using the same query but with different filters, with this change the `projectAnnouncementsV2` query becomes obsolete and a duplication for a more generic query `projectActivityV2`.
+
+
+**Migration:**
+Update your code to access announcements via projectActivity
+
+```javascript
+// OLD CODE (no longer works)
+query GetProjectAnnouncementsV2($id: String!, $page: Int!, $perPage: Int!) {
+  projectAnnouncementsV2(ipnftUid: $id, page: $page, perPage: $perPage) {
+    nodes {
+      id
+      headline
+      body
+      systemTime
+      eventTime
+      changeBy
+      project {
+        ipnftUid
+        ipnftSymbol
+        ipnftAddress
+        ipnftTokenId
+      }
+      attachments {
+        id
+        did
+        path
+        name
+        contentType
+        accessLevel
+        version
+        contentHash
+        description
+        categories
+        tags
+        contentText
+        downloadUrl
+        downloadUrlExpiry
+        downloadHeaders {
+          key
+          value
+        }
+        encryptionMetadata {
+          dataToEncryptHash
+          encryptedBy
+          encryptedAt
+          chain
+          litNetwork
+        }
+      }
+    }
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      currentPage
+      totalPages
+    }
+  }
+}
+
+// NEW CODE (FETCH ALL PROJECT ANNOUNCEMENT EVENTS)
+query GetProjectActivityV2Filtered($id: ID!, $page: Int!, $perPage: Int!, $filter: ANNOUNCEMENT) {
+  projectActivityV2(ipnftUid: $id, page: $page, perPage: $perPage, filter: $filter) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      currentPage
+      totalPages
+    }
+    nodes {
+      __typename
+      ... on ProjectEventFileAddedV2 {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
+          name
+        }
+      }
+      ... on ProjectEventFileUpdatedV2 {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
+          name
+        }
+      }
+      ... on ProjectEventFileRemovedV2 {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
+          name
+        }
+      }
+      ... on ProjectEventAnnouncementV2 {
+        announcement {
+          id
+          headline
+          body
+          attachments {
+            id
+            did
+            path
+            name
+            contentType
+            accessLevel
+          }
+          changeBy
+          systemTime
+          eventTime
+        }
+      }
+    }
+  }
+}
+
+// NEW CODE (FETCH ALL PROJECT FILE EVENTS)
+query GetProjectActivityV2FilteredFiles($id: ID!, $page: Int!, $perPage: Int!, $filter: FILE) {
+    projectActivityV2(ipnftUid: $id, page: $page, perPage: $perPage, filter: $filter) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        currentPage
+        totalPages
+      }
+      nodes {
+        __typename
+        ... on ProjectEventFileAddedV2 {
+          entry {
+            ref
+            path
+            tags
+            description
+            version
+            accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventFileUpdatedV2 {
+          entry {
+            ref
+            path
+            tags
+            description
+            version
+            accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventFileRemovedV2 {
+          entry {
+            ref
+            path
+            tags
+            description
+            version
+            accessLevel
+            eventTime
+            systemTime
+            changeBy
+            categories
+            contentType
+            contentHash
+            contentText
+            name
+          }
+        }
+        ... on ProjectEventAnnouncementV2 {
+          announcement {
+            id
+            headline
+            body
+            attachments {
+              id
+              did
+              path
+              name
+              contentType
+              accessLevel
+            }
+            changeBy
+            systemTime
+            eventTime
+          }
+        }
+      }
+    }
+  }
+```
+
+---
+
+## Recent Updates (January 2026)
 
 ### Authentication Changes
 
@@ -2144,4 +2392,4 @@ Fixed inconsistency where the `path` field differed between queries:
 
 ---
 
-_Last updated: January 2026_
+_Last updated: March 2026_
