@@ -5,6 +5,7 @@
 The Tokenization API enables developers to programmatically mint IP-NFTs (Intellectual Property NFTs) and tokenize them into fungible IP Tokens (IPTs). This API combines off-chain GraphQL mutations with on-chain blockchain transactions to create legally-bound, tradeable intellectual property assets.
 
 **Capabilities:**
+
 * Mint new IP-NFTs with legal assignment agreements
 * Upload artwork and metadata to IPFS
 * Create fungible IP Tokens (IPTs) from existing IP-NFTs
@@ -105,9 +106,11 @@ Step 9: Mint IP-NFT (BLOCKCHAIN)
 Generates a legal IP assignment agreement and uploads it to IPFS.
 
 **Input:**
+
 * `projectData` (AWSJSON): Stringified JSON with project details
 
 **Required Fields in projectData:**
+
 ```json
 {
   "project": {
@@ -134,6 +137,7 @@ Generates a legal IP assignment agreement and uploads it to IPFS.
 ```
 
 **Response:**
+
 ```json
 {
   "agreementCid": "QmXnnyufdzAWL...",
@@ -148,12 +152,14 @@ Generates a legal IP assignment agreement and uploads it to IPFS.
 Creates a presigned URL for uploading IP-NFT artwork.
 
 **Input:**
+
 * `filename` (String): Image filename
 * `contentType` (String): MIME type (e.g., "image/png")
 * `ipnftId` (String): Reservation ID from Step 1
 * `expiresIn` (Int, optional): URL expiration in seconds
 
 **Response:**
+
 ```json
 {
   "uploadUrl": "https://s3.amazonaws.com/...",
@@ -168,11 +174,13 @@ Creates a presigned URL for uploading IP-NFT artwork.
 Uploads NFT metadata with image reference to IPFS.
 
 **Input:**
+
 * `metadata` (AWSJSON): Stringified metadata object
 * `imageKey` (String): S3 key from Step 3
 * `ipnftId` (String): Reservation ID
 
 **Response:**
+
 ```json
 {
   "metadataCid": "QmYnZkpT9X...",
@@ -186,11 +194,13 @@ Uploads NFT metadata with image reference to IPFS.
 Generates the terms acceptance message for wallet signing.
 
 **Input:**
+
 * `metadataCid` (String): CID from Step 5
 * `minter` (String): Wallet address
 * `chainId` (Int): Blockchain network ID
 
 **Response:**
+
 ```json
 {
   "message": "I accept all terms for IPNFT...",
@@ -204,6 +214,7 @@ Generates the terms acceptance message for wallet signing.
 Backend authorization for minting after terms are signed.
 
 **Input:**
+
 * `ipnftId` (String): Reservation ID
 * `tokenURI` (String): Metadata URL from Step 5
 * `chainId` (Int): Network ID
@@ -212,6 +223,7 @@ Backend authorization for minting after terms are signed.
 * `termsSignature` (String): Signature from Step 7
 
 **Response:**
+
 ```json
 {
   "authorization": "0x1234567890abcdef...",
@@ -275,9 +287,11 @@ Step 5: Tokenize (BLOCKCHAIN)
 Generates IPT membership agreement and uploads to IPFS.
 
 **Input:**
+
 * `agreementData` (AWSJSON): Stringified object
 
 **Required Fields:**
+
 ```json
 {
   "ipnftId": "123",
@@ -287,6 +301,7 @@ Generates IPT membership agreement and uploads to IPFS.
 ```
 
 **Response:**
+
 ```json
 {
   "agreementCid": "QmAbc123...",
@@ -301,11 +316,13 @@ Generates IPT membership agreement and uploads to IPFS.
 Generates the IPT terms acceptance message for signing.
 
 **Input:**
+
 * `agreementCid` (String): CID from Step 2
 * `ipnftId` (String): IP-NFT identifier
 * `chainId` (Int): Blockchain network ID
 
 **Response:**
+
 ```json
 {
   "message": "I accept IPT terms...",
@@ -335,20 +352,23 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 ### Smart Contract Addresses
 
 **Mainnet (Ethereum):**
+
 * IPNFT Contract: `0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1`
 * Tokenizer Contract: Contact team for address
 
 **Testnet (Sepolia):**
+
 * IPNFT Contract: `0x152B444e60C526fe4434C721561a077269FcF61a`
 * Tokenizer Contract: Contact team for address
 
-For complete contract addresses and ABIs, see [Smart Contract Addresses](../ip-nfts/technical-components-of-ip-nfts/smart-contract-addresses.md).
+For complete contract addresses and ABIs, see [Smart Contract Addresses](/broken/pages/TMpLloOogfGTEgz5hp9I).
 
 ### On-Chain Transactions
 
 The minting and tokenization workflows include blockchain transactions that require:
 
 **Requirements:**
+
 * Ethereum wallet with private key access
 * ETH for gas fees
 * 0.001 ETH for IP-NFT minting fee
@@ -427,29 +447,32 @@ All mutations follow a consistent error response format:
 
 ### Common Errors
 
-| Error Code                  | Description                                              | Solution                          |
-| --------------------------- | -------------------------------------------------------- | --------------------------------- |
-| 401 Unauthorized            | Missing or invalid API key                               | Check `x-api-key` header          |
-| 400 Bad Request             | Invalid parameters or malformed JSON                     | Verify input data format          |
-| `INVALID_TERMS_SIGNATURE`   | Terms signature doesn't match signer address             | Ensure same wallet signs terms    |
-| `INVALID_METADATA`          | Metadata schema validation failed                        | Check required metadata fields    |
-| `SYMBOL_ALREADY_TAKEN`      | IP-NFT symbol already exists                             | Use a unique symbol               |
-| `ALREADY_TOKENIZED`         | IP-NFT has already been tokenized                        | Each IP-NFT can only be tokenized once |
-| `MUST_CONTROL_IPNFT`        | Caller doesn't own the IP-NFT                           | Only IP-NFT owner can tokenize    |
+| Error Code                | Description                                  | Solution                               |
+| ------------------------- | -------------------------------------------- | -------------------------------------- |
+| 401 Unauthorized          | Missing or invalid API key                   | Check `x-api-key` header               |
+| 400 Bad Request           | Invalid parameters or malformed JSON         | Verify input data format               |
+| `INVALID_TERMS_SIGNATURE` | Terms signature doesn't match signer address | Ensure same wallet signs terms         |
+| `INVALID_METADATA`        | Metadata schema validation failed            | Check required metadata fields         |
+| `SYMBOL_ALREADY_TAKEN`    | IP-NFT symbol already exists                 | Use a unique symbol                    |
+| `ALREADY_TOKENIZED`       | IP-NFT has already been tokenized            | Each IP-NFT can only be tokenized once |
+| `MUST_CONTROL_IPNFT`      | Caller doesn't own the IP-NFT                | Only IP-NFT owner can tokenize         |
 
 ### Troubleshooting
 
-**"INVALID_TERMS_SIGNATURE" Error:**
+**"INVALID\_TERMS\_SIGNATURE" Error:**
+
 * Ensure the same wallet address is used throughout the flow
 * Verify signature is generated from the exact message returned by `getTermsMessage`
 * Check that `minter` parameter matches the signing wallet
 
-**"SYMBOL_ALREADY_TAKEN" Error:**
+**"SYMBOL\_ALREADY\_TAKEN" Error:**
+
 * Choose a unique symbol for your IP-NFT
 * Symbols must be alphanumeric (no special characters)
 * Check existing IP-NFTs to avoid conflicts
 
 **Blockchain Transaction Failures:**
+
 * Verify sufficient ETH balance (0.001 ETH + gas)
 * Check that wallet has approved spending
 * Ensure using correct contract address for your network
@@ -460,6 +483,7 @@ All mutations follow a consistent error response format:
 ## Complete End-to-End Examples
 
 For complete code examples including:
+
 * All 9 IP-NFT minting steps with code
 * All 5 IPT tokenization steps with code
 * Smart contract ABIs and interfaces
@@ -503,11 +527,13 @@ console.log('IP-NFT minted!', txHash);
 ### IPNFT Contract Functions
 
 **reserve():**
+
 * Reserves a token ID for minting
 * Requires: 0.001 ETH payment
 * Returns: Reservation ID (emitted in event)
 
 **mintReservation():**
+
 * Mints the reserved IP-NFT
 * Parameters:
   * `to` (address): Recipient
@@ -521,6 +547,7 @@ console.log('IP-NFT minted!', txHash);
 ### Tokenizer Contract Functions
 
 **tokenizeIpnft():**
+
 * Creates ERC-20 IPT from IP-NFT
 * Parameters:
   * `ipnftId` (uint256): IP-NFT token ID
@@ -531,6 +558,7 @@ console.log('IP-NFT minted!', txHash);
 * Returns: IPT contract address (emitted in event)
 
 **Contract ABIs:**
+
 * Request full ABIs from Molecule team as part of the Technical Integration Guide
 
 ***
@@ -546,9 +574,9 @@ console.log('IP-NFT minted!', txHash);
 
 ### Gas Fee Estimates
 
-* **Reserve**: ~50,000 gas + 0.001 ETH fee
-* **Mint Reservation**: ~150,000 gas + 0.001 ETH fee
-* **Tokenize IPNFT**: ~2,000,000 gas (deploys new ERC-20 contract)
+* **Reserve**: \~50,000 gas + 0.001 ETH fee
+* **Mint Reservation**: \~150,000 gas + 0.001 ETH fee
+* **Tokenize IPNFT**: \~2,000,000 gas (deploys new ERC-20 contract)
 
 _Gas estimates are approximate and vary by network conditions_
 
@@ -592,7 +620,7 @@ For assistance with the Tokenization API:
 
 * **Technical Integration Guide**: Contact Molecule team to receive complete documentation
 * **Discord**: Join our [community](https://t.co/L0VEiy4Bjk) for support
-* **Smart Contracts**: See [contract addresses](../ip-nfts/technical-components-of-ip-nfts/smart-contract-addresses.md)
+* **Smart Contracts**: See [contract addresses](/broken/pages/TMpLloOogfGTEgz5hp9I)
 
 ***
 
