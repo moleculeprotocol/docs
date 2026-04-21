@@ -8,7 +8,7 @@
 
 ## Core Concepts
 
-* [On-Chain Lab](core-concepts/on-chain-lab.md)
+* [Onchain Lab](core-concepts/onchain-lab.md)
 * [Module Registry](core-concepts/module-registry/README.md)
   * [Validator Module](core-concepts/module-registry/validator-module.md)
   * [Data Module](core-concepts/module-registry/data-module.md)
