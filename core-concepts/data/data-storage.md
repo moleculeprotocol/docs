@@ -15,9 +15,9 @@ Every file uploaded to an Onchain Lab passes through a layered storage pipeline 
 
 When a researcher uploads a file to a Lab, the following sequence occurs:
 
-**Authenticate.** The researcher signs a SIWE (Sign-In with Ethereum) message with their wallet, establishing a session with Lit Protocol. Session signatures are returned and remain valid for approximately 24 hours, authorising the researcher to encrypt files against the Lab's access conditions.
+**Authenticate.** The researcher authenticates with their wallet (Privy JWT) or a service token, establishing a session with the Molecule API that permits uploads to the target Lab.
 
-**Prepare.** The Client SDK computes a content hash checksum of the raw file. If the file's access level is set to Token-Holder or Admin-Only, the SDK creates access conditions based on the Lab's IP-NFT (using the IPNFT canRead permission), encrypts the file client-side using a symmetric encryption key, and shards that key across Lit Protocol's node network using threshold cryptography. The encrypted blob replaces the original file in memory. If the access level is Public, no encryption is required and the raw file proceeds directly.
+**Prepare.** The Client SDK computes a content hash checksum of the raw file. If the file's access level is set to Token-Holder or Admin-Only, the SDK opts into encryption on `initiateCreateOrUpdateFileV2` — the backend issues a fresh per-file data encryption key (DEK) and returns both the one-shot plaintext DEK and its wrapped form. The SDK builds the file's on-chain access conditions, AES-256-GCM encrypts the file client-side with Web Crypto, and stores the wrapped DEK + IV + content hash + conditions as the file's encryption metadata on Kamu (ODF). The encrypted blob replaces the original file in memory. If the access level is Public, no encryption is required and the raw file proceeds directly. See [Data Privacy & Access](data-privacy-and-access.md) for the full Onchain-Verified Envelope Encryption model.
 
 **Upload.** The Client SDK initiates the upload through the Molecule API, which reserves an upload slot and generates a pre-signed URL via Filebase (the S3-compatible upload gateway). The encrypted file is uploaded directly from the browser to the pre-signed URL with progress tracking.
 
@@ -47,7 +47,7 @@ IPFS provides content-addressed retrieval, but it does not guarantee permanent a
 
 Onchain Labs solve this by persisting files to Arweave in addition to IPFS. Arweave is a permanent, pay-once storage network — once a file is written, it remains available indefinitely regardless of whether any individual node or service continues operating. This dual-storage approach means files are retrievable from IPFS for fast, everyday access, and backed by Arweave for permanent, censorship-resistant availability.
 
-Even if a file record is removed from a Lab's data room index, the underlying content persists on both IPFS (as long as it remains pinned) and Arweave (permanently). Because all files are encrypted before upload, this persistence does not compromise confidentiality — the content is publicly available but unreadable without the decryption keys controlled by Lit Protocol.
+Even if a file record is removed from a Lab's data room index, the underlying content persists on both IPFS (as long as it remains pinned) and Arweave (permanently). Because all files are encrypted before upload, this persistence does not compromise confidentiality — the content is publicly available but unreadable without the wrapped DEK, which is only released after on-chain access conditions are re-verified against live chain state.
 
 ### E2E Upload Flow
 
@@ -63,7 +63,7 @@ Even if a file record is removed from a Lab's data room index, the underlying co
 | On-chain data references   | Lab's Token Bound Account     | Smart contract                       | Tamper-evident CID pointers and metadata      |
 | tokenURI pointer           | On-chain (Lab TBA)            | Lab smart contract                   | Permanent reference to IP-NFT metadata        |
 | File versions              | Kamu provenance DB            | Kamu                                 | Append-only version history and audit trail   |
-| Encryption keys            | Lit Protocol node network     | Lit Protocol                         | Threshold-sharded, condition-gated decryption |
-| Access conditions          | On-chain + Lit Protocol       | Lab smart contract + Lit             | Defines who can decrypt each file             |
+| Encryption keys            | Wrapped per-file DEKs          | Onchain-Verified Envelope Encryption | Per-file AES-256 DEK wrapped by a protocol-operated custodian (BLS threshold operator network on roadmap). Plaintext DEK is released only after on-chain conditions are re-verified. Legacy files continue to resolve through Lit Protocol until migrated. |
+| Access conditions          | Stored in encryption metadata on Kamu (ODF) | AccessResolver (on-chain)  | Defines who can decrypt each file             |
 | File provenance            | Kamu provenance DB            | Kamu                                 | DID-based authorship, timestamps, lineage     |
 | Activity events            | Kamu provenance DB + on-chain | Kamu + Lab TBA                       | Access logs, metadata changes, announcements  |

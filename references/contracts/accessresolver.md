@@ -6,16 +6,21 @@ icon: gavel
 
 ## AccessResolver Overview
 
-The `AccessResolver` contract facilitates on-chain authorization checks for [Lit Protocol](https://litprotocol.com/) access control. It verifies if a wallet address is authorized to decrypt files associated with an IP-NFT. This contract acts as a bridge between Molecule's IP-NFT ownership system and Lit Protocol's decentralized encryption network, ensuring secure file sharing within DataRooms.
+The `AccessResolver` contract is the on-chain authorization primitive for Onchain Labs. It answers two questions:
+
+1. **"Is this wallet an authorized signer for a given IP-NFT or ERC-6551 Token Bound Account?"** — used by the file-encryption layer to gate decryption of confidential data-room files and by back-office flows that need to resolve Safe multisigs and Ownable contracts to their leaf EOAs.
+2. **"What role does this wallet hold on a given lab, and is the grant still active?"** — the V3 role system (`ROLE_VIEWER`, `ROLE_CONTRIBUTOR`) with per-grant expiry and `isAgent` metadata, hierarchical (Owner > Contributor > Viewer), and administered per `oclId`.
+
+See [Roles & Permissions](../../core-concepts/roles-and-permissions.md) for the product-level role model and [Data Privacy & Access](../../core-concepts/data/data-privacy-and-access.md) for how these predicates feed into the encryption / decryption pipeline.
 
 ### Contract Details
 
-| Property | Value                  |
-| -------- | ---------------------- |
-| Contract | AccessResolver         |
-| Type     | UUPS Upgradeable Proxy |
-| Solidity | ^0.8.x                 |
-| License  | MIT                    |
+| Property | Value                                       |
+| -------- | ------------------------------------------- |
+| Contract | AccessResolver (V3)                         |
+| Type     | UUPS Upgradeable Proxy                      |
+| Solidity | 0.8.30                                      |
+| Storage  | Preserves V1/V2 layout; V3 adds `_roles` map and `labNftContractAddress` |
 
 #### Deployments
 
@@ -28,43 +33,95 @@ The `AccessResolver` contract facilitates on-chain authorization checks for [Lit
 
 ### How It Works
 
-1. **Lit Protocol Network** interacts with the `AccessResolver`.
-2. `AccessResolver` determines if the user owns or can read the IPNFT contract.
-3. Grants or denies decryption keys based on the authorization.
+1. A caller (file-encryption layer, GraphQL resolver, UI) asks the `AccessResolver` whether a wallet is authorized for a given IP-NFT / TBA / lab role.
+2. The resolver walks the ownership graph: direct ownership → ERC-6551 `isValidSigner` → Safe `isOwner` → `Ownable.owner()` (recursively, up to depth 10).
+3. For role checks it reads the per-lab `RoleGrant` struct, enforces the Owner > Contributor > Viewer hierarchy, and respects each grant's expiry timestamp.
+4. Returns `true`/`false`. The resolver never mints, grants, or revokes encryption keys itself — it is read-only from the caller's perspective (except for the explicit `grantRole` / `revokeRole` entry points).
 
-#### Functions
+#### Signer Authorization (V1/V2)
 
-*   **isAuthorizedSignerForIpnft**: Checks if an address is authorized for a specific IP-NFT.
-
-    ```solidity
-    function isAuthorizedSignerForIpnft(address signer, uint256 ipnftId) 
-    external view returns (bool)
-    ```
-*   **isAuthorizedSignerForTba**: Determines if an address can act on behalf of a Token Bound Account.
+*   **isAuthorizedSignerForIpnft**: Checks if an address is authorized for a specific IP-NFT, resolving Safe multisigs and Ownable wrappers recursively.
 
     ```solidity
-    function isAuthorizedSignerForTba(address signer, address account) 
-    external view returns (bool)
+    function isAuthorizedSignerForIpnft(address signer, uint256 ipnftId)
+        external view returns (bool);
     ```
-* **ipnftContractAddress**: Returns the IPNFT contract address used for checks.
+*   **isAuthorizedSignerForTba**: Determines if an address can act on behalf of an ERC-6551 Token Bound Account. Fast path uses `isValidSigner`; slow path resolves the TBA's bound NFT owner (handles Safe-held NFTs).
+
+    ```solidity
+    function isAuthorizedSignerForTba(address signer, address account)
+        external view returns (bool);
+    ```
+*   **ownersOfIpnft**: Returns the deduplicated leaf (EOA) owners of an IP-NFT after recursively unwrapping Safe multisigs and Ownable smart accounts.
+
+    ```solidity
+    function ownersOfIpnft(uint256 ipnftId) external view returns (address[] memory);
+    ```
+*   **isApprovedLock**: Checks if a signer holds a locked token and is approved (used by locked-token-gated access conditions).
+
+    ```solidity
+    function isApprovedLock(address tokenAddress, address signer)
+        external view returns (bool);
+    ```
+
+#### Role Management (V3)
+
+The V3 role system adds hierarchical, per-lab roles (`ROLE_VIEWER = 1`, `ROLE_CONTRIBUTOR = 2`) administered per canonical `oclId`. `hasRole` is hierarchical: Contributor passes Viewer checks, and the Lab Owner (resolved via the OCL TBA) passes every check. See [Roles & Permissions](../../core-concepts/roles-and-permissions.md) for the full model and capability matrix.
+
+```solidity
+uint8 public constant ROLE_VIEWER = 1;
+uint8 public constant ROLE_CONTRIBUTOR = 2;
+
+struct RoleGrant {
+    uint8  role;     // 0 = none, 1 = Viewer, 2 = Contributor
+    uint64 expiry;   // 0 = permanent, >0 = unix timestamp
+    bool   isAgent;  // true if grantee is an AI agent (metadata only)
+}
+
+function grantRole(bytes32 oclId, address account, uint8 role, uint64 expiry, bool isAgent) external;
+function revokeRole(bytes32 oclId, address account) external;
+function hasRole(bytes32 oclId, address account, uint8 role) external view returns (bool);
+function getRole(bytes32 oclId, address account)
+    external view returns (uint8 role, uint64 expiry, bool isAgent);
+```
+
+**`oclId` layout** (bytes32, MSB → LSB): version byte (`0x01`), namespace byte (`0x01` = EVM), 10 reserved / tokenId-high bytes, 20-byte TBA address. Every role entry point runs `_validateOclId`, which verifies the version / namespace bytes, that the TBA has code, that `LabNFT.accountOf(tokenId) == tba`, and that `IERC6551.token()` returns `(CANONICAL_CHAIN_ID = 8453, labNft, tokenId)`. Malformed identifiers revert with `InvalidOclId`.
+
+**Chain scoping.** `AccessResolver` is deployed on Base, Mainnet, and Sepolia, but canonical lab state lives on Base. Lab-owner self-administration (`grantRole` / `revokeRole` called by the NFT holder) works only on Base, because the reference ERC-6551 `owner()` returns `address(0)` off-canonical-chain. On Mainnet / Sepolia, lab NFT holders must call through the Base deployment.
+
+**Setup (owner-only).**
+
+```solidity
+function setLabNftContract(address labNftAddress) external; // onlyOwner
+function setLockedTokenFactory(address factoryAddress) external; // onlyOwner
+function initializeV3(address _labNftContractAddress) external; // onlyOwner, reinitializer(2)
+```
 
 #### Events
 
-* **Initialized(uint64 version)**: Emitted when the contract is initialized.
-* **OwnershipTransferred(address previousOwner, address newOwner)**: Emitted on ownership change.
-* **Upgraded(address implementation)**: Emitted when the implementation is upgraded.
+*   **RoleGranted(oclId, account, role, expiry, isAgent, grantedBy)** — emitted when a role is granted.
+*   **RoleRevoked(oclId, account, role, revokedBy)** — emitted when a role is revoked. Revoking an account with no active grant returns silently without emitting, to prevent unauthorised callers spamming logs.
+*   **Initialized(uint64 version)** — emitted when the contract is initialized or reinitialized.
+*   **OwnershipTransferred(previousOwner, newOwner)** — emitted on contract-owner change.
+*   **Upgraded(implementation)** — emitted when the UUPS implementation is upgraded.
 
 #### Errors
 
-| Error                               | Description                                        |
-| ----------------------------------- | -------------------------------------------------- |
-| OwnableUnauthorizedAccount(address) | Caller is not authorized for owner-only functions. |
-| OwnableInvalidOwner(address)        | Invalid owner address provided.                    |
-| UUPSUnauthorizedCallContext()       | Upgrade called in an incorrect context.            |
+| Error                                                  | Description                                                                   |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `InvalidOclId(bytes32 oclId)`                          | Malformed `oclId` (bad version / namespace, no TBA code, or LabNFT mismatch). |
+| `InvalidRole(uint8 role)`                              | Role must be `ROLE_VIEWER (1)` or `ROLE_CONTRIBUTOR (2)`.                     |
+| `UnauthorizedRoleAdmin(bytes32 oclId, address, uint8)` | Caller lacks permission for the requested grant/revoke.                       |
+| `OwnersOverflow(uint256)`                              | Owner-resolution recursion exceeded `MAX_OWNERS (50)`.                        |
+| `OwnableUnauthorizedAccount(address)`                  | Caller is not the contract owner for owner-only functions.                    |
+| `OwnableInvalidOwner(address)`                         | Invalid owner address provided.                                               |
+| `UUPSUnauthorizedCallContext()`                        | Upgrade called in an incorrect context.                                       |
 
 ### Integration Guide
 
-#### With Lit Protocol
+The same `accessControlConditions` shape is reused across both Molecule's Onchain-Verified Envelope Encryption and the legacy Lit Protocol path — `AccessResolver` is the on-chain oracle either way. New integrations should drive encryption through the Labs API (`initiateCreateOrUpdateFileV2` / `decryptDataKey`); the Lit examples below remain valid for legacy files.
+
+#### With Lit Protocol _(legacy)_
 
 Utilize `AccessResolver` as an access control condition in file encryption.
 

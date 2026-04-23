@@ -108,7 +108,7 @@ Creates a reservation for a future token ID. Reservations are valid until used.
 
 **Step 2: Prepare Metadata**
 
-Upload artwork and agreements to IPFS, generate metadata JSON with agreement references, and optionally encrypt sensitive documents via Lit Protocol.
+Upload artwork and agreements to IPFS, generate metadata JSON with agreement references, and optionally encrypt sensitive documents client-side (Molecule's Onchain-Verified Envelope Encryption is the current default; Lit Protocol is retained as a legacy path).
 
 **Step 3: Sign Agreements**
 
@@ -181,7 +181,7 @@ json
 | type | string | Agreement type (SRA, JDA, SAFIP, SAFE, Patent License, Assignment) |
 | url | string | IPFS or Arweave storage location |
 | content_hash | string | CID for integrity verification |
-| encryption | object | Optional Lit Protocol encryption metadata |
+| encryption | object | Optional encryption metadata (Onchain-Verified Envelope Encryption for new agreements, Lit Protocol for legacy) |
 | amends | string | CID of previous agreement if this is an amendment |
 
 ### Access Control
@@ -191,7 +191,7 @@ IP-NFT holders can grant time-limited read access to specific addresses:
 grantReadAccess(address reader, uint256 tokenId, uint256 until)
 ````
 
-Access is verified via the `canRead` mapping. This is the mechanism that integrates with the data layer: when a user requests access to an encrypted file in a Lab's data room, Lit Protocol queries the IP-NFT's `canRead` function to determine whether the requester has permission to decrypt. Access levels (Public, Token-Holder, Admin-Only) are enforced at the file level through this onchain verification. For details on how encryption and access gating work, see the **Data Privacy & Access** page.
+Access is verified via the `canRead` mapping. This is the mechanism that integrates with the data layer: when a user requests access to an encrypted file in a Lab's data room, the backend (or, for legacy Lit-encrypted files, the Lit node network) evaluates the IP-NFT's `canRead` function alongside any other stored access-control conditions to determine whether the requester has permission to decrypt. Access levels (Public, Token-Holder, Admin-Only) are enforced at the file level through this onchain verification. For details on how encryption and access gating work, see the **Data Privacy & Access** page.
 
 #### Agreement Amendments
 
@@ -209,4 +209,4 @@ Agreements can be amended post-mint by attaching new versions. The process invol
 
 ### Security Considerations
 
-The IP-NFT contract uses the UUPS proxy pattern (upgradeable). The owner can pause minting and transfers. Mint authorization is configurable via the `IAuthorizeMints` interface — the current deployment uses a SignedMintAuthorizer that validates signatures from an authorized minting authority. Agreements should be encrypted for sensitive IP using Lit Protocol before upload. Assignment Agreements should include dispute resolution provisions to handle conflicts between onchain ownership and offchain legal interpretation.
+The IP-NFT contract uses the UUPS proxy pattern (upgradeable). The owner can pause minting and transfers. Mint authorization is configurable via the `IAuthorizeMints` interface — the current deployment uses a SignedMintAuthorizer that validates signatures from an authorized minting authority. Agreements should be encrypted client-side for sensitive IP before upload (Molecule's Onchain-Verified Envelope Encryption for new agreements; Lit Protocol remains supported for legacy files). Assignment Agreements should include dispute resolution provisions to handle conflicts between onchain ownership and offchain legal interpretation.

@@ -44,15 +44,18 @@ x-api-key: YOUR_API_KEY
 2. **Service Token** - For lab-specific write access control
 
 **Protected mutations include:**
-- `createProject` - Create a new project/data room for an IP-NFT
-- `initiateCreateOrUpdateFileV2` - Initiate file upload
-- `finishCreateOrUpdateFileV2` - Complete file upload
+- `createProject` - Create a new project/data room for an IP-NFT · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+- `initiateCreateOrUpdateFileV2` - Initiate file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+- `finishCreateOrUpdateFileV2` - Complete file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `updateFileMetadataV2` - Update file metadata
 - `deleteDataRoomFileV2` - Delete a file
-- `createAnnouncementV2` - Create an announcement
+- `createAnnouncementV2` - Create an announcement · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+- `addProjectOwner` - Add a wallet as a project owner · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `dataRoomPassphrase` - Get Telegram bot passphrase for a dataroom
 - `extendServiceToken` - Extend service token expiration
 - `revokeServiceToken` - Revoke a service token
+
+> **Pay-per-call alternative.** Mutations tagged 💳 above can also be called through the [x402 Gateway](x402-gateway.md), which settles a USDC payment on Base per request and mints a short-lived service token on the fly — no long-lived credentials required. Useful for autonomous AI agents and third-party tools that pay for users.
 
 ```bash
 x-api-key: YOUR_API_KEY
@@ -979,7 +982,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 - Announcement detail pages requiring full file metadata
 - Download links for announcement attachments
-- Encrypted file access with Lit Protocol
+- Encrypted file access (Onchain-Verified Envelope Encryption for new files, Lit Protocol for legacy)
 - Projects with many announcements (efficient pagination)
 
 #### Global Activity Feed
@@ -1679,15 +1682,37 @@ Enhance file discoverability with optional metadata:
 
 ## Advanced: Encrypted File Upload
 
-For files requiring client-side encryption, you can include encryption metadata using the Lit Protocol.
+For files requiring client-side encryption, pass `encryption: true` to `initiateCreateOrUpdateFileV2` and include an `encryptionMetadata` object on `finishCreateOrUpdateFileV2`. The full end-to-end model — key wrapping, on-chain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page.
 
-### Encryption Metadata Parameter
+### Initiate with encryption
+
+`initiateCreateOrUpdateFileV2(..., encryption: true)` returns `plaintextDEK`, `encryptedDEK`, and `encryptionSystem` in addition to the upload URL. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory.
+
+### Encryption Metadata Parameter (Onchain-Verified Envelope Encryption, current default)
 
 ```graphql
 $encryptionMetadata: EncryptionMetadataInput
 ```
 
-**Structure:**
+```json
+{
+  "encryptionMetadata": {
+    "encryptionSystem": "<echo value returned by initiateCreateOrUpdateFileV2>",
+    "encryptedDek": "BASE64_WRAPPED_DEK",
+    "iv": "BASE64_AES_GCM_IV",
+    "contentHash": "sha256-...",
+    "accessControlConditions": "[{...}]",
+    "encryptedBy": "0x1234567890123456789012345678901234567890",
+    "encryptedAt": "2026-01-15T10:30:00.000Z"
+  }
+}
+```
+
+`encryptionSystem` is **backend-set** — clients must echo the value returned on `initiateCreateOrUpdateFileV2` rather than hardcode it. This keeps the roadmap rollover to BLS threshold key custody transparent to existing integrations.
+
+### Encryption Metadata Parameter (Lit Protocol, legacy)
+
+> **Legacy.** Lit Protocol is retained read-only for files encrypted before the migration to Onchain-Verified Envelope Encryption. New uploads should use the metadata shape above. Files with the shape below continue to decrypt through the Lit SDK.
 
 ```json
 {
@@ -1709,9 +1734,7 @@ $encryptionMetadata: EncryptionMetadataInput
 
 - Sensitive research data requiring access control
 - Compliance requirements for data protection
-- Conditional access based on token ownership
-
-For more information about Lit Protocol encryption, visit the [Lit Protocol documentation](https://developer.litprotocol.com/).
+- Conditional access based on token ownership or lab role
 
 ---
 
@@ -2192,7 +2215,7 @@ The `dataRoomPassphrase` operation has been converted from a Query to a Mutation
 **What This Means:**
 - **Simplified Integration**: Query projects and files with just an API key
 - **Reduced Complexity**: No need to manage Service Tokens for read-only operations
-- **File Security Maintained**: Encrypted files remain protected via Lit Protocol - access control moved from query-level to file-level
+- **File Security Maintained**: Encrypted files remain protected via Onchain-Verified Envelope Encryption (Lit Protocol retained for legacy files) — access control moved from query-level to file-level
 
 **Migration Required:**
 If you're currently including `X-Service-Token` headers for these queries, you can safely remove them. The queries will work with just `x-api-key`.

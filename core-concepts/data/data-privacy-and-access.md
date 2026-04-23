@@ -1,8 +1,8 @@
 ---
 description: >-
-  How Onchain Labs protect the confidentiality of sensitive research data
-  through client-side encryption, decentralised key management, and on-chain
-  access verification
+  How Onchain Labs protect confidential research data through client-side
+  encryption, on-chain access verification, and a condition-gated key-release
+  flow.
 icon: fingerprint
 ---
 
@@ -12,46 +12,115 @@ icon: fingerprint
 
 Scientific research data is often commercially sensitive, personally identifiable, or competitively valuable. Releasing raw experimental results, proprietary compounds, or patient-derived datasets without control can compromise patent applications, regulatory submissions, and competitive advantage. At the same time, the transparency benefits of on-chain science — provenance, reproducibility, collaboration — require that data _exists_ in a verifiable, shared infrastructure.
 
-Onchain Labs resolve this tension by encrypting data before it enters the public infrastructure. The blockchain records _that_ data exists, _who_ uploaded it, and _who_ can access it — but never the data itself. The underlying content is encrypted client-side and stored in its encrypted form across IPFS and Arweave. Only parties who satisfy on-chain access conditions can reconstruct the decryption keys.
+Onchain Labs resolve this tension by encrypting data before it enters the public infrastructure. The blockchain records _that_ data exists, _who_ uploaded it, and _who_ can access it — but never the data itself. The underlying content is encrypted client-side, stored as ciphertext, and only decrypted inside an authorised client after access conditions have been verified against live on-chain state.
 
-### Encryption Model
+### Onchain-Verified Envelope Encryption
 
-Every confidential file uploaded to an Onchain Lab is encrypted inside the researcher's browser before it leaves the device. The protocol uses Lit Protocol's encryption scheme, which generates a symmetric encryption key, encrypts the file content client-side, and then shards that key across Lit Protocol's decentralised node network using threshold cryptography. No single node — and no centralised server, including Molecule's — ever holds the complete key.
+Molecule uses **Onchain-Verified Envelope Encryption** for every confidential file in an Onchain Lab.
 
-The encrypted blob is what gets uploaded, staged, pinned to IPFS, and archived to Arweave. At every point in the storage pipeline, the data is ciphertext. Even if the IPFS CID is publicly known and the content is publicly retrievable, it is unreadable without the decryption key — which can only be reconstructed when on-chain access conditions are satisfied.
+- **Client-side encryption.** Files are AES-256-GCM encrypted inside the client (browser or AI agent) before they leave the device, using a fresh per-file Data Encryption Key (DEK).
+- **Decentralised storage.** Ciphertext is pinned to IPFS and persisted to Arweave; access conditions and encryption metadata live alongside the file's provenance record on Kamu (ODF) nodes — decentralised by design.
+- **On-chain verification.** Every decryption is gated by a live on-chain check: the stored access conditions are re-evaluated against current chain state (`AccessResolver`, `IPNFT.canRead`, token balances) before the DEK is released. There is no cached permission list.
+- **Evolving key custody.** The DEK is wrapped by a protocol-operated key custodian today. Custody moves to a BLS threshold operator network (roadmap) without changes to clients, stored metadata, or the on-chain interface.
 
 Files marked as Public skip encryption entirely. The researcher explicitly chooses to make this data openly accessible. Public files still benefit from content addressing, versioning, and provenance tracking, but they carry no confidentiality guarantees by design.
 
+### Upload Flow
+
+```
+1. Client → AppSync: initiateCreateOrUpdateFileV2(ipnftUid, contentType,
+                                                  contentLength, encryption: true)
+2. Backend: authenticate caller (Privy JWT or service token + role check)
+3. Backend: issue a fresh per-file DEK →
+            returns { plaintextDEK (one-shot), wrappedDEK, encryptionSystem }
+4. Backend: zero its copy of the plaintextDEK after the response is built
+5. Client: AES-256-GCM encrypt(file, plaintextDEK) via SubtleCrypto
+6. Client: PUT ciphertext to presigned S3 URL
+7. Client: build accessControlConditions (createAccessCondition helper)
+8. Client → AppSync: finishCreateOrUpdateFileV2(ipnftUid, uploadToken,
+                     encryptionMetadata: { encryptionSystem, wrappedDEK,
+                                           iv, contentHash, accessControlConditions,
+                                           encryptedBy, encryptedAt })
+9. Client: wipe plaintextDEK from memory
+```
+
+The client only opts **in** to encryption (`encryption: true`). The backend decides which encryption system to use and returns it in `encryptionSystem` — clients must echo this value verbatim, never hardcode it. This keeps the roadmap upgrade to BLS threshold key custody transparent to existing integrations.
+
 ### Access Conditions
 
-Access level is assigned per-file at upload time by the Lab owner. Who can decrypt a file is determined by on-chain conditions, not by a centralised permission system. When a researcher uploads a confidential file, the Client SDK creates access conditions based on the Lab's IP-NFT contract. These conditions are evaluated by Lit Protocol's node network every time someone requests decryption.
+Who may decrypt a file is determined by on-chain conditions, not by a centralised permission list. When a file is uploaded, the Client SDK attaches an `accessControlConditions` array to the encryption metadata, stored on Kamu (ODF) alongside the file's provenance record. Conditions are **stored but not evaluated** at encrypt time — they're evaluated at decrypt time against live chain state.
 
-Currently, access is verified through the IPNFT contract's `canRead()` function and the AccessResolver's `isAuthorizedSignerForIpnft()` function. This supports three access levels:&#x20;
+Conditions resolve through the `AccessResolver` contract, which supports three principal predicates:
 
-* Public (no restriction),&#x20;
-* Token-Holder (restricted to authorised Lab signers), and&#x20;
-* Admin-Only (restricted to Lab administrators).
+- **Public** — no condition; anyone can decrypt.
+- **Token-Holder** — `isAuthorizedSignerForIpnft(signer, ipnftId)` / `isAuthorizedSignerForTba(signer, account)`: passes for IP-NFT holders and any authorized signer resolved recursively through Safe multisigs, Ownable contracts, and ERC-6551 TBAs.
+- **Role-gated** — `hasRole(oclId, signer, ROLE_VIEWER | ROLE_CONTRIBUTOR)`: passes for accounts with an active (non-expired) role grant for the lab. See [Roles & Permissions](../roles-and-permissions.md) for the full role model.
 
-Future releases will introduce granular, composable access conditions: credential-gated access requiring a minimum holding of a project's IPTs, access-list gating by specific wallet addresses, payment-gated unlocks requiring a fee in a specified token, license-gated access via time-bound license NFTs (ERC-4907), and time-locked conditions that auto-release data at a specified date or block number. These conditions will be composable — a Lab could require both token ownership and fee payment before granting access.
+Future releases will introduce additional composable conditions: credential-gating by minimum IPT holdings, access-list gating by specific wallet addresses, payment-gated unlocks, license-gated access via time-bound license NFTs (ERC-4907), and time-locked conditions that auto-release data at a specified date or block. Conditions will compose via boolean operators — a Lab could, for example, require both Contributor role AND a license NFT before granting access.
 
 ### Decryption Flow
 
-When an authorised user requests a confidential file, the following sequence occurs. The Client SDK retrieves the file's encryption metadata from Kamu. The encrypted blob is fetched from IPFS (or Arweave) by its CID. The SDK then requests decryption from Lit Protocol, passing the user's wallet signature and the file's access conditions.&#x20;
+Decryption is **condition-authoritative**: the backend reads the stored conditions from their immutable source (Kamu for data-room files, the IPNFT's on-chain `tokenURI` for agreements), verifies them against live chain state, and only then releases the plaintext DEK. A compromised client cannot substitute weaker conditions.
 
-Each Lit node independently evaluates the on-chain conditions by querying the relevant smart contracts. If the threshold of nodes confirms the conditions are met, they release their key shards to the client. The symmetric key is reconstructed inside the user's browser, the file is decrypted client-side, and the plaintext is displayed. If the conditions are not met, the nodes refuse to release their shards, and decryption fails.
+```
+1. Client → AppSync: decryptDataKey(ipnftUid, filePath | tokenUri + agreementUrl)
+2. Backend: authenticate caller (Privy JWT or service token)
+3. Backend: fetch stored encryptionMetadata
+            • filePath → Kamu (ODF): file's accessControlConditions + wrappedDEK
+            • tokenUri → IPFS: IPNFT JSON → matching agreement's encryption block
+4. Backend: evaluate accessControlConditions against live chain state (EVM RPC)
+5. Backend: unwrap the DEK via the protocol key custodian → plaintextDEK
+6. Backend: zero plaintextDEK buffer after the response is built
+7. Client: download ciphertext from S3 (data room) or IPFS (agreement)
+8. Client: AES-256-GCM decrypt(ciphertext, plaintextDEK, iv) via SubtleCrypto
+9. Client: wipe plaintextDEK from memory
+```
 
-At no point does Molecule's backend, any single Lit node, or any intermediary have access to the decrypted content. The key only exists in its complete form inside the authorised user's browser, for the duration of the session.
+The GraphQL interface:
 
-### Access Grants
+```graphql
+mutation {
+  decryptDataKey(
+    ipnftUid: "0xcaD8...Fc1_42"
+    filePath: "raw/experiment-01.csv"   # OR tokenUri + agreementUrl for IPFS agreements
+  ) {
+    isSuccess
+    plaintextDEK   # base64, client-only, wipe after use
+    iv             # base64 AES-GCM IV from stored metadata
+    message
+    error { message code retryable }
+  }
+}
+```
 
-Lab administrators can extend temporary access to specific addresses without adding them as permanent authorised signers. By calling `grantReadAccess` on the IP-NFT contract with a recipient address and an expiration timestamp, administrators create a time-limited grant that is recorded on-chain. The grant automatically expires at the specified time. This enables controlled sharing with collaborators, reviewers, or funders without permanently modifying the Lab's access control list.
+For IPFS-pinned agreement files (immutable once minted), the client passes `tokenUri` (the IPNFT's on-chain `tokenURI`) and `agreementUrl` — the backend fetches the IPNFT JSON, locates the matching agreement in `properties.agreements[]`, and extracts its encryption block. Because the `tokenURI` is on-chain, conditions cannot be tampered with after minting.
 
-### Retrieval & Decryption Pipeline
+### Agentic Encryption
 
-<figure><img src="../../.gitbook/assets/Mermaid Chart - Create complex, visual diagrams with text.-2026-02-07-094253.png" alt=""><figcaption></figcaption></figure>
+AI agents encrypt and decrypt lab files through the same GraphQL interface, using a service-token auth path instead of a user Privy JWT:
+
+- **Auth** — The agent authenticates with an `X-Service-Token` JWT. For short-lived access, the [x402 Gateway](../../api-reference/x402-gateway.md) mints a per-request token scoped to one mutation after verifying a USDC payment. For long-lived agents, the Molecule team provisions a service token tied to a wallet and an `allowedMutations` list.
+- **Role grant** — The Lab owner grants the agent's wallet a Contributor (or Viewer) role via `AccessResolver.grantRole` with `isAgent = true` and a bounded `expiry`. The `isAgent` flag is surfaced in the team-members UI so agent session keys are clearly distinguished from human collaborators.
+- **Encrypt** — The agent calls `initiateCreateOrUpdateFileV2(encryption: true)`, receives a plaintext DEK, encrypts the file locally (Node.js `crypto` / Web Crypto), uploads the ciphertext, then calls `finishCreateOrUpdateFileV2` with the encryption metadata.
+- **Decrypt** — The agent calls `decryptDataKey(ipnftUid, filePath)`. The backend evaluates the stored conditions against live chain state; a valid Viewer/Contributor grant satisfies the `hasRole` predicate. The backend returns the plaintext DEK over TLS; the agent decrypts locally.
+- **Expiry** — When the role grant expires (`block.timestamp >= expiry`), `hasRole` returns `false` and `decryptDataKey` starts failing with a conditions-not-met error. The agent must request a fresh grant — typically from an owner-controlled orchestrator — before it can continue.
+
+See the [Developers / AI Agents guide](../../user-guides/developers-ai-agents.md) for end-to-end agent integration patterns and the [MCP Tools reference](../../references/mcp-tools.md) for the read-side agent toolset.
 
 ### Privacy Summary
 
-The net result of this architecture is that no single party — not Molecule, not Lit Protocol, not any individual storage node — can access confidential research data. The file content is encrypted before it leaves the researcher's browser, transmitted as ciphertext over HTTPS, stored as ciphertext across IPFS and Arweave, and only ever decrypted inside an authorised user's browser after on-chain conditions are independently verified by a threshold of Lit nodes. Every action against the data — uploads, version changes, access events — is recorded with the author's decentralised identifier, creating a tamper-evident provenance trail that exists independently of any centralised service.
+The net result of this architecture is that no single party has unilateral access to confidential research data. The file content is encrypted before it leaves the client, transmitted as ciphertext, stored as ciphertext across IPFS, Arweave, and S3, and only ever decrypted inside an authorised client after access conditions have been re-verified against live on-chain state. Every action against the data — uploads, version changes, access events — is recorded with the author's decentralised identifier, creating a tamper-evident provenance trail.
 
-<table><thead><tr><th width="177.015625">Layer</th><th>Protection</th><th>Mechanism</th></tr></thead><tbody><tr><td>At rest</td><td>File content encrypted before leaving browser</td><td>Lit Protocol symmetric encryption, threshold key sharding</td></tr><tr><td>In transit</td><td>All communications over HTTPS; payload is ciphertext</td><td>TLS + pre-encryption</td></tr><tr><td>Key storage</td><td>No single party holds the complete decryption key</td><td>Threshold cryptography across Lit's decentralised node network</td></tr><tr><td>Access control</td><td>On-chain conditions determine who can decrypt</td><td>Smart contract evaluation by Lit nodes (IPNFT canRead, AccessResolver)</td></tr><tr><td>During decryption</td><td>Key reconstructed only inside the authorised user's browser</td><td>Client-side key assembly and decryption</td></tr><tr><td>Provenance</td><td>Every file action tracked with author's DID</td><td>Kamu version records with did:ethr:{wallet_address}</td></tr><tr><td>Permanence</td><td>Encrypted content persists even if file record is removed</td><td>IPFS + Arweave store ciphertext; keys are separate</td></tr></tbody></table>
+<table><thead><tr><th width="177.015625">Layer</th><th>Protection</th><th>Mechanism</th></tr></thead><tbody><tr><td>At rest</td><td>File content encrypted before leaving client</td><td>Client-side AES-256-GCM with a per-file wrapped DEK</td></tr><tr><td>In transit</td><td>All communications over HTTPS; payload is ciphertext</td><td>TLS + pre-encryption</td></tr><tr><td>Key storage</td><td>Plaintext DEK is never persisted; the wrapped DEK is useless without the custodian</td><td>Protocol-operated key custodian today; BLS threshold operator network on roadmap</td></tr><tr><td>Access control</td><td>Decryption gated by a live on-chain verification of stored conditions</td><td><code>AccessResolver</code> (<code>hasRole</code>, <code>isAuthorizedSigner*</code>), <code>IPNFT.canRead</code></td></tr><tr><td>During decryption</td><td>Plaintext DEK only exists inside the authorised client for the session</td><td>Client-side key assembly and decryption; backend zeroes its copy</td></tr><tr><td>Provenance</td><td>Every file action tracked with author's DID</td><td>Kamu (ODF) version records with <code>did:ethr:{wallet_address}</code></td></tr><tr><td>Permanence</td><td>Encrypted content persists even if file record is removed</td><td>IPFS + Arweave store ciphertext; keys are separate</td></tr></tbody></table>
+
+### Roadmap
+
+Key custody evolves from a single protocol-operated custodian to a **BLS threshold operator network**. In the target design the DEK is split across the operator set using threshold cryptography, so no single party — including Molecule — can unwrap it alone. Clients, stored metadata shape, and the on-chain interface stay the same; the `encryptionSystem` value on new files rolls forward to indicate threshold custody, and the `decryptDataKey` flow continues to work transparently.
+
+### Legacy: Lit Protocol _(deprecated for new files)_
+
+> **Lit Protocol is retained read-only for files encrypted before the migration to Onchain-Verified Envelope Encryption.** New uploads go through the current flow; the backend no longer generates Lit-encrypted files. Existing Lit-encrypted files continue to decrypt through the Lit SDK until they are migrated. Calling `decryptDataKey` on a Lit-encrypted file returns an error directing the caller to the Lit SDK.
+
+The legacy model uses Lit Protocol's threshold-cryptography network: a symmetric key is generated client-side, sharded across Lit's decentralised nodes, and only reassembled on the client when a threshold of nodes independently verifies the same on-chain conditions exposed through `AccessResolver`. Files carry a distinct metadata shape (`dataToEncryptHash`, `litSdkVersion`, `litNetwork`, `templateName`, `contractVersion`) and are discriminated by the absence of the `encryptionSystem` field.
+
+Integrators with Lit-encrypted files in their data rooms should continue using `@moleculexyz/storage`'s Lit flow for those files, and the current flow for everything new. Re-encryption tooling to migrate legacy files is tracked separately.
