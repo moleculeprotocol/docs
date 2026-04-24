@@ -87,7 +87,7 @@ All Molecule APIs require authentication with an API key. To request access:
 * **All queries are public**: Only API Key required for any read operation
 * **All mutations are protected**: API Key + Service Token required for any write operation
 * **Service Token**: Identifies which specific lab/dataroom you have write access to
-* File-level access control is handled via Lit Protocol encryption, not query authentication
+* File-level access control is handled via Molecule's Onchain-Verified Envelope Encryption (Lit Protocol retained for legacy files), not query authentication — see [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md)
 
 ***
 

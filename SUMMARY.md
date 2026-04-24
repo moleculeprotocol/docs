@@ -9,6 +9,7 @@
 ## Core Concepts
 
 * [Onchain Lab](core-concepts/onchain-lab.md)
+* [Roles & Permissions](core-concepts/roles-and-permissions.md)
 * [Module Registry](core-concepts/module-registry/README.md)
   * [Validator Module](core-concepts/module-registry/validator-module.md)
   * [Data Module](core-concepts/module-registry/data-module.md)
@@ -30,6 +31,7 @@
 * [📊 Data API](api-reference/data-api.md)
 * [🔐 Tokenization API](api-reference/tokenization-api.md)
 * [⚙️ Labs API](api-reference/labs-api.md)
+* [💳 x402 Gateway](api-reference/x402-gateway.md)
 
 ## AI Tooling
 

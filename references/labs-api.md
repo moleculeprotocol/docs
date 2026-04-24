@@ -447,7 +447,7 @@ mutation {
 
 #### Encrypted File Upload
 
-For files encrypted with Lit Protocol, include encryptionMetadata:
+For confidential files, include `encryptionMetadata` on `finishCreateOrUpdateFileV2`. New uploads use Molecule's Onchain-Verified Envelope Encryption — `encryptionSystem` is backend-set, so clients should echo the value returned from `initiateCreateOrUpdateFileV2` rather than hardcode it. The example below shows the legacy Lit Protocol metadata shape, which is still accepted for files encrypted before the migration. See [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) for the current flow and metadata fields.
 
 {% code overflow="wrap" %}
 ```graphql

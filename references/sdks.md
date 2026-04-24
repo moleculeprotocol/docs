@@ -165,7 +165,7 @@ tokens.forEach(token => {
 import { createDesciSdk } from '@moleculexyz/client-sdk';
 import { useLitEncryption } from '@moleculexyz/storage';
 
-// 1. Encrypt file with Lit Protocol
+// 1. Encrypt file (legacy Lit Protocol path — new uploads use Onchain-Verified Envelope Encryption via the Labs API)
 const { encryptFile } = useLitEncryption();
 const encrypted = await encryptFile(file, {
   type: 'authorized_ipnft_signer',

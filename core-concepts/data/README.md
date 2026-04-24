@@ -27,9 +27,9 @@ This design gives Labs the best of both worlds. The blockchain provides an immut
 
 The data layer is built from a set of specialised technologies, each handling a different responsibility in the pipeline.
 
-<table><thead><tr><th width="228.42578125">Layer</th><th width="133.84765625">Technology</th><th>Role</th></tr></thead><tbody><tr><td>Upload Gateway</td><td>Filebase</td><td>S3-compatible upload interface. Generates pre-signed URLs for secure browser uploads and automatically pins files to IPFS.</td></tr><tr><td>Decentralised Storage</td><td>IPFS</td><td>Content-addressed storage. Every file receives a unique CID derived from its contents, enabling verifiable retrieval from any IPFS node.</td></tr><tr><td>Permanent Persistence</td><td>Arweave</td><td>Immutable, permanent storage. Ensures research data remains available indefinitely, independent of any single service provider.</td></tr><tr><td>Provenance &#x26; Versioning</td><td>Kamu</td><td>Tracks the complete history of every dataset: versions, transformations, metadata changes, and activity events. Provides a verifiable provenance chain from raw data to published result.</td></tr><tr><td>Encryption &#x26; Access Control</td><td>Lit Protocol</td><td>Client-side encryption with decentralised key management. Enforces access conditions on-chain — the blockchain determines who can decrypt, and Lit Protocol's network distributes the keys only when conditions are met.</td></tr></tbody></table>
+<table><thead><tr><th width="228.42578125">Layer</th><th width="133.84765625">Technology</th><th>Role</th></tr></thead><tbody><tr><td>Upload Gateway</td><td>Filebase</td><td>S3-compatible upload interface. Generates pre-signed URLs for secure browser uploads and automatically pins files to IPFS.</td></tr><tr><td>Decentralised Storage</td><td>IPFS</td><td>Content-addressed storage. Every file receives a unique CID derived from its contents, enabling verifiable retrieval from any IPFS node.</td></tr><tr><td>Permanent Persistence</td><td>Arweave</td><td>Immutable, permanent storage. Ensures research data remains available indefinitely, independent of any single service provider.</td></tr><tr><td>Provenance &#x26; Versioning</td><td>Kamu</td><td>Tracks the complete history of every dataset: versions, transformations, metadata changes, and activity events. Provides a verifiable provenance chain from raw data to published result.</td></tr><tr><td>Encryption &#x26; Access Control</td><td>Onchain-Verified Envelope Encryption + AccessResolver</td><td>Per-file AES-256 DEK wrapped by a protocol-operated key custodian (BLS threshold operator network on roadmap). Access conditions live on Kamu (ODF) and are re-verified against live on-chain state (<code>AccessResolver</code>) before the plaintext DEK is released. Legacy files continue to resolve through Lit Protocol.</td></tr></tbody></table>
 
-These components are not interchangeable alternatives. They form a layered pipeline: data is encrypted client-side via Lit Protocol, uploaded through Filebase, pinned to IPFS, persisted on Arweave, versioned through Kamu, and referenced on-chain in the Lab's Token Bound Account.
+These components form a layered pipeline: data is encrypted client-side with a per-file wrapped DEK, uploaded through Filebase, pinned to IPFS, persisted on Arweave, versioned through Kamu, and referenced on-chain in the Lab's Token Bound Account.
 
 ### Data Lifecycle
 
@@ -37,13 +37,13 @@ These components are not interchangeable alternatives. They form a layered pipel
 
 A typical data flow through an Onchain Lab follows this sequence:
 
-**Upload** — A researcher selects a file and chooses an access level. The file is encrypted client-side using Lit Protocol before it leaves the browser. The encryption keys are split across Lit's decentralised node network and bound to onchain access conditions that define who can decrypt.
+**Upload** — A researcher selects a file and chooses an access level. The backend issues a fresh wrapped data encryption key; the file is AES-256-GCM encrypted client-side before it leaves the browser. The wrapped DEK and the file's on-chain access conditions are stored as encryption metadata on Kamu (ODF).
 
 **Store** — The encrypted file is uploaded through Filebase, which pins it to IPFS (producing a CID) and persists it to Arweave for permanent availability. Kamu records the provenance metadata: who uploaded the file, when, the file's version, and its relationship to other datasets in the Lab.
 
 **Reference** — The CID and associated metadata are recorded on-chain in the Lab's Token Bound Account. This creates a permanent, tamper-evident link between the Lab's onchain identity and the off-chain data. The transaction itself is timestamped and signed, contributing to the Lab's audit trail.
 
-**Access** — When someone requests a file, the system evaluates the onchain access conditions defined for that file. If the requester meets the conditions (holds the right tokens, is on an allowlist, has paid a fee, holds a valid license), Lit Protocol's nodes release the decryption key shares. The file is retrieved from IPFS or Arweave and decrypted client-side.
+**Access** — When someone requests a file, the backend re-verifies the stored access conditions against live chain state. If the requester meets the conditions (holds the right tokens, holds an active role grant on the Lab, holds a valid license), the protocol key custodian unwraps the DEK and returns it to the client. The file is retrieved from IPFS or Arweave and decrypted client-side. Legacy Lit-encrypted files continue to decrypt through the Lit SDK until migrated.
 
 **Audit** — Every access event is logged on-chain through the Lab's Token Bound Account. This creates a complete, publicly auditable record of who accessed what data and when — a verifiable chain of custody for the entire research lifecycle.
 
@@ -61,7 +61,7 @@ This record exists independently of any institution, journal, or platform. It is
 
 **Per-file granularity.** Access conditions are configured at the individual file level, not at the Lab level. A single Lab can contain public datasets, token-gated research files, and time-locked results simultaneously.
 
-**Onchain access control.** Who can access data is determined by smart contract conditions, not by a centralised server. The blockchain is the access control layer; Lit Protocol is the key distribution mechanism.
+**Onchain access control.** Who can access data is determined by smart contract conditions, not by a centralised permission list. The blockchain (via `AccessResolver`) is the access control layer; the backend only releases the unwrapped DEK after those conditions are satisfied.
 
 **Permanent availability.** Research data is persisted to Arweave, ensuring it remains retrievable regardless of whether any individual service continues operating.
 

@@ -90,7 +90,7 @@ When the Lab generates revenue — through IP licensing fees (via ERC-4907), dat
 
 #### Data Access
 
-IPT holders can be granted access to the Lab's data room. The IP-NFT's `canRead` function, combined with Lit Protocol encryption, enables token-gated access to premium research data, manuscripts, and experimental results.
+IPT holders can be granted access to the Lab's data room. The IP-NFT's `canRead` function, combined with Molecule's Onchain-Verified Envelope Encryption (Lit Protocol retained for legacy files), enables token-gated access to premium research data, manuscripts, and experimental results.
 
 ### Technical Reference
 

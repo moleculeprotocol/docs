@@ -57,9 +57,11 @@ All modules must be attested by a trusted Molecule attestor in the ERC-7484 regi
 
 ### Role-Based Access Control
 
-The modular architecture enables Labs to support delegated permissions without transferring ownership. Through executor modules, Lab owners can authorize scoped access — for example, allowing an AI agent to read data, run analyses, or spend from the treasury within defined budget limits and expiration dates.
+The modular architecture enables Labs to support delegated permissions without transferring ownership. Lab owners can authorize scoped, expiring access — for example, allowing a collaborator to upload data to the data room, or an AI agent to decrypt specific files for the duration of a research session — without surrendering the LabNFT or treasury control.
 
-The target permission model supports roles such as Owner (full control, can transfer the LabNFT), Admin (manage roles, configure access, manage treasury), Contributor (upload data, create announcements), and Viewer (read-only access to permitted data). These roles are implemented at the application and module layer, not in the core Lab contract, which enforces only two access levels: the NFT owner and the ERC-4337 EntryPoint.
+Delegated access is enforced on-chain by the `AccessResolver` contract, which implements a hierarchical role system per-lab: **Owner** (the LabNFT holder, resolved through the ERC-6551 TBA), **Contributor** (full data-room access, can manage Viewers), and **Viewer** (read-only). Each grant carries an optional expiry and an `isAgent` flag to distinguish AI-agent session keys from human collaborators. The core Lab contract itself still only recognises the NFT owner and the ERC-4337 EntryPoint — roles are layered on top and consulted by the GraphQL API, encryption layer, and UI.
+
+See [Roles & Permissions](roles-and-permissions.md) for the capability matrix, grant semantics, and the on-chain interface.
 
 ### Onchain Activity Log
 
