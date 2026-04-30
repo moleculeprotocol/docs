@@ -50,13 +50,132 @@ The client only opts **in** to encryption (`encryption: true`). The backend deci
 
 Who may decrypt a file is determined by on-chain conditions, not by a centralised permission list. When a file is uploaded, the Client SDK attaches an `accessControlConditions` array to the encryption metadata, stored on Kamu (ODF) alongside the file's provenance record. Conditions are **stored but not evaluated** at encrypt time — they're evaluated at decrypt time against live chain state.
 
-Conditions resolve through the `AccessResolver` contract, which supports three principal predicates:
+Conditions resolve through the [`AccessResolver`](../../references/contracts/accessresolver.md) contract, which exposes three principal predicates:
 
 - **Public** — no condition; anyone can decrypt.
 - **Token-Holder** — `isAuthorizedSignerForIpnft(signer, ipnftId)` / `isAuthorizedSignerForTba(signer, account)`: passes for IP-NFT holders and any authorized signer resolved recursively through Safe multisigs, Ownable contracts, and ERC-6551 TBAs.
-- **Role-gated** — `hasRole(oclId, signer, ROLE_VIEWER | ROLE_CONTRIBUTOR)`: passes for accounts with an active (non-expired) role grant for the lab. See [Roles & Permissions](../roles-and-permissions.md) for the full role model.
+- **Role-gated** — `hasRole(oclId, signer, ROLE_VIEWER | ROLE_CONTRIBUTOR)`: passes for accounts with an active (non-expired) role grant for the lab. See [Roles & Permissions](../roles-and-permissions.md) for the full role model and grant lifecycle.
 
-Future releases will introduce additional composable conditions: credential-gating by minimum IPT holdings, access-list gating by specific wallet addresses, payment-gated unlocks, license-gated access via time-bound license NFTs (ERC-4907), and time-locked conditions that auto-release data at a specified date or block. Conditions will compose via boolean operators — a Lab could, for example, require both Contributor role AND a license NFT before granting access.
+Conditions compose via boolean operators — a Lab can, for example, require both Contributor role AND a license NFT before granting access. Future releases will introduce additional composable conditions: credential-gating by minimum IPT holdings, access-list gating by specific wallet addresses, payment-gated unlocks, license-gated access via time-bound license NFTs (ERC-4907), and time-locked conditions that auto-release data at a specified date or block.
+
+#### Condition Shape
+
+Each entry in `accessControlConditions` is one of three TypeScript shapes — `EvmContractCondition` for arbitrary `view` calls, `EvmBasicCondition` for standard ERC reads, and `BooleanCondition` as a separator between predicates:
+
+```ts
+interface EvmContractCondition {
+  conditionType: "evmContract";
+  contractAddress: string;
+  chain: string;
+  functionName: string;
+  functionParams: string[];
+  functionAbi: {
+    name: string;
+    inputs:  Array<{ name: string; type: string; internalType?: string }>;
+    outputs: Array<{ name: string; type: string; internalType?: string }>;
+    stateMutability: string;
+    type: string;
+  };
+  returnValueTest: { key: string; comparator: string; value: string };
+}
+
+interface BooleanCondition {
+  operator: "and" | "or";
+}
+```
+
+The placeholder `:userAddress` inside `functionParams` is substituted with the authenticated caller's wallet at evaluate time. For boolean predicates (`hasRole`, `isAuthorizedSigner*`) the `returnValueTest` is the literal `{ key: "", comparator: "=", value: "true" }`. The full array is JSON-stringified into [`encryptionMetadata.accessControlConditions`](../../api-reference/labs-api.md) — typed as `String!` in the GraphQL schema and parsed back into an array on the backend.
+
+#### Worked Example: Encrypt for Owner OR Contributor OR Viewer
+
+To encrypt a file so the LabNFT owner, any active Contributor, and any active Viewer can all decrypt it, target the `AccessResolver` deployment on the chain whose RPC the backend evaluator uses. Substitute `<accessresolver-address>` below with the right deployment for that chain — see the [deployments table](../../references/contracts/accessresolver.md) — and use `"chain": "base"` (canonical), `"ethereum"`, or `"sepolia"` to match.
+
+`hasRole` already collapses the role hierarchy on the canonical chain — the LabNFT owner passes the admin path inside the contract, a Contributor passes because `ROLE_CONTRIBUTOR ≥ ROLE_VIEWER`, and a Viewer passes directly. So when conditions are evaluated against Base a **single condition** is enough:
+
+```json
+[
+  {
+    "conditionType": "evmContract",
+    "contractAddress": "<accessresolver-address>",
+    "chain": "base",
+    "functionName": "hasRole",
+    "functionParams": [
+      "0x0101<20hex-tokenId><40hex-tba>",
+      ":userAddress",
+      "1"
+    ],
+    "functionAbi": {
+      "name": "hasRole",
+      "inputs": [
+        { "name": "oclId",   "type": "bytes32" },
+        { "name": "account", "type": "address" },
+        { "name": "role",    "type": "uint8"   }
+      ],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    "returnValueTest": { "key": "", "comparator": "=", "value": "true" }
+  }
+]
+```
+
+The first `functionParams` entry is the lab's `oclId` — a packed `bytes32` of `0x01` (version) ‖ `0x01` (EVM namespace) ‖ 10-byte big-endian `tokenId` ‖ 20-byte TBA address. See [Onchain Lab](../onchain-lab.md) for how this identifier is derived. The third entry, `"1"`, is `ROLE_VIEWER` — Contributor and Owner pass the same check thanks to hierarchy.
+
+The **explicit OR-composite form** is recommended as the cross-chain-safe default. The contract's owner-check (`_isLabOwner`) returns `false` off the canonical chain (Mainnet / Sepolia) because the OCL TBA's `owner()` returns `address(0)` there, so the role-only condition above will not cover the LabNFT owner if conditions are ever evaluated against a non-Base RPC. OR'ing in `isAuthorizedSignerForTba` keeps the Owner branch explicit:
+
+```json
+[
+  {
+    "conditionType": "evmContract",
+    "contractAddress": "<accessresolver-address>",
+    "chain": "base",
+    "functionName": "isAuthorizedSignerForTba",
+    "functionParams": [":userAddress", "0x<40hex-tba>"],
+    "functionAbi": {
+      "name": "isAuthorizedSignerForTba",
+      "inputs": [
+        { "name": "signer",  "type": "address" },
+        { "name": "account", "type": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    "returnValueTest": { "key": "", "comparator": "=", "value": "true" }
+  },
+  { "operator": "or" },
+  {
+    "conditionType": "evmContract",
+    "contractAddress": "<accessresolver-address>",
+    "chain": "base",
+    "functionName": "hasRole",
+    "functionParams": [
+      "0x0101<20hex-tokenId><40hex-tba>",
+      ":userAddress",
+      "1"
+    ],
+    "functionAbi": {
+      "name": "hasRole",
+      "inputs": [
+        { "name": "oclId",   "type": "bytes32" },
+        { "name": "account", "type": "address" },
+        { "name": "role",    "type": "uint8"   }
+      ],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    "returnValueTest": { "key": "", "comparator": "=", "value": "true" }
+  }
+]
+```
+
+The TBA address (`<40hex-tba>`) is the lower 20 bytes of `oclId`; `tokenId` is 10 bytes big-endian sitting between the version/namespace prefix and the TBA. Substitute the AccessResolver address from the [deployments table](../../references/contracts/accessresolver.md) when targeting a non-Base chain. To restrict access to Contributors-and-up only (excluding Viewers), pass `"2"` (`ROLE_CONTRIBUTOR`) instead of `"1"` for the role parameter.
+
+#### How Conditions Are Evaluated
+
+At decrypt time the backend walks the array left-to-right: each `EvmContractCondition` is dispatched as a viem `readContract` call against the configured RPC, the result is compared to `returnValueTest`, and `BooleanCondition` separators short-circuit the chain (`and` stops at the first false, `or` stops at the first true). Any RPC error fails closed — the DEK is not released. A `hasRole` call whose `oclId` does not match the lab's canonical binding reverts with `InvalidOclId` inside the contract and is treated as "condition not met".
 
 ### Decryption Flow
 

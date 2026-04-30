@@ -1710,6 +1710,16 @@ $encryptionMetadata: EncryptionMetadataInput
 
 `encryptionSystem` is **backend-set** — clients must echo the value returned on `initiateCreateOrUpdateFileV2` rather than hardcode it. This keeps the roadmap rollover to BLS threshold key custody transparent to existing integrations.
 
+#### `accessControlConditions` — gating decryption by role
+
+`accessControlConditions` is a JSON-stringified array of `EvmContractCondition` predicates joined by `BooleanCondition` separators (`and` / `or`). The backend evaluates each predicate against live chain state at decrypt time via viem `readContract`, short-circuits booleans, and fails closed on RPC error. To gate decryption on _LabNFT owner OR active Contributor OR active Viewer_, OR `AccessResolver.isAuthorizedSignerForTba(:userAddress, tba)` against `AccessResolver.hasRole(oclId, :userAddress, ROLE_VIEWER)` — the role-hierarchy collapses Contributor + Viewer into one check on the canonical chain (Base).
+
+The placeholder `:userAddress` in `functionParams` is substituted with the authenticated caller's wallet at evaluate time. The full `EvmContractCondition` JSON shape, the worked OR-composite example, and condition-evaluator semantics are documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer) page.
+
+#### Role Management (on-chain, off this API surface)
+
+Role grants are **on-chain transactions on the `AccessResolver` contract**, not Labs API mutations. Lab owners (and active Contributors, for the Viewer slot) call `grantRole(oclId, account, role, expiry, isAgent)` / `revokeRole(oclId, account)` directly via viem / ethers / Safe. The Labs API only _consumes_ role state at decrypt time through the `accessControlConditions` evaluator. See [Roles & Permissions](../core-concepts/roles-and-permissions.md) for the capability matrix, grant lifecycle (expiry, `isAgent`), and the [`AccessResolver` reference](../references/contracts/accessresolver.md) for the on-chain interface.
+
 ### Encryption Metadata Parameter (Lit Protocol, legacy)
 
 > **Legacy.** Lit Protocol is retained read-only for files encrypted before the migration to Onchain-Verified Envelope Encryption. New uploads should use the metadata shape above. Files with the shape below continue to decrypt through the Lit SDK.
