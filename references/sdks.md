@@ -159,36 +159,82 @@ tokens.forEach(token => {
 });
 ```
 
-#### Upload Encrypted File to DataRoom
+#### Upload Encrypted File to DataRoom (Onchain-Verified Envelope Encryption)
+
+New uploads use Molecule's Onchain-Verified Envelope Encryption. The backend issues a one-shot plaintext DEK on initiate; the client encrypts AES-256-GCM locally and stores the wrapped DEK + access conditions on finalize. `accessControlConditions` is a JSON-stringified array of predicates evaluated against `AccessResolver` at decrypt time — see [Data Privacy & Access — Worked Example](../core-concepts/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer) for the full shape.
 
 ```javascript
 import { createDesciSdk } from '@moleculexyz/client-sdk';
+
+const sdk = createDesciSdk({ identityToken, walletAddress });
+
+// 1. Initiate with encryption: backend returns plaintext DEK + wrapped DEK + encryptionSystem
+const { uploadUrl, uploadToken, plaintextDEK, encryptedDek, encryptionSystem } =
+  await sdk.labs.initiateFileUploadV2(ipnftUid, 'application/octet-stream', file.size, {
+    encryption: true,
+  });
+
+// 2. AES-256-GCM encrypt locally with Web Crypto, then wipe plaintextDEK
+const iv = crypto.getRandomValues(new Uint8Array(12));
+const key = await crypto.subtle.importKey(
+  'raw', base64Decode(plaintextDEK), { name: 'AES-GCM' }, false, ['encrypt']
+);
+const ciphertext = await crypto.subtle.encrypt(
+  { name: 'AES-GCM', iv }, key, await file.arrayBuffer()
+);
+// scrub plaintextDEK from memory after key import
+
+// 3. Upload ciphertext
+await fetch(uploadUrl, { method: 'PUT', body: ciphertext });
+
+// 4. Build accessControlConditions: gate on Owner OR Contributor OR Viewer
+const accessControlConditions = [
+  buildIsAuthorizedSignerForTba({ accessResolver, tba }),  // covers LabNFT owner
+  { operator: 'or' },
+  buildHasRole({ accessResolver, oclId, role: 1 /* ROLE_VIEWER */ }), // covers Contributor + Viewer (hierarchy)
+];
+
+// 5. Finalize with encryption metadata
+await sdk.labs.finishFileUploadV2(
+  ipnftUid,
+  uploadToken,
+  '/confidential/research.pdf',
+  'ADMIN',
+  walletAddress,
+  {
+    encryptionMetadata: {
+      encryptionSystem,                                       // echo from initiate
+      encryptedDek,
+      iv: base64Encode(iv),
+      contentHash: await sha256Hex(ciphertext),
+      accessControlConditions: JSON.stringify(accessControlConditions),
+      encryptedBy: walletAddress,
+      encryptedAt: new Date().toISOString(),
+    },
+  }
+);
+```
+
+Role grants happen on-chain via the [`AccessResolver` contract](../references/contracts/accessresolver.md), not through this SDK. Use viem / ethers to call `grantRole(oclId, account, role, expiry, isAgent)` from the Lab owner; once granted, the file's `hasRole` condition resolves true for the grantee at decrypt time.
+
+#### Upload Encrypted File (Lit Protocol, _legacy_)
+
+> **Legacy.** The flow below is retained for files encrypted before the migration to Onchain-Verified Envelope Encryption. New uploads should use the path above.
+
+```javascript
 import { useLitEncryption } from '@moleculexyz/storage';
 
-// 1. Encrypt file (legacy Lit Protocol path — new uploads use Onchain-Verified Envelope Encryption via the Labs API)
 const { encryptFile } = useLitEncryption();
 const encrypted = await encryptFile(file, {
   type: 'authorized_ipnft_signer',
   ipnftId: '42',
 });
 
-// 2. Upload encrypted content
-const sdk = createDesciSdk({ identityToken, walletAddress });
-
-const { uploadUrl, uploadToken } = await sdk.labs.initiateFileUploadV2(
-  ipnftUid,
-  'application/octet-stream',
-  encrypted.ciphertext.length
-);
-
-await fetch(uploadUrl, { method: 'PUT', body: encrypted.ciphertext });
-
-// 3. Finalize with encryption metadata
 await sdk.labs.finishFileUploadV2(
   ipnftUid,
   uploadToken,
   '/private/research.pdf',
-  'PRIVATE',
+  'ADMIN',
   walletAddress,
   {
     encryptionMetadata: {

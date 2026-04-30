@@ -58,6 +58,8 @@ A Lab owner granting access to an agent should set `isAgent = true` and a short 
 
 Roles are scoped to a **lab** — identified by the canonical `oclId` (a packed 32-byte identifier combining version, namespace, tokenId, and the TBA address). There is no per-data-room or per-file role; file-level access is enforced by the Onchain-Verified Envelope Encryption layer, which ultimately resolves back to the same `AccessResolver` predicates (`hasRole`, `isAuthorizedSignerForTba`, `isAuthorizedSignerForIpnft`) when evaluating a decryption request.
 
+For the concrete `accessControlConditions` JSON that turns a role grant into file-level decryption rights, see [Worked Example: Encrypt for Owner OR Contributor OR Viewer](data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer).
+
 ## Chain Scoping
 
 `AccessResolver` is deployed on Base, Mainnet, and Sepolia, but canonical lab state lives on Base. Lab-owner self-administration works only on Base: the ERC-6551 reference implementation returns `address(0)` for `owner()` when `block.chainid` doesn't match the chain the OCL was CREATE2-salted for, so lab NFT holders on Mainnet or Sepolia must call `grantRole` / `revokeRole` through the Base deployment.

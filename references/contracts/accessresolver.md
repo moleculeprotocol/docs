@@ -121,6 +121,59 @@ function initializeV3(address _labNftContractAddress) external; // onlyOwner, re
 
 The same `accessControlConditions` shape is reused across both Molecule's Onchain-Verified Envelope Encryption and the legacy Lit Protocol path — `AccessResolver` is the on-chain oracle either way. New integrations should drive encryption through the Labs API (`initiateCreateOrUpdateFileV2` / `decryptDataKey`); the Lit examples below remain valid for legacy files.
 
+#### Use as an Access Control Condition (current)
+
+For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` array referencing this contract's predicates to the file's `encryptionMetadata`. The example below gates decryption on _LabNFT owner OR active Contributor OR active Viewer_ by OR'ing `isAuthorizedSignerForTba` with `hasRole(oclId, :userAddress, ROLE_VIEWER)` (hierarchy makes one role check cover Contributor + Viewer). Substitute `<accessresolver-address>` with the deployment matching the chain the backend evaluator targets — see [Deployments](#deployments) above:
+
+```json
+[
+  {
+    "conditionType": "evmContract",
+    "contractAddress": "<accessresolver-address>",
+    "chain": "base",
+    "functionName": "isAuthorizedSignerForTba",
+    "functionParams": [":userAddress", "0x<40hex-tba>"],
+    "functionAbi": {
+      "name": "isAuthorizedSignerForTba",
+      "inputs": [
+        { "name": "signer",  "type": "address" },
+        { "name": "account", "type": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    "returnValueTest": { "key": "", "comparator": "=", "value": "true" }
+  },
+  { "operator": "or" },
+  {
+    "conditionType": "evmContract",
+    "contractAddress": "<accessresolver-address>",
+    "chain": "base",
+    "functionName": "hasRole",
+    "functionParams": [
+      "0x0101<20hex-tokenId><40hex-tba>",
+      ":userAddress",
+      "1"
+    ],
+    "functionAbi": {
+      "name": "hasRole",
+      "inputs": [
+        { "name": "oclId",   "type": "bytes32" },
+        { "name": "account", "type": "address" },
+        { "name": "role",    "type": "uint8"   }
+      ],
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    "returnValueTest": { "key": "", "comparator": "=", "value": "true" }
+  }
+]
+```
+
+`:userAddress` is substituted with the authenticated caller at evaluate time. See [Data Privacy & Access](../../core-concepts/data/data-privacy-and-access.md) for the full upload / decrypt flow, condition shape definitions, and evaluator behaviour.
+
 #### With Lit Protocol _(legacy)_
 
 Utilize `AccessResolver` as an access control condition in file encryption.
@@ -180,10 +233,18 @@ function AccessCheck({ ipnftId, userAddress }) {
 }
 ```
 
-### Access Control Conditions
+### Predicates Available as Access Control Conditions
 
-* **ipnft\_read**: Grants time-limited read access.
-* **authorized\_ipnft\_signer**: Provides full authorization.
+Use any of the predicates below as the `functionName` of an `EvmContractCondition` pointing at this contract.
+
+| Predicate                                                                | Gates                                                              | Role-aware |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------ | :--------: |
+| `isAuthorizedSignerForIpnft(address signer, uint256 ipnftId)`            | Direct + recursive ownership of the IP-NFT (Safe / Ownable / TBA). |            |
+| `isAuthorizedSignerForTba(address signer, address account)`              | Authorized signer of an ERC-6551 TBA, including its bound NFT owner. |            |
+| `hasRole(bytes32 oclId, address account, uint8 role)`                    | Active, non-expired role grant on the lab; honours Owner > Contributor > Viewer hierarchy. |     ✓      |
+| `isApprovedLock(address tokenAddress, address signer)`                   | Holds and is approved on a locked token (used by locked-token gating). |            |
+
+The legacy Lit helper string IDs `ipnft_read` / `authorized_ipnft_signer` resolve to these same predicates internally and are retained for legacy Lit-encrypted files only — new integrations should write the `EvmContractCondition` shape directly.
 
 ### Security Considerations
 

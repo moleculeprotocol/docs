@@ -194,10 +194,16 @@ query {
         downloadHeaders { key value }
         downloadUrlExpiry
         encryptionMetadata {
-          dataToEncryptHash
+          encryptionSystem        # "kms" | "bls" | null (legacy Lit)
           accessControlConditions
           encryptedBy
           encryptedAt
+          # Onchain-Verified Envelope (KMS / BLS) fields:
+          encryptedDek
+          iv
+          contentHash
+          # Lit Protocol legacy fields:
+          dataToEncryptHash
           chain
           litNetwork
         }
@@ -234,8 +240,12 @@ query {
     downloadHeaders { key value }
     downloadUrlExpiry
     encryptionMetadata {
-      dataToEncryptHash
+      encryptionSystem
       accessControlConditions
+      encryptedDek                # current envelope encryption
+      iv
+      contentHash
+      dataToEncryptHash           # legacy Lit
       chain
       litNetwork
     }
@@ -447,7 +457,46 @@ mutation {
 
 #### Encrypted File Upload
 
-For confidential files, include `encryptionMetadata` on `finishCreateOrUpdateFileV2`. New uploads use Molecule's Onchain-Verified Envelope Encryption — `encryptionSystem` is backend-set, so clients should echo the value returned from `initiateCreateOrUpdateFileV2` rather than hardcode it. The example below shows the legacy Lit Protocol metadata shape, which is still accepted for files encrypted before the migration. See [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) for the current flow and metadata fields.
+For confidential files, opt into encryption on initiate (`encryption: true`) and include `encryptionMetadata` on `finishCreateOrUpdateFileV2`. New uploads use Molecule's Onchain-Verified Envelope Encryption — the backend issues a one-shot plaintext DEK plus a wrapped DEK; the client AES-256-GCM encrypts locally and stores the wrapped DEK and access conditions in `encryptionMetadata`. `encryptionSystem` is backend-set; clients must echo the value returned by `initiateCreateOrUpdateFileV2` rather than hardcode it. See [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) for the full flow.
+
+`accessControlConditions` is a JSON-stringified array of predicates that the backend evaluates against live chain state at decrypt time. To gate decryption on _LabNFT owner OR active Contributor OR active Viewer_, OR `isAuthorizedSignerForTba` against `hasRole(oclId, :userAddress, ROLE_VIEWER)` on `AccessResolver` — `:userAddress` is substituted with the authenticated caller. The full `EvmContractCondition` shape and worked JSON examples are documented in [Data Privacy & Access — Worked Example](../core-concepts/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer).
+
+{% code overflow="wrap" %}
+```graphql
+mutation {
+  finishCreateOrUpdateFileV2(
+    ipnftUid: "0xcaD...Fc1_9"
+    uploadToken: "tok_xxx"
+    path: "confidential/patient-data.csv"
+    accessLevel: "ADMIN"
+    changeBy: "0xYourWalletAddress"
+    encryptionMetadata: {
+      encryptionSystem: "kms"            # echo from initiateCreateOrUpdateFileV2
+      encryptedDek: "BASE64_WRAPPED_DEK" # backend-issued, client stores verbatim
+      iv: "BASE64_AES_GCM_IV"            # client-generated AES-GCM IV
+      contentHash: "sha256-..."          # hash of the ciphertext
+      accessControlConditions: "[{\"conditionType\":\"evmContract\",\"contractAddress\":\"<accessresolver-address>\",\"chain\":\"base\",\"functionName\":\"isAuthorizedSignerForTba\",\"functionParams\":[\":userAddress\",\"0x<40hex-tba>\"],\"functionAbi\":{...},\"returnValueTest\":{\"key\":\"\",\"comparator\":\"=\",\"value\":\"true\"}},{\"operator\":\"or\"},{\"conditionType\":\"evmContract\",\"contractAddress\":\"<accessresolver-address>\",\"chain\":\"base\",\"functionName\":\"hasRole\",\"functionParams\":[\"0x0101<20hex-tokenId><40hex-tba>\",\":userAddress\",\"1\"],\"functionAbi\":{...},\"returnValueTest\":{\"key\":\"\",\"comparator\":\"=\",\"value\":\"true\"}}]"
+      encryptedBy: "0xYourWalletAddress"
+      encryptedAt: "2026-01-25T12:00:00Z"
+    }
+  ) {
+    datasetId
+    contentHash
+    isSuccess
+  }
+}
+```
+{% endcode %}
+
+The `accessControlConditions` string above is abbreviated (`functionAbi: {...}`) — see the [worked example](../core-concepts/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer) for the full ABI block. Substitute `<accessresolver-address>` with the deployment from the [AccessResolver deployments table](contracts/accessresolver.md), `<40hex-tba>` with the lab's TBA address (lower 20 bytes of `oclId`), and `<20hex-tokenId>` with the LabNFT tokenId in 10-byte big-endian hex.
+
+##### Role Management (on-chain, off this API surface)
+
+Role grants and revokes happen on `AccessResolver` directly — they are on-chain transactions, not Labs API mutations. Lab owners (and active Contributors, for the Viewer slot) call `grantRole(oclId, account, role, expiry, isAgent)` / `revokeRole(oclId, account)` through any web3 client (viem / ethers / Safe transaction). See [Roles & Permissions](../core-concepts/roles-and-permissions.md) for the capability matrix, grant lifecycle, and the `isAgent` / `expiry` semantics. The Labs API only _consumes_ role state at decrypt time via the `accessControlConditions` evaluator.
+
+#### Encrypted File Upload (Lit Protocol, _legacy_)
+
+> **Legacy.** The shape below is retained read-only for files encrypted before the migration to Onchain-Verified Envelope Encryption. New uploads use the shape above. Files with this shape continue to decrypt through the Lit SDK.
 
 {% code overflow="wrap" %}
 ```graphql
@@ -460,7 +509,7 @@ mutation {
     changeBy: "0xYourWalletAddress"
     encryptionMetadata: {
       dataToEncryptHash: "0x1234..."
-      accessControlConditions: "[{"contractAddress":"0xcaD...","functionName":"canRead",...}]"
+      accessControlConditions: "[{\"contractAddress\":\"0xcaD...\",\"functionName\":\"canRead\"}]"
       encryptedBy: "0xYourWalletAddress"
       encryptedAt: "2025-01-25T12:00:00Z"
       chain: "base"
@@ -601,17 +650,29 @@ type DataRoomFile {
 
 #### Encryption Metadata
 
+Discriminated by `encryptionSystem`. New files (`encryptionSystem = "kms"` or `"bls"`) use Onchain-Verified Envelope Encryption; legacy files (`encryptionSystem = null` / absent) use Lit Protocol. Common fields apply to both.
+
 ```graphql
 type EncryptionMetadata {
-  dataToEncryptHash: String! # Hash from Lit encryption
-  accessControlConditions: AWSJSON! # Lit access conditions
-  encryptedBy: String! # Wallet that encrypted
-  encryptedAt: AWSDateTime! # When encrypted
-  chain: String! # Blockchain network
-  litSdkVersion: String! # Lit SDK version
-  litNetwork: String! # datil | datil-test
-  templateName: String! # Access control template
-  contractVersion: String! # Contract version
+  # Discriminator + common fields
+  encryptionSystem: String       # "kms" | "bls" | null (legacy Lit)
+  accessControlConditions: AWSJSON! # JSON-stringified condition array (both paths)
+  encryptedBy: String!           # Wallet that encrypted
+  encryptedAt: AWSDateTime!      # When encrypted
+
+  # Onchain-Verified Envelope Encryption (KMS / BLS, current default)
+  encryptedDek: String           # Base64-encoded wrapped DEK
+  iv: String                     # Base64-encoded AES-GCM IV
+  contentHash: String            # Hash of ciphertext
+  keyId: String                  # BLS only: key identifier
+
+  # Lit Protocol (legacy)
+  dataToEncryptHash: String      # Hash of plaintext from Lit encryption
+  chain: String                  # Blockchain network used by Lit
+  litSdkVersion: String          # Lit SDK version
+  litNetwork: String             # datil | datil-test
+  templateName: String           # Access control template
+  contractVersion: String        # Contract version
 }
 ```
 
