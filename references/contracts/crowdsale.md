@@ -246,6 +246,6 @@ SchmackoSwap — OTC marketplace for trading IP-NFTs directly.
 
 Source Code: GitHub (CrowdSale.sol, LockingCrowdSale.sol, StakedLockingCrowdSale.sol)
 
-ABI: Available in @moleculexyz/common/abis
+ABI: Generated from the contract source in the [IPNFT repository](https://github.com/moleculeprotocol/IPNFT)
 
 Audit: Audit Report

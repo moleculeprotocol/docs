@@ -125,7 +125,7 @@ Returns the current owner address of the IP-NFT.
 ### Resources
 
 * **Source Code:** [Tokenizer.sol](https://github.com/moleculeprotocol/IPNFT/blob/main/src/Tokenizer.sol)
-* **ABI:** Available in `@moleculexyz/common/abis`
+* **ABI:** Generated from the contract source in the [IPNFT repository](https://github.com/moleculeprotocol/IPNFT)
 * **Audit:** [Audit Report](https://github.com/moleculeprotocol/IPNFT/tree/main/audit)
 
 For further details and integration guidelines, consult the [subgraph](https://github.com/moleculeprotocol/IPNFT/blob/main/subgraph) and other related documentation.

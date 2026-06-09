@@ -290,5 +290,4 @@ No authentication required.
 
 * [Playground (Mainnet)](https://subgraph.satsuma-prod.com/molecule--4039244/ip-nft-mainnet/playground) — Interactive query explorer
 * [Playground (Sepolia)](https://subgraph.satsuma-prod.com/molecule--4039244/ip-nft-sepolia/playground) — Testnet explorer
-* [SDKS/Client-SDK](https://sdks/client-sdk) — Typed wrapper with caching
 * [The Graph Documentation](https://thegraph.com/docs/) — GraphQL query reference

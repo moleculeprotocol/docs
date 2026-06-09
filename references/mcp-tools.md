@@ -198,29 +198,20 @@ The server uses Redis to cache data, enhancing performance and abiding by upstre
 
 ### Programmatic Integration
 
-For AI applications requiring Molecule data, use the `@moleculexyz/ai` package.
-
-#### Installation
-
-```shell
-npm install @moleculexyz/ai
-```
-
-#### Usage with Vercel AI SDK
+For AI applications requiring Molecule data, connect to the MCP endpoint directly. Any MCP-compatible client works — the example below uses the Vercel AI SDK's MCP client.
 
 ```javascript
-import { createToolRegistry } from '@moleculexyz/ai';
-import { generateText } from 'ai';
+import { experimental_createMCPClient as createMCPClient, generateText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 
-const registry = await createToolRegistry({
-  mcpUrl: 'https://molecule-mcp.vercel.app/mcp',
-  toolSet: 'all'
+const mcpClient = await createMCPClient({
+  transport: { type: 'sse', url: 'https://molecule-mcp.vercel.app/mcp' }
 });
+const tools = await mcpClient.tools();
 
 const result = await generateText({
   model: openai('gpt-4o'),
-  tools: registry.tools,
+  tools,
   prompt: 'What IPTs are available in the longevity category?'
 });
 ```

@@ -53,7 +53,6 @@
   * [AccessResolver](references/contracts/accessresolver.md)
   * [CrowdSale](references/contracts/crowdsale.md)
 * [Subgraph](references/subgraph.md)
-* [SDKs](references/sdks.md)
 * [MCP Tools](references/mcp-tools.md)
 * [Labs API](references/labs-api.md)
 

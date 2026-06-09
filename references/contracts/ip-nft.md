@@ -144,5 +144,5 @@ function tokenURI(uint256 tokenId) public view returns (string memory)
 ### Resources
 
 * **Source Code**: [GitHub](https://github.com/moleculeprotocol/IPNFT/blob/main/src/IPNFT.sol)
-* **ABI**: Available in @moleculexyz/common/abis
+* **ABI**: Generated from the contract source in the [IPNFT repository](https://github.com/moleculeprotocol/IPNFT)
 * **Audit**: [Audit Report](https://github.com/moleculeprotocol/IPNFT/tree/main/audit)

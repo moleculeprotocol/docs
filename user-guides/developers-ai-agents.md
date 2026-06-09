@@ -11,7 +11,7 @@ icon: robot
 
 You're a developer building on the Molecule ecosystem. You might be integrating Lab data into a front-end, writing a smart contract module that adds new capabilities to Labs, deploying an AI agent that operates on research data, or building a tool that queries ecosystem state for analytics or trading. This guide maps out the integration surfaces, explains what's available today versus what's on the roadmap, and shows you the fastest path to a working integration for each use case.
 
-The reference pages (Contracts, SDKs, Labs API, MCP Tools, Subgraph) contain the full API specifications, type definitions, and code examples. This guide is the narrative layer that explains when to use which tool, how the pieces connect, and what the architecture expects from you.
+The reference pages (Contracts, Labs API, MCP Tools, Subgraph) contain the full API specifications, type definitions, and code examples. This guide is the narrative layer that explains when to use which tool, how the pieces connect, and what the architecture expects from you.
 
 ### The Integration Surface
 
@@ -19,19 +19,19 @@ Molecule exposes four primary integration layers, each serving different develop
 
 The Labs API is a GraphQL endpoint for reading and writing to Lab data rooms — the off-chain encrypted storage where research files, announcements, and metadata live. This is the primary interface for applications that need to manage scientific data: uploading files, querying project activity, searching across Labs, and managing announcements. Authentication uses API keys for reads and service tokens for writes. The full specification, including every query and mutation, is documented in the Labs API reference.
 
-The Client SDK is a TypeScript package that wraps the Labs API and subgraph queries into a type-safe interface. It handles authentication, file uploads (including Onchain-Verified Envelope Encryption uploads, with legacy Lit Protocol decryption for pre-migration files), IPT market data, crowdsale queries, and project management. The SDK is read-focused for on-chain data — for on-chain writes (minting, tokenizing, bidding), you use the contract ABIs directly with viem/wagmi. The SDK documentation includes quickstart examples and every available method.
+The Subgraph is a GraphQL interface over indexed on-chain events — IP-NFT mints, IPT creation, crowdsale participation, token transfers. It's the right tool for reading historical and current on-chain state without running your own indexer: market data, ownership, crowdsale contributions, and event timelines. It requires no authentication and indexes Ethereum mainnet. For on-chain writes (minting, tokenizing, bidding), you call the contract ABIs directly with viem/wagmi. The Subgraph reference documents the full schema and example queries.
 
 The Smart Contracts are the on-chain layer. The V2 contracts (IPNFT, Tokenizer, CrowdSale, SchmackoSwap) are deployed on Ethereum mainnet and handle IP-NFT minting, IPT creation, token sales, and trading. The V3 contracts (Modular\_OnChainLab, OnChainLabFactory, ERC7484Registry, and associated modules) are deployed on Sepolia and introduce the modular account architecture. Contract addresses, ABIs, and upgrade patterns are documented in the Contracts reference. The Architecture page provides the full implementation-level breakdown of how these contracts compose.
 
-The MCP Server is a Model Context Protocol endpoint that lets AI assistants query Molecule ecosystem data in real time — IPT prices, project activity, categories, and summaries. It's the fastest way to give an LLM context about the DeSci ecosystem without building a custom integration. Setup takes one config file. The MCP Tools reference covers available tools, self-hosting, and programmatic integration via the @moleculexyz/ai package.
+The MCP Server is a Model Context Protocol endpoint that lets AI assistants query Molecule ecosystem data in real time — IPT prices, project activity, categories, and summaries. It's the fastest way to give an LLM context about the DeSci ecosystem without building a custom integration. Setup takes one config file. The MCP Tools reference covers available tools, self-hosting, and programmatic integration against the MCP endpoint.
 
 ### Building a Front-End or Dashboard
 
-If you're building an interface that displays Lab data, IPT markets, or research activity, your primary tools are the Client SDK and the Subgraph.
+If you're building an interface that displays Lab data, IPT markets, or research activity, your primary tools are the DeSci API, the Labs API, and the Subgraph.
 
-Start with the SDK for most queries. It provides pre-built methods for fetching IPTs with market data, querying IP-NFTs by owner or ID, retrieving crowdsale details and contribution status, listing projects, and searching across Labs. For on-chain state that isn't indexed by the API — for example, real-time token balances, allowances, or contract state — query the subgraph directly or call the contracts via viem.
+Use the DeSci API for market and token data — IPTs with prices, project summaries, and activity feeds — and the Subgraph for indexed on-chain state such as IP-NFT ownership, crowdsale contributions, and event timelines. For real-time on-chain state that isn't indexed — for example, live token balances, allowances, or contract state — call the contracts directly via viem.
 
-For data room interactions (showing a Lab's files, uploading research data on behalf of a user), use the SDK's labs module. File uploads follow a three-step flow: initiate the upload to get a presigned S3 URL, PUT the file to that URL, then finalize the upload with metadata. The SDK abstracts this for you. If the file needs encryption, the client opts in with `encryption: true` on `initiateCreateOrUpdateFileV2` — the backend returns a one-shot plaintext DEK and its wrapped form, and the client AES-256-GCM encrypts the file locally via Web Crypto. On download, `decryptDataKey` returns the unwrapped DEK after the backend re-verifies the file's access conditions against live on-chain state. Legacy files encrypted before the migration to Onchain-Verified Envelope Encryption continue to decrypt via the Lit Protocol path in `@moleculexyz/storage`. The [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page walks through both flows end-to-end.
+For data room interactions (showing a Lab's files, uploading research data on behalf of a user), use the Labs API. File uploads follow a three-step flow: call `initiateCreateOrUpdateFileV2` to get a presigned S3 URL, PUT the file to that URL, then call `finishCreateOrUpdateFileV2` with metadata. If the file needs encryption, opt in with `encryption: true` on initiate — the backend returns a one-shot plaintext DEK and its wrapped form, and you AES-256-GCM encrypt the file locally via Web Crypto. On download, `decryptDataKey` returns the unwrapped DEK after the backend re-verifies the file's access conditions against live on-chain state. Legacy files encrypted before the migration to Onchain-Verified Envelope Encryption continue to decrypt via the Lit Protocol path. The [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page walks through both flows end-to-end.
 
 Authentication splits into two paths. Unauthenticated calls work for all read operations against public data — IPT listings, market data, project summaries. Authenticated calls require a Privy JWT token and wallet address, and are needed for any write operation or access to private data rooms.
 
@@ -86,19 +86,19 @@ If you want existing AI assistants (Claude, GPT, or any MCP-compatible client) t
 
 The MCP server exposes five tools: querying available IPTs with market data, fetching project activity for a specific token, listing IPT categories, getting comprehensive project summaries, and retrieving historical OHLCV price data. These cover the most common questions an AI assistant needs to answer about the ecosystem.
 
-For programmatic integration — embedding Molecule tools into your own AI application — the @moleculexyz/ai package provides a tool registry that works directly with the Vercel AI SDK. You instantiate a registry pointed at the MCP endpoint, pass the tools to your LLM call, and the model can query Molecule data as part of its reasoning process. The MCP Tools reference includes the full setup, self-hosting instructions for private deployments, and caching configuration.
+For programmatic integration — embedding Molecule tools into your own AI application — connect an MCP client to the endpoint and pass its tools to your LLM call, so the model can query Molecule data as part of its reasoning process. Any MCP-compatible client works, including the Vercel AI SDK's MCP client. The MCP Tools reference includes the full setup, self-hosting instructions for private deployments, and caching configuration.
 
 ### Querying On-Chain State via Subgraph
 
 For indexed on-chain data — IP-NFT minting events, IPT creation, crowdsale participation, token transfers — the subgraph provides a GraphQL interface over historical blockchain data. This is the right tool for analytics dashboards, portfolio trackers, historical queries, and any application that needs to reconstruct the full timeline of protocol events.
 
-The subgraph indexes Ethereum mainnet and is documented in the Subgraph reference. For queries that combine on-chain and off-chain data (for example, an IPT's market data alongside its Lab's data room contents), use the Client SDK, which unifies subgraph queries and API calls into a single interface.
+The subgraph indexes Ethereum mainnet and is documented in the Subgraph reference. For queries that combine on-chain and off-chain data (for example, an IPT's market data alongside its Lab's data room contents), combine subgraph queries with DeSci API and Labs API calls in your application.
 
 ### Where to Start
 
 Your starting point depends on what you're building.
 
-If you're building a front-end or dashboard, start with the Client SDK. Install @moleculexyz/client-sdk, follow the quickstart in the SDK reference, and you'll have IPT market data rendering in minutes.
+If you're building a front-end or dashboard, start with the DeSci API and Subgraph. Follow the query examples in those references and you'll have IPT market data rendering in minutes; add the Labs API when you need data room contents.
 
 If you're building a smart contract module, start with the poc-protocol-modular-onchain-labs repository. Clone it, run the Foundry tests to understand the execution model, then write your module against the test fixtures. Deploy to Sepolia for testing and contact the Molecule team for attestation when you're ready for production.
 
