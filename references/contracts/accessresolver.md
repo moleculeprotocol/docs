@@ -176,19 +176,27 @@ For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` ar
 
 #### With Lit Protocol _(legacy)_
 
-Utilize `AccessResolver` as an access control condition in file encryption.
+Utilize `AccessResolver` as an `EvmContractCondition` in file encryption. Pass the condition directly to the Lit client.
 
 ```js
-import { createAccessCondition } from '@moleculexyz/storage';
-
-const accessCondition = createAccessCondition(
-  { type: 'authorized_ipnft_signer', ipnftId: '42' },
-  'ethereum',
-  {
-    accessResolver: '0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0',
-    ipnft: '0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1'
-  }
-);
+// AccessResolver as a Lit EvmContractCondition
+const accessCondition = {
+  contractAddress: '0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0', // AccessResolver
+  chain: 'ethereum',
+  functionName: 'isAuthorizedSignerForIpnft',
+  functionParams: [':userAddress', '42'],
+  functionAbi: {
+    name: 'isAuthorizedSignerForIpnft',
+    inputs: [
+      { name: 'signer',  type: 'address' },
+      { name: 'ipnftId', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  returnValueTest: { key: '', comparator: '=', value: 'true' }
+};
 
 // Encryption with Lit Protocol
 const encrypted = await litClient.encrypt({
@@ -197,40 +205,22 @@ const encrypted = await litClient.encrypt({
 });
 ```
 
-#### With React Hooks
-
-```js
-import { useLitEncryption } from '@moleculexyz/storage';
-
-function DataRoom({ ipnftId }) {
-  const { encryptFile, decryptFile } = useLitEncryption();
-
-  const handleUpload = async (file) => {
-    const encrypted = await encryptFile(file, {
-      type: 'authorized_ipnft_signer',
-      ipnftId
-    });
-  }
-
-  const handleDownload = async (ciphertext, hash) => {
-    const decrypted = await decryptFile(ciphertext, hash, {
-      type: 'authorized_ipnft_signer',
-      ipnftId
-    });
-  }
-}
-```
-
 #### Direct Contract Call
 
+Read a predicate directly with viem to check access outside of an encryption flow.
+
 ```js
-import { useAuthorizedIpnftSigner } from '@moleculexyz/onchain';
+import { createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
 
-function AccessCheck({ ipnftId, userAddress }) {
-  const { data: isAuthorized, isLoading } = useAuthorizedIpnftSigner(ipnftId, userAddress);
+const client = createPublicClient({ chain: mainnet, transport: http() });
 
-  return isLoading ? <span>Checking access...</span> : <span>{isAuthorized ? 'Authorized' : 'Not authorized'}</span>;
-}
+const isAuthorized = await client.readContract({
+  address: '0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0', // AccessResolver
+  abi: accessResolverAbi,
+  functionName: 'isAuthorizedSignerForIpnft',
+  args: [userAddress, 42n]
+});
 ```
 
 ### Predicates Available as Access Control Conditions
@@ -259,6 +249,5 @@ The legacy Lit helper string IDs `ipnft_read` / `authorized_ipnft_signer` resolv
 
 ### Resources
 
-* **ABI**: Available within `@moleculexyz/common/abis`
-* **React Hooks**: `@moleculexyz/onchain` and `@moleculexyz/storage`
+* **ABI**: Generated from the contract source in the [IPNFT repository](https://github.com/moleculeprotocol/IPNFT)
 * **Lit Protocol Documentation**: [Lit Protocol Developer Docs](https://developer.litprotocol.com/)

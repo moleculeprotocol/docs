@@ -739,45 +739,9 @@ Rate limit headers:
 * X-RateLimit-Remaining: 45
 * X-RateLimit-Reset: 1706198400
 
-### SDK
+### Code Example
 
-#### Installation
-
-```bash
-npm install @moleculexyz/client-sdk
-```
-
-#### Usage
-
-```javascript
-import { DesciSdk } from '@moleculexyz/client-sdk';
-
-const sdk = new DesciSdk({
-  apiKey: process.env.MOLECULE_API_KEY,
-  serviceToken: process.env.MOLECULE_SERVICE_TOKEN,
-  environment: 'production'
-});
-
-// List projects
-const projects = await sdk.labs.getProjects({ page: 0, perPage: 20 });
-
-// Upload file
-const result = await sdk.labs.uploadFile({
-  ipnftUid: '0xcaD...Fc1_9',
-  file: buffer,
-  path: 'research/data.csv',
-  accessLevel: 'ADMIN',
-  changeBy: '0xYourWallet'
-});
-
-// Search
-const hits = await sdk.labs.search({
-  prompt: 'gene therapy results',
-  filters: { byAccessLevels: ['PUBLIC'] }
-});
-```
-
-#### Complete Example
+#### Complete Upload Flow
 
 ```javascript
 import { readFileSync } from 'fs';

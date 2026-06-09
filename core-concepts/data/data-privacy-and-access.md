@@ -36,7 +36,7 @@ Files marked as Public skip encryption entirely. The researcher explicitly choos
 4. Backend: zero its copy of the plaintextDEK after the response is built
 5. Client: AES-256-GCM encrypt(file, plaintextDEK) via SubtleCrypto
 6. Client: PUT ciphertext to presigned S3 URL
-7. Client: build accessControlConditions (createAccessCondition helper)
+7. Client: build accessControlConditions (EvmContractCondition array)
 8. Client → AppSync: finishCreateOrUpdateFileV2(ipnftUid, uploadToken,
                      encryptionMetadata: { encryptionSystem, wrappedDEK,
                                            iv, contentHash, accessControlConditions,
@@ -48,7 +48,7 @@ The client only opts **in** to encryption (`encryption: true`). The backend deci
 
 ### Access Conditions
 
-Who may decrypt a file is determined by on-chain conditions, not by a centralised permission list. When a file is uploaded, the Client SDK attaches an `accessControlConditions` array to the encryption metadata, stored on Kamu (ODF) alongside the file's provenance record. Conditions are **stored but not evaluated** at encrypt time — they're evaluated at decrypt time against live chain state.
+Who may decrypt a file is determined by on-chain conditions, not by a centralised permission list. When a file is uploaded, the client attaches an `accessControlConditions` array to the encryption metadata, stored on Kamu (ODF) alongside the file's provenance record. Conditions are **stored but not evaluated** at encrypt time — they're evaluated at decrypt time against live chain state.
 
 Conditions resolve through the [`AccessResolver`](../../references/contracts/accessresolver.md) contract, which exposes three principal predicates:
 
@@ -242,4 +242,4 @@ Key custody evolves from a single protocol-operated custodian to a **BLS thresho
 
 The legacy model uses Lit Protocol's threshold-cryptography network: a symmetric key is generated client-side, sharded across Lit's decentralised nodes, and only reassembled on the client when a threshold of nodes independently verifies the same on-chain conditions exposed through `AccessResolver`. Files carry a distinct metadata shape (`dataToEncryptHash`, `litSdkVersion`, `litNetwork`, `templateName`, `contractVersion`) and are discriminated by the absence of the `encryptionSystem` field.
 
-Integrators with Lit-encrypted files in their data rooms should continue using `@moleculexyz/storage`'s Lit flow for those files, and the current flow for everything new. Re-encryption tooling to migrate legacy files is tracked separately.
+Integrators with Lit-encrypted files in their data rooms should continue using the Lit SDK decryption flow for those files, and the current flow for everything new. Re-encryption tooling to migrate legacy files is tracked separately.
