@@ -2889,4 +2889,4 @@ Fixed inconsistency where the `path` field differed between queries:
 
 ---
 
-_Last updated: March 2026_
+_Last updated: July 2026_
