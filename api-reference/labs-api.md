@@ -36,13 +36,13 @@ The Labs API has different authentication requirements depending on the operatio
 - `getDidLinkStatus` - Get background DID-linking status for a lab
 - `legalAgreementStatus` - Check whether a lab's legal agreement is signed
 - `onChainActivity` - On-chain event feed for a lab or wallet
+- `listLabMembers` - List a lab's members
 
 ```bash
 x-api-key: YOUR_API_KEY
 ```
 
-**Authenticated queries** — API Key **plus** a Service Token, or an authenticated user holding the required role:
-- `listLabMembers` - List a lab's members (Contributor-or-above on the lab, or a service token)
+**Authenticated query** — API Key **plus** a Service Token, or an authenticated user session:
 - `legalAgreementTemplate` - Get the populated agreement to sign (the signer's authenticated session, or a service token)
 
 ### Protected Mutations (Write Operations)
@@ -1858,7 +1858,7 @@ Role grants are **on-chain transactions on the `AccessResolver` contract**, not 
 
 Return the active members of a lab (owner, contributors, viewers), sourced from the indexed `ocl_user` table. Expired grants are excluded.
 
-> **Authorization**: Requires a valid service token **OR** Privy authentication with Contributor-level role or above on the lab.
+> **Public query** — only an API Key is required. The same data is also exposed on the public `Lab` / `LabRef.members` field.
 
 ```graphql
 query ListLabMembers($oclId: String!) {
@@ -1898,8 +1898,6 @@ query ListLabMembers($oclId: String!) {
 | expiry        | String          | Unix-seconds expiry as a decimal string; `null` means the grant is permanent                     |
 | isAgent       | Boolean         | True if the member is an agent identity (surfaced for UI; not used for authorization)            |
 | grantedAt     | String          | ISO-8601 timestamp the row was first persisted                                                   |
-
-> The same data is also available inline as the `members` field on `Lab` / `LabRef`.
 
 ---
 

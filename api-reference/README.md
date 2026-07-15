@@ -42,20 +42,22 @@ Create IP-NFTs from research projects and tokenize them into fungible IP Tokens 
 
 ### 📁 Labs API (Programmatic File Upload)
 
-Upload files to project datarooms for secure, decentralized research data storage.
+Upload files to lab datarooms for secure, decentralized research data storage, and query labs, members, activity, and legal-agreement status.
 
 **Purpose:**
 
-* Automate file uploads to Labs datarooms
+* Create labs (datarooms) for on-chain labs (OCLs)
+* Automate file uploads to lab datarooms
 * Integrate with data pipelines and CI/CD
 * Batch upload research data
-* Manage file versions and metadata
-* Query projects and files (public access)
+* Manage file versions, metadata, and LabNFT display metadata
+* Query labs, files, members, activity, and on-chain events (mostly public access)
+* Manage service tokens and legal-agreement signing
 
 **Authentication:**
 
-* **All queries** (read operations): API Key only - all queries are public
-* **All mutations** (write operations): API Key + Service Token required
+* **Most queries** (read operations): API Key only — public. One exception, `legalAgreementTemplate`, needs a Service Token or an authenticated session.
+* **Write mutations** (write operations): API Key + Service Token required — except `generateServiceToken`, which bootstraps a token from a Privy session or wallet signature.
 
 [View Labs API Documentation →](labs-api.md)
 
@@ -84,8 +86,8 @@ All Molecule APIs require authentication with an API key. To request access:
 
 **Labs API Authentication Details:**
 
-* **All queries are public**: Only API Key required for any read operation
-* **All mutations are protected**: API Key + Service Token required for any write operation
+* **Most queries are public**: API Key only for read operations. Exception: `legalAgreementTemplate` requires a Service Token or an authenticated session.
+* **Write mutations are protected**: API Key + Service Token required. Exception: `generateServiceToken` mints a token and needs only an API Key plus a Privy session or wallet signature.
 * **Service Token**: Identifies which specific lab/dataroom you have write access to
 * File-level access control is handled via Molecule's Onchain-Verified Envelope Encryption (Lit Protocol retained for legacy files), not query authentication — see [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md)
 
@@ -152,4 +154,4 @@ If you encounter any issues or have questions about the APIs:
 
 ***
 
-_Last updated: February 2026_
+_Last updated: July 2026_
