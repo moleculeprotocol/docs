@@ -25,6 +25,7 @@ The Labs API has different authentication requirements depending on the operatio
 ### Public Queries (Read-Only)
 
 **These queries** are public and only require an API Key:
+
 - `labs` - List all labs with pagination
 - `labWithDataRoomAndFiles` - Get lab details and files
 - `labActivity` - Get activity feed for a lab, (available filters: ANNOUNCEMENT | FILE)
@@ -43,6 +44,7 @@ x-api-key: YOUR_API_KEY
 ```
 
 **Authenticated query** — API Key **plus** a Service Token, or an authenticated user session:
+
 - `legalAgreementTemplate` - Get the populated agreement to sign (the signer's authenticated session, or a service token)
 
 ### Protected Mutations (Write Operations)
@@ -53,6 +55,7 @@ x-api-key: YOUR_API_KEY
 2. **Service Token** - For lab-specific write access control
 
 **Protected mutations include:**
+
 - `createLab` - Create a lab (data room) for an on-chain lab (OCL) · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `initiateCreateOrUpdateFile` - Initiate file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `finishCreateOrUpdateFile` - Complete file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
@@ -95,11 +98,13 @@ To obtain access credentials:
 ### Using Your Credentials
 
 **For all queries** (read-only operations):
+
 ```bash
 x-api-key: YOUR_API_KEY
 ```
 
 **For all mutations** (write operations):
+
 ```bash
 x-api-key: YOUR_API_KEY
 X-Service-Token: YOUR_SERVICE_TOKEN
@@ -131,7 +136,195 @@ Production: https://production.graphql.api.molecule.xyz/graphql
 Staging:    https://staging.graphql.api.molecule.xyz/graphql
 ```
 
-### Step 1: Initiate File Upload
+---
+
+### Step 1: Create Lab
+
+Register a Kamu-backed lab (data room) for an on-chain lab (OCL) that already exists on-chain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
+
+> **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
+
+**GraphQL Mutation:**
+
+```graphql
+mutation CreateLab($oclId: String!) {
+  createLab(input: { oclId: $oclId }) {
+    isSuccess
+    message
+    error {
+      message
+      code
+      retryable
+    }
+    lab {
+      oclId
+      shortname
+      labAccountAddress
+      labNftTokenId
+    }
+  }
+}
+```
+
+**Parameters:**
+
+The mutation takes a single `CreateLabInput` object:
+
+| Field | Type   | Required | Description                                                    |
+| ----- | ------ | -------- | -------------------------------------------------------------- |
+| oclId | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the on-chain lab |
+
+**Prerequisites:**
+
+1. **LabNFT Ownership**: You must own the LabNFT for the `oclId` or be an authorized signer for it
+   - For individual wallets: You must be the owner
+   - For multisig/Safe wallets: You must be one of the Safe owners
+   - For ERC-4337 accounts: You must be an authorized account owner
+
+2. **Authentication**: One of the following:
+   - **Service Token** (recommended for automation): Obtain from Molecule team via Discord
+   - **Privy Token** (for user-initiated requests): Use your authenticated Privy session
+
+3. **LabNFT Must Be Minted**: The on-chain lab (LabNFT / `oclId`) must already exist on-chain before registering the lab
+
+**Authentication Options:**
+
+**Option 1: Service Token (Recommended for Automation)**
+
+```bash
+x-api-key: YOUR_API_KEY
+X-Service-Token: YOUR_SERVICE_TOKEN
+```
+
+**Option 2: Privy Token (User-Initiated)**
+
+```bash
+x-api-key: YOUR_API_KEY
+Authorization: Bearer YOUR_PRIVY_TOKEN
+x-wallet-address: YOUR_WALLET_ADDRESS
+```
+
+**Example Request (Service Token):**
+
+```bash
+curl -X POST https://production.graphql.api.molecule.xyz/graphql \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
+  -d '{
+    "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { isSuccess message error { message code retryable } lab { oclId shortname labAccountAddress labNftTokenId } } }",
+    "variables": {
+      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042"
+    }
+  }'
+```
+
+**Success Response:**
+
+```json
+{
+  "data": {
+    "createLab": {
+      "isSuccess": true,
+      "message": "Lab created successfully",
+      "error": null,
+      "lab": {
+        "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
+        "shortname": "apob-lab",
+        "labAccountAddress": "0x1234567890123456789012345678901234567890",
+        "labNftTokenId": "42"
+      }
+    }
+  }
+}
+```
+
+**Error Responses:**
+
+**Not Authorized (No Token):**
+
+```json
+{
+  "errors": [
+    {
+      "message": "Admin authorization required. Please contact Molecule team for service token access.",
+      "extensions": { "code": "UNAUTHORIZED" }
+    }
+  ]
+}
+```
+
+**Not the LabNFT Owner:**
+
+```json
+{
+  "data": {
+    "createLab": {
+      "isSuccess": false,
+      "message": "User is not authorized for this lab",
+      "error": {
+        "message": "On-chain verification failed: wallet address is not owner or authorized signer",
+        "code": "OWNERSHIP_VERIFICATION_FAILED",
+        "retryable": false
+      },
+      "lab": null
+    }
+  }
+}
+```
+
+**Lab Already Exists:**
+
+```json
+{
+  "data": {
+    "createLab": {
+      "isSuccess": false,
+      "message": "Lab already exists for this oclId",
+      "error": {
+        "message": "A lab with this oclId already exists",
+        "code": "CONFLICT",
+        "retryable": false
+      },
+      "lab": null
+    }
+  }
+}
+```
+
+**How It Works:**
+
+1. **Authentication Check**: Validates service token or Privy token
+2. **On-Chain Verification**: Verifies you own or are an authorized signer for the LabNFT (`oclId`)
+3. **Lab Creation**: Registers the Kamu-backed lab and its data room for the `oclId`
+4. **Whitelist Update**: Automatically adds your wallet address to the lab whitelist
+5. **Returns Result**: Lab details if successful, error details if failed
+
+**Use Cases:**
+
+- **Automate Lab Creation**: Register labs programmatically after minting LabNFTs
+- **CI/CD Integration**: Automatically set up data rooms for new research labs
+- **Batch Operations**: Register multiple labs for a portfolio of on-chain labs
+- **User Self-Service**: Allow users to create their own lab data rooms
+
+**Getting Service Token Access:**
+
+To obtain a service token for automated lab creation:
+
+1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
+2. Contact the Molecule team
+3. Provide:
+   - Your wallet address
+   - Use case description
+   - Intended automation workflow
+4. You'll receive:
+   - API Key (for all APIs)
+   - Service Token (JWT for lab creation)
+   - Token expiration date
+
+---
+
+### Step 2: Initiate File Upload
 
 Initiates the upload process and returns a presigned URL for direct file upload.
 
@@ -168,11 +361,11 @@ mutation InitiateFileUpload(
 
 **Parameters:**
 
-| Parameter     | Type   | Required | Description                                                                         |
-| ------------- | ------ | -------- | ----------------------------------------------------------------------------------- |
-| oclId      | String | Yes      | Canonical 32-byte oclId of the lab (lowercase 0x-hex, e.g. `0x0101…0042`)            |
-| contentType   | String | Yes      | MIME type of the file (e.g., `application/pdf`, `image/png`)                        |
-| contentLength | Int    | Yes      | File size in bytes                                                                  |
+| Parameter     | Type   | Required | Description                                                               |
+| ------------- | ------ | -------- | ------------------------------------------------------------------------- |
+| oclId         | String | Yes      | Canonical 32-byte oclId of the lab (lowercase 0x-hex, e.g. `0x0101…0042`) |
+| contentType   | String | Yes      | MIME type of the file (e.g., `application/pdf`, `image/png`)              |
+| contentLength | Int    | Yes      | File size in bytes                                                        |
 
 **Example Request (curl):**
 
@@ -214,7 +407,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 }
 ```
 
-### Step 2: Upload File to Storage
+### Step 3: Upload File to Storage
 
 Upload the file directly to the presigned URL returned in Step 1.
 
@@ -245,7 +438,7 @@ if (!uploadResponse.ok) {
 }
 ```
 
-### Step 3: Finish File Upload
+### Step 4: Finish File Upload
 
 Completes the upload process and registers the file in the dataroom.
 
@@ -349,131 +542,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ---
 
-### Update File Metadata
-
-Update file metadata (description, tags, categories, access level) without creating a new version.
-
-**GraphQL Mutation:**
-
-```graphql
-mutation UpdateFileMetadata(
-  $oclId: String!
-  $ref: String!
-  $accessLevel: String!
-  $description: String
-  $tags: [String!]
-  $categories: [String!]
-  $contentText: String
-) {
-  updateFileMetadata(
-    oclId: $oclId
-    ref: $ref
-    accessLevel: $accessLevel
-    description: $description
-    tags: $tags
-    categories: $categories
-    contentText: $contentText
-  ) {
-    ref
-    isSuccess
-    message
-    error {
-      message
-      code
-      retryable
-    }
-  }
-}
-```
-
-**Parameters:**
-
-| Parameter   | Type     | Required | Description                                                     |
-| ----------- | -------- | -------- | --------------------------------------------------------------- |
-| oclId       | String   | Yes      | Canonical 32-byte oclId of the lab                              |
-| ref         | String   | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response   |
-| accessLevel | String   | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`                |
-| description | String   | No       | Updated file description                                        |
-| tags        | [String] | No       | Updated tags for categorization                                 |
-| categories  | [String] | No       | Updated categories for organization                             |
-| contentText | String   | No       | Updated searchable text content                                 |
-
-> **Note**: The `changeBy` field (wallet address) is automatically derived from your authentication and does not need to be provided as a parameter.
-
-**Example Request:**
-
-```bash
-curl -X POST https://production.graphql.api.molecule.xyz/graphql \
-  -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
-  -d '{
-    "query": "mutation UpdateFileMetadata($oclId: String!, $ref: String!, $accessLevel: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { updateFileMetadata(oclId: $oclId, ref: $ref, accessLevel: $accessLevel, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { ref isSuccess message error { message } } }",
-    "variables": {
-      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
-      "ref": "did:kamu:fed01...",
-      "accessLevel": "PUBLIC",
-      "description": "Updated research findings with peer review",
-      "tags": ["research", "peer-reviewed", "2024"],
-      "categories": ["data", "validated"],
-      "contentText": "Enhanced searchable content with key findings"
-    }
-  }'
-```
-
----
-
-### Delete File
-
-Remove a file from the dataroom permanently.
-
-**GraphQL Mutation:**
-
-```graphql
-mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) {
-  deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) {
-    oclId
-    filePath
-    isSuccess
-    error {
-      message
-      code
-      retryable
-    }
-  }
-}
-```
-
-**Parameters:**
-
-| Parameter | Type   | Required | Description                        |
-| --------- | ------ | -------- | ---------------------------------- |
-| oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
-| path      | String | Yes      | File path to delete                |
-| changeBy  | String | Yes      | Wallet address making the deletion |
-
-> **Warning**: This is a destructive operation. The file will be permanently deleted from the dataroom and cannot be recovered.
-
-**Example Request:**
-
-```bash
-curl -X POST https://production.graphql.api.molecule.xyz/graphql \
-  -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
-  -d '{
-    "query": "mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) { deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) { oclId filePath isSuccess error { message } } }",
-    "variables": {
-      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
-      "path": "old-data.pdf",
-      "changeBy": "0x1234567890123456789012345678901234567890"
-    }
-  }'
-```
-
----
-
-### Create Announcement
+### Step 5: Create Announcement
 
 Create project announcements to share updates with your community.
 
@@ -532,17 +601,32 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ---
 
-### Create Lab
+### Step 6: Update File Metadata
 
-Register a Kamu-backed lab (data room) for an on-chain lab (OCL) that already exists on-chain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
-
-> **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
+Update file metadata (description, tags, categories, access level) without creating a new version.
 
 **GraphQL Mutation:**
 
 ```graphql
-mutation CreateLab($oclId: String!) {
-  createLab(input: { oclId: $oclId }) {
+mutation UpdateFileMetadata(
+  $oclId: String!
+  $ref: String!
+  $accessLevel: String!
+  $description: String
+  $tags: [String!]
+  $categories: [String!]
+  $contentText: String
+) {
+  updateFileMetadata(
+    oclId: $oclId
+    ref: $ref
+    accessLevel: $accessLevel
+    description: $description
+    tags: $tags
+    categories: $categories
+    contentText: $contentText
+  ) {
+    ref
     isSuccess
     message
     error {
@@ -550,53 +634,25 @@ mutation CreateLab($oclId: String!) {
       code
       retryable
     }
-    lab {
-      oclId
-      shortname
-      labAccountAddress
-      labNftTokenId
-    }
   }
 }
 ```
 
 **Parameters:**
 
-The mutation takes a single `CreateLabInput` object:
+| Parameter   | Type     | Required | Description                                                   |
+| ----------- | -------- | -------- | ------------------------------------------------------------- |
+| oclId       | String   | Yes      | Canonical 32-byte oclId of the lab                            |
+| ref         | String   | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response |
+| accessLevel | String   | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`              |
+| description | String   | No       | Updated file description                                      |
+| tags        | [String] | No       | Updated tags for categorization                               |
+| categories  | [String] | No       | Updated categories for organization                           |
+| contentText | String   | No       | Updated searchable text content                               |
 
-| Field  | Type   | Required | Description                                                          |
-| ------ | ------ | -------- | -------------------------------------------------------------------- |
-| oclId  | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the on-chain lab       |
+> **Note**: The `changeBy` field (wallet address) is automatically derived from your authentication and does not need to be provided as a parameter.
 
-**Prerequisites:**
-
-1. **LabNFT Ownership**: You must own the LabNFT for the `oclId` or be an authorized signer for it
-   - For individual wallets: You must be the owner
-   - For multisig/Safe wallets: You must be one of the Safe owners
-   - For ERC-4337 accounts: You must be an authorized account owner
-
-2. **Authentication**: One of the following:
-   - **Service Token** (recommended for automation): Obtain from Molecule team via Discord
-   - **Privy Token** (for user-initiated requests): Use your authenticated Privy session
-
-3. **LabNFT Must Be Minted**: The on-chain lab (LabNFT / `oclId`) must already exist on-chain before registering the lab
-
-**Authentication Options:**
-
-**Option 1: Service Token (Recommended for Automation)**
-```bash
-x-api-key: YOUR_API_KEY
-X-Service-Token: YOUR_SERVICE_TOKEN
-```
-
-**Option 2: Privy Token (User-Initiated)**
-```bash
-x-api-key: YOUR_API_KEY
-Authorization: Bearer YOUR_PRIVY_TOKEN
-x-wallet-address: YOUR_WALLET_ADDRESS
-```
-
-**Example Request (Service Token):**
+**Example Request:**
 
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
@@ -604,110 +660,68 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'x-api-key: YOUR_API_KEY' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { isSuccess message error { message code retryable } lab { oclId shortname labAccountAddress labNftTokenId } } }",
+    "query": "mutation UpdateFileMetadata($oclId: String!, $ref: String!, $accessLevel: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { updateFileMetadata(oclId: $oclId, ref: $ref, accessLevel: $accessLevel, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { ref isSuccess message error { message } } }",
     "variables": {
-      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042"
+      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
+      "ref": "did:kamu:fed01...",
+      "accessLevel": "PUBLIC",
+      "description": "Updated research findings with peer review",
+      "tags": ["research", "peer-reviewed", "2024"],
+      "categories": ["data", "validated"],
+      "contentText": "Enhanced searchable content with key findings"
     }
   }'
 ```
 
-**Success Response:**
+---
 
-```json
-{
-  "data": {
-    "createLab": {
-      "isSuccess": true,
-      "message": "Lab created successfully",
-      "error": null,
-      "lab": {
-        "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
-        "shortname": "apob-lab",
-        "labAccountAddress": "0x1234567890123456789012345678901234567890",
-        "labNftTokenId": "42"
-      }
+### Step 7: Delete File
+
+Remove a file from the dataroom permanently.
+
+**GraphQL Mutation:**
+
+```graphql
+mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) {
+  deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) {
+    oclId
+    filePath
+    isSuccess
+    error {
+      message
+      code
+      retryable
     }
   }
 }
 ```
 
-**Error Responses:**
+**Parameters:**
 
-**Not Authorized (No Token):**
-```json
-{
-  "errors": [{
-    "message": "Admin authorization required. Please contact Molecule team for service token access.",
-    "extensions": { "code": "UNAUTHORIZED" }
-  }]
-}
-```
+| Parameter | Type   | Required | Description                        |
+| --------- | ------ | -------- | ---------------------------------- |
+| oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
+| path      | String | Yes      | File path to delete                |
+| changeBy  | String | Yes      | Wallet address making the deletion |
 
-**Not the LabNFT Owner:**
-```json
-{
-  "data": {
-    "createLab": {
-      "isSuccess": false,
-      "message": "User is not authorized for this lab",
-      "error": {
-        "message": "On-chain verification failed: wallet address is not owner or authorized signer",
-        "code": "OWNERSHIP_VERIFICATION_FAILED",
-        "retryable": false
-      },
-      "lab": null
+> **Warning**: This is a destructive operation. The file will be permanently deleted from the dataroom and cannot be recovered.
+
+**Example Request:**
+
+```bash
+curl -X POST https://production.graphql.api.molecule.xyz/graphql \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
+  -d '{
+    "query": "mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) { deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) { oclId filePath isSuccess error { message } } }",
+    "variables": {
+      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
+      "path": "old-data.pdf",
+      "changeBy": "0x1234567890123456789012345678901234567890"
     }
-  }
-}
+  }'
 ```
-
-**Lab Already Exists:**
-```json
-{
-  "data": {
-    "createLab": {
-      "isSuccess": false,
-      "message": "Lab already exists for this oclId",
-      "error": {
-        "message": "A lab with this oclId already exists",
-        "code": "CONFLICT",
-        "retryable": false
-      },
-      "lab": null
-    }
-  }
-}
-```
-
-**How It Works:**
-
-1. **Authentication Check**: Validates service token or Privy token
-2. **On-Chain Verification**: Verifies you own or are an authorized signer for the LabNFT (`oclId`)
-3. **Lab Creation**: Registers the Kamu-backed lab and its data room for the `oclId`
-4. **Whitelist Update**: Automatically adds your wallet address to the lab whitelist
-5. **Returns Result**: Lab details if successful, error details if failed
-
-**Use Cases:**
-
-- **Automate Lab Creation**: Register labs programmatically after minting LabNFTs
-- **CI/CD Integration**: Automatically set up data rooms for new research labs
-- **Batch Operations**: Register multiple labs for a portfolio of on-chain labs
-- **User Self-Service**: Allow users to create their own lab data rooms
-
-**Getting Service Token Access:**
-
-To obtain a service token for automated lab creation:
-
-1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
-2. Contact the Molecule team
-3. Provide:
-   - Your wallet address
-   - Use case description
-   - Intended automation workflow
-4. You'll receive:
-   - API Key (for all APIs)
-   - Service Token (JWT for lab creation)
-   - Token expiration date
 
 ---
 
@@ -758,22 +772,22 @@ query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
 
 **Parameters:**
 
-| Parameter     | Type          | Required | Description                                                                                                        |
-| ------------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
-| walletAddress | String        | No       | Filter to labs where this wallet holds any active role (owner/contributor/viewer). Omit to return all labs.        |
+| Parameter     | Type          | Required | Description                                                                                                                          |
+| ------------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| walletAddress | String        | No       | Filter to labs where this wallet holds any active role (owner/contributor/viewer). Omit to return all labs.                          |
 | role          | LabMemberRole | No       | Only meaningful with `walletAddress`: restrict to labs where the wallet holds this specific role (`OWNER`, `CONTRIBUTOR`, `VIEWER`). |
-| page          | Int           | No       | Page number (0-indexed, default: 0)                                                                                |
-| perPage       | Int           | No       | Results per page (default: 20, max: 100)                                                                           |
+| page          | Int           | No       | Page number (0-indexed, default: 0)                                                                                                  |
+| perPage       | Int           | No       | Results per page (default: 20, max: 100)                                                                                             |
 
 **CMS-enriched fields (optional):**
 
 These fields are sourced from the Molecule CMS and hydrated only when requested in the selection set. They are `null` when the project has no corresponding CMS entry.
 
-| Field        | Type    | Description                                                       |
-| ------------ | ------- | ----------------------------------------------------------------- |
-| trlValue     | String  | Technology Readiness Level (TRL) assessment for the project       |
-| trlRationale | String  | Explanation supporting the assigned TRL value                     |
-| isVerified   | Boolean | Whether the project has been verified by Molecule                 |
+| Field        | Type    | Description                                                 |
+| ------------ | ------- | ----------------------------------------------------------- |
+| trlValue     | String  | Technology Readiness Level (TRL) assessment for the project |
+| trlRationale | String  | Explanation supporting the assigned TRL value               |
+| isVerified   | Boolean | Whether the project has been verified by Molecule           |
 
 **Example Request:**
 
@@ -892,88 +906,93 @@ Get activity timeline for a specific project including file events and announcem
 **GraphQL Query:**
 
 ```graphql
-  query GetProjectActivity($id: String!, $page: Int!, $perPage: Int!, $filter: LabActivityFilter) {
-    labActivity(oclId: $id, page: $page, perPage: $perPage, filter: $filter) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        currentPage
-        totalPages
+query GetProjectActivity(
+  $id: String!
+  $page: Int!
+  $perPage: Int!
+  $filter: LabActivityFilter
+) {
+  labActivity(oclId: $id, page: $page, perPage: $perPage, filter: $filter) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      currentPage
+      totalPages
+    }
+    nodes {
+      __typename
+      ... on LabEventFileAdded {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
+        }
       }
-      nodes {
-        __typename
-        ... on LabEventFileAdded {
-          entry {
-            ref
-            path
-            tags
-            description
-            version
-            accessLevel
-            eventTime
-            systemTime
-            changeBy
-            categories
-            contentType
-            contentHash
-            contentText
-          }
+      ... on LabEventFileUpdated {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
         }
-        ... on LabEventFileUpdated {
-          entry {
-            ref
-            path
-            tags
-            description
-            version
-            accessLevel
-            eventTime
-            systemTime
-            changeBy
-            categories
-            contentType
-            contentHash
-            contentText
-          }
+      }
+      ... on LabEventFileRemoved {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
         }
-        ... on LabEventFileRemoved {
-          entry {
-            ref
-            path
-            tags
-            description
-            version
-            accessLevel
-            eventTime
-            systemTime
-            changeBy
-            categories
-            contentType
-            contentHash
-            contentText
-          }
-        }
-        ... on LabEventAnnouncement {
-          announcement {
+      }
+      ... on LabEventAnnouncement {
+        announcement {
+          id
+          headline
+          body
+          attachments {
             id
-            headline
-            body
-            attachments {
-              id
-              did
-              path
-              name
-              contentType
-              accessLevel
-            }
-            changeBy
-            systemTime
-            eventTime
+            did
+            path
+            name
+            contentType
+            accessLevel
           }
+          changeBy
+          systemTime
+          eventTime
         }
       }
     }
   }
+}
 ```
 
 > **⚠️ Breaking Change**: Announcement `attachments` changed from `[String!]!` (array of DIDs) to `[DataRoomFile!]!` (array of file objects). This enables querying file metadata directly without separate API calls.
@@ -1012,83 +1031,83 @@ Get all activity across all projects. This is a **public endpoint** - no authent
 
 ```graphql
 query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
-    activities(page: $page, perPage: $perPage, filter: $filter) {
-      isSuccess
-      activities {
-        __typename
-        ... on LabEventFileAdded {
-          entry {
-            ref
-            path
-            tags
-            description
-            version
-            accessLevel
-            eventTime
-            systemTime
-            changeBy
-            categories
-            contentType
-            contentHash
-            contentText
-          }
-        }
-        ... on LabEventFileUpdated {
-          entry {
-            ref
-            path
-            tags
-            description
-            version
-            accessLevel
-            eventTime
-            systemTime
-            changeBy
-            categories
-            contentType
-            contentHash
-            contentText
-          }
-        }
-        ... on LabEventFileRemoved {
-          entry {
-            ref
-            path
-            tags
-            description
-            version
-            accessLevel
-            eventTime
-            systemTime
-            changeBy
-            categories
-            contentType
-            contentHash
-            contentText
-          }
-        }
-        ... on LabEventAnnouncement {
-          announcement {
-            id
-            headline
-            body
-            attachments {
-              id
-              did
-              path
-              name
-              contentType
-              accessLevel
-            }
-            changeBy
-            systemTime
-            eventTime
-          }
+  activities(page: $page, perPage: $perPage, filter: $filter) {
+    isSuccess
+    activities {
+      __typename
+      ... on LabEventFileAdded {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
         }
       }
-      error
+      ... on LabEventFileUpdated {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
+        }
+      }
+      ... on LabEventFileRemoved {
+        entry {
+          ref
+          path
+          tags
+          description
+          version
+          accessLevel
+          eventTime
+          systemTime
+          changeBy
+          categories
+          contentType
+          contentHash
+          contentText
+        }
+      }
+      ... on LabEventAnnouncement {
+        announcement {
+          id
+          headline
+          body
+          attachments {
+            id
+            did
+            path
+            name
+            contentType
+            accessLevel
+          }
+          changeBy
+          systemTime
+          eventTime
+        }
+      }
     }
+    error
   }
+}
 ```
 
 ---
@@ -1474,7 +1493,10 @@ Alternatively, a service can obtain a token **self-service** by proving control 
 
 ```graphql
 query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
-  getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) {
+  getServiceSignInMessage(
+    walletAddress: $walletAddress
+    serviceName: $serviceName
+  ) {
     message
   }
 }
@@ -1492,7 +1514,12 @@ Public query — no authentication required.
 Sign the returned `message` with the service wallet, then submit the signature:
 
 ```graphql
-mutation GenerateServiceToken($serviceName: String!, $walletAddress: String!, $messageSignature: String!, $expiresIn: String) {
+mutation GenerateServiceToken(
+  $serviceName: String!
+  $walletAddress: String!
+  $messageSignature: String!
+  $expiresIn: String
+) {
   generateServiceToken(
     serviceName: $serviceName
     walletAddress: $walletAddress
@@ -1636,6 +1663,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 ```
 
 **Use Case:**
+
 - Connect the Molecule Telegram bot to receive notifications about file uploads, announcements, and other dataroom activity
 - The passphrase is a 3-word phrase separated by dashes
 
@@ -1666,14 +1694,14 @@ All API responses follow a consistent error format:
 
 ### Common Error Codes
 
-| Status Code | Error                 | Description                                                      |
-| ----------- | --------------------- | ---------------------------------------------------------------- |
-| 401         | Unauthorized          | Missing or invalid service token                                 |
-| 403         | Forbidden             | Service token does not have access to the specified lab          |
-| 400         | Bad Request           | Invalid parameters (e.g., missing oclId, invalid contentType)    |
-| 404         | Not Found             | Lab or dataroom not found                                        |
-| 413         | Payload Too Large     | File exceeds size limits                                         |
-| 500         | Internal Server Error | Server error - check if retryable and try again                  |
+| Status Code | Error                 | Description                                                   |
+| ----------- | --------------------- | ------------------------------------------------------------- |
+| 401         | Unauthorized          | Missing or invalid service token                              |
+| 403         | Forbidden             | Service token does not have access to the specified lab       |
+| 400         | Bad Request           | Invalid parameters (e.g., missing oclId, invalid contentType) |
+| 404         | Not Found             | Lab or dataroom not found                                     |
+| 413         | Payload Too Large     | File exceeds size limits                                      |
+| 500         | Internal Server Error | Server error - check if retryable and try again               |
 
 ### Troubleshooting
 
@@ -1890,14 +1918,14 @@ query ListLabMembers($oclId: String!) {
 
 **Member fields:**
 
-| Field         | Type            | Description                                                                                      |
-| ------------- | --------------- | ------------------------------------------------------------------------------------------------ |
-| walletAddress | String          | Lowercased wallet address of the member                                                          |
-| role          | LabMemberRole   | Effective role: `OWNER`, `CONTRIBUTOR`, or `VIEWER`                                              |
+| Field         | Type            | Description                                                                                                            |
+| ------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| walletAddress | String          | Lowercased wallet address of the member                                                                                |
+| role          | LabMemberRole   | Effective role: `OWNER`, `CONTRIBUTOR`, or `VIEWER`                                                                    |
 | source        | LabMemberSource | Row that defines the membership: `ONCHAIN_EVENT`, `MULTISIG_RESOLUTION`, `ACCESS_CONTRACT`, or `ACCESS_RESOLVER_EVENT` |
-| expiry        | String          | Unix-seconds expiry as a decimal string; `null` means the grant is permanent                     |
-| isAgent       | Boolean         | True if the member is an agent identity (surfaced for UI; not used for authorization)            |
-| grantedAt     | String          | ISO-8601 timestamp the row was first persisted                                                   |
+| expiry        | String          | Unix-seconds expiry as a decimal string; `null` means the grant is permanent                                           |
+| isAgent       | Boolean         | True if the member is an agent identity (surfaced for UI; not used for authorization)                                  |
+| grantedAt     | String          | ISO-8601 timestamp the row was first persisted                                                                         |
 
 ---
 
@@ -1937,7 +1965,10 @@ Partial update of the LabNFT display metadata (`name`, `description`, `image`, `
 > **Authorization**: Restricted to the OCL admin (LabNFT owner + multisig signers).
 
 ```graphql
-mutation UpdateLabNftMetadata($oclId: String!, $input: UpdateLabNftMetadataInput!) {
+mutation UpdateLabNftMetadata(
+  $oclId: String!
+  $input: UpdateLabNftMetadataInput!
+) {
   updateLabNftMetadata(oclId: $oclId, input: $input) {
     isSuccess
     oclId
@@ -1953,10 +1984,10 @@ mutation UpdateLabNftMetadata($oclId: String!, $input: UpdateLabNftMetadataInput
 
 **Parameters:**
 
-| Parameter | Type                     | Required | Description                        |
-| --------- | ------------------------ | -------- | ---------------------------------- |
-| oclId     | String                   | Yes      | Canonical 32-byte oclId of the lab |
-| input     | UpdateLabNftMetadataInput| Yes      | Patch object (all fields optional) |
+| Parameter | Type                      | Required | Description                        |
+| --------- | ------------------------- | -------- | ---------------------------------- |
+| oclId     | String                    | Yes      | Canonical 32-byte oclId of the lab |
+| input     | UpdateLabNftMetadataInput | Yes      | Patch object (all fields optional) |
 
 `UpdateLabNftMetadataInput` fields (all optional): `name`, `description`, `image`, `externalUrl`.
 
@@ -2035,14 +2066,14 @@ query LegalAgreementTemplate(
 
 **Parameters:**
 
-| Parameter     | Type              | Required | Description                                                                                   |
-| ------------- | ----------------- | -------- | --------------------------------------------------------------------------------------------- |
-| oclId         | String            | Yes      | Canonical 32-byte oclId of the lab                                                            |
-| type          | LegalAgreementType | Yes      | Agreement type (`ASSIGNMENT_AGREEMENT`)                                                        |
-| walletAddress | String            | Yes      | Intended signer. On the user-auth path this must equal the authenticated wallet               |
-| signerName    | String            | No       | Signer identity (natural person). Echoed VERBATIM into `signLegalAgreement`; covered by `contentHash` |
-| entity        | String            | No       | Signing entity, if the signer represents an organization                                      |
-| title         | String            | No       | Signer title                                                                                  |
+| Parameter     | Type               | Required | Description                                                                                           |
+| ------------- | ------------------ | -------- | ----------------------------------------------------------------------------------------------------- |
+| oclId         | String             | Yes      | Canonical 32-byte oclId of the lab                                                                    |
+| type          | LegalAgreementType | Yes      | Agreement type (`ASSIGNMENT_AGREEMENT`)                                                               |
+| walletAddress | String             | Yes      | Intended signer. On the user-auth path this must equal the authenticated wallet                       |
+| signerName    | String             | No       | Signer identity (natural person). Echoed VERBATIM into `signLegalAgreement`; covered by `contentHash` |
+| entity        | String             | No       | Signing entity, if the signer represents an organization                                              |
+| title         | String             | No       | Signer title                                                                                          |
 
 > `agreement` is for display only — the client must NOT re-serialize or re-hash it; sign over `contentHash` as given, and echo `issuedAt`, `signerName`, `entity`, and `title` back unchanged at sign time or the regenerated hash won't match.
 
@@ -2103,16 +2134,16 @@ mutation SignLegalAgreement($input: SignLegalAgreementInput!) {
 
 **`SignLegalAgreementInput` fields:**
 
-| Field         | Type              | Required | Description                                                                                    |
-| ------------- | ----------------- | -------- | ---------------------------------------------------------------------------------------------- |
-| oclId         | String            | Yes      | Canonical 32-byte oclId of the lab                                                             |
-| type          | LegalAgreementType| Yes      | Agreement type (`ASSIGNMENT_AGREEMENT`)                                                         |
-| walletAddress | String            | Yes      | Signer's wallet. Must equal the EIP-712 signer, the lab's current LabNFT owner, and (user path) the authenticated wallet |
-| signature     | String            | Yes      | EIP-712 signature (0x…) over the `LegalAgreementAcceptance` typed data                          |
-| issuedAt      | AWSTimestamp      | Yes      | Echoed VERBATIM from `legalAgreementTemplate` — used to regenerate the document                |
-| signerName    | String            | No       | Echoed VERBATIM from the template call (covered by `contentHash`)                              |
-| entity        | String            | No       | Echoed verbatim; see `signerName`                                                              |
-| title         | String            | No       | Echoed verbatim; see `signerName`                                                              |
+| Field         | Type               | Required | Description                                                                                                              |
+| ------------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| oclId         | String             | Yes      | Canonical 32-byte oclId of the lab                                                                                       |
+| type          | LegalAgreementType | Yes      | Agreement type (`ASSIGNMENT_AGREEMENT`)                                                                                  |
+| walletAddress | String             | Yes      | Signer's wallet. Must equal the EIP-712 signer, the lab's current LabNFT owner, and (user path) the authenticated wallet |
+| signature     | String             | Yes      | EIP-712 signature (0x…) over the `LegalAgreementAcceptance` typed data                                                   |
+| issuedAt      | AWSTimestamp       | Yes      | Echoed VERBATIM from `legalAgreementTemplate` — used to regenerate the document                                          |
+| signerName    | String             | No       | Echoed VERBATIM from the template call (covered by `contentHash`)                                                        |
+| entity        | String             | No       | Echoed verbatim; see `signerName`                                                                                        |
+| title         | String             | No       | Echoed verbatim; see `signerName`                                                                                        |
 
 ---
 
@@ -2164,8 +2195,18 @@ query GetDidLinkStatus($oclId: String!) {
 Return the on-chain event feed for an OCL or a wallet. Exactly one of `oclId` / `wallet` must be supplied. Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last row's `id` to fetch the next page.
 
 ```graphql
-query OnChainActivity($oclId: String, $wallet: String, $limit: Int, $cursor: String) {
-  onChainActivity(oclId: $oclId, wallet: $wallet, limit: $limit, cursor: $cursor) {
+query OnChainActivity(
+  $oclId: String
+  $wallet: String
+  $limit: Int
+  $cursor: String
+) {
+  onChainActivity(
+    oclId: $oclId
+    wallet: $wallet
+    limit: $limit
+    cursor: $cursor
+  ) {
     id
     chainId
     contractAddress
@@ -2182,11 +2223,11 @@ query OnChainActivity($oclId: String, $wallet: String, $limit: Int, $cursor: Str
 
 **Parameters:**
 
-| Parameter | Type   | Required | Description                                                       |
-| --------- | ------ | -------- | ----------------------------------------------------------------- |
-| oclId     | String | No\*     | Canonical 32-byte oclId of the lab                                |
-| wallet    | String | No\*     | Wallet address to filter events by                                |
-| limit     | Int    | No       | Max rows to return (default: 50)                                  |
+| Parameter | Type   | Required | Description                                                        |
+| --------- | ------ | -------- | ------------------------------------------------------------------ |
+| oclId     | String | No\*     | Canonical 32-byte oclId of the lab                                 |
+| wallet    | String | No\*     | Wallet address to filter events by                                 |
+| limit     | Int    | No       | Max rows to return (default: 50)                                   |
 | cursor    | String | No       | Pagination cursor `"<block_number>:<log_index>"` (last row's `id`) |
 
 \* Provide exactly one of `oclId` or `wallet`. `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt`, or `bio-agent`. `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
@@ -2215,11 +2256,11 @@ mutation GenerateDataEncryptionKey {
 }
 ```
 
-| Field            | Type    | Description                                                |
-| ---------------- | ------- | ---------------------------------------------------------- |
-| plaintextDEK     | String  | Base64-encoded plaintext DEK (only present on success)     |
-| encryptedDek     | String  | Base64-encoded KMS-encrypted DEK (only present on success) |
-| encryptionSystem | String  | Encryption system used (always `"kms"`)                    |
+| Field            | Type   | Description                                                |
+| ---------------- | ------ | ---------------------------------------------------------- |
+| plaintextDEK     | String | Base64-encoded plaintext DEK (only present on success)     |
+| encryptedDek     | String | Base64-encoded KMS-encrypted DEK (only present on success) |
+| encryptionSystem | String | Encryption system used (always `"kms"`)                    |
 
 ---
 
@@ -2229,14 +2270,14 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 
 ### Renamed queries
 
-| Legacy (removed)                                   | Current                      | Notes                                                        |
-| -------------------------------------------------- | ---------------------------- | ------------------------------------------------------------ |
-| `projects` / `projectsV2`                          | `labs`                       | Same paginated shape; adds an optional `role` filter         |
-| `projectWithDataRoomAndFiles` / `…V2`              | `labWithDataRoomAndFiles`    | Look up by `oclId` (or `shortname`) instead of `ipnftUid`    |
-| `dataRoomFileV2`                                   | `dataRoomFile`               | Identified by `oclId` + `path`                               |
-| `projectActivity` / `projectActivityV2`            | `labActivity`                | —                                                            |
-| `activitiesV2`                                     | `activities`                 | —                                                            |
-| `projectAnnouncementsV2` / `projectAnnouncementV2` | `labActivity` / `activities` | Removed — use the `filter: ANNOUNCEMENT` argument            |
+| Legacy (removed)                                   | Current                      | Notes                                                     |
+| -------------------------------------------------- | ---------------------------- | --------------------------------------------------------- |
+| `projects` / `projectsV2`                          | `labs`                       | Same paginated shape; adds an optional `role` filter      |
+| `projectWithDataRoomAndFiles` / `…V2`              | `labWithDataRoomAndFiles`    | Look up by `oclId` (or `shortname`) instead of `ipnftUid` |
+| `dataRoomFileV2`                                   | `dataRoomFile`               | Identified by `oclId` + `path`                            |
+| `projectActivity` / `projectActivityV2`            | `labActivity`                | —                                                         |
+| `activitiesV2`                                     | `activities`                 | —                                                         |
+| `projectAnnouncementsV2` / `projectAnnouncementV2` | `labActivity` / `activities` | Removed — use the `filter: ANNOUNCEMENT` argument         |
 
 ### Renamed mutations
 
@@ -2263,6 +2304,7 @@ Top-level identifiers on `Lab` / `LabRef` were renamed away from the legacy IP-N
 > The linked legacy IP-NFT (for labs migrated from one) is still available as the nested `ipnft` object and the `ipnftId` field on `Lab` / `LabRef`.
 
 ---
+
 ## Getting Support
 
 If you encounter any issues or have questions about the Programmatic File Upload API:
