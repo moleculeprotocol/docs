@@ -35,13 +35,14 @@ POST /x402/labs/{mutation}
 
 | Path                                         | Wraps mutation                 | Purpose                                                  |
 | -------------------------------------------- | ------------------------------ | -------------------------------------------------------- |
-| `/x402/labs/initiateCreateOrUpdateFileV2`    | `initiateCreateOrUpdateFileV2` | Start a file upload; returns a presigned URL (+ DEK if encryption requested) |
-| `/x402/labs/finishCreateOrUpdateFileV2`      | `finishCreateOrUpdateFileV2`   | Finalise a file upload with metadata                     |
-| `/x402/labs/createAnnouncementV2`            | `createAnnouncementV2`         | Publish a project announcement                           |
-| `/x402/labs/createProject`                   | `createProject`                | Create a project / data room bound to an IP-NFT          |
-| `/x402/labs/addProjectOwner`                 | `addProjectOwner`              | Add a wallet as an owner of a project                    |
+| `/x402/labs/initiateCreateOrUpdateFile`      | `initiateCreateOrUpdateFile`   | Start a file upload; returns a presigned URL (+ DEK if encryption requested) |
+| `/x402/labs/finishCreateOrUpdateFile`        | `finishCreateOrUpdateFile`     | Finalise a file upload with metadata                     |
+| `/x402/labs/createAnnouncement`              | `createAnnouncement`           | Publish a lab announcement                               |
+| `/x402/labs/createLab`                       | `createLab`                    | Create a lab (data room) for an on-chain lab (OCL)       |
+| `/x402/labs/generateDataEncryptionKey`       | `generateDataEncryptionKey`    | Generate a data encryption key (DEK) for encrypted uploads |
+| `/x402/labs/decryptDataKey`                  | `decryptDataKey`               | Decrypt a file's data key for an authorized caller       |
 
-The path mutation must match the top-level GraphQL mutation field in the request body, otherwise the gateway returns `400`.
+The path mutation must match the top-level GraphQL mutation field in the request body, otherwise the gateway returns `400`. The allow-list above is the single source of truth in `lambda/x402-gateway-lambda/mutations.ts` (`X402_WRITE_MUTATIONS`).
 
 ---
 
@@ -101,14 +102,14 @@ If none resolves to a valid address the gateway returns `400`. Source: `lambda/x
 ## Request Format
 
 ```http
-POST /x402/labs/createAnnouncementV2 HTTP/1.1
+POST /x402/labs/createAnnouncement HTTP/1.1
 content-type: application/json
 payment-signature: <base64 x402 payment payload>
 
 {
-  "query": "mutation CreateAnnouncement($ipnftUid: String!, $headline: String!, $body: String!) { createAnnouncementV2(ipnftUid: $ipnftUid, headline: $headline, body: $body) { isSuccess message error { message } } }",
+  "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body) { isSuccess message error { message } } }",
   "variables": {
-    "ipnftUid": "0xcaD8...Fc1_42",
+    "oclId": "0x0101...abcd",
     "headline": "Milestone 1 complete",
     "body": "..."
   },
@@ -130,8 +131,8 @@ Constraints enforced by the gateway (`validateMutationQuery`):
 Pricing is environment-driven and resolved per-mutation. The gateway evaluates the following env vars in order and uses the first non-empty value:
 
 ```
-X402_PRICE_<SNAKE_CASE_MUTATION>     e.g. X402_PRICE_CREATE_ANNOUNCEMENT_V2
-X402_PRICE_<UPPER_MUTATION>          e.g. X402_PRICE_CREATEANNOUNCEMENTV2
+X402_PRICE_<SNAKE_CASE_MUTATION>     e.g. X402_PRICE_CREATE_ANNOUNCEMENT
+X402_PRICE_<UPPER_MUTATION>          e.g. X402_PRICE_CREATEANNOUNCEMENT
 X402_PRICE_DEFAULT                   fallback, default "1.00"
 ```
 

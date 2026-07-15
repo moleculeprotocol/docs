@@ -347,6 +347,63 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ***
 
+## OCL Membership Agreement
+
+Generate the membership agreement for an on-chain lab (OCL). This is the OCL-side counterpart to `generateIptMembershipAgreement`, used when onboarding members to a lab. Unlike the IPFS-backed agreements above, it returns an `agreementKey` (an S3 object key) rather than an IPFS CID.
+
+### generateOclMembershipAgreement
+
+**Input:**
+
+* `agreementData` (AWSJSON): Stringified object with the fields below.
+
+**Required Fields in agreementData:**
+
+```json
+{
+  "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
+  "symbol": "LAB-SYMBOL",
+  "title": "Lab Membership Agreement"
+}
+```
+
+| Field  | Type   | Required | Description                                          |
+| ------ | ------ | -------- | ---------------------------------------------------- |
+| oclId  | String | Yes      | Canonical 32-byte oclId of the lab (0x + 64 hex)     |
+| symbol | String | Yes      | Lab symbol                                           |
+| title  | String | No       | Optional agreement title                             |
+
+**Response:**
+
+```json
+{
+  "agreementKey": "0x0101...0042/agreements/3f2a....json",
+  "agreementUrl": "https://...",
+  "agreementContentHash": "0xabcdef...",
+  "agreementType": "OCL_MEMBERSHIP",
+  "generatedAt": "2026-07-15T10:30:00.000Z",
+  "isSuccess": true
+}
+```
+
+**Example Request:**
+
+```bash
+curl -X POST https://production.graphql.api.molecule.xyz/graphql \
+  -H 'Content-Type: application/json' \
+  -H 'x-api-key: YOUR_API_KEY' \
+  -d '{
+    "query": "mutation GenerateOclMembershipAgreement($agreementData: AWSJSON!) { generateOclMembershipAgreement(agreementData: $agreementData) { agreementKey agreementUrl agreementContentHash agreementType generatedAt isSuccess error { message } } }",
+    "variables": {
+      "agreementData": "{\"oclId\":\"0x0101000000000000000000000000000000000000000000000000000000000042\",\"symbol\":\"LAB-SYM\",\"title\":\"Lab Membership Agreement\"}"
+    }
+  }'
+```
+
+> The returned `agreementKey` and `agreementContentHash` are consumed by the `getOclTermsMessage(agreementKey, contentHash, labId, chainId)` query to produce the message the member signs.
+
+***
+
 ## Blockchain Integration
 
 ### Smart Contract Addresses
