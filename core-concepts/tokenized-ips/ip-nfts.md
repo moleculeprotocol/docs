@@ -117,62 +117,64 @@ The minter signs the Assignment Agreement (legally binding) and an onchain signa
 **Step 4: Mint**
 
 ```
-mintReservation(to, reservationId, tokenURI, symbol)
+mintReservation(to, reservationId, tokenURI, symbol, authorization)
 ```
 
-Mints the IP-NFT to the specified address with attached metadata. In the V3 flow, the `to` address is typically the Lab's Token Bound Account, placing the newly minted IP-NFT directly inside the Lab.
+Mints the IP-NFT to the specified address with attached metadata, presenting the backend-issued `authorization` signature and paying the 0.001 ETH symbolic minting fee. In the V3 flow, the `to` address is typically the Lab's Token Bound Account, placing the newly minted IP-NFT directly inside the Lab.
 
 ### What You Can Do with an IP-NFT
 
 Once minted inside a Lab, IP-NFTs become the anchor for a range of protocol interactions:
 
-<table><thead><tr><th width="231.1328125">Action</th><th>Description</th></tr></thead><tbody><tr><td><strong>Tokenized</strong></td><td>Create IPTs (governance tokens) via the Tokenizer contract, enabling fractional ownership and fundraising</td></tr><tr><td><strong>Funded</strong></td><td>Launch fundraising campaigns to raise capital into the Lab's treasury</td></tr><tr><td><strong>Licensed</strong></td><td>Grant temporary usage rights via ERC-4907 rentable NFT mechanism — a licensee pays a fee in stablecoins for time-bound access to the IP</td></tr><tr><td><strong>Data-gated</strong></td><td>Gate access to the Lab's data room based on IP-NFT read permissions, enabling token-holders to access premium research data</td></tr><tr><td><strong>Governed</strong></td><td>IPT holders vote on decisions affecting the IP: milestone approvals, licensing terms, treasury allocation, clawback proceedings</td></tr><tr><td><strong>Transferred</strong></td><td>Transfer the IP-NFT directly, or transfer the entire Lab (including all IP-NFTs) by selling the LabNFT</td></tr><tr><td><strong>Revenue-generating</strong></td><td>Licensing fees, dataset access payments, and milestone payouts flow into the Lab's treasury, distributable to IPT holders</td></tr></tbody></table>
+<table><thead><tr><th width="231.1328125">Action</th><th>Description</th></tr></thead><tbody><tr><td><strong>Tokenized</strong></td><td>Create IPTs (governance tokens) via the Tokenizer contract, enabling fractional ownership and fundraising</td></tr><tr><td><strong>Funded</strong></td><td>Launch fundraising campaigns to raise capital into the Lab's treasury</td></tr><tr><td><strong>Licensed</strong></td><td>Grant temporary usage rights — time-bound data access via <code>grantReadAccess</code> today; ERC-4907 rentable-NFT licensing is roadmap</td></tr><tr><td><strong>Data-gated</strong></td><td>Gate access to the Lab's data room based on IP-NFT read permissions, enabling token-holders to access premium research data</td></tr><tr><td><strong>Governed</strong></td><td>IPT holders vote on decisions affecting the IP: milestone approvals, licensing terms, treasury allocation, clawback proceedings</td></tr><tr><td><strong>Transferred</strong></td><td>Transfer the IP-NFT directly, or transfer the entire Lab (including all IP-NFTs) by selling the LabNFT</td></tr><tr><td><strong>Revenue-generating</strong></td><td>Licensing fees, dataset access payments, and milestone payouts flow into the Lab's treasury, distributable to IPT holders</td></tr></tbody></table>
 
-#### IP Licensing via ERC-4907
+#### IP Licensing via ERC-4907 _(roadmap)_
 
-The V3 architecture supports onchain IP licensing through the ERC-4907 rentable NFT standard. A pharmaceutical company or research institution can license an IP-NFT for a defined period by executing a single transaction. The licensor (Lab) sets the rental terms — duration, fee amount, and payment token. The licensee pays the fee, which is automatically routed to the Lab's treasury. For the duration of the rental period, the licensee has a verifiable onchain record of their license grant, while the Lab retains ownership of the IP-NFT.
-
-Royalties from licensing revenue can be distributed to the original scientist, the institution, and other stakeholders via ERC-2981 royalty standard. Complex licensing arrangements that require custom legal terms may still involve off-chain agreements, but the standard licensing transaction is fully executable onchain.
+The V3 architecture is designed to support onchain IP licensing through the ERC-4907 rentable NFT standard: a pharmaceutical company or research institution would license an IP-NFT for a defined period in a single transaction, with the fee routed to the Lab's treasury and a verifiable onchain record of the grant while the Lab retains ownership. Similarly, licensing royalties are planned to be distributable via the ERC-2981 royalty standard. **Neither standard is implemented in the current IPNFT contract** — today, licensing runs through off-chain agreements (with `grantReadAccess` providing onchain, time-bound data access), and these mechanics are roadmap items.
 
 ### Technical Reference
 
 #### Data Model
 
-solidity
+The contract stores no monolithic struct — an IP-NFT is standard ERC-721 state plus three mappings:
 
 ```solidity
-struct IPNFT {
-    uint256 tokenId;
-    address owner;
-    string tokenURI;   // IPFS metadata URI
-    string symbol;     // Custom identifier
-}
+mapping(uint256 => address) reservations;     // reservationId → reserver
+mapping(uint256 => string)  public symbol;    // tokenId → custom identifier
+mapping(uint256 => mapping(address => uint256)) readAllowances; // tokenId → reader → expiry
 ```
+
+Token ownership and the IPFS metadata URI come from the inherited ERC-721 / URIStorage layers.
 
 Metadata (IPFS):
 
-json
-
-````json
+```json
 {
   "name": "Project Name",
   "description": "Research description",
   "image": "ipfs://...",
-  "agreements": [
-    {
-      "type": "Sponsored Research Agreement",
-      "url": "ipfs://...",
-      "content_hash": "...",
-      "encryption": { ... }
-    },
-    {
-      "type": "Assignment Agreement",
-      "url": "ipfs://...",
-      "content_hash": "..."
-    }
-  ]
+  "properties": {
+    "type": "IP-NFT",
+    "agreements": [
+      {
+        "type": "Sponsored Research Agreement",
+        "url": "ipfs://...",
+        "mime_type": "application/pdf",
+        "content_hash": "...",
+        "encryption": { ... }
+      },
+      {
+        "type": "Assignment Agreement",
+        "url": "ipfs://...",
+        "mime_type": "application/pdf",
+        "content_hash": "..."
+      }
+    ]
+  }
 }
 ```
+
+Note that `agreements` (and related project fields) live under the top-level `properties` object — this is the shape the backend validates and the indexer reads.
 
 #### Agreement Schema
 
@@ -180,6 +182,7 @@ json
 |---|---|---|
 | type | string | Agreement type (SRA, JDA, SAFIP, SAFE, Patent License, Assignment) |
 | url | string | IPFS or Arweave storage location |
+| mime_type | string | MIME type of the agreement document (required) |
 | content_hash | string | CID for integrity verification |
 | encryption | object | Optional encryption metadata (Onchain-Verified Envelope Encryption for new agreements, Lit Protocol for legacy) |
 | amends | string | CID of previous agreement if this is an amendment |
@@ -191,7 +194,7 @@ IP-NFT holders can grant time-limited read access to specific addresses:
 grantReadAccess(address reader, uint256 tokenId, uint256 until)
 ````
 
-Access is verified via the `canRead` mapping. This is the mechanism that integrates with the data layer: when a user requests access to an encrypted file in a Lab's data room, the backend (or, for legacy Lit-encrypted files, the Lit node network) evaluates the IP-NFT's `canRead` function alongside any other stored access-control conditions to determine whether the requester has permission to decrypt. Access levels (Public, Token-Holder, Admin-Only) are enforced at the file level through this onchain verification. For details on how encryption and access gating work, see the **Data Privacy & Access** page.
+Access is verified via the `canRead()` view function (backed by the `readAllowances` mapping). This is the mechanism that integrates with the data layer: when a user requests access to an encrypted file in a Lab's data room, the backend (or, for legacy Lit-encrypted files, the Lit node network) evaluates the IP-NFT's `canRead` function alongside any other stored access-control conditions to determine whether the requester has permission to decrypt. Access levels (Public, Token-Holder, Admin-Only) are enforced at the file level through this onchain verification. For details on how encryption and access gating work, see the **Data Privacy & Access** page.
 
 #### Agreement Amendments
 

@@ -40,7 +40,7 @@ The IP-NFT holder controls the IPT supply and can issue additional tokens to rai
 
 IP-NFTs are not just static ownership records. They are programmable assets that can generate ongoing revenue for their parent Lab.
 
-The V3 architecture supports IP licensing through rentable NFTs using the ERC-4907 standard. A pharmaceutical company or research institution can rent an IP-NFT for a defined period — gaining the legal right to use the IP for internal R\&D — by executing a single onchain transaction. Rental fees are paid in stablecoins and automatically routed to the Lab's treasury. Royalties are distributed to the original scientist, the institution, and other stakeholders via ERC-2981.
+The V3 architecture is designed to support IP licensing through rentable NFTs using the ERC-4907 standard: a pharmaceutical company or research institution would rent an IP-NFT for a defined period — gaining the legal right to use the IP for internal R\&D — in a single onchain transaction, with rental fees paid in stablecoins routed to the Lab's treasury and royalties distributed via ERC-2981. These rentable-NFT and royalty mechanics are **roadmap items** — the current IPNFT contract implements neither standard yet, and licensing today runs through off-chain agreements.
 
 Beyond licensing, Labs generate revenue through dataset access fees (paid by collaborators who access gated research data), milestone payouts (from funding organisations when research targets are met), and eventual IP sales or acquisition events. In all cases, revenue flows into the Lab's treasury and can be distributed to IPT holders according to the Lab's configured fee routing.
 

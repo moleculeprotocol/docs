@@ -41,7 +41,7 @@ Keeping it whole means you retain full ownership. You can license it directly to
 
 Tokenizing means you create IP Tokens (IPTs) — fungible tokens that represent fractional ownership and governance rights over the underlying IP. This is the path to community funding. IPT holders get economic exposure to your research, access to token-gated data, and a voice in governance decisions. You decide how many tokens to create and how they're distributed.
 
-If you tokenize, you can run a crowdsale. Molecule supports several sale types, each with different trade-offs between simplicity, investor commitment, and alignment incentives. The sale types are shown in the flowchart above. Funds raised go directly into your Lab's treasury — fully transparent, fully under your control. For the detailed mechanics of IP-NFTs, IPTs, and crowdsale options, see the Tokenized IPs section.
+If you tokenize, you can run a crowdsale. Molecule supports several sale types, each with different trade-offs between simplicity, investor commitment, and alignment incentives. Funds raised go directly into your Lab's treasury — fully transparent, fully under your control. For the detailed mechanics of IP-NFTs, IPTs, and crowdsale options, see the Tokenized IPs section.
 
 ### Step 4: Use AI Agents to Accelerate Your Research
 
