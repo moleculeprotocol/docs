@@ -27,23 +27,24 @@ Files marked as Public skip encryption entirely. The researcher explicitly choos
 ### Upload Flow
 
 ```
-1. Client → AppSync: initiateCreateOrUpdateFileV2(ipnftUid, contentType,
-                                                  contentLength, encryption: true)
+1. Client → AppSync: generateDataEncryptionKey(oclId)
 2. Backend: authenticate caller (Privy JWT or service token + role check)
 3. Backend: issue a fresh per-file DEK →
-            returns { plaintextDEK (one-shot), wrappedDEK, encryptionSystem }
+            returns { plaintextDEK (one-shot), encryptedDek, encryptionSystem }
 4. Backend: zero its copy of the plaintextDEK after the response is built
 5. Client: AES-256-GCM encrypt(file, plaintextDEK) via SubtleCrypto
-6. Client: PUT ciphertext to presigned S3 URL
-7. Client: build accessControlConditions (EvmContractCondition array)
-8. Client → AppSync: finishCreateOrUpdateFileV2(ipnftUid, uploadToken,
-                     encryptionMetadata: { encryptionSystem, wrappedDEK,
+6. Client → AppSync: initiateCreateOrUpdateFile(oclId, contentType, contentLength)
+                     → returns presigned upload URL + uploadToken
+7. Client: PUT ciphertext to presigned S3 URL
+8. Client: build accessControlConditions (EvmContractCondition array)
+9. Client → AppSync: finishCreateOrUpdateFile(oclId, uploadToken,
+                     encryptionMetadata: { encryptionSystem, encryptedDek,
                                            iv, contentHash, accessControlConditions,
                                            encryptedBy, encryptedAt })
-9. Client: wipe plaintextDEK from memory
+10. Client: wipe plaintextDEK from memory
 ```
 
-The client only opts **in** to encryption (`encryption: true`). The backend decides which encryption system to use and returns it in `encryptionSystem` — clients must echo this value verbatim, never hardcode it. This keeps the roadmap upgrade to BLS threshold key custody transparent to existing integrations.
+The client opts in to encryption by requesting a DEK via `generateDataEncryptionKey`; unencrypted uploads simply skip that step. The backend decides which encryption system to use and returns it in `encryptionSystem` — clients must echo this value verbatim, never hardcode it. This keeps the roadmap upgrade to BLS threshold key custody transparent to existing integrations.
 
 ### Access Conditions
 
@@ -181,10 +182,10 @@ At decrypt time the backend walks the array left-to-right: each `EvmContractCond
 Decryption is **condition-authoritative**: the backend reads the stored conditions from their immutable source, verifies them against live chain state, and only then releases the plaintext DEK. A compromised client cannot substitute weaker conditions.
 
 ```
-1. Client → AppSync: decryptDataKey(ipnftUid, filePath | tokenUri + agreementUrl)
+1. Client → AppSync: decryptDataKey(oclId, filePath | tokenUri + agreementUrl)
 2. Backend: authenticate caller (Privy JWT or service token)
 3. Backend: fetch stored encryptionMetadata
-            • filePath → Kamu (ODF): file's accessControlConditions + wrappedDEK
+            • filePath → Kamu (ODF): file's accessControlConditions + encryptedDek
             • tokenUri → IPFS: IPNFT JSON → matching agreement's encryption block
 4. Backend: evaluate accessControlConditions against live chain state (EVM RPC)
 5. Backend: unwrap the DEK via the protocol key custodian → plaintextDEK
@@ -199,7 +200,7 @@ The GraphQL interface:
 ```graphql
 mutation {
   decryptDataKey(
-    ipnftUid: "0xcaD8...Fc1_42"
+    oclId: "0x0101000000000000000000000000000000000000000000000000000000000042"
     filePath: "raw/experiment-01.csv"   # OR tokenUri + agreementUrl for IPFS agreements
   ) {
     isSuccess
@@ -219,8 +220,8 @@ AI agents encrypt and decrypt lab files through the same GraphQL interface, usin
 
 * **Auth** — The agent authenticates with an `X-Service-Token` JWT. For short-lived access, the [x402 Gateway](../../api-reference/x402-gateway.md) mints a per-request token scoped to one mutation after verifying a USDC payment. For long-lived agents, the Molecule team provisions a service token tied to a wallet and an `allowedMutations` list.
 * **Role grant** — The Lab owner grants the agent's wallet a Contributor (or Viewer) role via `AccessResolver.grantRole` with `isAgent = true` and a bounded `expiry`. The `isAgent` flag is surfaced in the team-members UI so agent session keys are clearly distinguished from human collaborators.
-* **Encrypt** — The agent calls `initiateCreateOrUpdateFileV2(encryption: true)`, receives a plaintext DEK, encrypts the file locally (Node.js `crypto` / Web Crypto), uploads the ciphertext, then calls `finishCreateOrUpdateFileV2` with the encryption metadata.
-* **Decrypt** — The agent calls `decryptDataKey(ipnftUid, filePath)`. The backend evaluates the stored conditions against live chain state; a valid Viewer/Contributor grant satisfies the `hasRole` predicate. The backend returns the plaintext DEK over TLS; the agent decrypts locally.
+* **Encrypt** — The agent calls `generateDataEncryptionKey(oclId)`, receives a plaintext DEK, encrypts the file locally (Node.js `crypto` / Web Crypto), uploads the ciphertext via `initiateCreateOrUpdateFile` → PUT, then calls `finishCreateOrUpdateFile` with the encryption metadata.
+* **Decrypt** — The agent calls `decryptDataKey(oclId, filePath)`. The backend evaluates the stored conditions against live chain state; a valid Viewer/Contributor grant satisfies the `hasRole` predicate. The backend returns the plaintext DEK over TLS; the agent decrypts locally.
 * **Expiry** — When the role grant expires (`block.timestamp >= expiry`), `hasRole` returns `false` and `decryptDataKey` starts failing with a conditions-not-met error. The agent must request a fresh grant — typically from an owner-controlled orchestrator — before it can continue.
 
 See the [Developers / AI Agents guide](../../user-guides/developers-ai-agents.md) for end-to-end agent integration patterns and the [MCP Tools reference](../../references/mcp-tools.md) for the read-side agent toolset.

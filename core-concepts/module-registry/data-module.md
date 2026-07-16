@@ -25,7 +25,7 @@ This onchain anchoring also unlocks composability that would be impossible with 
 
 The Data Module is a **fallback module** (ERC-7579 module type 3). It is installed on the Lab's TBA through the `SelectorManager`, which maps specific function selectors to the module contract. When the Lab receives a call targeting one of these data-related selectors — for example, recording a new file reference or querying existing references — the TBA's `fallback()` function routes the call to the Data Module for execution.
 
-This follows the same pattern as all fallback modules in the Molecule architecture: the selector is looked up in the `SelectorConfig` mapping, the module is verified against the ERC-7484 Module Registry, and the call is dispatched using either `CALLTYPE_SINGLE` (ERC-2771 forwarded call) or `CALLTYPE_DELEGATECALL` depending on the module's configuration. See Fallback Modules for the full dispatch mechanism.
+This follows the same pattern as all fallback modules in the Molecule architecture: the selector is looked up in the `SelectorConfig` mapping, the module is verified against the ERC-7484 Module Registry, and the call is dispatched as a `CALLTYPE_SINGLE` (ERC-2771 forwarded) external call — `delegatecall` dispatch is disallowed. See Fallback Modules for the full dispatch mechanism.
 
 ### What the Data Module Does
 
@@ -44,6 +44,6 @@ This separation provides several advantages. The data referencing logic can be u
 
 ### Current Status
 
-The Data Module is in active design. The modular account infrastructure that supports it — the `SelectorManager`, the fallback dispatch mechanism, the ERC-7484 registry, and the `installModule` flow — is implemented and deployed on Sepolia. The data module contract itself, which will define the specific selectors for recording and querying data references, is planned as a future deployment.
+The Data Module is in active design. The modular account infrastructure that supports it — the `SelectorManager`, the fallback dispatch mechanism, the ERC-7484 registry, and the `installModule` flow — is implemented and deployed on Base mainnet and Base Sepolia. The data module contract itself, which will define the specific selectors for recording and querying data references, is planned as a future deployment.
 
 The off-chain data infrastructure is operational. File uploads, encryption, versioning through Kamu, and access control through the AccessResolver are all functional in the current system. The Data Module will formalise the onchain anchoring step that currently occurs through the Labs API, bringing it fully under the TBA's modular account architecture.

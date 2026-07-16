@@ -22,7 +22,7 @@ The sequence works as follows:
 
 1. **Trigger** — An external event triggers the executor module. This could be a keeper network detecting a condition, a protocol callback after a DeFi operation, a scheduled automation, or a direct call from an authorised party.
 2. **Registry check** — The executor calls `executeFromExecutor` on the Lab's TBA, passing an encoded execution mode and calldata. The Lab verifies the caller (`msg.sender`) against the ERC-7484 Module Registry to confirm it is attested as `MODULE_TYPE_EXECUTOR`.
-3. **Installation check** — The Lab looks up the executor's configuration in the `ExecutorManager` storage. If no configuration exists (the hook field equals `HOOK_MODULE_NOT_INSTALLED`), the call reverts with `InvalidExecutor()`. This ensures only installed executors can trigger actions.
+3. **Installation check** — The Lab looks up the executor's configuration in the `ExecutorManager` storage. If the executor is not installed (`installed == false`), the call reverts with `InvalidExecutor()`. The Lab additionally verifies that its current owner matches the owner recorded at installation time — if the LabNFT has changed hands since the executor was installed, the call reverts with `ExecutorOwnerMismatch()`, so a new owner must explicitly re-approve inherited executors.
 4. **Execution** — The Lab delegates to `ExecLib.execute`, which decodes the execution mode and performs the transaction from the Lab's account. The Lab is the `msg.sender` for the resulting call, meaning the target contract sees the action as coming directly from the Lab.
 
 ```solidity
@@ -40,9 +40,9 @@ Executor modules are installed through the `installModule` function, callable on
 
 * **Module type** — `MODULE_TYPE_EXECUTOR` (type ID `2`)
 * **Module address** — The executor contract address
-* **Initialization data** — At least 20 bytes encoding the hook address, followed by ABI-encoded executor-specific initialization data and hook data
+* **Initialization data** — an ABI-encoded `InstallExecutorData` struct: `{ bytes executorData }`, passed through to the executor's `onInstall`
 
-During installation, the system performs a registry check via ERC-7484 to verify the module is attested for the executor type. The `ExecutorManager` stores the hook configuration and calls `onInstall` on the executor contract with the provided initialization data, allowing the executor to set up any internal state it needs. If no hook is explicitly provided (hook address is zero), the system defaults to `HOOK_MODULE_INSTALLED` (`address(1)`), indicating the executor is active without a pre-execution hook.
+During installation, the system performs a registry check via ERC-7484 to verify the module is attested for the executor type. The `ExecutorManager` marks the executor as installed, records the current Lab owner, and calls `onInstall` on the executor contract with the provided initialization data, allowing the executor to set up any internal state it needs.
 
 A `ModuleInstalled` event is emitted on successful installation.
 
@@ -50,15 +50,14 @@ A `ModuleInstalled` event is emitted on successful installation.
 
 Unlike fallback modules (which map individual function selectors to module addresses), executor modules are registered by their contract address. The `ExecutorManager` maintains a mapping from executor addresses to their configuration:
 
-solidity
-
 ```solidity
 struct ExecutorConfig {
-    IHook hook;
+    bool installed;         // whether the executor is active
+    address ownerAtInstall; // the Lab owner who approved the installation
 }
 ```
 
-The configuration is intentionally minimal. The hook field serves double duty: it indicates whether the executor is installed (any value other than `address(0)`) and, when hook support is fully implemented, will point to a hook contract that runs pre-execution checks before the executor's action is carried out.
+The configuration is intentionally minimal: an installed flag, plus a snapshot of the owner who approved the executor. The snapshot powers the owner-change guard — executors installed by a previous owner stop working the moment the LabNFT transfers.
 
 ### Executors vs Other Module Types
 
@@ -88,15 +87,15 @@ The ERC-7484 Module Registry ensures only attested executor contracts can be ins
 
 Installation requires a validated UserOperation through the EntryPoint, meaning the Lab owner must explicitly approve every executor. No executor can self-install.
 
-The hook system (when fully implemented) will provide per-executor pre-execution checks — spending limits, target address restrictions, or time-based constraints that bound what an executor can do even after installation.
+Hooks — per-executor pre-execution checks such as spending limits or target restrictions — are defined by ERC-7579 but exist only as an unused interface in the current contracts; today the executor's own logic and the owner-change guard are the bounding mechanisms.
 
-Module uninstallation is planned but not yet implemented. Once available, Lab owners will be able to revoke an executor's access by removing it from the `ExecutorManager`.
+Lab owners can revoke an executor's access at any time via `uninstallModule`, which clears its `ExecutorManager` registration and calls the executor's `onUninstall` handler.
 
 ### Contract Reference
 
 | Contract                 | Role                                                                        | Source                         |
 | ------------------------ | --------------------------------------------------------------------------- | ------------------------------ |
 | `ExecutorManager.sol`    | Manages executor installation and configuration storage                     | `src/core/ExecutorManager.sol` |
-| `Modular_OnChainLab.sol` | Contains `executeFromExecutor` and `installModule` for executor type        | `src/Modular_OnChainLab.sol`   |
+| `OnChainLab.sol` | Contains `executeFromExecutor` and `installModule` for executor type        | `src/OnChainLab.sol`   |
 | `ExecLib.sol`            | Provides `execute` helper that decodes execution mode and performs the call | `src/utils/ExecLib.sol`        |
 | `IERC7579Modules.sol`    | Defines the `IExecutor` interface (extends `IModule`)                       |                                |

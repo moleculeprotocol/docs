@@ -33,7 +33,7 @@ Contracts that can initiate transactions _from_ a Lab account. When installed, a
 
 Extend a Lab's interface by registering new function selectors. When a call arrives at the Lab for a function the core contract doesn't recognise, the Lab routes it to whichever fallback module is registered for that selector. This enables Labs to respond to entirely new interfaces without modifying the core contract. A fallback module might add ERC-1155 receiver support, implement a custom governance voting interface, or expose data querying functions.
 
-Both module types can optionally have **hooks** associated with them — pre-execution and post-execution checks that run before and after the module's logic. Hooks enable cross-cutting concerns like access control, rate limiting, or audit logging to be applied to any module without modifying the module itself.
+The ERC-7579 standard also defines **hooks** — pre- and post-execution checks around module logic. In the current contracts, hooks exist only as an unused interface definition: there is no hook storage or dispatch, so no hook can be configured today.
 
 ### The Attestation Model
 
@@ -49,29 +49,27 @@ This model separates _development_ from _approval_. A third-party developer can 
 
 Installing a module is an onchain transaction that must be authorised by the Lab owner through the ERC-4337 EntryPoint. The installation flow proceeds as follows:
 
-The Lab owner submits a UserOperation requesting module installation with the module's contract address, its type (executor or fallback), and initialisation data. The Lab's account contract calls the ERC-7484 Registry to verify that the module has a valid, non-expired, non-revoked attestation from the required attestors. If the attestation check passes, the module is registered in the Lab's internal storage: executor modules are recorded in the ExecutorManager with an optional hook association, and fallback modules are registered in the SelectorManager with a mapping from function selectors to the module address.
+The Lab owner submits a UserOperation requesting module installation with the module's contract address, its type (executor or fallback), and initialisation data. The Lab's account contract calls the ERC-7484 Registry to verify that the module has a valid, non-expired, non-revoked attestation from the required attestors. If the attestation check passes, the module is registered in the Lab's internal storage: executor modules are recorded in the ExecutorManager (with a snapshot of the owner who installed them), and fallback modules are registered in the SelectorManager with a mapping from function selectors to the module address.
 
 From that point forward, the module is active. Executor modules can call into the Lab, and calls to the fallback module's registered selectors are routed to it automatically.
 
-Module uninstallation is planned but not yet implemented in the current deployment.
+Modules can also be removed: `uninstallModule` clears the executor or fallback registration (and calls the module's `onUninstall` handler), again authorised by the Lab owner through the EntryPoint.
 
 ### How Modules Work
 
-When a call is made to a Lab's smart account, the account first checks whether the requested function is defined internally. If not, it consults the Module Registry to find a registered module that handles that function selector. The call is then delegated to the appropriate module, which executes on behalf of the Lab.
+When a call arrives at a Lab's smart account for a function the core contract doesn't define, the account looks up the selector in its **own SelectorManager storage** (the ERC-7484 Registry is consulted only for attestation, not for routing). If a fallback module is registered for that selector — and its attestation is still valid — the account forwards the call to the module as a regular external call with the original sender appended ERC-2771-style. Modules never run via `delegatecall`: they execute in their own storage context, and the Lab's assets move only through the account's explicit execution paths.
 
-Two primary module types exist within this architecture:
+The two module types differ by direction:
 
-Fallback Modules handle calls initiated by the Lab owner. When an owner wants to perform an action not natively supported by the Lab contract — such as uploading data or configuring settings — the call routes to a Fallback Module. These modules extend what the owner can do with their Lab.
+**Fallback modules** extend the Lab's *inbound* interface. Calls to their registered selectors arrive through the ERC-4337 EntryPoint (the account's caller policy enforces EntryPoint-only dispatch), letting the Lab respond to interfaces the core contract doesn't natively implement — data-reference recording, custom query functions, receiver interfaces.
 
-Executor Modules handle calls from external entities such as other contracts or externally owned accounts. These enable third parties to trigger actions on a Lab when certain conditions are met — for example, automated distributions, scheduled operations, or cross-contract integrations.
+**Executor modules** drive *outbound* execution. An installed executor **contract** (EOAs cannot be executors) calls `executeFromExecutor` on the Lab to trigger actions on its behalf — automated distributions, scheduled operations, cross-protocol integrations. At execution time the account re-checks the executor's attestation and that the Lab's owner hasn't changed since installation.
 
 ### Module Installation and Security
 
-Installing a module registers it with the Lab's Module Registry, mapping specific function selectors to\
-the module's address. The Lab owner controls which modules are installed, and can remove or replace modules as needed.
+Installing a module records it in the Lab's own module storage — selector→module mappings for fallback modules, an installed flag plus owner snapshot for executors. The Lab owner controls which modules are installed and can remove them via `uninstallModule`.
 
-Security considerations are critical in this architecture. When a module executes via delegate call, it\
-operates within the context of the Lab's account — meaning it can access the Lab's storage and assets. The Module Registry must carefully manage state increments to prevent reentrancy attacks and ensure that modules cannot interfere with each other's storage.
+Because modules execute as external calls rather than `delegatecall`, they cannot touch the Lab's storage directly. The account increments its public `state` counter on module-routed calls and re-validates attestations at execution time, so a revoked module stops working immediately even if it remains installed.
 
 ### Security Model
 

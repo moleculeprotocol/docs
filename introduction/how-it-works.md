@@ -11,7 +11,7 @@ icon: seal-question
 
 Log onto lab.molecule.xyz and create a Lab. To begin, all you will need is an image, a title and a description. From there, you can fill your Lab with files, data and team members.&#x20;
 
-The Lab is gasless to create (transaction fees are sponsored), so there is no financial barrier to entry. From the moment it's minted, it can hold assets, store data, interact with DeFi protocols, and accumulate a verifiable track record.
+The Lab is gasless to create — the mint fee is currently set to zero and transaction fees are sponsored by Molecule's off-chain relayer infrastructure — so there is no financial barrier to entry. From the moment it's minted, it can hold assets, store data, interact with DeFi protocols, and accumulate a verifiable track record.
 
 #### **2. Research & Store Data**
 
@@ -29,7 +29,7 @@ This is where the illiquid-to-liquid transformation happens. Traditional scienti
 
 IP Token holders get access. Token-gated data rooms, governance rights over research direction, and priority access to licensing deals create a community of aligned stakeholders around every project.
 
-Alternative funding paths include licensing IP directly for upfront or royalty payments, selling the IP outright via an over-the-counter (OTC) swap, or receiving streaming payments tied to milestones. Smart contracts automate royalty distributions, revenue sharing, and treasury management — removing intermediaries and reducing the cost of capital.
+Alternative funding paths include licensing IP directly for upfront or royalty payments, selling the IP outright via an over-the-counter (OTC) swap, or receiving streaming payments tied to milestones. Smart contracts automate token issuance, sale settlement, revenue sharing, and treasury custody — removing intermediaries and reducing the cost of capital.
 
 #### **4.** Run Autonomous Research
 

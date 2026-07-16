@@ -21,7 +21,7 @@ When a user creates a Lab, they mint a LabNFT that automatically receives its ow
 
 A Lab converges five Ethereum standards into a single primitive.
 
-_ERC-721_ makes the Lab a tradable, transferable NFT compatible with the entire NFT ecosystem — marketplaces, wallets, and any contract that understands the ERC-721 interface. The LabNFT is implemented using ERC-721A for gas-efficient minting.
+_ERC-721_ makes the Lab a tradable, transferable NFT compatible with the entire NFT ecosystem — marketplaces, wallets, and any contract that understands the ERC-721 interface. The LabNFT is implemented on Solady's gas-optimized ERC-721 with sequential minting, behind a UUPS-upgradeable proxy.
 
 _ERC-6551_ gives the NFT its own smart contract wallet, known as a Token Bound Account. The wallet has no private key of its own — it derives its authority entirely from the current NFT owner. The account address is deterministic, computed from the chain ID, the NFT contract address, the token ID, and a salt. This means the address is known before deployment and is consistent across any chain where the ERC-6551 Registry is deployed.
 
@@ -43,7 +43,7 @@ This separation is what makes Labs composable. A Lab can be sold on a marketplac
 
 ### What Labs Own
 
-<table><thead><tr><th width="174.08203125">Asset Type</th><th>Description</th></tr></thead><tbody><tr><td>IP-NFTs</td><td>Onchain representation of intellectual property rights</td></tr><tr><td>IP Tokens</td><td>Fungible tokens created from tokenizing IP-NFTs</td></tr><tr><td>Treasury</td><td>ETH, stablecoins, or any ERC-20 tokens</td></tr><tr><td>Data References</td><td>CIDs pointing to encrypted research data stored off-chain</td></tr><tr><td>Child Labs</td><td>Nested Labs for hierarchical research programs</td></tr><tr><td>Licenses</td><td>Rentable NFTs (ERC-4907) for time-bound IP access</td></tr><tr><td>External Assets</td><td>Any ERC-20/721/1155 from the broader ecosystem</td></tr></tbody></table>
+<table><thead><tr><th width="174.08203125">Asset Type</th><th>Description</th></tr></thead><tbody><tr><td>IP-NFTs</td><td>Onchain representation of intellectual property rights</td></tr><tr><td>IP Tokens</td><td>Fungible tokens created from tokenizing IP-NFTs</td></tr><tr><td>Treasury</td><td>ETH, stablecoins, or any ERC-20 tokens</td></tr><tr><td>Data References</td><td>CIDs pointing to encrypted research data stored off-chain</td></tr><tr><td>Child Labs</td><td>Nested Labs for hierarchical research programs <em>(roadmap)</em></td></tr><tr><td>Licenses</td><td>License NFTs for time-bound IP access — held as ordinary NFTs; rentable ERC-4907 mechanics are roadmap</td></tr><tr><td>External Assets</td><td>Any ERC-20/721/1155 from the broader ecosystem</td></tr></tbody></table>
 
 Because the Token Bound Account is a general-purpose smart contract wallet, a Lab can hold any asset that any Ethereum account can hold. The asset types listed above represent the assets that are semantically meaningful within the Molecule ecosystem, but the wallet is not limited to these.
 

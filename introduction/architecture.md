@@ -9,7 +9,7 @@ icon: microchip
 
 ### Contract Topology
 
-The protocol is implemented as a set of interconnected Solidity contracts deployed on Ethereum and EVM-compatible chains. At the center is the `Modular_OnChainLab` — the account implementation that unifies the standards described in the On-Chain Lab section into a single deployable contract.
+The protocol is implemented as a set of interconnected Solidity contracts deployed on Ethereum and EVM-compatible chains. At the center is the `OnChainLab` — the account implementation that unifies the standards described in the On-Chain Lab section into a single deployable contract.
 
 &#x20;Surrounding it are the factory, registry, proxy, and validation contracts that handle deployment, upgradeability, and security gating. The diagram below shows how these components relate to one another.
 
@@ -17,11 +17,11 @@ The protocol is implemented as a set of interconnected Solidity contracts deploy
 
 #### `OnChainLabFactory`&#x20;
 
-The singular entry point for Lab creation. It deploys the `Modular_OnChainLab` implementation at construction time (making itself the only address authorized to call `initialize()` on new accounts). It optionally deploys a Beacon and Router for the upgradeable pattern. It exposes two creation paths: `createAccount` for binding an existing LabNFT to an account, and `mintAndCreateAccount` for minting the NFT and creating the bound account in a single atomic transaction.&#x20;
+The singular entry point for Lab creation. It deploys the `OnChainLab` implementation at construction time (making itself the only address authorized to call `initialize()` on new accounts) and deploys the Beacon and Router for the upgradeable pattern. It exposes two creation paths: `createAccount` for binding an existing LabNFT to an account, and `mintAndCreateAccount` for minting the NFT and creating the bound account in a single atomic transaction.&#x20;
 
-#### `Modular_OnChainLab`&#x20;
+#### `OnChainLab`&#x20;
 
-The account implementation. It inherits from `ERC4337Account`, `EIP712`, `ERC7739`, `IERC6551Account`, `IERC6551Executable`, `IERC7579Account`, `ValidationManager`, and `ERC7484RegistryAdapter`. It exposes three overloaded `execute()` signatures (one for each standard) and routes all execution through a shared `ExecLib`. Each execution increments a public `state` counter that external contracts (such as marketplaces) can use to detect front-running during NFT sales. The `owner()` function dynamically calls `ownerOf()` on the bound LabNFT contract on every invocation — ownership is never cached or stored.
+The account implementation. It inherits from `ERC4337Account`, `EIP712`, `ERC7739`, `IERC165`, `IERC6551Account`, `IERC6551Executable`, `IERC7579Account`, `IOnChainLab`, `ValidationManager`, and `ERC7484RegistryAdapter`. It exposes three overloaded `execute()` signatures (one for each standard) and routes all execution through a shared `ExecLib`. Each execution increments a public `state` counter that external contracts (such as marketplaces) can use to detect front-running during NFT sales. The `owner()` function dynamically calls `ownerOf()` on the bound LabNFT contract on every invocation — ownership is never cached or stored.
 
 #### `ERC-6551 Registry`&#x20;
 
@@ -29,11 +29,11 @@ Deploys Lab accounts as EIP-1167 minimal proxies via CREATE2. The token binding 
 
 #### `OnChainLabRouter` and `OnChainLabBeacon`&#x20;
 
-The optional upgradeability layer. The Router is a delegatecall proxy that reads the current implementation address from the Beacon. The Beacon is an ownable contract; when the owner updates the implementation, all Lab accounts upgrade simultaneously. For non-upgradeable deployments, the factory sets the Router to point directly at the implementation.
+The upgradeability layer. The Router is a delegatecall proxy that always reads the current implementation address from the Beacon (its beacon reference is immutable). The Beacon is an ownable contract; when the owner updates the implementation, all Lab accounts upgrade simultaneously.
 
 #### `RootValidator`&#x20;
 
-The default validation module installed during account initialization. It resolves the current LabNFT owner and validates ERC-4337 UserOperation signatures against that address. The validator must be attested in the ERC-7484 Module Registry before the factory can install it.
+The default validation module bound during account initialization. It resolves the current LabNFT owner and validates ERC-4337 UserOperation signatures against that address. The root validator is not registry-attested — it is fixed at initialization and permanent (the registry only attests executor and fallback modules).
 
 #### `ERC-7484 Module Registry`&#x20;
 
@@ -77,7 +77,7 @@ Modules extend Lab functionality without modifying the core account contract. In
 
 <figure><img src="../.gitbook/assets/Mermaid Chart - Create complex, visual diagrams with text.-2026-02-06-032738.png" alt=""><figcaption></figcaption></figure>
 
-The account currently supports two module types: executors (which can call `executeFromExecutor` on the Lab) and fallback modules (which are routed via the `fallback()` function based on function selector). Both types are subject to registry attestation checks at installation time and at execution time. Hook modules are stubbed in the architecture but not yet fully implemented.
+The account currently supports two module types: executors (which can call `executeFromExecutor` on the Lab) and fallback modules (which are routed via the `fallback()` function based on function selector). Both types are subject to registry attestation checks at installation time and at execution time. Hooks exist only as an unused interface definition — there is no hook storage or dispatch in the current contracts.
 
 ### Signature Verification
 

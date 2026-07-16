@@ -18,13 +18,11 @@ This mechanism allows Labs to support new interfaces, respond to new protocol in
 
 Every Lab inherits from `SelectorManager`, which maintains a mapping from 4-byte function selectors to a `SelectorConfig` struct:
 
-solidity
-
 ```solidity
 struct SelectorConfig {
-    IHook hook;       // Hook address (or sentinel value)
-    address module;   // Fallback module contract address
-    CallType callType; // Execution mode: CALLTYPE_SINGLE or CALLTYPE_DELEGATECALL
+    address module;            // Fallback module contract address
+    CallType callType;         // Execution mode: CALLTYPE_SINGLE
+    CallerPolicy callerPolicy; // Who may invoke the selector: ENTRYPOINT_ONLY
 }
 ```
 
@@ -32,18 +30,16 @@ When an external call arrives at the Lab with a selector that does not match any
 
 1. **State increment** — The Lab increments an internal state counter to track executions and support anti-fraud mechanisms.
 2. **Selector lookup** — The handler reads the `SelectorConfig` for `msg.sig` from the selector storage slot.
-3. **Installation check** — If the hook field equals `HOOK_MODULE_NOT_INSTALLED` (address zero), the selector has no registered module and the call reverts with `InvalidSelector()`.
-4. **Access control** — If the hook field equals `HOOK_ONLY_ENTRYPOINT`, only the ERC-4337 EntryPoint contract may invoke the selector. Direct calls from any other address revert with `InvalidCaller()`.
+3. **Installation check** — If `config.module` is the zero address, the selector has no registered module and the call reverts with `InvalidSelector()`.
+4. **Access control** — The `callerPolicy` is enforced. The only policy today is `ENTRYPOINT_ONLY`: unless `msg.sender` is the ERC-4337 EntryPoint, the call reverts with `InvalidCaller()`.
 5. **Registry verification** — The module address is checked against the ERC-7484 Module Registry to confirm it is an attested, approved fallback module (`MODULE_TYPE_FALLBACK`).
-6. **Dispatch** — The call is forwarded to the module using one of two execution modes depending on the configured `CallType`.
+6. **Dispatch** — The call is forwarded to the module as a `CALLTYPE_SINGLE` external call.
 
 ### Call Types
 
-Fallback modules support two execution modes, each suited to different use cases:
+**CALLTYPE\_SINGLE (0x00)** — the only supported execution mode. The call is forwarded to the module contract as a standard external call using the ERC-2771 trusted forwarder pattern: the Lab appends the original `msg.sender` address to the calldata before calling the module, allowing the module to identify the true caller even though the call is proxied through the Lab. Modules maintain their own storage.
 
-**CALLTYPE\_SINGLE (0x00)** — The call is forwarded to the module contract as a standard external call using the ERC-2771 trusted forwarder pattern. The Lab appends the original `msg.sender` address to the calldata before calling the module, allowing the module to identify the true caller even though the call is proxied through the Lab. This is the recommended mode for modules that maintain their own storage.
-
-**CALLTYPE\_DELEGATECALL (0xFF)** — The call is executed via `delegatecall`, meaning the module's code runs in the context of the Lab's storage. This enables modules to directly read and modify Lab state, but must be used with extreme care to avoid storage slot collisions. Delegatecall modules skip the `onInstall` lifecycle callback since they operate within the Lab's own storage context.
+**CALLTYPE\_DELEGATECALL (0xFF)** exists as a constant in the type system but is **disallowed for fallback modules** — installation with it reverts `InvalidCallType`, and dispatch would revert `UnsupportedCallType`. This is a deliberate security decision (hardened during the 2026 audit): module code never runs inside the Lab's storage context.
 
 ### Installation
 
@@ -51,23 +47,13 @@ Fallback modules are installed through the `installModule` function on the Lab a
 
 * **Module type** — `MODULE_TYPE_FALLBACK` (type ID `3`)
 * **Module address** — The address of the fallback module contract
-* **Initialization data** — At least 24 bytes encoding the function selector (4 bytes), the hook address (20 bytes), and the selector-specific configuration data (which includes the `CallType` byte followed by any module-specific init parameters)
+* **Initialization data** — an ABI-encoded `InstallFallbackData` struct: `{ bytes4 selector; CallType callType; CallerPolicy callerPolicy; bool overwrite; bytes selectorData }`. The `callType` must be `CALLTYPE_SINGLE` and the `callerPolicy` must be `ENTRYPOINT_ONLY`; `selectorData` is passed through to the module's `onInstall`.
 
-During installation, the system performs a registry check via ERC-7484 to verify the module is attested for the fallback type. The `SelectorManager` then stores the configuration and emits a `ModuleInstalled` event. If no hook is explicitly provided (hook address is zero), the system defaults to `HOOK_ONLY_ENTRYPOINT`, restricting invocation to validated UserOperations only.
+During installation, the system performs a registry check via ERC-7484 to verify the module is attested for the fallback type. The `SelectorManager` then stores the configuration and emits a `ModuleInstalled` event.
 
-### Hook Integration
+### Hooks
 
-Each fallback selector can optionally be associated with a hook module that executes before the fallback call is dispatched. Hooks provide an additional control layer for enforcing constraints such as spending limits, access policies, or audit logging on a per-selector basis.
-
-Hook support in the current implementation uses sentinel values to indicate the hook state for each selector:
-
-| Sentinel Value           | Constant                    | Meaning                                |
-| ------------------------ | --------------------------- | -------------------------------------- |
-| `address(0)`             | `HOOK_MODULE_NOT_INSTALLED` | No module registered for this selector |
-| `address(1)`             | `HOOK_MODULE_INSTALLED`     | Hook module is installed and active    |
-| `address(0xFFfF...FfFf)` | `HOOK_ONLY_ENTRYPOINT`      | No hook; only EntryPoint may call      |
-
-> **Note:** Hook execution logic is currently defined in the architecture but not yet active. The `HookManager` is a stub awaiting full implementation. When hooks are fully supported, they will run pre-execution checks before fallback dispatch.
+ERC-7579 defines optional pre/post-execution hooks around module calls. In the current contracts, hooks exist only as an unused `IHook` interface — `SelectorConfig` carries no hook field and there is no hook dispatch. Per-selector hooks are a possible future extension, not a present capability.
 
 ### Use Cases
 
@@ -84,18 +70,17 @@ Fallback modules are security-critical because they can execute arbitrary logic 
 
 The ERC-7484 Module Registry provides attestation-based trust. Every fallback module must be attested as type `MODULE_TYPE_FALLBACK` before it can be dispatched, ensuring only reviewed and approved modules can handle calls.
 
-The default hook sentinel (`HOOK_ONLY_ENTRYPOINT`) ensures that when no explicit hook is configured, fallback selectors can only be invoked through the EntryPoint — meaning every call must pass UserOperation validation first. This prevents unauthorized contracts or EOAs from directly triggering fallback logic.
+The `ENTRYPOINT_ONLY` caller policy ensures fallback selectors can only be invoked through the EntryPoint — meaning every call must pass UserOperation validation first. This prevents unauthorized contracts or EOAs from directly triggering fallback logic.
 
-Delegatecall modules operate in the Lab's storage context and require particular caution. A malicious or buggy delegatecall module could corrupt Lab state, modify ownership, or drain funds. Only thoroughly audited modules should be installed with `CALLTYPE_DELEGATECALL`.
+Because `delegatecall` dispatch is disallowed, fallback modules can never read or corrupt the Lab's storage directly — they interact with the Lab only through its explicit external interfaces.
 
 The state counter increment on every fallback invocation provides an additional anti-replay and execution tracking mechanism.
 
 ### Contract Reference
 
-| Contract                 | Role                                                                 | Source                         |
-| ------------------------ | -------------------------------------------------------------------- | ------------------------------ |
-| `SelectorManager.sol`    | Manages per-selector fallback configuration and storage              | `src/core/SelectorManager.sol` |
-| `Modular_OnChainLab.sol` | Contains the `fallback()` handler and `installModule` logic          | `src/Modular_OnChainLab.sol`   |
-| `ExecLib.sol`            | Provides `doFallback2771Call` and `executeDelegatecall` helpers      | `src/utils/ExecLib.sol`        |
-| `HookManager.sol`        | Hook lifecycle management (stub — not yet active)                    | `src/core/HookManager.sol`     |
-| `Constants.sol`          | Defines module types, call types, sentinel values, and storage slots | `src/types/Constants.sol`      |
+| Contract              | Role                                                         | Source                         |
+| --------------------- | ------------------------------------------------------------ | ------------------------------ |
+| `SelectorManager.sol` | Manages per-selector fallback configuration and storage      | `src/core/SelectorManager.sol` |
+| `OnChainLab.sol`      | Contains the `fallback()` handler and `installModule` logic  | `src/OnChainLab.sol`           |
+| `ExecLib.sol`         | Provides the `doFallback2771Call` dispatch helper            | `src/utils/ExecLib.sol`        |
+| `Constants.sol`       | Defines module types, call types, and storage slots          | `src/types/Constants.sol`      |

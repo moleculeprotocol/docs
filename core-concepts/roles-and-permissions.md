@@ -11,10 +11,9 @@ icon: users-gear
 
 A Lab's NFT holder is its sole ultimate controller — transferring the LabNFT transfers the entire project. In practice, most research projects need to delegate day-to-day data-room work (uploading files, posting announcements, decrypting confidential research) to collaborators and AI agents without surrendering ownership.
 
-The role system lets a Lab owner grant scoped, expiring access to specific wallets — human or agent — while keeping ownership, treasury control, and the ability to revoke access at any time. Invites via email are possible, meaning team members do not have to be web3-native to participate.&#x20;
+The role system lets a Lab owner grant scoped, expiring access to specific wallets — human or agent — while keeping ownership, treasury control, and the ability to revoke access at any time.
 
-\
-Roles are enforced on-chain by the `AccessResolver` contract and honoured by every downstream system (GraphQL API, file encryption, UI) that checks them.
+Roles are enforced on-chain by the `AccessResolver` contract and honoured by every downstream system (GraphQL API, file encryption, UI) that checks them. Because grants are made to wallet addresses, every grantee needs a wallet.
 
 ## Role Hierarchy
 
@@ -34,11 +33,12 @@ The `hasRole` check is hierarchical: a Contributor automatically passes Viewer c
 | Create announcements                     |   ✓   |      ✓      |        |
 | Grant / revoke Viewer role               |   ✓   |      ✓      |        |
 | Grant / revoke Contributor role          |   ✓   |             |        |
-| Manage project owners (add/remove)       |   ✓   |             |        |
 | Transfer the LabNFT                      |   ✓   |             |        |
 | Authorize / install modules on the Lab   |   ✓   |             |        |
 
-A Contributor cannot "downgrade" another Contributor to Viewer — downgrades are treated as an admin-level action and rejected for non-Owner callers.
+A Contributor cannot "downgrade" another Contributor to Viewer — downgrades are treated as an admin-level action and rejected unless the caller is the Lab owner (or the protocol admin, below). There is no "manage owners" function: Lab ownership changes only by transferring the LabNFT (or changing the signer set of a Safe that holds it).
+
+> **Protocol admin.** In addition to per-lab owners, the `AccessResolver` contract owner — Molecule's protocol multisig — is a global role admin: it can grant and revoke roles on any lab and passes every `hasRole` check. This is the operational escape hatch for support and recovery flows.
 
 ## Grants: Expiry & Agent Flag
 
@@ -65,7 +65,7 @@ For the concrete `accessControlConditions` JSON that turns a role grant into fil
 
 ## Chain Scoping
 
-`AccessResolver` is deployed on Base, Mainnet, and Sepolia, but canonical lab state lives on Base. Lab-owner self-administration works only on Base: the ERC-6551 reference implementation returns `address(0)` for `owner()` when `block.chainid` doesn't match the chain the OCL was CREATE2-salted for, so lab NFT holders on Mainnet or Sepolia must call `grantRole` / `revokeRole` through the Base deployment.
+The role system exists only on **Base** (the canonical chain) and **Base Sepolia** — the v3 `AccessResolver` deployments. The older Ethereum Mainnet and Sepolia deployments run v2, which has signer predicates but no role functions at all. Lab-owner self-administration also works only on Base: the ERC-6551 reference implementation returns `address(0)` for `owner()` when `block.chainid` doesn't match the chain the OCL was CREATE2-salted for.
 
 Every `grantRole` / `revokeRole` / `hasRole` / `getRole` call runs `_validateOclId`, which verifies the `oclId`'s version byte, namespace byte, TBA code, LabNFT binding, and canonical-chain metadata. Malformed identifiers revert with `InvalidOclId`.
 
@@ -90,7 +90,7 @@ function getRole(bytes32 oclId, address account)
 | `revokeRole(…)` on a Contributor           |   ✓   |                    |
 | `revokeRole(…)` on a Viewer                |   ✓   |          ✓         |
 
-Revokes on accounts with no active grant return silently without emitting an event, to prevent unauthorised callers from spamming `RoleRevoked` logs.
+Revokes on accounts with no stored grant (`role == 0`) return silently without emitting an event, to prevent unauthorised callers from spamming `RoleRevoked` logs. (Revoking an expired-but-present grant still requires authorization and emits.) The protocol multisig can additionally perform any grant or revoke on any lab.
 
 ### Events
 
