@@ -25,7 +25,7 @@ _ERC-721_ makes the Lab a tradable, transferable NFT compatible with the entire 
 
 _ERC-6551_ gives the NFT its own smart contract wallet, known as a Token Bound Account. The wallet has no private key of its own — it derives its authority entirely from the current NFT owner. The account address is deterministic, computed from the chain ID, the NFT contract address, the token ID, and a salt. This means the address is known before deployment and is consistent across any chain where the ERC-6551 Registry is deployed.
 
-_ERC-4337_ introduces account abstraction, enabling gasless transactions through paymasters, transaction batching (multiple actions in a single signature), and a validation pipeline that decouples signature verification from execution. Users interact with Labs by signing intents offchain; the protocol handles gas, relay, and execution.
+_ERC-4337_ introduces account abstraction, enabling gasless transactions through paymasters and a validation pipeline that decouples signature verification from execution (transaction batching is part of the standard but not yet enabled — Labs currently execute single calls). Users interact with Labs by signing intents offchain; the protocol handles gas, relay, and execution.
 
 _ERC-7579_ defines a modular account interface. Labs can install executor modules (which perform actions on behalf of the Lab) and fallback modules (which extend the Lab with new function selectors) without changing the core contract. This means Labs can gain new capabilities — licensing logic, governance, oracle integrations, automated royalty distribution — through modules developed by Molecule or third-party developers.
 

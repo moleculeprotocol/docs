@@ -496,7 +496,7 @@ The minting and tokenization workflows include blockchain transactions that requ
 **Example (using viem):**
 
 ```javascript
-import { createWalletClient, http } from 'viem';
+import { createWalletClient, http, parseEther } from 'viem';
 import { mainnet } from 'viem/chains';
 
 const walletClient = createWalletClient({
@@ -504,12 +504,11 @@ const walletClient = createWalletClient({
   transport: http()
 });
 
-// Step 1: Reserve token ID
+// Step 1: Reserve token ID (free — reserve() is non-payable)
 const reserveTx = await walletClient.writeContract({
   address: '0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1',
   abi: IPNFT_ABI, // Request from Molecule team
-  functionName: 'reserve',
-  value: parseEther('0.001')
+  functionName: 'reserve'
 });
 
 // Step 9: Mint IP-NFT

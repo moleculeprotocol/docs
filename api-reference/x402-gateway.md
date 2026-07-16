@@ -35,7 +35,7 @@ POST /x402/labs/{mutation}
 
 | Path                                         | Wraps mutation                 | Purpose                                                  |
 | -------------------------------------------- | ------------------------------ | -------------------------------------------------------- |
-| `/x402/labs/initiateCreateOrUpdateFile`      | `initiateCreateOrUpdateFile`   | Start a file upload; returns a presigned URL (+ DEK if encryption requested) |
+| `/x402/labs/initiateCreateOrUpdateFile`      | `initiateCreateOrUpdateFile`   | Start a file upload; returns a presigned URL             |
 | `/x402/labs/finishCreateOrUpdateFile`        | `finishCreateOrUpdateFile`     | Finalise a file upload with metadata                     |
 | `/x402/labs/createAnnouncement`              | `createAnnouncement`           | Publish a lab announcement                               |
 | `/x402/labs/createLab`                       | `createLab`                    | Create a lab (data room) for an on-chain lab (OCL)       |

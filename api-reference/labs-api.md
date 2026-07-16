@@ -1717,7 +1717,7 @@ For files requiring client-side encryption, obtain a data encryption key via the
 
 ### Obtain a DEK, then encrypt locally
 
-`generateDataEncryptionKey(oclId)` returns `plaintextDEK`, `encryptedDek`, and `encryptionSystem`. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory. The upload itself uses the standard `initiateCreateOrUpdateFile` → PUT → `finishCreateOrUpdateFile` flow, with the encrypted bytes uploaded to the presigned URL.
+`generateDataEncryptionKey` (no arguments) returns `plaintextDEK`, `encryptedDek`, and `encryptionSystem`. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory. The upload itself uses the standard `initiateCreateOrUpdateFile` → PUT → `finishCreateOrUpdateFile` flow, with the encrypted bytes uploaded to the presigned URL.
 
 ### Encryption Metadata Parameter (Onchain-Verified Envelope Encryption, current default)
 
@@ -2241,7 +2241,7 @@ Top-level identifiers on `Lab` / `LabRef` were renamed away from the legacy IP-N
 | `ipnftAddress` | `labAccountAddress` | ERC-6551 token-bound account address                        |
 | `ipnftTokenId` | `labNftTokenId`     | LabNFT tokenId (decimal string)                             |
 
-> The linked legacy IP-NFT (for labs migrated from one) is still available as the nested `ipnft` object and the `ipnftId` field on `Lab` / `LabRef`.
+> The linked legacy IP-NFT (for labs migrated from one) is still available as the nested `ipnft` object on `Lab` / `LabRef`; `LabRef` additionally exposes a scalar `ipnftId` field.
 
 ---
 

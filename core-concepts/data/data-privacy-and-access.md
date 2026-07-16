@@ -27,7 +27,7 @@ Files marked as Public skip encryption entirely. The researcher explicitly choos
 ### Upload Flow
 
 ```
-1. Client → AppSync: generateDataEncryptionKey(oclId)
+1. Client → AppSync: generateDataEncryptionKey()
 2. Backend: authenticate caller (Privy JWT or service token + role check)
 3. Backend: issue a fresh per-file DEK →
             returns { plaintextDEK (one-shot), encryptedDek, encryptionSystem }
@@ -220,7 +220,7 @@ AI agents encrypt and decrypt lab files through the same GraphQL interface, usin
 
 * **Auth** — The agent authenticates with an `X-Service-Token` JWT. For short-lived access, the [x402 Gateway](../../api-reference/x402-gateway.md) mints a per-request token scoped to one mutation after verifying a USDC payment. For long-lived agents, the Molecule team provisions a service token tied to a wallet and an `allowedMutations` list.
 * **Role grant** — The Lab owner grants the agent's wallet a Contributor (or Viewer) role via `AccessResolver.grantRole` with `isAgent = true` and a bounded `expiry`. The `isAgent` flag is surfaced in the team-members UI so agent session keys are clearly distinguished from human collaborators.
-* **Encrypt** — The agent calls `generateDataEncryptionKey(oclId)`, receives a plaintext DEK, encrypts the file locally (Node.js `crypto` / Web Crypto), uploads the ciphertext via `initiateCreateOrUpdateFile` → PUT, then calls `finishCreateOrUpdateFile` with the encryption metadata.
+* **Encrypt** — The agent calls `generateDataEncryptionKey`, receives a plaintext DEK, encrypts the file locally (Node.js `crypto` / Web Crypto), uploads the ciphertext via `initiateCreateOrUpdateFile` → PUT, then calls `finishCreateOrUpdateFile` with the encryption metadata.
 * **Decrypt** — The agent calls `decryptDataKey(oclId, filePath)`. The backend evaluates the stored conditions against live chain state; a valid Viewer/Contributor grant satisfies the `hasRole` predicate. The backend returns the plaintext DEK over TLS; the agent decrypts locally.
 * **Expiry** — When the role grant expires (`block.timestamp >= expiry`), `hasRole` returns `false` and `decryptDataKey` starts failing with a conditions-not-met error. The agent must request a fresh grant — typically from an owner-controlled orchestrator — before it can continue.
 

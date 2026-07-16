@@ -31,12 +31,13 @@ IIPToken ipToken = Tokenizer.synthesized(ipnftId);
 
 ```graphql
 {
-  ipt(where: { ipnftId: "123" }) {
+  ipts(where: { ipnft: "123" }) {
     id
-    tokenContract
   }
 }
 ```
+
+The IPT's `id` is its ERC-20 contract address.
 
 #### How It Works
 

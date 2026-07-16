@@ -40,6 +40,6 @@ Operations were renamed (same intent, new names and `oclId`-based arguments):
 | `deleteDataRoomFileV2`           | `deleteDataRoomFile`             |
 | `createAnnouncementV2`           | `createAnnouncement`             |
 
-The owner-management mutations (`addLabOwner` / `removeLabOwner`) and `dataRoomPassphrase` were retired without replacement — lab membership is managed on-chain via the [AccessResolver](contracts/accessresolver.md) role system.
+The owner-management mutations (`addLabOwner` / `removeLabOwner`) were retired without replacement — lab membership is managed on-chain via the [AccessResolver](contracts/accessresolver.md) role system. The `dataRoomPassphrase` mutation (Telegram-bot passphrase) still appears in the schema but its resolver has been retired, so it is no longer functional.
 
 See the [current Labs API reference](../api-reference/labs-api.md) for full signatures, auth, and examples, including the complete [Deprecated & Renamed Operations](../api-reference/labs-api.md#deprecated--renamed-operations) table.

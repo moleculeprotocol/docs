@@ -33,7 +33,7 @@ Alternative funding paths include licensing IP directly for upfront or royalty p
 
 #### **4.** Run Autonomous Research
 
-With an authorized agent and a funded treasury, your Lab can run research continuously. Molecule is integrating BIOS — an AI scientist framework that runs specialized agents for literature search, data analysis, hypothesis generation, and reflection. The agent reads from your Lab's data room via the Labs API, performs analysis, and writes findings back as versioned records. Every output gets a CID and a permanent onchain reference.
+With an authorized agent and a funded treasury, your Lab can run research continuously. Molecule is integrating BioAgents — an AI scientist framework that runs specialized agents for literature search, data analysis, hypothesis generation, and reflection. The agent reads from your Lab's data room via the Labs API, performs analysis, and writes findings back as versioned records. Every output gets a CID and a permanent onchain reference.
 
 Agent outputs become new data in the Lab — feeding the next cycle of analysis. This creates a compounding research loop: data goes in, agents analyze it, new findings are recorded, IP is registered, funding flows in, agents run more experiments. The Lab continuously accumulates value whether the researcher is actively working or not.
 

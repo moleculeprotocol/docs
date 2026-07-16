@@ -69,7 +69,7 @@ You can run agents in two modes. In Human-Directed mode, agents assist while you
 
 The practical implication is that your Lab can produce research output around the clock — scanning literature while you sleep, analysing data over weekends, identifying promising directions while you're focused on wet-lab work. The agent's compute costs come directly from your Lab's treasury, so there's no separate billing system. Research expenditure is a transparent line item in your Lab's onchain history.
 
-For more details on the BIOS AI Scientist and MIRA, see the AI Tooling section.
+For more details on the BioAgents-powered AI scientist and MIRA, see the AI Tooling section.
 
 ### Step 5: Grow, License, and Compound
 

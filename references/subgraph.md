@@ -235,7 +235,7 @@ query GetAllIPTs($lastId: String) {
     orderDirection: asc
   ) {
     id
-    metadata { symbol }
+    symbol
   }
 }
 ```
@@ -260,7 +260,7 @@ async function getAllIPTs() {
 
 * **Exact match**: `ipts(where: { capped: true })`
 * **Comparison**: `crowdSales(where: { fundingGoal_gte: "1000000000000000000" })`
-* **Multiple conditions (AND)**: `contributions(where: { claimed: false, amount_gt: "0" })`
+* **Multiple conditions (AND)**: `contributions(where: { claimedAt: null, amount_gt: "0" })`
 * **Pattern matching**: `ipnfts(where: { symbol_contains: "BIO" })`
 
 **Available operators**

@@ -21,7 +21,7 @@ The singular entry point for Lab creation. It deploys the `OnChainLab` implement
 
 #### `OnChainLab`&#x20;
 
-The account implementation. It inherits from `ERC4337Account`, `EIP712`, `ERC7739`, `IERC165`, `IERC6551Account`, `IERC6551Executable`, `IERC7579Account`, `IOnChainLab`, `ValidationManager`, and `ERC7484RegistryAdapter`. It exposes three overloaded `execute()` signatures (one for each standard) and routes all execution through a shared `ExecLib`. Each execution increments a public `state` counter that external contracts (such as marketplaces) can use to detect front-running during NFT sales. The `owner()` function dynamically calls `ownerOf()` on the bound LabNFT contract on every invocation — ownership is never cached or stored.
+The account implementation. It inherits from `ERC4337Account`, `EIP712`, `ERC7739`, `IERC165`, `IERC6551Account`, `IERC6551Executable`, `IERC7579Account`, `ValidationManager`, `ERC7484RegistryAdapter`, and `IOnChainLab`. It exposes three overloaded `execute()` signatures (one for each standard) and routes all execution through a shared `ExecLib`. Each execution increments a public `state` counter that external contracts (such as marketplaces) can use to detect front-running during NFT sales. The `owner()` function dynamically calls `ownerOf()` on the bound LabNFT contract on every invocation — ownership is never cached or stored.
 
 #### `ERC-6551 Registry`&#x20;
 
@@ -61,7 +61,7 @@ The account supports two execution paths: direct calls by the NFT owner, and Use
 
 <figure><img src="../.gitbook/assets/Mermaid Chart - Create complex, visual diagrams with text.-2026-02-06-032520.png" alt=""><figcaption></figcaption></figure>
 
-Path B enables gasless transactions (via Paymasters), transaction batching, and off-chain signature relay — none of which require the user to hold ETH or manage gas directly. The ERC-7579 `execute(ExecMode, bytes)` variant is restricted to EntryPoint-only access, ensuring modular execution is always mediated by ERC-4337 validation.
+Path B enables gasless transactions (via Paymasters) and off-chain signature relay — neither of which requires the user to hold ETH or manage gas directly. (Batched execution is defined by the standard but not yet supported — only single-call execution modes are enabled.) The ERC-7579 `execute(ExecMode, bytes)` variant is restricted to EntryPoint-only access, ensuring modular execution is always mediated by ERC-4337 validation.
 
 ### Ownership Transfer
 
