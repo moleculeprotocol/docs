@@ -9,6 +9,7 @@ The Tokenization API enables developers to programmatically mint IP-NFTs (Intell
 * Mint new IP-NFTs with legal assignment agreements
 * Upload artwork and metadata to IPFS
 * Create fungible IP Tokens (IPTs) from existing IP-NFTs
+* Generate Lab (OCL) membership agreements and tokenize Labs into Lab Tokens on Base
 * Manage the complete tokenization lifecycle
 * Integrate with smart contracts via viem/ethers
 
@@ -62,7 +63,7 @@ Creating an IP-NFT involves 9 steps combining API calls and blockchain transacti
 
 Step 1: Reserve Token ID (BLOCKCHAIN)
 ↓ Smart contract: IPNFT.reserve()
-↓ Fee: 0.001 ETH
+↓ Fee: none (gas only)
 ↓ Returns: reservationId
 
 Step 2: Generate Assignment Agreement (API)
@@ -349,7 +350,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ## OCL Membership Agreement
 
-Generate the membership agreement for an on-chain lab (OCL). This is the OCL-side counterpart to `generateIptMembershipAgreement`, used when onboarding members to a lab. Unlike the IPFS-backed agreements above, it returns an `agreementKey` (an S3 object key) rather than an IPFS CID.
+Generate the membership agreement for an on-chain lab (OCL). This is the OCL-side counterpart to `generateIptMembershipAgreement`: it produces the terms document a Lab token holder accepts when the Lab is tokenized. Unlike the IPFS-backed agreements above, it returns an `agreementKey` (an S3 object key) rather than an IPFS CID, paired with a SHA-256 `agreementContentHash` that binds the signature to the exact document.
 
 ### generateOclMembershipAgreement
 
@@ -404,6 +405,67 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ***
 
+## Lab (OCL) Tokenization Workflow
+
+Labs are tokenized on **Base** through the `OclTokenizer` contract — the OCL-era successor to the legacy IPNFT `Tokenizer`. It mints one fractional ERC-20 **Lab Token** per Lab, gated by a signed membership agreement.
+
+### High-Level Flow
+
+```
+Step 1: Generate Membership Agreement (API)
+↓ Mutation: generateOclMembershipAgreement
+↓ Returns: agreementKey (S3 key), agreementContentHash (SHA-256)
+
+Step 2: Get OCL Terms Message (API)
+↓ Query: getOclTermsMessage(agreementKey, contentHash, labId, chainId)
+↓ Returns: the exact terms text to sign
+
+Step 3: Sign Terms (CLIENT-SIDE)
+↓ Plain personal_sign (EIP-191) over the message — not EIP-712
+↓ ECDSA signatures and ERC-1271 smart-account signatures both accepted
+
+Step 4: Tokenize (BLOCKCHAIN, Base)
+↓ Smart contract: OclTokenizer.tokenize()
+↓ Fee: Gas only
+↓ Result: ERC-20 Lab Token contract deployed ✓
+```
+
+The terms message is reconstructed on-chain by `OclTermsPermissioner.specificTermsV1()` — the backend's `getOclTermsMessage` returns byte-identical text, so always sign exactly the string the API returns.
+
+### OclTokenizer Contract Functions
+
+**tokenize():**
+
+* Creates the ERC-20 Lab Token for a Lab
+* Parameters:
+  * `labId` (uint256): The LabNFT token ID
+  * `amount` (uint256): Initial supply issued to the caller (in wei)
+  * `symbol` (string): Token ticker symbol — the name is derived automatically as `Lab Tokens of Lab #<labId>`
+  * `s3Key` (string): `agreementKey` from Step 1
+  * `contentHash` (bytes32): `agreementContentHash` from Step 1
+  * `signature` (bytes): Signed terms from Step 3
+* Caller must be the Lab's controller (the current LabNFT owner); reverts `MustControlLab()` otherwise
+* One token per Lab — a second call reverts `AlreadyTokenized()`
+
+**attachToken():**
+
+* "Bring your own token": wraps a pre-existing ERC-20 (≤ 18 decimals) in a read-only `WrappedLabToken` carrying the Lab's metadata instead of minting a new one
+* Parameters: `labId`, `s3Key`, `contentHash`, `signature`, `tokenContract`
+
+**issue() / cap():**
+
+* `issue(labToken, amount, receiver)` — mint additional supply; controller-only
+* `cap(labToken)` — permanently freeze issuance; controller-only, irreversible
+
+### Networks (Lab Tokenization)
+
+| Network      | Chain ID | OclTokenizer (proxy)                         |
+| ------------ | -------- | -------------------------------------------- |
+| Base Sepolia | 84532    | `0xEe19e0Db8a7e59538710FAF6ed3ab655BCfCdB24` |
+| Base Mainnet | 8453     | See [Smart Contract Addresses](../references/contracts/README.md) |
+
+***
+
 ## Blockchain Integration
 
 ### Smart Contract Addresses
@@ -411,14 +473,14 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 **Mainnet (Ethereum):**
 
 * IPNFT Contract: `0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1`
-* Tokenizer Contract: Contact team for address
+* Tokenizer Contract: `0x58EB89C69CB389DBef0c130C6296ee271b82f436`
 
 **Testnet (Sepolia):**
 
 * IPNFT Contract: `0x152B444e60C526fe4434C721561a077269FcF61a`
-* Tokenizer Contract: Contact team for address
+* Tokenizer Contract: `0xca63411FF5187431028d003eD74B57531408d2F9`
 
-For complete contract addresses and ABIs, see [Smart Contract Addresses](/broken/pages/TMpLloOogfGTEgz5hp9I).
+For complete contract addresses and ABIs, see [Smart Contract Addresses](../references/contracts/README.md).
 
 ### On-Chain Transactions
 
@@ -474,7 +536,7 @@ const mintTx = await walletClient.writeContract({
 
 * **API Key**: Obtained from Molecule team
 * **Wallet**: Ethereum wallet with private key
-* **ETH Balance**: Minimum 0.002 ETH (0.001 reserve + 0.001 mint + gas)
+* **ETH Balance**: 0.001 ETH minting fee + gas (reserving is free)
 * **Project Data**: Name, description, organization, research lead info
 * **Artwork**: Image file (PNG, JPEG, WebP, SVG - max 5MB recommended)
 
@@ -508,11 +570,13 @@ All mutations follow a consistent error response format:
 | ------------------------- | -------------------------------------------- | -------------------------------------- |
 | 401 Unauthorized          | Missing or invalid API key                   | Check `x-api-key` header               |
 | 400 Bad Request           | Invalid parameters or malformed JSON         | Verify input data format               |
+| `INVALID_INPUT`           | Required fields missing or malformed         | Verify the input object shape          |
 | `INVALID_TERMS_SIGNATURE` | Terms signature doesn't match signer address | Ensure same wallet signs terms         |
 | `INVALID_METADATA`        | Metadata schema validation failed            | Check required metadata fields         |
-| `SYMBOL_ALREADY_TAKEN`    | IP-NFT symbol already exists                 | Use a unique symbol                    |
-| `ALREADY_TOKENIZED`       | IP-NFT has already been tokenized            | Each IP-NFT can only be tokenized once |
-| `MUST_CONTROL_IPNFT`      | Caller doesn't own the IP-NFT                | Only IP-NFT owner can tokenize         |
+| `IMAGE_TOO_LARGE` / `UNSUPPORTED_IMAGE_TYPE` | Artwork rejected           | Use a supported image type within the size limit |
+| `SIGNOFF_FAILED`          | Backend could not authorize the mint         | Retry; verify prior steps completed    |
+
+Separately, the smart contracts revert with their own errors — most commonly `AlreadyTokenized()` (each IP-NFT can only be tokenized once) and `MustControlIpnft()` (only the IP-NFT's controller can tokenize) from the Tokenizer.
 
 ### Troubleshooting
 
@@ -521,12 +585,6 @@ All mutations follow a consistent error response format:
 * Ensure the same wallet address is used throughout the flow
 * Verify signature is generated from the exact message returned by `getTermsMessage`
 * Check that `minter` parameter matches the signing wallet
-
-**"SYMBOL\_ALREADY\_TAKEN" Error:**
-
-* Choose a unique symbol for your IP-NFT
-* Symbols must be alphanumeric (no special characters)
-* Check existing IP-NFTs to avoid conflicts
 
 **Blockchain Transaction Failures:**
 
@@ -586,8 +644,8 @@ console.log('IP-NFT minted!', txHash);
 **reserve():**
 
 * Reserves a token ID for minting
-* Requires: 0.001 ETH payment
-* Returns: Reservation ID (emitted in event)
+* Requires: no payment — minting authorization is enforced at `mintReservation` time via the `authorization` signature
+* Returns: Reservation ID (also emitted in the `Reserved` event)
 
 **mintReservation():**
 
@@ -611,7 +669,7 @@ console.log('IP-NFT minted!', txHash);
   * `tokenAmount` (uint256): Initial IPT supply (in wei)
   * `tokenSymbol` (string): IPT ticker symbol
   * `agreementCid` (string): Membership agreement CID
-  * `termsSignature` (bytes): Signed terms acceptance
+  * `signedAgreement` (bytes): Signed terms acceptance
 * Returns: IPT contract address (emitted in event)
 
 **Contract ABIs:**
@@ -631,7 +689,7 @@ console.log('IP-NFT minted!', txHash);
 
 ### Gas Fee Estimates
 
-* **Reserve**: \~50,000 gas + 0.001 ETH fee
+* **Reserve**: \~50,000 gas (no fee)
 * **Mint Reservation**: \~150,000 gas + 0.001 ETH fee
 * **Tokenize IPNFT**: \~2,000,000 gas (deploys new ERC-20 contract)
 
@@ -677,8 +735,8 @@ For assistance with the Tokenization API:
 
 * **Technical Integration Guide**: Contact Molecule team to receive complete documentation
 * **Discord**: Join our [community](https://t.co/L0VEiy4Bjk) for support
-* **Smart Contracts**: See [contract addresses](/broken/pages/TMpLloOogfGTEgz5hp9I)
+* **Smart Contracts**: See [contract addresses](../references/contracts/README.md)
 
 ***
 
-_Last updated: December 2024_
+_Last updated: July 2026_

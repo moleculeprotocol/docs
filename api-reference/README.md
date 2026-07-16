@@ -40,7 +40,7 @@ Create IP-NFTs from research projects and tokenize them into fungible IP Tokens 
 
 ***
 
-### 📁 Labs API (Programmatic File Upload)
+### 📁 Labs API
 
 Upload files to lab datarooms for secure, decentralized research data storage, and query labs, members, activity, and legal-agreement status.
 
@@ -118,7 +118,7 @@ Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your 
 | Check market prices and trading data | [Data API](data-api.md)                                  |
 | Mint a new IP-NFT                    | [Tokenization API](tokenization-api.md)                  |
 | Create IP Tokens from an IP-NFT      | [Tokenization API](tokenization-api.md)                  |
-| Upload files to a Lab dataroom       | [Labs API](../molecule-labs/programmatic-file-upload.md) |
+| Upload files to a Lab dataroom       | [Labs API](labs-api.md)                                  |
 
 ### 3. Make Your First Request
 
@@ -147,10 +147,9 @@ If you encounter any issues or have questions about the APIs:
 
 ## Additional Resources
 
-* [Molecule Documentation](https://docs.molecule.to/documentation/)
-* [Smart Contract Addresses](/broken/pages/TMpLloOogfGTEgz5hp9I)
-* [What are IP-NFTs?](/broken/pages/MjaTDyXUt9FrSVofaUVg)
-* [What are IP Tokens?](/broken/pages/7bCRdex391EUuIvQqG6V)
+* [Smart Contract Addresses](../references/contracts/README.md)
+* [What are IP-NFTs?](../core-concepts/tokenized-ips/ip-nfts.md)
+* [What are IP Tokens?](../core-concepts/tokenized-ips/ipts.md)
 
 ***
 

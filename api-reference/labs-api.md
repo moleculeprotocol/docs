@@ -1,4 +1,4 @@
-# ⚙️ Programmatic File Upload
+# ⚙️ Labs API
 
 ## Overview
 
@@ -67,7 +67,6 @@ x-api-key: YOUR_API_KEY
 - `signLegalAgreement` - Record acceptance of a legal agreement
 - `generateDataEncryptionKey` - Generate a standalone data encryption key · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `decryptDataKey` - Decrypt a file's data key for an authorized caller · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
-- `dataRoomPassphrase` - Get Telegram bot passphrase for a dataroom
 - `extendServiceToken` - Extend service token expiration
 - `revokeServiceToken` - Revoke a service token
 
@@ -743,21 +742,14 @@ query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
     nodes {
       oclId
       shortname
+      name
+      description
       labAccountAddress
       labNftTokenId
-      systemTime
-      eventTime
+      latestContributionAt
       trlValue
       trlRationale
       isVerified
-      account {
-        accountName
-      }
-      dataRoom {
-        id
-        alias
-        status
-      }
     }
     totalCount
     pageInfo {
@@ -769,6 +761,8 @@ query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
   }
 }
 ```
+
+> The `labs` list returns lightweight `LabRef` objects. Data-room contents and account details are not part of `LabRef` — fetch them per lab via [`labWithDataRoomAndFiles`](#get-single-project-with-files).
 
 **Parameters:**
 
@@ -796,7 +790,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query ListProjects($page: Int, $perPage: Int) { labs(page: $page, perPage: $perPage) { nodes { oclId shortname dataRoom { id alias } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
+    "query": "query ListProjects($page: Int, $perPage: Int) { labs(page: $page, perPage: $perPage) { nodes { oclId shortname name labAccountAddress } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
     "variables": {
       "page": 0,
       "perPage": 20
@@ -1617,60 +1611,6 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ---
 
-## Dataroom Utilities
-
-### Get Dataroom Passphrase
-
-Retrieve the Telegram bot passphrase for connecting to a dataroom's notification channel. This passphrase is used to authenticate with the Molecule Telegram bot for receiving real-time updates about dataroom activity.
-
-**GraphQL Mutation:**
-
-```graphql
-mutation GetDataRoomPassphrase($oclId: String!) {
-  dataRoomPassphrase(oclId: $oclId)
-}
-```
-
-**Parameters:**
-
-| Parameter | Type   | Required | Description                        |
-| --------- | ------ | -------- | ---------------------------------- |
-| oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
-
-**Example Request:**
-
-```bash
-curl -X POST https://production.graphql.api.molecule.xyz/graphql \
-  -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
-  -d '{
-    "query": "mutation GetDataRoomPassphrase($oclId: String!) { dataRoomPassphrase(oclId: $oclId) }",
-    "variables": {
-      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042"
-    }
-  }'
-```
-
-**Success Response:**
-
-```json
-{
-  "data": {
-    "dataRoomPassphrase": "apple-banana-cherry"
-  }
-}
-```
-
-**Use Case:**
-
-- Connect the Molecule Telegram bot to receive notifications about file uploads, announcements, and other dataroom activity
-- The passphrase is a 3-word phrase separated by dashes
-
-> **Note**: This is a mutation (not a query) because it may have side effects related to notification channel setup. Requires admin access to the specified lab.
-
----
-
 ## Error Handling
 
 All API responses follow a consistent error format:
@@ -1773,11 +1713,11 @@ Enhance file discoverability with optional metadata:
 
 ## Advanced: Encrypted File Upload
 
-For files requiring client-side encryption, pass `encryption: true` to `initiateCreateOrUpdateFile` and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, on-chain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page.
+For files requiring client-side encryption, obtain a data encryption key via the `generateDataEncryptionKey` mutation, encrypt locally, upload as normal, and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, on-chain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page.
 
-### Initiate with encryption
+### Obtain a DEK, then encrypt locally
 
-`initiateCreateOrUpdateFile(..., encryption: true)` returns `plaintextDEK`, `encryptedDEK`, and `encryptionSystem` in addition to the upload URL. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory.
+`generateDataEncryptionKey(oclId)` returns `plaintextDEK`, `encryptedDek`, and `encryptionSystem`. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory. The upload itself uses the standard `initiateCreateOrUpdateFile` → PUT → `finishCreateOrUpdateFile` flow, with the encrypted bytes uploaded to the presigned URL.
 
 ### Encryption Metadata Parameter (Onchain-Verified Envelope Encryption, current default)
 
@@ -1788,7 +1728,7 @@ $encryptionMetadata: EncryptionMetadataInput
 ```json
 {
   "encryptionMetadata": {
-    "encryptionSystem": "<echo value returned by initiateCreateOrUpdateFile>",
+    "encryptionSystem": "<echo value returned by generateDataEncryptionKey>",
     "encryptedDek": "BASE64_WRAPPED_DEK",
     "iv": "BASE64_AES_GCM_IV",
     "contentHash": "sha256-...",
@@ -1799,7 +1739,7 @@ $encryptionMetadata: EncryptionMetadataInput
 }
 ```
 
-`encryptionSystem` is **backend-set** — clients must echo the value returned on `initiateCreateOrUpdateFile` rather than hardcode it. This keeps the roadmap rollover to BLS threshold key custody transparent to existing integrations.
+`encryptionSystem` is **backend-set** — clients must echo the value returned by `generateDataEncryptionKey` rather than hardcode it. This keeps the roadmap rollover to BLS threshold key custody transparent to existing integrations.
 
 #### `accessControlConditions` — gating decryption by role
 
