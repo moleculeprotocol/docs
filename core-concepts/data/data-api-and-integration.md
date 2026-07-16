@@ -9,7 +9,7 @@ icon: computer-classic
 
 ### The Data Access Layer
 
-The Data Storage and Data Privacy & Access pages describe how research files enter an Onchain Lab — how they are encrypted, stored, versioned, and access-controlled. This page describes the other side of the pipeline: how on-chain events are indexed into a queryable database, how that data is aggregated with research metadata and editorial content into a unified API layer, and how every consumer in the ecosystem — the frontend, MIRA, external developers, and AI agents — accesses it.
+The Data Storage and Data Privacy & Access pages describe how research files enter a Lab — how they are encrypted, stored, versioned, and access-controlled. This page describes the other side of the pipeline: how on-chain events are indexed into a queryable database, how that data is aggregated with research metadata and editorial content into a unified API layer, and how every consumer in the ecosystem — the frontend, MIRA, external developers, and AI agents — accesses it.
 
 Every interaction a user has with Lab data on the Molecule platform — browsing project listings, viewing token prices, reading announcements, querying MIRA, or building an integration against the Labs API — is mediated by the DeSci API. The API is the central data hub that sits between the raw data sources and the consumers that need them.
 
@@ -55,11 +55,11 @@ Different consumers interact with the data layer through different interfaces, d
 
 **The Molecule frontend (DeSci Screener)** consumes the DeSci API's GraphQL endpoints for project listings, token market data, Lab metadata, and activity feeds. It calls the Labs API for data room operations — file uploads, downloads, and encrypted file retrieval. It currently also calls Sanity's API directly for editorial content (project descriptions, blog posts, categories). It performs client-side decryption when users access encrypted files: for new files, it calls `decryptDataKey` to retrieve the unwrapped DEK after the backend re-verifies access conditions against live chain state, and decrypts locally via Web Crypto; for legacy files encrypted before the migration, it falls back to the Lit Protocol SDK.
 
-**MIRA** accesses data through MCP (Model Context Protocol) tools — structured function calls that the AI model invokes during conversations. The current MCP tool suite provides five tools: get-ipts (token listings with market data), get-ipt-categories (research categories with statistics), get-project-summary (comprehensive project overview), get-ipt-historic-prices (OHLCV price history via GeckoTerminal), and get-project-activity (recent file and announcement events). MIRA's knowledge base — a curated corpus about DeSci, Molecule's architecture, and the broader ecosystem — is maintained separately and updated through an automated crawl pipeline.
+**MIRA** accesses data through MCP (Model Context Protocol) tools — structured function calls that the AI model invokes during conversations. MIRA's knowledge base — a curated corpus about DeSci, Molecule's architecture, and the broader ecosystem — is maintained separately and updated through an automated crawl pipeline.
 
 **External developers and AI agents** access Lab data through the Labs API, which provides full GraphQL access to data room operations: listing projects, querying files, uploading and versioning research data, creating announcements, and performing semantic search across Labs. For market and token data, they query the DeSci API directly; for raw on-chain events, the Subgraph. All three are documented in the References section.
 
-**The Subgraph** provides direct access to indexed on-chain events — IP-NFT mints, token transfers, crowdsale contributions, and marketplace activity — for consumers that need raw blockchain data without the API's aggregation layer. It is powered by The Graph, requires no authentication, and is documented separately.
+**The Subgraph** provides direct access to indexed on-chain events — token transfers, crowdsale contributions, and marketplace activity — for consumers that need raw blockchain data without the API's aggregation layer. It is powered by The Graph, requires no authentication, and is documented separately.
 
 ### The Integration Pipeline
 
@@ -73,7 +73,7 @@ Announcements follow the Labs API path. A Lab owner creates an announcement thro
 
 The API exposes a semantic search endpoint that queries across all Labs, files, and announcements in the ecosystem. Queries are processed as natural language — searching for "gene therapy for rare diseases" returns Labs whose data room contents, announcements, and metadata are semantically relevant, not just keyword matches.
 
-Search results can be filtered by IP-NFT UIDs, tags, categories, access levels, and content kinds (files or announcements). Each result includes the matching entity, its parent Lab, and a relevance score. This powers both the platform's search interface and MIRA's ability to discover related projects during conversations.
+Search results can be filtered by tags, categories, access levels, and content kinds (files or announcements). Each result includes the matching entity, its parent Lab, and a relevance score. This powers both the platform's search interface and MIRA's ability to discover related projects during conversations.
 
 ### Access Levels and Gating
 

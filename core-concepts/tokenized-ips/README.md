@@ -1,7 +1,8 @@
 ---
 description: >-
   How intellectual property is represented, fractionalized, and traded as
-  onchain assets within Onchain Labs
+  onchain assets within Labs
+hidden: true
 icon: book-atlas
 ---
 

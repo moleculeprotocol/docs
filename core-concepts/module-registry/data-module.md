@@ -1,8 +1,7 @@
 ---
 description: >-
-  The Data Module adds data-referencing capabilities to an OnChain Lab's smart
-  account, enabling the TBA to record, query, and verify references to off-chain
-  research
+  The Data Module adds data-referencing capabilities to an Lab's smart account,
+  enabling the TBA to record, query, and verify references to off-chain research
 icon: binary-circle-check
 ---
 
@@ -10,7 +9,7 @@ icon: binary-circle-check
 
 ## Data Module
 
-The Data Module extends an OnChain Lab's Token Bound Account with the ability to record and manage references to off-chain research data. As a fallback module installed through the Lab's modular account architecture, it adds function selectors to the TBA that allow data references — content identifiers, version pointers, and provenance metadata — to be written to and read from the Lab's onchain state.
+The Data Module extends a Lab's Token Bound Account with the ability to record and manage references to off-chain research data. As a fallback module installed through the Lab's modular account architecture, it adds function selectors to the TBA that allow data references — content identifiers, version pointers, and provenance metadata — to be written to and read from the Lab's onchain state.
 
 This module is the onchain interface between the Lab's smart account and the broader data infrastructure described in the Data section. While the off-chain stack handles storage, encryption, versioning, and access control, the Data Module gives the TBA itself the ability to hold a verifiable index of its research output.
 
@@ -48,4 +47,3 @@ This separation provides several advantages. The data referencing logic can be u
 The Data Module is in active design. The modular account infrastructure that supports it — the `SelectorManager`, the fallback dispatch mechanism, the ERC-7484 registry, and the `installModule` flow — is implemented and deployed on Sepolia. The data module contract itself, which will define the specific selectors for recording and querying data references, is planned as a future deployment.
 
 The off-chain data infrastructure is operational. File uploads, encryption, versioning through Kamu, and access control through the AccessResolver are all functional in the current system. The Data Module will formalise the onchain anchoring step that currently occurs through the Labs API, bringing it fully under the TBA's modular account architecture.
-

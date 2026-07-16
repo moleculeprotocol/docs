@@ -1,7 +1,5 @@
 ---
-description: >-
-  How Onchain Labs store, protect, and control access to scientific research
-  data
+description: How Labs store, protect, and control access to scientific research data
 icon: database
 ---
 
@@ -9,9 +7,7 @@ icon: database
 
 ### **Data in Onchain Labs**
 
-Every Onchain Lab is a data-centric primitive. When a researcher uploads a dataset, publishes results, or records experimental observations, that data becomes part of the Lab — owned by the Lab's Token Bound Account alongside its IP-NFTs, treasury, and other assets. The Lab does not just _reference_ data; it _owns_ the references that cryptographically link its onchain identity to the underlying scientific content.
-
-This means data follows the same ownership model as every other Lab asset. Transferring the LabNFT transfers control of the data. Funding a Lab's treasury funds the project that produced the data. Licensing an IP-NFT can gate access to the data behind it. Data is not a sidecar to the protocol — it is the scientific substance that gives every other asset in the Lab its meaning.
+Every Onchain Lab is a data-centric primitive. When a researcher uploads a dataset, publishes results, or records experimental observations, that data becomes part of the Lab — owned by the Lab's Token Bound Account alongside its , treasury, and other assets. The Lab does not just _reference_ data; it _owns_ the references that cryptographically link its onchain identity to the underlying scientific content.
 
 ### On-chain and Off-chain
 

@@ -5,13 +5,13 @@ description: >-
 icon: flask-vial
 ---
 
-# On-Chain Lab
+# Molecule Labs
 
 <figure><img src="../.gitbook/assets/Mermaid Chart - Create complex, visual diagrams with text.-2026-02-06-033551.png" alt=""><figcaption></figcaption></figure>
 
 ### What is a Lab?
 
-An Onchain Lab is the core primitive of Molecule Protocol V3. It is an NFT (ERC-721) that is permanently bound to its own smart contract wallet (ERC-6551), enhanced with account abstraction (ERC-4337), and extensible through a modular plugin architecture (ERC-7579) secured by an onchain attestation registry (ERC-7484).&#x20;
+A Lab is the core primitive of Molecule Protocol V3. It is an NFT (ERC-721) that is permanently bound to its own smart contract wallet (ERC-6551), enhanced with account abstraction (ERC-4337), and extensible through a modular plugin architecture (ERC-7579) secured by an onchain attestation registry (ERC-7484).
 
 Together, these standards give each Lab its own persistent onchain identity, a fully functional wallet capable of holding any onchain asset, a frictionless user experience that abstracts away gas and key management, and the ability to gain new capabilities over time through installable modules.
 
@@ -19,7 +19,7 @@ When a user creates a Lab, they mint a LabNFT that automatically receives its ow
 
 ### The Standards
 
-An Onchain Lab converges five Ethereum standards into a single primitive.
+A Lab converges five Ethereum standards into a single primitive.
 
 _ERC-721_ makes the Lab a tradable, transferable NFT compatible with the entire NFT ecosystem — marketplaces, wallets, and any contract that understands the ERC-721 interface. The LabNFT is implemented using ERC-721A for gas-efficient minting.
 
@@ -73,6 +73,6 @@ This creates a verifiable chain of custody for the entire research lifecycle. Re
 
 ### Lab Tokenization _(Coming soon)_
 
-Labs will be able to affiliate with or mint a Group Token to create an economic layer around the Lab's assets. The planned model allows Lab owners to select or mint an ERC-20 token, attach a fee router to direct revenue from the Lab's assets (IP licensing royalties, dataset access payments, trading fees, DeFi yield), enable staking for token holders to receive a share of fee flows, and optionally configure automatic token buybacks from revenue.&#x20;
+Labs will be able to affiliate with or mint a Group Token to create an economic layer around the Lab's assets. The planned model allows Lab owners to select or mint an ERC-20 token, attach a fee router to direct revenue from the Lab's assets (IP licensing royalties, dataset access payments, trading fees, DeFi yield), enable staking for token holders to receive a share of fee flows, and optionally configure automatic token buybacks from revenue.
 
 _\*This feature is part of the V3 roadmap and is not yet available in the current protocol deployment._

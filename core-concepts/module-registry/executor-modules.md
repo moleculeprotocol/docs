@@ -1,8 +1,8 @@
 ---
 description: >-
   Executor modules are external smart contracts that can trigger transactions
-  from an OnChain Lab's account, enabling automation, cross-protocol
-  integrations, and programmable actions without requiring
+  from a Lab's account, enabling automation, cross-protocol integrations, and
+  programmable actions without requiring
 icon: up-right-from-square
 ---
 
@@ -10,7 +10,7 @@ icon: up-right-from-square
 
 ## Executor Modules
 
-Executor modules are smart contracts that can initiate transactions on behalf of an OnChain Lab. Unlike validator modules (which verify who can act) and fallback modules (which add new interfaces to the Lab), executor modules operate from the outside — they call into the Lab's `executeFromExecutor` function to trigger actions using the Lab's account as the sender.
+Executor modules are smart contracts that can initiate transactions on behalf of a Lab. Unlike validator modules (which verify who can act) and fallback modules (which add new interfaces to the Lab), executor modules operate from the outside — they call into the Lab's `executeFromExecutor` function to trigger actions using the Lab's account as the sender.
 
 This is what makes Labs programmable. An executor module can swap tokens, claim rewards, distribute funds, record data, or interact with any external contract — all as the Lab — without requiring the Lab owner to sign a UserOperation for each action. The Lab owner only needs to approve the executor's installation; after that, the executor can act within its configured scope.
 

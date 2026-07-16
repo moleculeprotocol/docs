@@ -1,7 +1,7 @@
 ---
 description: >-
-  How delegated access to an Onchain Lab works — role hierarchy, capability
-  matrix, expiry, agent flag, and the on-chain resolver.
+  How delegated access to a Lab works — role hierarchy, capability matrix,
+  expiry, agent flag, and the on-chain resolver.
 icon: users-gear
 ---
 
@@ -9,9 +9,12 @@ icon: users-gear
 
 ## Why Roles Exist
 
-An Onchain Lab's NFT holder is its sole ultimate controller — transferring the LabNFT transfers the entire project. In practice, most research projects need to delegate day-to-day data-room work (uploading files, posting announcements, decrypting confidential research) to collaborators and AI agents without surrendering ownership.
+A Lab's NFT holder is its sole ultimate controller — transferring the LabNFT transfers the entire project. In practice, most research projects need to delegate day-to-day data-room work (uploading files, posting announcements, decrypting confidential research) to collaborators and AI agents without surrendering ownership.
 
-The role system lets a Lab owner grant scoped, expiring access to specific wallets — human or agent — while keeping ownership, treasury control, and the ability to revoke access at any time. Roles are enforced on-chain by the `AccessResolver` contract and honoured by every downstream system (GraphQL API, file encryption, UI) that checks them.
+The role system lets a Lab owner grant scoped, expiring access to specific wallets — human or agent — while keeping ownership, treasury control, and the ability to revoke access at any time. Invites via email are possible, meaning team members do not have to be web3-native to participate.&#x20;
+
+\
+Roles are enforced on-chain by the `AccessResolver` contract and honoured by every downstream system (GraphQL API, file encryption, UI) that checks them.
 
 ## Role Hierarchy
 
@@ -23,17 +26,17 @@ The `hasRole` check is hierarchical: a Contributor automatically passes Viewer c
 
 ## Capability Matrix
 
-| Capability                                  | Owner | Contributor | Viewer |
-| ------------------------------------------- | :---: | :---------: | :----: |
-| View public data-room files                 |   ✓   |      ✓      |   ✓    |
-| Decrypt confidential data-room files        |   ✓   |      ✓      |   ✓    |
-| Upload / update / delete data-room files    |   ✓   |      ✓      |        |
-| Create announcements                        |   ✓   |      ✓      |        |
-| Grant / revoke Viewer role                  |   ✓   |      ✓      |        |
-| Grant / revoke Contributor role             |   ✓   |             |        |
-| Manage project owners (add/remove)          |   ✓   |             |        |
-| Transfer the LabNFT                         |   ✓   |             |        |
-| Authorize / install modules on the Lab      |   ✓   |             |        |
+| Capability                               | Owner | Contributor | Viewer |
+| ---------------------------------------- | :---: | :---------: | :----: |
+| View public data-room files              |   ✓   |      ✓      |    ✓   |
+| Decrypt confidential data-room files     |   ✓   |      ✓      |    ✓   |
+| Upload / update / delete data-room files |   ✓   |      ✓      |        |
+| Create announcements                     |   ✓   |      ✓      |        |
+| Grant / revoke Viewer role               |   ✓   |      ✓      |        |
+| Grant / revoke Contributor role          |   ✓   |             |        |
+| Manage project owners (add/remove)       |   ✓   |             |        |
+| Transfer the LabNFT                      |   ✓   |             |        |
+| Authorize / install modules on the Lab   |   ✓   |             |        |
 
 A Contributor cannot "downgrade" another Contributor to Viewer — downgrades are treated as an admin-level action and rejected for non-Owner callers.
 
@@ -49,8 +52,8 @@ struct RoleGrant {
 }
 ```
 
-- **Expiry** — A non-zero `expiry` makes the grant auto-expire. Expired grants still exist in storage (so `getRole` returns them for UI purposes) but are inactive: `hasRole` returns `false` once `block.timestamp >= expiry`. Expired grantees must be re-granted to regain access.
-- **`isAgent`** — Purely informational metadata. It does **not** change on-chain authorization, but downstream systems (the members list, the data-room UI, the agent-auth flow) surface it to clearly distinguish AI-agent session keys from human team members.
+* **Expiry** — A non-zero `expiry` makes the grant auto-expire. Expired grants still exist in storage (so `getRole` returns them for UI purposes) but are inactive: `hasRole` returns `false` once `block.timestamp >= expiry`. Expired grantees must be re-granted to regain access.
+* **`isAgent`** — Purely informational metadata. It does **not** change on-chain authorization, but downstream systems (the members list, the data-room UI, the agent-auth flow) surface it to clearly distinguish AI-agent session keys from human team members.
 
 A Lab owner granting access to an agent should set `isAgent = true` and a short `expiry` — typically the agent's session-key lifetime. When the session expires, the agent must request a new grant before it can continue to decrypt files or post announcements.
 
@@ -82,10 +85,10 @@ function getRole(bytes32 oclId, address account)
 | Action                                     | Owner | Active Contributor |
 | ------------------------------------------ | :---: | :----------------: |
 | `grantRole(… Contributor)`                 |   ✓   |                    |
-| `grantRole(… Viewer)` (fresh / same level) |   ✓   |         ✓          |
+| `grantRole(… Viewer)` (fresh / same level) |   ✓   |          ✓         |
 | `grantRole(…)` that downgrades a role      |   ✓   |                    |
 | `revokeRole(…)` on a Contributor           |   ✓   |                    |
-| `revokeRole(…)` on a Viewer                |   ✓   |         ✓          |
+| `revokeRole(…)` on a Viewer                |   ✓   |          ✓         |
 
 Revokes on accounts with no active grant return silently without emitting an event, to prevent unauthorised callers from spamming `RoleRevoked` logs.
 
@@ -113,12 +116,12 @@ Use these events to reconstruct the team-members list for a lab off-chain; the o
 
 ### Errors
 
-- `InvalidOclId(bytes32 oclId)` — malformed identifier or LabNFT binding mismatch.
-- `InvalidRole(uint8 role)` — role must be `ROLE_VIEWER (1)` or `ROLE_CONTRIBUTOR (2)`.
-- `UnauthorizedRoleAdmin(bytes32 oclId, address caller, uint8 role)` — caller lacks permission for the requested grant/revoke.
+* `InvalidOclId(bytes32 oclId)` — malformed identifier or LabNFT binding mismatch.
+* `InvalidRole(uint8 role)` — role must be `ROLE_VIEWER (1)` or `ROLE_CONTRIBUTOR (2)`.
+* `UnauthorizedRoleAdmin(bytes32 oclId, address caller, uint8 role)` — caller lacks permission for the requested grant/revoke.
 
 ## See Also
 
-- [AccessResolver contract reference](../references/contracts/accessresolver.md) — full ABI, deployments, signer-authorization predicates (`isAuthorizedSignerForIpnft`, `isAuthorizedSignerForTba`).
-- [Data Privacy & Access](data/data-privacy-and-access.md) — how role checks feed into file encryption / decryption.
-- [On-Chain Lab](onchain-lab.md) — how `oclId` is derived and why ownership resolves through the TBA.
+* [AccessResolver contract reference](../references/contracts/accessresolver.md) — full ABI, deployments, signer-authorization predicates (`isAuthorizedSignerForIpnft`, `isAuthorizedSignerForTba`).
+* [Data Privacy & Access](data/data-privacy-and-access.md) — how role checks feed into file encryption / decryption.
+* [On-Chain Lab](onchain-lab.md) — how `oclId` is derived and why ownership resolves through the TBA.

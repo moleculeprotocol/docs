@@ -9,7 +9,7 @@ icon: hashtag-lock
 
 ### How Storage Works
 
-Every file uploaded to an Onchain Lab passes through a layered storage pipeline that encrypts, distributes, versions, and references data across multiple decentralised systems. The result is a file that is encrypted before it leaves the researcher's browser, pinned to a content-addressed network for retrieval, persisted permanently independent of any single provider, versioned with full provenance history, and referenced on-chain in the Lab's Token Bound Account.
+Every file uploaded to a Lab passes through a layered storage pipeline that encrypts, distributes, versions, and references data across multiple decentralised systems. The result is a file that is encrypted before it leaves the researcher's browser, pinned to a content-addressed network for retrieval, persisted permanently independent of any single provider, versioned with full provenance history, and referenced on-chain in the Lab's Token Bound Account.
 
 ### Upload Flow
 
@@ -57,13 +57,13 @@ Even if a file record is removed from a Lab's data room index, the underlying co
 
 ### Storage Summary
 
-| Data Type                  | Where Stored                  | Managed By                           | Purpose                                       |
-| -------------------------- | ----------------------------- | ------------------------------------ | --------------------------------------------- |
-| Research files (encrypted) | IPFS + Arweave                | Filebase (upload), Kamu (versioning) | Decentralised, permanent, content-addressed   |
-| On-chain data references   | Lab's Token Bound Account     | Smart contract                       | Tamper-evident CID pointers and metadata      |
-| tokenURI pointer           | On-chain (Lab TBA)            | Lab smart contract                   | Permanent reference to IP-NFT metadata        |
-| File versions              | Kamu provenance DB            | Kamu                                 | Append-only version history and audit trail   |
-| Encryption keys            | Wrapped per-file DEKs          | Onchain-Verified Envelope Encryption | Per-file AES-256 DEK wrapped by a protocol-operated custodian (BLS threshold operator network on roadmap). Plaintext DEK is released only after on-chain conditions are re-verified. Legacy files continue to resolve through Lit Protocol until migrated. |
-| Access conditions          | Stored in encryption metadata on Kamu (ODF) | AccessResolver (on-chain)  | Defines who can decrypt each file             |
-| File provenance            | Kamu provenance DB            | Kamu                                 | DID-based authorship, timestamps, lineage     |
-| Activity events            | Kamu provenance DB + on-chain | Kamu + Lab TBA                       | Access logs, metadata changes, announcements  |
+| Data Type                  | Where Stored                                | Managed By                           | Purpose                                                                                                                                                                                                                                                    |
+| -------------------------- | ------------------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Research files (encrypted) | IPFS + Arweave                              | Filebase (upload), Kamu (versioning) | Decentralised, permanent, content-addressed                                                                                                                                                                                                                |
+| On-chain data references   | Lab's Token Bound Account                   | Smart contract                       | Tamper-evident CID pointers and metadata                                                                                                                                                                                                                   |
+| tokenURI pointer           | On-chain (Lab TBA)                          | Lab smart contract                   | Permanent reference to IP-NFT metadata                                                                                                                                                                                                                     |
+| File versions              | Kamu provenance DB                          | Kamu                                 | Append-only version history and audit trail                                                                                                                                                                                                                |
+| Encryption keys            | Wrapped per-file DEKs                       | Onchain-Verified Envelope Encryption | Per-file AES-256 DEK wrapped by a protocol-operated custodian (BLS threshold operator network on roadmap). Plaintext DEK is released only after on-chain conditions are re-verified. Legacy files continue to resolve through Lit Protocol until migrated. |
+| Access conditions          | Stored in encryption metadata on Kamu (ODF) | AccessResolver (on-chain)            | Defines who can decrypt each file                                                                                                                                                                                                                          |
+| File provenance            | Kamu provenance DB                          | Kamu                                 | DID-based authorship, timestamps, lineage                                                                                                                                                                                                                  |
+| Activity events            | Kamu provenance DB + on-chain               | Kamu + Lab TBA                       | Access logs, metadata changes, announcements                                                                                                                                                                                                               |

@@ -8,14 +8,14 @@
 
 ## Core Concepts
 
-* [Onchain Lab](core-concepts/onchain-lab.md)
+* [Molecule Labs](core-concepts/onchain-lab.md)
 * [Roles & Permissions](core-concepts/roles-and-permissions.md)
 * [Module Registry](core-concepts/module-registry/README.md)
   * [Validator Module](core-concepts/module-registry/validator-module.md)
   * [Data Module](core-concepts/module-registry/data-module.md)
   * [Fallback Modules](core-concepts/module-registry/fallback-modules.md)
   * [Executor Modules](core-concepts/module-registry/executor-modules.md)
-  * [RWA Equity](core-concepts/module-registry/rwa-equity.md)
+  * [Coin-to-Company Model](core-concepts/module-registry/rwa-equity.md)
   * [Fundraising (coming soon)](core-concepts/module-registry/fundraising-coming-soon.md)
 * [Tokenized IPs](core-concepts/tokenized-ips/README.md)
   * [IP-NFTs](core-concepts/tokenized-ips/ip-nfts.md)
@@ -31,7 +31,7 @@
 * [📊 Data API](api-reference/data-api.md)
 * [🔐 Tokenization API](api-reference/tokenization-api.md)
 * [⚙️ Labs API](api-reference/labs-api.md)
-* [💳 x402 Gateway](api-reference/x402-gateway.md)
+* [x402 Gateway](api-reference/x402-gateway.md)
 
 ## AI Tooling
 

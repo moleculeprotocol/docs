@@ -1,16 +1,16 @@
 ---
 description: >-
-  The RWA Equity module bridges onchain IP Token ownership with off-chain
+  The Coin-to-Company module bridges onchain IP Token ownership with off-chain
   shareholder rights, enabling a compliant pathway from token holder to
   real-world equity participant
 icon: envelope-ribbon
 ---
 
-# RWA Equity
+# Coin-to-Company Model
 
-## RWA Equity
+## Coin-to-Company (C2C)
 
-The RWA Equity module will provide a compliant pathway for IP Token holders to qualify for real-world equity in the research projects they support. It bridges the gap between onchain token ownership — which provides governance participation and economic exposure — and off-chain shareholder rights, which confer legal ownership in the underlying entity.
+The C2C module will provide a compliant pathway for IP Token holders to qualify for real-world equity in the research projects they support. It bridges the gap between onchain token ownership — which provides governance participation and economic exposure — and off-chain shareholder rights, which confer legal ownership in the underlying entity.
 
 This is an opt-in framework. Token holders who prefer the liquidity and simplicity of standard IP Tokens continue operating exactly as before. Only those who choose to pursue equity enter the lock-and-qualify process.
 
@@ -22,7 +22,7 @@ For research projects that reach a stage where real-world equity matters — lic
 
 ### How It Works
 
-The RWA Equity module implements a lock-and-qualify process managed through the Lab's modular account:
+The C2C module implements a lock-and-qualify process managed through the Lab's modular account:
 
 **Token locking.** A holder swaps their liquid IP Tokens one-to-one for locked tokens through a locking contract. The locked tokens represent the same underlying value but cannot be freely transferred. This creates a commitment signal — the holder is signalling long-term alignment with the project by sacrificing immediate liquidity.
 
@@ -36,9 +36,9 @@ Locking tokens does not automatically grant equity. It establishes eligibility. 
 
 ### Role in the Module Architecture
 
-The RWA Equity framework is designed to operate as a module within the Lab's modular TBA. The onchain components — token locking, credential verification, and shareholder status tracking — would be implemented as a combination of fallback modules (adding equity-related query functions to the Lab) and executor modules (enabling authorised compliance services to trigger lock/unlock operations and update shareholder status).
+The framework is designed to operate as a module within the Lab's modular token-bound account. The onchain components — token locking, credential verification, and shareholder status tracking — would be implemented as a combination of fallback modules (adding equity-related query functions to the Lab) and executor modules (enabling authorised compliance services to trigger lock/unlock operations and update shareholder status).
 
-This modular approach means that RWA equity is an installable capability, not a mandatory feature of every Lab. Projects that operate purely in the token economy never install the module. Projects that want to offer an equity pathway install it when ready, and the ERC-7484 Module Registry ensures the equity module contracts are attested and audited before activation.
+This modular approach means that C2C is an installable capability, not a mandatory feature of every Lab. Projects that operate purely in the token economy never install the module. Projects that want to offer an equity pathway install it when ready, and the ERC-7484 Module Registry ensures the equity module contracts are attested and audited before activation.
 
 ### Legal Design
 
@@ -48,6 +48,6 @@ Holding locked tokens is a prerequisite for pursuing equity through separate leg
 
 ### Current Status
 
-The RWA Equity framework is in design. The `TimelockedToken.sol` contract in the IPNFT repository provides a foundation for time-based token locking, and the existing IP Token infrastructure supports the token economics that underpin the framework. The specific locking contract, credential system, and shareholder management logic for the equity qualification pathway are planned for future development.
+The `TimelockedToken.sol` contract in the IPNFT repository provides a foundation for time-based token locking, and the existing IP Token infrastructure supports the token economics that underpin the framework.&#x20;
 
-The modular account infrastructure that would host the equity module — the `SelectorManager`, `ExecutorManager`, the ERC-7484 registry, and the `installModule` flow — is implemented and deployed on Sepolia, providing the foundation for installation when the equity module contracts are ready.
+The modular account infrastructure that would host the equity module — the `SelectorManager`, `ExecutorManager`, the ERC-7484 registry, and the `installModule` flow — is implemented and deployed.

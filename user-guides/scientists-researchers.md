@@ -1,39 +1,23 @@
 ---
-description: Your Path from Research to IP Tokens
+description: Your Path into DeSci
 icon: user-magnifying-glass
 ---
 
 # Scientists/Researchers
 
-### From Idea to IP Tokens
+**Who This Guide Is For**
 
-<figure><img src="../.gitbook/assets/Onchain Lab IP-NFT Flow-2026-01-25-073835.png" alt=""><figcaption></figcaption></figure>
-
-### Who This Guide Is For
-
-You're a researcher — at a university, an independent lab, or somewhere in between — and you have scientific work that deserves funding, recognition, and a path to real-world impact. Maybe you have preliminary data sitting on a hard drive. Maybe you have a patented compound stuck in a tech transfer queue. Maybe you just have a hypothesis and the skills to test it. Molecule gives you a way to take that work onchain, own it, fund it, and run it — without waiting for institutional approval or traditional grant cycles.
+You're a researcher — at a university, an independent lab, or somewhere in between — and you have scientific work that deserves funding, recognition, and a path to real-world impact. Maybe you have preliminary data sitting on a hard drive. Maybe you just have a hypothesis and the skills to test it. Molecule gives you a way to take that work onchain, fund it, and run it — without waiting for institutional approval or traditional grant cycles.
 
 This guide walks you through the journey from your perspective. For the technical details behind each step, the Core Concepts section covers the architecture in depth. Here, we focus on what you actually do at each stage, why it matters for your research, and the choices you'll make along the way.
 
-### Starting Point: Where Are You?
-
-Researchers come to Molecule from different places, and the platform is designed to meet you wherever you are.
-
-If you have an idea but no IP yet — perhaps an untested hypothesis, preliminary observations, or a research direction you want to explore — your first step is simply creating a Lab and uploading whatever you have. There are no prerequisites. The Lab is your starting line, not the finish.
-
-If you have existing research through a university or company — datasets, publications, maybe a provisional patent — you can bring that work onchain by creating a Lab, uploading your data, and minting an IP-NFT once you've arranged the legal assignment. The legal frameworks section in DeSci.Codes provides model agreements for exactly this situation.
-
-If you have existing IP or a patent as an independent researcher — you already own the rights. Create a Lab, mint an IP-NFT anchored to your existing IP, and you're immediately ready to tokenize and fundraise.
-
-No matter where you start, the entry point is the same: create a Lab.
-
 ### Step 1: Create Your Onchain Lab
 
-Creating a Lab is a single action. You mint a Lab NFT and instantly receive a permanent onchain identity — a wallet address that belongs to your research project. This address is yours. It doesn't belong to a university, a funding body, or a company. If you change institutions, the Lab comes with you. If you sell the project, the entire Lab transfers in one transaction.
+Creating a Lab is a single action. You mint a Lab NFT and instantly receive a permanent onchain identity — a wallet address that belongs to your research project. If you sell the project, the entire Lab transfers in one transaction.
 
-The practical experience is straightforward: connect your wallet, click create, and your Lab exists. There's no gas cost — Molecule sponsors the transaction fees for Lab creation. From this moment, your Lab can hold assets, store data, and accumulate a track record.
+The practical experience is straightforward: connect your wallet, click create, and your Lab exists. There's no gas cost — Molecule sponsors the transaction fees for Lab creation if you connect via email. From this moment, your Lab can hold assets, store data, and accumulate a track record.
 
-A few things worth knowing early on. Your Lab address is permanent and deterministic, meaning it works across any EVM chain without needing to be bridged or migrated. Everything you do — uploading a file, receiving funds, minting IP — is recorded as a transaction on this address. Over time, this becomes your project's verifiable CV. Refer to the On-Chain Lab section for the full technical picture of how this works under the hood.
+A few things worth knowing early on. Your Lab address is permanent and deterministic, meaning it works across any EVM chain without needing to be bridged or migrated. Everything you do — uploading a file, receiving funds, minting IP — is recorded as a transaction on this address. Over time, this becomes your project's verifiable CV.&#x20;
 
 ### Step 2: Upload Your Research Data
 
@@ -43,11 +27,9 @@ The key decision here is access control. For each file, you choose who can see i
 
 Public files are visible to anyone. Use this for data that builds credibility — published datasets, methodology descriptions, summary results. This is how you signal to the community and potential funders that your Lab is active and producing real work.
 
-Token-gated files require holding your project's IP Tokens to access. This is your premium data room. Funders who hold IPTs get access to the detailed research — raw experimental data, unpublished results, proprietary methods. This creates a direct link between financial participation and information access.
-
 Private files remain encrypted and visible only to you (and any roles you delegate). Pre-publication results, sensitive patient data, or trade secrets stay protected until you choose otherwise.
 
-The data you upload is not just storage — it becomes an asset. As your Lab accumulates data, its value grows. Investors evaluate Labs partly by the depth and quality of their data rooms. AI agents (covered below) can operate on your data continuously. And every file upload is a recorded event in your Lab's onchain history, contributing to your project's verifiable track record. For details on the underlying storage and encryption infrastructure, see Data Storage and Data Privacy & Access.
+The data you upload is not just storage — it becomes an asset. As your Lab accumulates data, its value grows. Funders evaluate Labs partly by the depth and quality of their data rooms. AI agents (covered below) can operate on your data continuously. And every file upload is a recorded event in your Lab's onchain history, contributing to your project's verifiable track record. For details on the underlying storage and encryption infrastructure, see Data Storage and Data Privacy & Access.
 
 ### Step 3: Register and Tokenize Your IP
 
@@ -103,7 +85,7 @@ When the time comes, your Lab is fully portable. Sell it to a pharmaceutical com
 
 The traditional path: apply for grants, wait months, do research within rigid institutional frameworks, file patents through tech transfer offices that take years and large equity cuts, hope for licensing interest from industry, and repeat.
 
-The Molecule path: create a Lab in seconds, upload your data, register IP you actually own, raise funds directly from a global community, put AI agents to work on your research continuously, and build a verifiable track record that follows you — not your institution — for your entire career.
+The Molecule path: create a Lab in seconds, upload your data, raise funds directly from a global community, put AI agents to work on your research continuously, and build a verifiable track record that follows you — not your institution — for your entire career.
 
 Your science. Your Lab. Your terms.
 

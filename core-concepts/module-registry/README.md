@@ -1,7 +1,7 @@
 ---
 description: >-
-  How Onchain Labs discover, install, and secure modular extensions through the
-  ERC-7484 attestation registry
+  How Labs discover, install, and secure modular extensions through the ERC-7484
+  attestation registry
 icon: cabinet-filing
 ---
 
@@ -25,11 +25,11 @@ The alternative — building every possible feature into the core Lab contract �
 
 Onchain Labs support two module types, defined by the ERC-7579 modular account standard.
 
-#### (i) Executor modules&#x20;
+#### (i) Executor modules
 
 Contracts that can initiate transactions _from_ a Lab account. When installed, an executor gains the ability to call into the Lab and execute actions on its behalf. This is the mechanism for automated and third-party logic: a royalty distribution module can move funds from the Lab's treasury, a milestone module can release payments when conditions are met, an AI agent can execute research workflows within defined boundaries. Executors operate under the authority of the module installation — the Lab owner authorised the module's capabilities when they installed it.
 
-#### (ii) Fallback modules&#x20;
+#### (ii) Fallback modules
 
 Extend a Lab's interface by registering new function selectors. When a call arrives at the Lab for a function the core contract doesn't recognise, the Lab routes it to whichever fallback module is registered for that selector. This enables Labs to respond to entirely new interfaces without modifying the core contract. A fallback module might add ERC-1155 receiver support, implement a custom governance voting interface, or expose data querying functions.
 
@@ -77,19 +77,19 @@ operates within the context of the Lab's account — meaning it can access the L
 
 The module system has several layers of security that work together.
 
-#### Attestation gating&#x20;
+#### Attestation gating
 
 Ensures that only reviewed and approved modules can be installed. The ERC-7484 Registry is the first line of defence — a module that hasn't been attested, or whose attestation has expired or been revoked, cannot be installed on any Lab.
 
-#### Owner-only installation&#x20;
+#### Owner-only installation
 
 Ensures that only the Lab owner can decide which modules to install. Module installation requires a valid UserOperation through the ERC-4337 EntryPoint, authenticated against the current LabNFT owner.
 
-#### EntryPoint execution gating&#x20;
+#### EntryPoint execution gating
 
 Ensures that critical execution paths (including module-initiated actions) flow through the ERC-4337 EntryPoint, which validates every operation before execution.
 
-#### Beacon upgradeability&#x20;
+#### Beacon upgradeability
 
 Provides a system-wide upgrade mechanism. All Lab accounts share a single implementation behind a beacon proxy. The beacon owner (a Molecule-controlled address) can upgrade the implementation, affecting all Labs simultaneously. This is distinct from module installation — it upgrades the core account logic, not the installed modules. Upgrade authority should be understood as a trust assumption of the current deployment.
 

@@ -1,8 +1,7 @@
 ---
 description: >-
-  How Onchain Labs protect confidential research data through client-side
-  encryption, on-chain access verification, and a condition-gated key-release
-  flow.
+  How Labs protect confidential research data through client-side encryption,
+  on-chain access verification, and a condition-gated key-release flow.
 icon: fingerprint
 ---
 
@@ -12,16 +11,16 @@ icon: fingerprint
 
 Scientific research data is often commercially sensitive, personally identifiable, or competitively valuable. Releasing raw experimental results, proprietary compounds, or patient-derived datasets without control can compromise patent applications, regulatory submissions, and competitive advantage. At the same time, the transparency benefits of on-chain science — provenance, reproducibility, collaboration — require that data _exists_ in a verifiable, shared infrastructure.
 
-Onchain Labs resolve this tension by encrypting data before it enters the public infrastructure. The blockchain records _that_ data exists, _who_ uploaded it, and _who_ can access it — but never the data itself. The underlying content is encrypted client-side, stored as ciphertext, and only decrypted inside an authorised client after access conditions have been verified against live on-chain state.
+Labs resolve this tension by encrypting data before it enters the public infrastructure. The blockchain records _that_ data exists, _who_ uploaded it, and _who_ can access it — but never the data itself. The underlying content is encrypted client-side, stored as ciphertext, and only decrypted inside an authorised client after access conditions have been verified against live on-chain state.
 
 ### Onchain-Verified Envelope Encryption
 
 Molecule uses **Onchain-Verified Envelope Encryption** for every confidential file in an Onchain Lab.
 
-- **Client-side encryption.** Files are AES-256-GCM encrypted inside the client (browser or AI agent) before they leave the device, using a fresh per-file Data Encryption Key (DEK).
-- **Decentralised storage.** Ciphertext is pinned to IPFS and persisted to Arweave; access conditions and encryption metadata live alongside the file's provenance record on Kamu (ODF) nodes — decentralised by design.
-- **On-chain verification.** Every decryption is gated by a live on-chain check: the stored access conditions are re-evaluated against current chain state (`AccessResolver`, `IPNFT.canRead`, token balances) before the DEK is released. There is no cached permission list.
-- **Evolving key custody.** The DEK is wrapped by a protocol-operated key custodian today. Custody moves to a BLS threshold operator network (roadmap) without changes to clients, stored metadata, or the on-chain interface.
+* **Client-side encryption.** Files are AES-256-GCM encrypted inside the client (browser or AI agent) before they leave the device, using a fresh per-file Data Encryption Key (DEK).
+* **Decentralised storage.** Ciphertext is pinned to IPFS and persisted to Arweave; access conditions and encryption metadata live alongside the file's provenance record on Kamu (ODF) nodes — decentralised by design.
+* **On-chain verification.** Every decryption is gated by a live on-chain check: the stored access conditions are re-evaluated against current chain state (`AccessResolver`, `IPNFT.canRead`, token balances) before the DEK is released. There is no cached permission list.
+* **Evolving key custody.** The DEK is wrapped by a protocol-operated key custodian today. Custody moves to a BLS threshold operator network (roadmap) without changes to clients, stored metadata, or the on-chain interface.
 
 Files marked as Public skip encryption entirely. The researcher explicitly chooses to make this data openly accessible. Public files still benefit from content addressing, versioning, and provenance tracking, but they carry no confidentiality guarantees by design.
 
@@ -52,9 +51,9 @@ Who may decrypt a file is determined by on-chain conditions, not by a centralise
 
 Conditions resolve through the [`AccessResolver`](../../references/contracts/accessresolver.md) contract, which exposes three principal predicates:
 
-- **Public** — no condition; anyone can decrypt.
-- **Token-Holder** — `isAuthorizedSignerForIpnft(signer, ipnftId)` / `isAuthorizedSignerForTba(signer, account)`: passes for IP-NFT holders and any authorized signer resolved recursively through Safe multisigs, Ownable contracts, and ERC-6551 TBAs.
-- **Role-gated** — `hasRole(oclId, signer, ROLE_VIEWER | ROLE_CONTRIBUTOR)`: passes for accounts with an active (non-expired) role grant for the lab. See [Roles & Permissions](../roles-and-permissions.md) for the full role model and grant lifecycle.
+* **Public** — no condition; anyone can decrypt.
+* **Token-Holder** — `isAuthorizedSignerForIpnft(signer, ipnftId)` / `isAuthorizedSignerForTba(signer, account)`: passes for IP-NFT holders and any authorized signer resolved recursively through Safe multisigs, Ownable contracts, and ERC-6551 TBAs.
+* **Role-gated** — `hasRole(oclId, signer, ROLE_VIEWER | ROLE_CONTRIBUTOR)`: passes for accounts with an active (non-expired) role grant for the lab. See [Roles & Permissions](../roles-and-permissions.md) for the full role model and grant lifecycle.
 
 Conditions compose via boolean operators — a Lab can, for example, require both Contributor role AND a license NFT before granting access. Future releases will introduce additional composable conditions: credential-gating by minimum IPT holdings, access-list gating by specific wallet addresses, payment-gated unlocks, license-gated access via time-bound license NFTs (ERC-4907), and time-locked conditions that auto-release data at a specified date or block.
 
@@ -179,7 +178,7 @@ At decrypt time the backend walks the array left-to-right: each `EvmContractCond
 
 ### Decryption Flow
 
-Decryption is **condition-authoritative**: the backend reads the stored conditions from their immutable source (Kamu for data-room files, the IPNFT's on-chain `tokenURI` for agreements), verifies them against live chain state, and only then releases the plaintext DEK. A compromised client cannot substitute weaker conditions.
+Decryption is **condition-authoritative**: the backend reads the stored conditions from their immutable source, verifies them against live chain state, and only then releases the plaintext DEK. A compromised client cannot substitute weaker conditions.
 
 ```
 1. Client → AppSync: decryptDataKey(ipnftUid, filePath | tokenUri + agreementUrl)
@@ -218,11 +217,11 @@ For IPFS-pinned agreement files (immutable once minted), the client passes `toke
 
 AI agents encrypt and decrypt lab files through the same GraphQL interface, using a service-token auth path instead of a user Privy JWT:
 
-- **Auth** — The agent authenticates with an `X-Service-Token` JWT. For short-lived access, the [x402 Gateway](../../api-reference/x402-gateway.md) mints a per-request token scoped to one mutation after verifying a USDC payment. For long-lived agents, the Molecule team provisions a service token tied to a wallet and an `allowedMutations` list.
-- **Role grant** — The Lab owner grants the agent's wallet a Contributor (or Viewer) role via `AccessResolver.grantRole` with `isAgent = true` and a bounded `expiry`. The `isAgent` flag is surfaced in the team-members UI so agent session keys are clearly distinguished from human collaborators.
-- **Encrypt** — The agent calls `initiateCreateOrUpdateFileV2(encryption: true)`, receives a plaintext DEK, encrypts the file locally (Node.js `crypto` / Web Crypto), uploads the ciphertext, then calls `finishCreateOrUpdateFileV2` with the encryption metadata.
-- **Decrypt** — The agent calls `decryptDataKey(ipnftUid, filePath)`. The backend evaluates the stored conditions against live chain state; a valid Viewer/Contributor grant satisfies the `hasRole` predicate. The backend returns the plaintext DEK over TLS; the agent decrypts locally.
-- **Expiry** — When the role grant expires (`block.timestamp >= expiry`), `hasRole` returns `false` and `decryptDataKey` starts failing with a conditions-not-met error. The agent must request a fresh grant — typically from an owner-controlled orchestrator — before it can continue.
+* **Auth** — The agent authenticates with an `X-Service-Token` JWT. For short-lived access, the [x402 Gateway](../../api-reference/x402-gateway.md) mints a per-request token scoped to one mutation after verifying a USDC payment. For long-lived agents, the Molecule team provisions a service token tied to a wallet and an `allowedMutations` list.
+* **Role grant** — The Lab owner grants the agent's wallet a Contributor (or Viewer) role via `AccessResolver.grantRole` with `isAgent = true` and a bounded `expiry`. The `isAgent` flag is surfaced in the team-members UI so agent session keys are clearly distinguished from human collaborators.
+* **Encrypt** — The agent calls `initiateCreateOrUpdateFileV2(encryption: true)`, receives a plaintext DEK, encrypts the file locally (Node.js `crypto` / Web Crypto), uploads the ciphertext, then calls `finishCreateOrUpdateFileV2` with the encryption metadata.
+* **Decrypt** — The agent calls `decryptDataKey(ipnftUid, filePath)`. The backend evaluates the stored conditions against live chain state; a valid Viewer/Contributor grant satisfies the `hasRole` predicate. The backend returns the plaintext DEK over TLS; the agent decrypts locally.
+* **Expiry** — When the role grant expires (`block.timestamp >= expiry`), `hasRole` returns `false` and `decryptDataKey` starts failing with a conditions-not-met error. The agent must request a fresh grant — typically from an owner-controlled orchestrator — before it can continue.
 
 See the [Developers / AI Agents guide](../../user-guides/developers-ai-agents.md) for end-to-end agent integration patterns and the [MCP Tools reference](../../references/mcp-tools.md) for the read-side agent toolset.
 

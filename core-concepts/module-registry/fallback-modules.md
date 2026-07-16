@@ -1,8 +1,8 @@
 ---
 description: >-
-  Fallback modules extend OnChain Lab functionality by handling function calls
-  that are not natively defined on the account contract, dispatched through the
-  Solidity fallback function via selector-based
+  Fallback modules extend Lab functionality by handling function calls that are
+  not natively defined on the account contract, dispatched through the Solidity
+  fallback function via selector-based
 icon: square-binary
 ---
 
@@ -10,13 +10,13 @@ icon: square-binary
 
 ## Fallback Modules
 
-Fallback modules extend the native functionality of an OnChain Lab by handling calls to function selectors that are not defined on the account contract itself. When a transaction targets a selector that the Lab does not recognize, the Solidity `fallback()` function intercepts it and routes the call to a registered external module based on a per-selector configuration managed by the `SelectorManager`.
+Fallback modules extend the native functionality of a Lab by handling calls to function selectors that are not defined on the account contract itself. When a transaction targets a selector that the Lab does not recognize, the Solidity `fallback()` function intercepts it and routes the call to a registered external module based on a per-selector configuration managed by the `SelectorManager`.
 
 This mechanism allows Labs to support new interfaces, respond to new protocol interactions, and integrate with external systems — all without modifying the core account logic.
 
 ### How It Works
 
-Every OnChain Lab inherits from `SelectorManager`, which maintains a mapping from 4-byte function selectors to a `SelectorConfig` struct:
+Every Lab inherits from `SelectorManager`, which maintains a mapping from 4-byte function selectors to a `SelectorConfig` struct:
 
 solidity
 

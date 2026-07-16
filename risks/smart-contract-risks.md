@@ -1,4 +1,5 @@
 ---
+hidden: true
 icon: light-emergency-on
 ---
 
