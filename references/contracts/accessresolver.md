@@ -24,17 +24,25 @@ See [Roles & Permissions](../../core-concepts/roles-and-permissions.md) for the 
 
 #### Deployments
 
-* **Ethereum Mainnet**
+The **V3 role system runs only on Base and Base Sepolia**. The Ethereum Mainnet and Sepolia deployments are **v2** — they expose the signer predicates (`isAuthorizedSignerForIpnft`, `isAuthorizedSignerForTba`, …) but have **no role functions** (`grantRole` / `hasRole` / `revokeRole` / `getRole`).
+
+* **Base (canonical chain — v3, roles live here)**
+  * Address: `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B`
+  * [Verified on BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B)
+* **Base Sepolia (v3)**
+  * Address: `0x5493F472602C87318EA5Eff753cDD593bf9bF559`
+  * [Verified on BaseScan](https://sepolia.basescan.org/address/0x5493F472602C87318EA5Eff753cDD593bf9bF559)
+* **Ethereum Mainnet (v2 — signer predicates only)**
   * Address: `0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0`
   * [Verified on Etherscan](https://etherscan.io/address/0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0)
-* **Sepolia Testnet**
-  * Address: `0xd9b492fd34b1579c052b2ea25970178b3011ce6b`
-  * [Verified on Etherscan](https://sepolia.etherscan.io/address/0xd9b492fd34b1579c052b2ea25970178b3011ce6b)
+* **Sepolia Testnet (v2 — signer predicates only)**
+  * Address: `0xd9b492fd34b1579C052b2EA25970178B3011Ce6B`
+  * [Verified on Etherscan](https://sepolia.etherscan.io/address/0xd9b492fd34b1579C052b2EA25970178B3011Ce6B)
 
 ### How It Works
 
 1. A caller (file-encryption layer, GraphQL resolver, UI) asks the `AccessResolver` whether a wallet is authorized for a given IP-NFT / TBA / lab role.
-2. The resolver walks the ownership graph: direct ownership → ERC-6551 `isValidSigner` → Safe `isOwner` → `Ownable.owner()` (recursively, up to depth 10).
+2. The resolver checks direct ownership and the ERC-6551 `isValidSigner` fast-path first, then walks the ownership graph — Safe `isOwner` → `Ownable.owner()` — recursively, up to depth 10.
 3. For role checks it reads the per-lab `RoleGrant` struct, enforces the Owner > Contributor > Viewer hierarchy, and respects each grant's expiry timestamp.
 4. Returns `true`/`false`. The resolver never mints, grants, or revokes encryption keys itself — it is read-only from the caller's perspective (except for the explicit `grantRole` / `revokeRole` entry points).
 
@@ -87,20 +95,22 @@ function getRole(bytes32 oclId, address account)
 
 **`oclId` layout** (bytes32, MSB → LSB): version byte (`0x01`), namespace byte (`0x01` = EVM), 10 reserved / tokenId-high bytes, 20-byte TBA address. Every role entry point runs `_validateOclId`, which verifies the version / namespace bytes, that the TBA has code, that `LabNFT.accountOf(tokenId) == tba`, and that `IERC6551.token()` returns `(CANONICAL_CHAIN_ID = 8453, labNft, tokenId)`. Malformed identifiers revert with `InvalidOclId`.
 
-**Chain scoping.** `AccessResolver` is deployed on Base, Mainnet, and Sepolia, but canonical lab state lives on Base. Lab-owner self-administration (`grantRole` / `revokeRole` called by the NFT holder) works only on Base, because the reference ERC-6551 `owner()` returns `address(0)` off-canonical-chain. On Mainnet / Sepolia, lab NFT holders must call through the Base deployment.
+**Chain scoping.** The role system exists only on the **Base and Base Sepolia (v3)** deployments — Ethereum Mainnet and Sepolia run v2, which has no role functions at all. Canonical lab state lives on Base: lab-owner self-administration (`grantRole` / `revokeRole` called by the NFT holder) works only there, because the reference ERC-6551 `owner()` returns `address(0)` off-canonical-chain.
+
+**Global admin.** In addition to per-lab owners, the **contract owner (Molecule's protocol multisig)** is a global role admin: it can grant and revoke roles on any lab and passes every `hasRole` check. This is the operational escape hatch for support and recovery flows.
 
 **Setup (owner-only).**
 
 ```solidity
 function setLabNftContract(address labNftAddress) external; // onlyOwner
 function setLockedTokenFactory(address factoryAddress) external; // onlyOwner
-function initializeV3(address _labNftContractAddress) external; // onlyOwner, reinitializer(2)
+function initializeV3(address _labNftContractAddress) public; // onlyOwner, reinitializer(2)
 ```
 
 #### Events
 
 *   **RoleGranted(oclId, account, role, expiry, isAgent, grantedBy)** — emitted when a role is granted.
-*   **RoleRevoked(oclId, account, role, revokedBy)** — emitted when a role is revoked. Revoking an account with no active grant returns silently without emitting, to prevent unauthorised callers spamming logs.
+*   **RoleRevoked(oclId, account, role, revokedBy)** — emitted when a role is revoked. Revoking an account with no stored grant (`role == 0`) returns silently without emitting; revoking an expired-but-present grant still requires authorization and emits.
 *   **Initialized(uint64 version)** — emitted when the contract is initialized or reinitialized.
 *   **OwnershipTransferred(previousOwner, newOwner)** — emitted on contract-owner change.
 *   **Upgraded(implementation)** — emitted when the UUPS implementation is upgraded.
@@ -112,14 +122,16 @@ function initializeV3(address _labNftContractAddress) external; // onlyOwner, re
 | `InvalidOclId(bytes32 oclId)`                          | Malformed `oclId` (bad version / namespace, no TBA code, or LabNFT mismatch). |
 | `InvalidRole(uint8 role)`                              | Role must be `ROLE_VIEWER (1)` or `ROLE_CONTRIBUTOR (2)`.                     |
 | `UnauthorizedRoleAdmin(bytes32 oclId, address, uint8)` | Caller lacks permission for the requested grant/revoke.                       |
-| `OwnersOverflow(uint256)`                              | Owner-resolution recursion exceeded `MAX_OWNERS (50)`.                        |
-| `OwnableUnauthorizedAccount(address)`                  | Caller is not the contract owner for owner-only functions.                    |
-| `OwnableInvalidOwner(address)`                         | Invalid owner address provided.                                               |
-| `UUPSUnauthorizedCallContext()`                        | Upgrade called in an incorrect context.                                       |
+| `OwnersOverflow(uint256)`                              | Owner-resolution exceeded `MAX_OWNERS (50)` or recursion depth 10.            |
+| `OwnableUnauthorizedAccount(address)` *(inherited)*    | Caller is not the contract owner for owner-only functions.                    |
+| `OwnableInvalidOwner(address)` *(inherited)*           | Invalid owner address provided.                                               |
+| `UUPSUnauthorizedCallContext()` *(inherited)*          | Upgrade called in an incorrect context.                                       |
+
+The first four are the contract's custom errors; the rest are inherited from OpenZeppelin.
 
 ### Integration Guide
 
-The same `accessControlConditions` shape is reused across both Molecule's Onchain-Verified Envelope Encryption and the legacy Lit Protocol path — `AccessResolver` is the on-chain oracle either way. New integrations should drive encryption through the Labs API (`initiateCreateOrUpdateFileV2` / `decryptDataKey`); the Lit examples below remain valid for legacy files.
+The same `accessControlConditions` shape is reused across both Molecule's Onchain-Verified Envelope Encryption and the legacy Lit Protocol path — `AccessResolver` is the on-chain oracle either way. New integrations should drive encryption through the Labs API (`initiateCreateOrUpdateFile` / `decryptDataKey`); the Lit examples below remain valid for legacy files.
 
 #### Use as an Access Control Condition (current)
 
@@ -249,5 +261,5 @@ The legacy Lit helper string IDs `ipnft_read` / `authorized_ipnft_signer` resolv
 
 ### Resources
 
-* **ABI**: Generated from the contract source in the [IPNFT repository](https://github.com/moleculeprotocol/IPNFT)
+* **ABI**: Available from the verified contract on [BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B) (source lives in the Molecule Labs contracts repository — contact the team for access)
 * **Lit Protocol Documentation**: [Lit Protocol Developer Docs](https://developer.litprotocol.com/)

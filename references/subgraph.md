@@ -6,7 +6,11 @@ icon: webhook
 
 ## Molecule Subgraph Documentation
 
-The Molecule Subgraph indexes all on-chain events from Molecule Protocol contracts, providing a fast GraphQL API for querying IP-NFTs, IPTs, crowdsales, and marketplace activity. It's powered by The Graph and requires no authentication.
+The Molecule Subgraph indexes on-chain events from the legacy IP-NFT protocol contracts (IP-NFTs, IPTs, crowdsales, marketplace activity). It's powered by The Graph and requires no authentication. The subgraph source lives in the [IPNFT repository](https://github.com/moleculeprotocol/IPNFT/tree/main/subgraph).
+
+{% hint style="warning" %}
+**Service status:** the Satsuma-hosted endpoints below are currently unreachable (the hosting domain no longer resolves). For indexed IP-NFT, IPT, and market data, use the actively maintained [Data API](../api-reference/data-api.md) instead. The entity reference below matches the subgraph schema source and remains valid for self-hosted deployments.
+{% endhint %}
 
 ### Quick Start
 
@@ -19,7 +23,7 @@ const response = await fetch(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      query: `{ ipts(first: 5) { id metadata { symbol name } } }`
+      query: `{ ipts(first: 5) { id symbol name } }`
     })
   }
 )
@@ -41,33 +45,33 @@ Or explore interactively in the [Playground](https://subgraph.satsuma-prod.com/m
 
 #### Core Entities
 
-* **IPNFT**: IP-NFT tokens
-  * Key Fields: `id`, `tokenId`, `owner`, `tokenURI`, `symbol`, `createdAt`
+* **Ipnft**: IP-NFT tokens
+  * Key Fields: `id` (the tokenId), `owner`, `tokenURI`, `symbol`, `createdAt`, `metadata`, `ipToken`
 * **IPT**: Tokenized IP-NFTs (ERC-20)
-  * Key Fields: `id`, `tokenContract`, `ipnft`, `metadata`, `totalIssued`, `capped`
+  * Key Fields: `id` (the IPT contract address), `name`, `symbol`, `agreementCid`, `totalIssued`, `circulatingSupply`, `capped`, `ipnft`, `createdAt`
 * **IPTBalance**: User balances of IPTs
-  * Key Fields: `id`, `ipt`, `holder`, `balance`
+  * Key Fields: `id`, `ipt`, `owner`, `balance`, `agreementSignature`
 * **IpnftMetadata**: IPFS metadata
-  * Key Fields: `id`, `name`, `image`, `external_url`, `properties`
+  * Key Fields: `id`, `name`, `description`, `image`, `externalURL`, `organization`, `topic`, `fundingAmount_*`
 
 #### Fundraising
 
 * **CrowdSale**: Fundraising campaigns
-  * Key Fields: `id`, `state`, `auctionToken`, `biddingToken`, `fundingGoal`, `closingTime`, `totalBids`
+  * Key Fields: `id`, `state`, `type`, `ipt`, `biddingToken`, `salesAmount`, `fundingGoal`, `amountRaised`, `closingTime`, `contract`
 * **Contribution**: Individual bids
-  * Key Fields: `id`, `crowdSale`, `contributor`, `amount`, `claimed`
+  * Key Fields: `id`, `crowdSale`, `contributor`, `amount`, `stakedAmount`, `claimedAt`
 
 #### Marketplace
 
 * **Listing**: SchmackoSwap listings
-  * Key Fields: `id`, `tokenContract`, `tokenId`, `creator`, `askPrice`, `state`
+  * Key Fields: `id`, `ipnft`, `creator`, `paymentToken`, `beneficiary`, `askPrice`, `createdAt`, `unlistedAt`, `purchasedAt`, `buyer`
 
 #### Vesting
 
 * **TimelockedToken**: Vested token contracts
-  * Key Fields: `id`, `underlyingToken`, `ipt`
+  * Key Fields: `id`, `underlyingToken`, `ipt`, `symbol`, `decimals`
 * **LockedSchedule**: Vesting schedules
-  * Key Fields: `id`, `beneficiary`, `amount`, `releaseTime`, `released`
+  * Key Fields: `id`, `tokenContract`, `beneficiary`, `amount`, `expiresAt`, `claimedAt`
 
 ### Common Queries
 
@@ -89,14 +93,13 @@ Alternatively, query via a subgraph using the query structure below:
 
 ```graphql
 {
-  ipt(where: { ipnftId: "123" }) {
+  ipts(where: { ipnft: "123" }) {
     id
-    tokenContract
   }
 }
 ```
 
-Follow the provided methods to dynamically obtain IPToken addresses, ensuring accuracy and adaptability in your implementations.
+The IPT's `id` **is** its ERC-20 contract address — there is no separate `tokenContract` field.
 
 #### Get all IPTs
 
@@ -104,18 +107,15 @@ Follow the provided methods to dynamically obtain IPToken addresses, ensuring ac
 query GetAllIPTs {
   ipts(first: 100, orderBy: createdAt, orderDirection: desc) {
     id
-    tokenContract
+    name
+    symbol
     totalIssued
+    circulatingSupply
     capped
     ipnft {
       id
       owner
       tokenURI
-    }
-    metadata {
-      name
-      symbol
-      image
     }
   }
 }
@@ -127,7 +127,6 @@ query GetAllIPTs {
 query GetIPNFTsByOwner($owner: String!) {
   ipnfts(where: { owner: $owner }) {
     id
-    tokenId
     owner
     tokenURI
     symbol
@@ -139,15 +138,13 @@ query GetIPNFTsByOwner($owner: String!) {
 #### Get user's IPT balances
 
 ```graphql
-query GetUserBalances($holder: String!) {
-  iptbalances(where: { holder: $holder, balance_gt: "0" }) {
+query GetUserBalances($owner: String!) {
+  iptbalances(where: { owner: $owner, balance_gt: "0" }) {
     balance
     ipt {
-      tokenContract
-      metadata {
-        symbol
-        name
-      }
+      id
+      symbol
+      name
     }
   }
 }
@@ -160,32 +157,38 @@ query GetCrowdSale($id: ID!) {
   crowdSale(id: $id) {
     id
     state
+    type
     fundingGoal
+    amountRaised
     salesAmount
     closingTime
-    totalBids
-    auctionToken
-    biddingToken
+    ipt { id symbol }
+    biddingToken { id symbol }
     contributions(first: 100, orderBy: amount, orderDirection: desc) {
       contributor
       amount
-      claimed
+      claimedAt
     }
   }
 }
 ```
 
-#### Get active marketplace listings
+#### Get open marketplace listings
+
+Listings have no `state` field — an open listing is one that has been neither purchased nor unlisted:
 
 ```graphql
-query GetActiveListings {
-  listings(where: { state: LISTED }, orderBy: askPrice, orderDirection: asc) {
+query GetOpenListings {
+  listings(
+    where: { purchasedAt: null, unlistedAt: null }
+    orderBy: askPrice
+    orderDirection: asc
+  ) {
     id
-    tokenId
+    ipnft { id }
     creator
     askPrice
     paymentToken
-    tokenContract
   }
 }
 ```
@@ -211,9 +214,9 @@ async function query(endpoint, graphql, variables = {}) {
 }
 
 // Examples
-const { ipts } = await query(MAINNET, `{ ipts(first: 10) { id metadata { symbol } } }`)
+const { ipts } = await query(MAINNET, `{ ipts(first: 10) { id symbol } }`)
 const { ipnfts } = await query(MAINNET,
-  `query($owner: String!) { ipnfts(where: { owner: $owner }) { id tokenId } }`,
+  `query($owner: String!) { ipnfts(where: { owner: $owner }) { id tokenURI } }`,
   { owner: '0x...' }
 )
 ```
@@ -262,14 +265,14 @@ async function getAllIPTs() {
 
 **Available operators**
 
-| Operator    | Example                        | Description      |
-| ----------- | ------------------------------ | ---------------- |
-| `_eq`       | owner: "0x..."                 | Equals (default) |
-| `_not`      | state\_not: FAILED             | Not equals       |
-| `_gt/_gte`  | amount\_gte: "1000"            | Greater than     |
-| `_lt/_lte`  | closingTime\_lt: 1700000000    | Less than        |
-| `_in`       | state\_in: \[RUNNING, SETTLED] | In list          |
-| `_contains` | symbol\_contains: "VITA"       | String contains  |
+| Operator    | Example                        | Description                       |
+| ----------- | ------------------------------ | --------------------------------- |
+| (none)      | owner: "0x..."                 | Equals — the bare field name      |
+| `_not`      | state\_not: FAILED             | Not equals                        |
+| `_gt/_gte`  | amount\_gte: "1000"            | Greater than                      |
+| `_lt/_lte`  | closingTime\_lt: 1700000000    | Less than                         |
+| `_in`       | state\_in: \[RUNNING, SETTLED] | In list                           |
+| `_contains` | symbol\_contains: "VITA"       | String contains                   |
 
 #### Sorting
 
@@ -280,7 +283,6 @@ async function getAllIPTs() {
 
 | Limit            | Value                |
 | ---------------- | -------------------- |
-| Requests         | 1,000/minute         |
 | Max results      | 1,000/query          |
 | Query complexity | Limited by The Graph |
 

@@ -69,7 +69,7 @@ Attaches an existing ERC-20 token as the IPToken.
 * `ipnftId` (uint256): IP-NFT token ID
 * `agreementCid` (string): IPFS CID of the agreement
 * `signedAgreement` (bytes): Signed legal agreement
-* `tokenContract` (address): ERC-20 token address
+* `tokenContract` (IERC20Metadata): ERC-20 token address
 
 **Returns:** `IIPToken` — Wrapped IPToken for the existing ERC-20
 
@@ -115,6 +115,7 @@ Returns the current owner address of the IP-NFT.
 
 * **TokensCreated**: Emitted when a new IPToken is created.
 * **TokenWrapped**: Emitted when an existing ERC-20 is wrapped as an IPToken.
+* **IPTokenImplementationUpdated / WrappedIPTokenImplementationUpdated / PermissionerUpdated**: Admin configuration changes.
 
 ### Security Considerations
 

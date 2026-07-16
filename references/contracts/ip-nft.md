@@ -13,7 +13,7 @@ The **IP-NFT** contract is an ERC-721 NFT that represents on-chain intellectual 
 ### Contract Details
 
 * **Contract**: IPNFT v2.5.1
-* **Standard**: ERC-721 (with URI Storage)
+* **Standard**: ERC-721 (with URI Storage, Burnable)
 * **Type**: UUPS Upgradeable Proxy
 * **Solidity**: 0.8.18
 * **License**: MIT
@@ -111,6 +111,7 @@ function tokenURI(uint256 tokenId) public view returns (string memory)
 * **Reserved**: New token ID reserved
 * **IPNFTMinted**: IP-NFT minted
 * **ReadAccessGranted**: Read access granted
+* **AuthorizerUpdated**: Mint authorizer contract changed (admin)
 
 ### Errors
 
@@ -136,10 +137,10 @@ function tokenURI(uint256 tokenId) public view returns (string memory)
 
 ### Related Contracts
 
-* Tokenizer.md: Fractionalize IP-NFTs into IPTokens.
-* SchmackoSwap.md: Trade IP-NFTs.
-* Access-Resolver.md: File access integration.
-* Crowdsale.md: Fundraise via IPTokens.
+* [Tokenizer](tokenizer.md): Fractionalize IP-NFTs into IPTokens.
+* [SchmackoSwap](README.md): Trade IP-NFTs (see the address table).
+* [AccessResolver](accessresolver.md): File access integration.
+* [CrowdSale](crowdsale.md): Fundraise via IPTokens.
 
 ### Resources
 
