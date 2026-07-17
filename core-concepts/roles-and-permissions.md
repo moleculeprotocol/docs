@@ -1,7 +1,7 @@
 ---
 description: >-
   How delegated access to a Lab works — role hierarchy, capability matrix,
-  expiry, agent flag, and the on-chain resolver.
+  expiry, agent flag, and the onchain resolver.
 icon: users-gear
 ---
 
@@ -14,13 +14,13 @@ A Lab's NFT holder is its sole ultimate controller — transferring the LabNFT t
 The role system lets a Lab owner grant scoped, expiring access to specific wallets — human or agent — while keeping ownership, treasury control, and the ability to revoke access at any time. Invites via email are possible, meaning team members do not have to be web3-native to participate.&#x20;
 
 \
-Roles are enforced on-chain by the `AccessResolver` contract and honoured by every downstream system (GraphQL API, file encryption, UI) that checks them.
+Roles are enforced onchain by the `AccessResolver` contract and honoured by every downstream system (GraphQL API, file encryption, UI) that checks them.
 
 ## Role Hierarchy
 
 Every lab has three effective roles, ordered from most to least privileged.
 
-<table><thead><tr><th width="170">Role</th><th width="200">How it's held</th><th>Scope</th></tr></thead><tbody><tr><td><strong>Owner</strong></td><td>Holder of the LabNFT, resolved through the Lab's ERC-6551 Token Bound Account (TBA). Safe multisigs holding the NFT are resolved recursively through their signers.</td><td>Full control; passes every permission check. Can transfer the LabNFT.</td></tr><tr><td><strong>Contributor</strong></td><td>Explicit on-chain grant: <code>ROLE_CONTRIBUTOR = 2</code>.</td><td>Full data-room access, can grant/revoke Viewers. Cannot add other Contributors or transfer the NFT.</td></tr><tr><td><strong>Viewer</strong></td><td>Explicit on-chain grant: <code>ROLE_VIEWER = 1</code>.</td><td>Read-only. Can decrypt confidential files and read data-room contents.</td></tr></tbody></table>
+<table><thead><tr><th width="170">Role</th><th width="200">How it's held</th><th>Scope</th></tr></thead><tbody><tr><td><strong>Owner</strong></td><td>Holder of the LabNFT, resolved through the Lab's ERC-6551 Token Bound Account (TBA). Safe multisigs holding the NFT are resolved recursively through their signers.</td><td>Full control; passes every permission check. Can transfer the LabNFT.</td></tr><tr><td><strong>Contributor</strong></td><td>Explicit onchain grant: <code>ROLE_CONTRIBUTOR = 2</code>.</td><td>Full data-room access, can grant/revoke Viewers. Cannot add other Contributors or transfer the NFT.</td></tr><tr><td><strong>Viewer</strong></td><td>Explicit onchain grant: <code>ROLE_VIEWER = 1</code>.</td><td>Read-only. Can decrypt confidential files and read data-room contents.</td></tr></tbody></table>
 
 The `hasRole` check is hierarchical: a Contributor automatically passes Viewer checks, and the Owner passes every check.
 
@@ -34,15 +34,16 @@ The `hasRole` check is hierarchical: a Contributor automatically passes Viewer c
 | Create announcements                     |   ✓   |      ✓      |        |
 | Grant / revoke Viewer role               |   ✓   |      ✓      |        |
 | Grant / revoke Contributor role          |   ✓   |             |        |
-| Manage project owners (add/remove)       |   ✓   |             |        |
 | Transfer the LabNFT                      |   ✓   |             |        |
 | Authorize / install modules on the Lab   |   ✓   |             |        |
 
-A Contributor cannot "downgrade" another Contributor to Viewer — downgrades are treated as an admin-level action and rejected for non-Owner callers.
+A Contributor cannot "downgrade" another Contributor to Viewer — downgrades are treated as an admin-level action and rejected unless the caller is the Lab owner (or the protocol admin, below). There is no "manage owners" function: Lab ownership changes only by transferring the LabNFT (or changing the signer set of a Safe that holds it).
+
+> **Protocol admin.** In addition to per-lab owners, the `AccessResolver` contract owner — Molecule's protocol multisig — is a global role admin: it can grant and revoke roles on any lab and passes every `hasRole` check. This is the operational escape hatch for support and recovery flows.
 
 ## Grants: Expiry & Agent Flag
 
-Each grant is an on-chain record with three fields:
+Each grant is an onchain record with three fields:
 
 ```solidity
 struct RoleGrant {
@@ -53,9 +54,13 @@ struct RoleGrant {
 ```
 
 * **Expiry** — A non-zero `expiry` makes the grant auto-expire. Expired grants still exist in storage (so `getRole` returns them for UI purposes) but are inactive: `hasRole` returns `false` once `block.timestamp >= expiry`. Expired grantees must be re-granted to regain access.
-* **`isAgent`** — Purely informational metadata. It does **not** change on-chain authorization, but downstream systems (the members list, the data-room UI, the agent-auth flow) surface it to clearly distinguish AI-agent session keys from human team members.
+* **`isAgent`** — Purely informational metadata. It does **not** change onchain authorization, but downstream systems (the members list, the data-room UI, the agent-auth flow) surface it to clearly distinguish AI-agent session keys from human team members.
 
 A Lab owner granting access to an agent should set `isAgent = true` and a short `expiry` — typically the agent's session-key lifetime. When the session expires, the agent must request a new grant before it can continue to decrypt files or post announcements.
+
+## How Invites Work in the App
+
+In the Labs app, members can be invited by wallet address, ENS name, or **email**. Email and social (Google / X) sign-ins are backed by a Privy-provisioned embedded wallet, so invitees don't need to be web3-native — the role grant still lands on a wallet address under the hood. If the invited email already belongs to a registered account, the app grants the role onchain immediately (the transaction is gas-sponsored); if the email isn't registered yet, the invitee receives a sign-up email and can be invited again once they've joined.
 
 ## Scope: Per-Lab, Not Per-File
 
@@ -65,11 +70,11 @@ For the concrete `accessControlConditions` JSON that turns a role grant into fil
 
 ## Chain Scoping
 
-`AccessResolver` is deployed on Base, Mainnet, and Sepolia, but canonical lab state lives on Base. Lab-owner self-administration works only on Base: the ERC-6551 reference implementation returns `address(0)` for `owner()` when `block.chainid` doesn't match the chain the OCL was CREATE2-salted for, so lab NFT holders on Mainnet or Sepolia must call `grantRole` / `revokeRole` through the Base deployment.
+The role system exists only on **Base** (the canonical chain) and **Base Sepolia** — the v3 `AccessResolver` deployments. The older Ethereum Mainnet and Sepolia deployments run the deprecated v2, which has signer predicates but no role functions at all. Lab-owner self-administration also works only on Base: the ERC-6551 reference implementation returns `address(0)` for `owner()` when `block.chainid` doesn't match the chain the OCL was CREATE2-salted for.
 
 Every `grantRole` / `revokeRole` / `hasRole` / `getRole` call runs `_validateOclId`, which verifies the `oclId`'s version byte, namespace byte, TBA code, LabNFT binding, and canonical-chain metadata. Malformed identifiers revert with `InvalidOclId`.
 
-## On-Chain Interface
+## Onchain Interface
 
 ```solidity
 function grantRole(bytes32 oclId, address account, uint8 role, uint64 expiry, bool isAgent) external;
@@ -90,7 +95,7 @@ function getRole(bytes32 oclId, address account)
 | `revokeRole(…)` on a Contributor           |   ✓   |                    |
 | `revokeRole(…)` on a Viewer                |   ✓   |          ✓         |
 
-Revokes on accounts with no active grant return silently without emitting an event, to prevent unauthorised callers from spamming `RoleRevoked` logs.
+Revokes on accounts with no stored grant (`role == 0`) return silently without emitting an event, to prevent unauthorised callers from spamming `RoleRevoked` logs. (Revoking an expired-but-present grant still requires authorization and emits.) The protocol multisig can additionally perform any grant or revoke on any lab.
 
 ### Events
 
@@ -112,7 +117,7 @@ event RoleRevoked(
 );
 ```
 
-Use these events to reconstruct the team-members list for a lab off-chain; the on-chain storage is a sparse `mapping(oclId => mapping(account => RoleGrant))` and cannot be enumerated without event indexing.
+Use these events to reconstruct the team-members list for a lab offchain; the onchain storage is a sparse `mapping(oclId => mapping(account => RoleGrant))` and cannot be enumerated without event indexing.
 
 ### Errors
 
@@ -124,4 +129,4 @@ Use these events to reconstruct the team-members list for a lab off-chain; the o
 
 * [AccessResolver contract reference](../references/contracts/accessresolver.md) — full ABI, deployments, signer-authorization predicates (`isAuthorizedSignerForIpnft`, `isAuthorizedSignerForTba`).
 * [Data Privacy & Access](data/data-privacy-and-access.md) — how role checks feed into file encryption / decryption.
-* [On-Chain Lab](onchain-lab.md) — how `oclId` is derived and why ownership resolves through the TBA.
+* [Molecule Labs](onchain-lab.md) — how `oclId` is derived and why ownership resolves through the TBA.

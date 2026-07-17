@@ -21,7 +21,7 @@ When a Lab owner wants to perform any action — installing a module, sending as
 
 **1. UserOperation Submission** The owner constructs and signs an ERC-4337 `UserOperation`, then submits it to a Bundler, which forwards it to the global `EntryPoint` contract.
 
-**2. Account Delegation** The EntryPoint calls `validateUserOp` on the Lab's account contract (`Modular_OnChainLab`). The account extracts the `ValidationId` from the operation and delegates to the `ValidationManager`, which routes the call to the installed root validator.
+**2. Account Delegation** The EntryPoint calls `validateUserOp` on the Lab's account contract (`OnChainLab`). The account delegates to the `ValidationManager` with its fixed root validator (`DEFAULT_ROOT_VALIDATOR`, bound at initialization), which routes the call to that validator.
 
 **3. Ownership Resolution** The validator calls `signer()` on the Lab account, which internally calls `owner()`. This function invokes the ERC-6551 `token()` method to retrieve the bound NFT's contract address and token ID, then queries `ownerOf(tokenId)` on the NFT contract. The result is the current owner's address — resolved live from onchain state, never cached.
 
@@ -50,7 +50,7 @@ Beyond validating UserOperations, the Root Validator also implements ERC-1271 co
 
 This allows external contracts to ask the Lab whether a given signature was produced by its authorised controller. The validator performs the same dual ECDSA check — raw hash recovery, then EIP-191 prefixed recovery — and returns the ERC-1271 magic value (`0x1626ba7e`) on success or an invalid marker on failure.
 
-This capability is critical for the Lab's composability within the broader Ethereum ecosystem. It enables the Lab to sign off-chain messages, approve token permits, participate in governance votes, interact with marketplaces, and integrate with any protocol that supports ERC-1271 contract signatures — all while deriving authority from NFT ownership.
+This capability is critical for the Lab's composability within the broader Ethereum ecosystem. It enables the Lab to sign offchain messages, approve token permits, participate in governance votes, interact with marketplaces, and integrate with any protocol that supports ERC-1271 contract signatures — all while deriving authority from NFT ownership.
 
 ### Validator vs. Other Module Types
 
@@ -58,7 +58,7 @@ Validator modules occupy a unique position in the module architecture. Executor 
 
 This distinction has practical consequences. A Lab's root validator is installed at creation time by the factory contract, before the Lab owner has signed any transactions. It cannot be installed through the normal module installation flow because that flow itself requires a valid signature, which requires a working validator. The root validator is the trust anchor that makes everything else possible.
 
-The `ValidationManager` supports two validation types in its type system: `VALIDATION_TYPE_ROOT` for the primary validator that controls all access, and `VALIDATION_TYPE_PERMISSION` for future permission-based validators that could grant scoped, limited authority to specific contracts or agents. Currently, only root validation is active — the permission system is architected but not yet enabled.
+The `ValidationManager`'s type system defines three validation types — `VALIDATION_TYPE_ROOT`, `VALIDATION_TYPE_VALIDATOR`, and `VALIDATION_TYPE_PERMISSION` — but only root validation is active today; the others are architected but not yet enabled.
 
 ### Why This Matters for Onchain Labs
 
@@ -66,7 +66,7 @@ The validator module design reflects the core principle of the Onchain Labs arch
 
 This separation makes ownership transfers clean and complete. When a DAO acquires a Lab by purchasing its NFT, the validator immediately recognises the new owner. When a research team transitions leadership, they transfer the NFT and the new lead gains full control. The Lab's accumulated history, installed modules, and recorded data remain intact and uninterrupted throughout.
 
-Making validation a modular component also opens the door to alternative authentication schemes. Future validator modules — each a separate contract, installable through the same registry system without any changes to the core Lab contract — could include:
+The type system leaves the door open to alternative authentication schemes in future versions. Note that in the current deployment the root validator is deliberately **permanent**: validators cannot be installed, replaced, or removed through the module-installation flow (the registry only attests executors and fallback modules), so any alternative scheme would ship via a core upgrade. Candidate future schemes include:
 
 * **Multisig validators** requiring multiple signatures for high-value operations
 * **Session key validators** granting temporary, scoped access to automated services or AI agents
@@ -75,9 +75,9 @@ Making validation a modular component also opens the door to alternative authent
 
 ### Contract Reference
 
-The Root Validator is deployed and verified on Sepolia testnet:
+The Root Validator is deployed and verified on Base mainnet (chain ID 8453) and Base Sepolia:
 
-<table><thead><tr><th width="182.12109375">Contract</th><th>Address</th></tr></thead><tbody><tr><td>RootValidator</td><td><code>0x4F63252944ac8C7846F73fD057A114E71A374585</code></td></tr></tbody></table>
+<table><thead><tr><th width="182.12109375">Contract</th><th>Address (Base mainnet & Base Sepolia)</th></tr></thead><tbody><tr><td>RootValidator</td><td><code>0xb31d39ECc0cb26478E258C8f7e9C906115f494f6</code></td></tr></tbody></table>
 
 Source code: `src/modules/validator/RootValidator.sol`
 

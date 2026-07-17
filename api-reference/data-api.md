@@ -149,7 +149,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   "data": {
     "ipnfts": [
       {
-        "id": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37_1",
+        "id": "37",
         "createdAt": "2024-01-15T10:30:00.000Z",
         "owner": {
           "address": "0x1234567890123456789012345678901234567890"
@@ -160,7 +160,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
         "topic": "Oncology",
         "organization": "Research Institute",
         "ipt": {
-          "id": "1_0xabcd...",
+          "id": "0xabcd...",
           "symbol": "CART-IPT"
         }
       }
@@ -242,7 +242,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -d '{
     "query": "query GetIPNFT($id: ID!) { ipnft(id: $id) { id name description topic symbol owner { address } ipt { symbol totalIssued } agreements { id type url } } }",
     "variables": {
-      "id": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37_1"
+      "id": "37"
     }
   }'
 ```
@@ -351,7 +351,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   "data": {
     "ipts": [
       {
-        "id": "1_0xabcdef...",
+        "id": "0xabcdef...",
         "symbol": "CART-IPT",
         "name": "Cancer Research IP Token",
         "totalIssued": "1000000000000000000000000",
@@ -489,6 +489,20 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
       "sortOrder": "desc"
     }
   }'
+```
+
+A single market can also be fetched by its id:
+
+```graphql
+query GetMarket($id: ID!) {
+  market(id: $id) {
+    name
+    usdPrice
+    liquidityUsd
+    tradingVolume24hr
+    token { symbol }
+  }
+}
 ```
 
 ***
@@ -799,7 +813,7 @@ Filter results by specific criteria. The API supports both direct field filterin
 ```javascript
 {
   "filterBy": {
-    "ipnftId": "0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1_37_1"
+    "ipnftId": "37"
   }
 }
 ```
@@ -961,7 +975,8 @@ You can combine multiple filters in a single query. All filters are combined wit
 
 ```typescript
 {
-  id: String                    // Unique identifier
+  id: String                    // Unique identifier — the onchain tokenId as a string (e.g. "37")
+  oclId: String                 // Linked lab oclId, null when the IP-NFT has no linked lab
   createdAt: DateTime           // Creation timestamp
   updatedAt: DateTime           // Last update timestamp
   mintedAt: DateTime            // Minting timestamp
@@ -1347,8 +1362,15 @@ All filters use **exact equality matching** by default. For example:
 | ----------- | -------------------- | -------------------------------------------- |
 | 401         | Unauthorized         | Missing or invalid API key                   |
 | 400         | Bad Request          | Invalid query syntax or parameters           |
-| 404         | Not Found            | Requested resource doesn't exist             |
 | 500         | Internal Server Error| Server error - retry the request             |
+
+Missing resources are **not** signalled with an HTTP 404. Single-item queries (`ipnft`, `ipt`, `user`, …) return HTTP 200 with a GraphQL error in the `errors[]` array carrying a machine-readable `code`:
+
+| GraphQL error `code`        | Meaning                                                        |
+| --------------------------- | -------------------------------------------------------------- |
+| `NOT_FOUND`                 | Requested resource doesn't exist                               |
+| `COMPLEXITY_LIMIT_EXCEEDED` | Query too complex — max depth **5**, max **100** selections    |
+| `INVALID_INPUT`             | Malformed arguments                                            |
 
 ### Troubleshooting
 

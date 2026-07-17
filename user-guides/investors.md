@@ -61,7 +61,7 @@ The platform supports structured fundraising through Catalyst campaigns, which u
 
 All contributions flow directly into the Lab's treasury. You can see exactly how funds are deployed — treasury balances, transaction history, and spending patterns are all visible onchain. There's no opacity about where the money went.
 
-For a technical reference on token mechanics, see the IPT and SynthesisModule contract pages in the References section.
+For a technical reference on token mechanics, see the [IPT](../references/contracts/ipt.md) and [Tokenizer](../references/contracts/tokenizer.md) contract pages in the References section.
 
 ### Strategic Investment: Licensing and Partnerships
 
@@ -69,7 +69,7 @@ For venture firms, pharmaceutical companies, and bioDAOs evaluating larger commi
 
 Every Lab's onchain history is a due diligence asset. You can inspect the complete audit trail: when the Lab was created, what data has been uploaded and how often, which IP-NFTs have been minted, how treasury funds have been deployed, what agent activity has occurred, and the full history of announcements and file updates. This replaces the fragmented, document-heavy due diligence process in traditional biotech with a single inspectable onchain record. MIRA's TRL scoring provides a standardised starting point, and the raw data room contents let you drill into the science itself.
 
-IP licensing on Molecule is designed to be executed onchain. The architecture supports rentable IP-NFTs using the ERC-4907 standard — a pharmaceutical company or research institution can license an IP-NFT for a defined period by executing a single transaction. Rental fees are paid in stablecoins and automatically routed to the Lab's treasury. Royalties are distributed to the original scientist, the institution, and other stakeholders via smart contracts. This removes months of legal negotiation for standard licensing terms, though complex deals may still require off-chain agreements.
+IP licensing on Molecule is designed to be executed onchain. The architecture anticipates rentable IP-NFTs using the ERC-4907 standard — a pharmaceutical company or research institution would license an IP-NFT for a defined period in a single transaction, with rental fees paid in stablecoins routed to the Lab's treasury and royalties distributed to stakeholders via smart contracts. This onchain licensing flow is on the roadmap (see What's Coming below); today, licensing deals are executed through offchain agreements with proceeds flowing to the Lab's treasury.
 
 For investors evaluating M\&A or technology transfer, the Lab NFT itself is the acquisition mechanism. Under the V3 architecture, each Lab is an ERC-721 NFT with an ERC-6551 Token Bound Account (TBA) — meaning the Lab is a self-contained onchain entity that owns its own assets. Purchasing a Lab's NFT transfers control of everything inside it in a single transaction: the IP-NFTs, the token treasury, the data room references, the onchain history, and any installed modules or agent configurations. This is the onchain equivalent of acquiring a biotech company, but without the administrative overhead of entity transfers, shareholder votes, or escrow processes. The Lab's identity (its permanent TBA address) stays the same; only the controller changes.
 
@@ -79,7 +79,7 @@ For any of these larger-scale interactions, the Molecule team can facilitate int
 
 Holding IPTs is not a passive position. Token holders participate in governance decisions that affect the Lab's direction and their investment.
 
-IPT holders can vote on key decisions: approving or rejecting milestone completions, setting terms for licensing deals, directing treasury allocation, and — in cases where a project stalls — initiating clawback proceedings to recover treasury funds. The clawback mechanism is specifically designed to protect investors: if a Lab demonstrates prolonged inactivity or fails to meet minimum progress thresholds, IPT holders can vote to reallocate treasury funds — either returning them pro-rata to holders or redirecting them to an alternative Lab pursuing related research.
+IPT holders can vote on key decisions: approving or rejecting milestone completions, setting terms for licensing deals, and directing treasury allocation. A clawback mechanism — letting IPT holders vote to reallocate treasury funds if a Lab demonstrates prolonged inactivity, either returning them pro-rata to holders or redirecting them to an alternative Lab — is **planned** as an investor protection; today such decisions are executed through governance votes and the Lab's treasury controls rather than a dedicated onchain clawback module.
 
 Clawback proposals require a supermajority to pass (preventing hostile takeovers of temporarily dormant projects), and the Lab owner receives a grace period to demonstrate renewed activity before execution. This structure ensures that capital can't be permanently locked in non-productive projects while still giving researchers reasonable time to work.
 

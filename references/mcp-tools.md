@@ -148,12 +148,7 @@ For private deployments or custom configurations:
 
 #### Deploy Steps
 
-1.  Clone the repository:
-
-    ```shell
-    git clone https://github.com/moleculeprotocol/molecule-mcp
-    cd molecule-mcp
-    ```
+1. Request access to the MCP server source from the Molecule team (the repository is not publicly listed).
 2.  Install dependencies:
 
     ```shell
@@ -174,27 +169,14 @@ Add environment variables in Vercel under Settings.
     ```shell
     vercel dev
     ```
-*   Test with:
-
-    ```shell
-    node scripts/test-client.mjs http://localhost:3000/mcp
-    ```
 
 ### Caching
 
-The server uses Redis to cache data, enhancing performance and abiding by upstream limits.
-
-#### Cache Durations
-
-* IPT list: 10 minutes
-* Project activities: 10 minutes
-* Categories: 10 minutes
-* Price history: 5 minutes
+The server caches upstream responses in Redis for a few minutes, enhancing performance and abiding by upstream limits — expect data freshness in the minutes range rather than real-time.
 
 ### Rate Limits
 
-* **Public Endpoint**: 100 requests/minute
-* **Self-hosted**: Unlimited
+The public endpoint is rate-limited. Deploy your own instance for heavy or latency-sensitive workloads.
 
 ### Programmatic Integration
 
@@ -203,9 +185,12 @@ For AI applications requiring Molecule data, connect to the MCP endpoint directl
 ```javascript
 import { experimental_createMCPClient as createMCPClient, generateText } from 'ai';
 import { openai } from '@ai-sdk/openai';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
 const mcpClient = await createMCPClient({
-  transport: { type: 'sse', url: 'https://molecule-mcp.vercel.app/mcp' }
+  transport: new StreamableHTTPClientTransport(
+    new URL('https://molecule-mcp.vercel.app/mcp')
+  )
 });
 const tools = await mcpClient.tools();
 
@@ -225,6 +210,5 @@ const result = await generateText({
 ### Resources
 
 * **Public Endpoint**: [https://molecule-mcp.vercel.app/mcp](https://molecule-mcp.vercel.app/mcp)
-* **Source Code**: [GitHub](https://github.com/moleculeprotocol/molecule-mcp)
 * **MCP Specification**: [https://modelcontextprotocol.io](https://modelcontextprotocol.io)
-* **API Key Request**: Contact the Molecule team for deployment.
+* **Source Code & API Key Request**: Contact the Molecule team.

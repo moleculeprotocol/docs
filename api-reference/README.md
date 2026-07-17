@@ -32,7 +32,7 @@ Create IP-NFTs from research projects and tokenize them into fungible IP Tokens 
 * Mint new IP-NFTs with legal agreements
 * Upload artwork and metadata to IPFS
 * Tokenize IP-NFTs into tradeable ERC-20 tokens
-* Manage the complete on-chain minting workflow
+* Manage the complete onchain minting workflow
 
 **Authentication:** API Key required
 
@@ -40,18 +40,18 @@ Create IP-NFTs from research projects and tokenize them into fungible IP Tokens 
 
 ***
 
-### 📁 Labs API (Programmatic File Upload)
+### 📁 Labs API
 
 Upload files to lab datarooms for secure, decentralized research data storage, and query labs, members, activity, and legal-agreement status.
 
 **Purpose:**
 
-* Create labs (datarooms) for on-chain labs (OCLs)
+* Create labs (datarooms) for onchain labs (OCLs)
 * Automate file uploads to lab datarooms
 * Integrate with data pipelines and CI/CD
 * Batch upload research data
 * Manage file versions, metadata, and LabNFT display metadata
-* Query labs, files, members, activity, and on-chain events (mostly public access)
+* Query labs, files, members, activity, and onchain events (mostly public access)
 * Manage service tokens and legal-agreement signing
 
 **Authentication:**
@@ -118,7 +118,7 @@ Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your 
 | Check market prices and trading data | [Data API](data-api.md)                                  |
 | Mint a new IP-NFT                    | [Tokenization API](tokenization-api.md)                  |
 | Create IP Tokens from an IP-NFT      | [Tokenization API](tokenization-api.md)                  |
-| Upload files to a Lab dataroom       | [Labs API](../molecule-labs/programmatic-file-upload.md) |
+| Upload files to a Lab dataroom       | [Labs API](labs-api.md)                                  |
 
 ### 3. Make Your First Request
 
@@ -147,10 +147,9 @@ If you encounter any issues or have questions about the APIs:
 
 ## Additional Resources
 
-* [Molecule Documentation](https://docs.molecule.to/documentation/)
-* [Smart Contract Addresses](/broken/pages/TMpLloOogfGTEgz5hp9I)
-* [What are IP-NFTs?](/broken/pages/MjaTDyXUt9FrSVofaUVg)
-* [What are IP Tokens?](/broken/pages/7bCRdex391EUuIvQqG6V)
+* [Smart Contract Addresses](../references/contracts/README.md)
+* [What are IP-NFTs?](../core-concepts/tokenized-ips/ip-nfts.md)
+* [What are IP Tokens?](../core-concepts/tokenized-ips/ipts.md)
 
 ***
 

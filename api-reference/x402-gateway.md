@@ -35,10 +35,10 @@ POST /x402/labs/{mutation}
 
 | Path                                         | Wraps mutation                 | Purpose                                                  |
 | -------------------------------------------- | ------------------------------ | -------------------------------------------------------- |
-| `/x402/labs/initiateCreateOrUpdateFile`      | `initiateCreateOrUpdateFile`   | Start a file upload; returns a presigned URL (+ DEK if encryption requested) |
+| `/x402/labs/initiateCreateOrUpdateFile`      | `initiateCreateOrUpdateFile`   | Start a file upload; returns a presigned URL             |
 | `/x402/labs/finishCreateOrUpdateFile`        | `finishCreateOrUpdateFile`     | Finalise a file upload with metadata                     |
 | `/x402/labs/createAnnouncement`              | `createAnnouncement`           | Publish a lab announcement                               |
-| `/x402/labs/createLab`                       | `createLab`                    | Create a lab (data room) for an on-chain lab (OCL)       |
+| `/x402/labs/createLab`                       | `createLab`                    | Create a lab (data room) for an onchain lab (OCL)       |
 | `/x402/labs/generateDataEncryptionKey`       | `generateDataEncryptionKey`    | Generate a data encryption key (DEK) for encrypted uploads |
 | `/x402/labs/decryptDataKey`                  | `decryptDataKey`               | Decrypt a file's data key for an authorized caller       |
 
@@ -133,17 +133,17 @@ Pricing is environment-driven and resolved per-mutation. The gateway evaluates t
 ```
 X402_PRICE_<SNAKE_CASE_MUTATION>     e.g. X402_PRICE_CREATE_ANNOUNCEMENT
 X402_PRICE_<UPPER_MUTATION>          e.g. X402_PRICE_CREATEANNOUNCEMENT
-X402_PRICE_DEFAULT                   fallback, default "1.00"
+X402_PRICE_DEFAULT                   fallback when no per-mutation price is set
 ```
 
-Values are interpreted as USDC amounts (e.g. `"2.50"` = $2.50).
+Values are interpreted as USDC amounts (e.g. `"2.50"` = $2.50). Prices are environment-configured — the authoritative price for a given mutation is the one quoted in the `402` payment-requirements response, so clients should always read it from the challenge rather than hardcoding amounts.
 
 | Variable                         | Default                                                 | Purpose                                                  |
 | -------------------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
 | `X402_NETWORK`                   | `base` (prod) / `base-sepolia` (non-prod)               | CAIP-2 network (`base` → `eip155:8453`)                  |
 | `X402_PAY_TO_ADDRESS`            | —                                                       | Wallet that receives settlement                          |
 | `X402_FACILITATOR_URL`           | `https://api.cdp.coinbase.com/platform/v2/x402`         | Facilitator base URL                                     |
-| `X402_PRICE_*` / `X402_PRICE_DEFAULT` | `"1.00"`                                           | Per-mutation price in USDC                               |
+| `X402_PRICE_*` / `X402_PRICE_DEFAULT` | environment-configured                             | Per-mutation price in USDC (quoted in the 402 challenge) |
 | `X402_TOKEN_TTL_SECONDS`         | `300`                                                   | Lifetime of the minted service token                     |
 
 Facilitator authentication uses Coinbase CDP API keys (`CDP_API_KEY_ID_SECRET_ARN` / `CDP_API_KEY_SECRET_SECRET_ARN` in Secrets Manager, or `CDP_API_KEY_ID` / `CDP_API_KEY_SECRET` in local mode) to sign the `/verify`, `/settle`, and `/supported` requests.

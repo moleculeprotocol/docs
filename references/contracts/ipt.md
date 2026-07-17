@@ -21,9 +21,7 @@ IPToken contracts are not deployed individually. They are created as EIP-1167 mi
 
 IPTokens do not have fixed addresses. To find the IPToken for a given IP-NFT:
 
-**On-chain:**
-
-solidity
+**Onchain:**
 
 ```solidity
 IIPToken ipToken = Tokenizer.synthesized(ipnftId);
@@ -31,16 +29,15 @@ IIPToken ipToken = Tokenizer.synthesized(ipnftId);
 
 **Via subgraph:**
 
-graphql
-
 ```graphql
 {
-  ipt(where: { ipnftId: "123" }) {
+  ipts(where: { ipnft: "123" }) {
     id
-    tokenContract
   }
 }
 ```
+
+The IPT's `id` is its ERC-20 contract address.
 
 #### How It Works
 
@@ -68,8 +65,6 @@ IPToken inherits from ERC20BurnableUpgradeable. Any holder can burn their own to
 
 **issue** Mints new tokens to a specified address. Only callable by the Tokenizer or the current IP-NFT controller. Reverts if the token has been capped.
 
-solidity
-
 ```solidity
 function issue(address receiver, uint256 amount) external
 ```
@@ -81,8 +76,6 @@ Parameters:
 
 **cap** Permanently freezes the token supply. After calling, no new tokens can ever be issued. Irreversible.
 
-solidity
-
 ```solidity
 function cap() external
 ```
@@ -91,15 +84,11 @@ Emits: `Capped(uint256 atSupply)`
 
 **burn** (inherited from ERC20Burnable) Burns tokens from the caller's balance.
 
-solidity
-
 ```solidity
 function burn(uint256 amount) public
 ```
 
 **burnFrom** (inherited from ERC20Burnable) Burns tokens from another account (requires approval).
-
-solidity
 
 ```solidity
 function burnFrom(address account, uint256 amount) public
@@ -110,8 +99,6 @@ function burnFrom(address account, uint256 amount) public
 **Read Functions**
 
 **metadata** Returns the Metadata struct linking this token to its originating IP-NFT.
-
-solidity
 
 ```solidity
 function metadata() external view returns (Metadata memory)
@@ -125,23 +112,17 @@ Returns:
 
 **totalIssued** Returns the total number of tokens ever minted. This may exceed `totalSupply()` if tokens have been burned.
 
-solidity
-
 ```solidity
 function totalIssued() external view returns (uint256)
 ```
 
 **capped** Returns whether the token supply has been permanently frozen.
 
-solidity
-
 ```solidity
 function capped() external view returns (bool)
 ```
 
 **uri** Returns a base64-encoded data URL containing ERC-1155-compatible JSON metadata, including the IP-NFT ID, agreement CID, original owner, token contract address, and current supply.
-
-solidity
 
 ```solidity
 function uri() external view returns (string memory)
@@ -150,8 +131,6 @@ function uri() external view returns (string memory)
 **totalSupply / balanceOf / allowance / name / symbol / decimals** (standard ERC-20) Standard ERC-20 read functions. Decimals is always 18.
 
 #### Metadata Struct
-
-solidity
 
 ```solidity
 struct Metadata {
@@ -175,7 +154,7 @@ struct Metadata {
 
 #### Security Considerations
 
-**Controller-gated supply.** Only the Tokenizer or the current IP-NFT holder can issue or cap tokens. This is enforced on-chain by the `onlyTokenizerOrIPNFTController` modifier.
+**Controller-gated supply.** Only the Tokenizer or the current IP-NFT holder can issue or cap tokens. This is enforced onchain by the `onlyTokenizerOrIPNFTController` modifier.
 
 **Irreversible capping.** Once `cap()` is called, the supply is permanently frozen. There is no mechanism to uncap a token. This protects holders from unexpected dilution.
 

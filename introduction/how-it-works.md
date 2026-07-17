@@ -9,13 +9,13 @@ icon: seal-question
 
 #### 1. **Create a Lab**
 
-Log onto lab.molecule.xyz and create a Lab. To begin, all you will need is an image, a title and a description. From there, you can fill your Lab with files, data and team members.&#x20;
+Log onto [labs.molecule.xyz](https://labs.molecule.xyz) and create a Lab. To begin, all you will need is an image, a title and a description. From there, you can fill your Lab with files, data and team members.&#x20;
 
-The Lab is gasless to create (transaction fees are sponsored), so there is no financial barrier to entry. From the moment it's minted, it can hold assets, store data, interact with DeFi protocols, and accumulate a verifiable track record.
+The Lab is gasless to create — the mint fee is currently set to zero and transaction fees are sponsored through Privy's account-abstraction (ERC-4337) infrastructure — so there is no financial barrier to entry. From the moment it's minted, it can hold assets, store data, interact with DeFi protocols, and accumulate a verifiable track record.
 
 #### **2. Research & Store Data**
 
-Upload datasets, protocols, images, and results directly to your Lab. Files are encrypted and stored on decentralized infrastructure with content identifiers recorded onchain, creating an immutable provenance trail. Every version is tracked — negative results, intermediate datasets, and methodological notes all become part of the Lab's permanent history.
+Upload datasets, protocols, images, and results directly to your Lab. Files are encrypted and stored on decentralized infrastructure, every version content-addressed in the data room's provenance log — and the data room itself anchored onchain to your Lab via [DID linking](../core-concepts/module-registry/data-module.md) — creating an immutable provenance trail. Every version is tracked — negative results, intermediate datasets, and methodological notes all become part of the Lab's permanent history.
 
 Set access per file — public or confidential. This means you can share raw data publicly to build credibility, gate premium datasets behind IP token ownership, or keep sensitive pre-publication results private until you're ready. Your Lab's data room is also accessible via the Labs API, so agents, partners, and integrations can read and write to it programmatically.
 
@@ -29,11 +29,11 @@ This is where the illiquid-to-liquid transformation happens. Traditional scienti
 
 IP Token holders get access. Token-gated data rooms, governance rights over research direction, and priority access to licensing deals create a community of aligned stakeholders around every project.
 
-Alternative funding paths include licensing IP directly for upfront or royalty payments, selling the IP outright via an over-the-counter (OTC) swap, or receiving streaming payments tied to milestones. Smart contracts automate royalty distributions, revenue sharing, and treasury management — removing intermediaries and reducing the cost of capital.
+Alternative funding paths include licensing IP directly for upfront or royalty payments, selling the IP outright via an over-the-counter (OTC) swap, or receiving streaming payments tied to milestones. Smart contracts automate token issuance, sale settlement, revenue sharing, and treasury custody — removing intermediaries and reducing the cost of capital.
 
 #### **4.** Run Autonomous Research
 
-With an authorized agent and a funded treasury, your Lab can run research continuously. Molecule is integrating BIOS — an AI scientist framework that runs specialized agents for literature search, data analysis, hypothesis generation, and reflection. The agent reads from your Lab's data room via the Labs API, performs analysis, and writes findings back as versioned records. Every output gets a CID and a permanent onchain reference.
+With an authorized agent and a funded treasury, your Lab can run research continuously. Molecule is integrating BIOS — an AI scientist framework that runs specialized agents for literature search, data analysis, hypothesis generation, and reflection. The agent reads from your Lab's data room via the Labs API, performs analysis, and writes findings back as versioned records. Every output gets a CID and a permanent place in the Lab's anchored provenance record.
 
 Agent outputs become new data in the Lab — feeding the next cycle of analysis. This creates a compounding research loop: data goes in, agents analyze it, new findings are recorded, IP is registered, funding flows in, agents run more experiments. The Lab continuously accumulates value whether the researcher is actively working or not.
 
@@ -43,7 +43,7 @@ The treasury funds agent compute directly, so there is no separate billing layer
 
 #### **5. Build a Track Record**
 
-Every action is recorded onchain: data uploads, funding events, agent operations, IP registrations, licensing deals. The Lab accumulates a verifiable history that follows it permanently. Reputation accrues to the Lab itself.
+Every action is recorded: funding events, IP registrations, role changes, and DID links land onchain, while data uploads and agent operations are captured in the Lab's anchored provenance log. The Lab accumulates a verifiable history that follows it permanently. Reputation accrues to the Lab itself.
 
 This has direct commercial implications. Funders can perform due diligence by inspecting a Lab's onchain footprint — how much data has been generated, how many experiments run, what IP has been registered, how funding was deployed. It replaces the opaque, fragmented due diligence process in traditional biotech with a transparent, auditable record.
 

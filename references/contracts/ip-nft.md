@@ -8,12 +8,12 @@ icon: transformer-bolt
 
 ### Overview
 
-The **IP-NFT** contract is an ERC-721 NFT that represents on-chain intellectual property ownership. Each IP-NFT is a unique token that enables trading, fractionalization into IPTokens, and use as collateral for funding. They form the foundation of the Molecule Protocol, linking legal IP rights with on-chain ownership.
+The **IP-NFT** contract is an ERC-721 NFT that represents onchain intellectual property ownership. Each IP-NFT is a unique token that enables trading, fractionalization into IPTokens, and use as collateral for funding. They form the foundation of the Molecule Protocol, linking legal IP rights with onchain ownership.
 
 ### Contract Details
 
 * **Contract**: IPNFT v2.5.1
-* **Standard**: ERC-721 (with URI Storage)
+* **Standard**: ERC-721 (with URI Storage, Burnable)
 * **Type**: UUPS Upgradeable Proxy
 * **Solidity**: 0.8.18
 * **License**: MIT
@@ -62,9 +62,9 @@ function mintReservation(address to, uint256 reservationId, string calldata _tok
 ```
 {% endcode %}
 
-**grantReadAccess**
+**grantReadAccess** _(legacy)_
 
-Grants time-limited read access to encrypted files.
+Grants time-limited read access to encrypted files. Deprecated as a data-access path — current data-room access is managed via Lab roles on the [AccessResolver](accessresolver.md); only files with legacy access conditions still evaluate this.
 
 ```solidity
 function grantReadAccess(address reader, uint256 tokenId, uint256 until) external
@@ -82,9 +82,9 @@ function amendMetadata(uint256 tokenId, string calldata _newTokenURI, bytes call
 
 #### Read Functions
 
-**canRead**
+**canRead** _(legacy)_
 
-Checks if an address has read access.
+Checks if an address has read access. Evaluated only for files with legacy access conditions — see the note on `grantReadAccess` above.
 
 ```solidity
 function canRead(address reader, uint256 tokenId) external view returns (bool)
@@ -111,6 +111,7 @@ function tokenURI(uint256 tokenId) public view returns (string memory)
 * **Reserved**: New token ID reserved
 * **IPNFTMinted**: IP-NFT minted
 * **ReadAccessGranted**: Read access granted
+* **AuthorizerUpdated**: Mint authorizer contract changed (admin)
 
 ### Errors
 
@@ -136,10 +137,10 @@ function tokenURI(uint256 tokenId) public view returns (string memory)
 
 ### Related Contracts
 
-* Tokenizer.md: Fractionalize IP-NFTs into IPTokens.
-* SchmackoSwap.md: Trade IP-NFTs.
-* Access-Resolver.md: File access integration.
-* Crowdsale.md: Fundraise via IPTokens.
+* [Tokenizer](tokenizer.md): Fractionalize IP-NFTs into IPTokens.
+* [SchmackoSwap](README.md): Trade IP-NFTs (see the address table).
+* [AccessResolver](accessresolver.md): File access integration.
+* [CrowdSale](crowdsale.md): Fundraise via IPTokens.
 
 ### Resources
 

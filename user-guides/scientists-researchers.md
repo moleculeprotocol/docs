@@ -15,13 +15,13 @@ This guide walks you through the journey from your perspective. For the technica
 
 Creating a Lab is a single action. You mint a Lab NFT and instantly receive a permanent onchain identity — a wallet address that belongs to your research project. If you sell the project, the entire Lab transfers in one transaction.
 
-The practical experience is straightforward: connect your wallet, click create, and your Lab exists. There's no gas cost — Molecule sponsors the transaction fees for Lab creation if you connect via email. From this moment, your Lab can hold assets, store data, and accumulate a track record.
+The practical experience is straightforward: sign in, click create, and your Lab exists. You can sign in with Google, X, an email code, or an external Ethereum wallet — email and social sign-ins come with a built-in wallet, so no crypto setup is needed. There's no gas cost — Molecule sponsors the transaction fees for Lab creation when you use email or social sign-in. From this moment, your Lab can hold assets, store data, and accumulate a track record.
 
 A few things worth knowing early on. Your Lab address is permanent and deterministic, meaning it works across any EVM chain without needing to be bridged or migrated. Everything you do — uploading a file, receiving funds, minting IP — is recorded as a transaction on this address. Over time, this becomes your project's verifiable CV.&#x20;
 
 ### Step 2: Upload Your Research Data
 
-Once your Lab is live, you can start populating it with your research. Upload datasets, protocols, lab notebooks, images, analysis scripts — anything that constitutes the scientific foundation of your project. Files are encrypted and stored on decentralized infrastructure, with content identifiers recorded onchain so that every version is permanent and traceable.
+Once your Lab is live, you can start populating it with your research. Upload datasets, protocols, lab notebooks, images, analysis scripts — anything that constitutes the scientific foundation of your project. Files are encrypted and stored on decentralized infrastructure, with every version content-addressed in your Lab's provenance log — which is itself anchored onchain to your Lab — so every version is permanent and traceable.
 
 The key decision here is access control. For each file, you choose who can see it.
 
@@ -41,7 +41,7 @@ Keeping it whole means you retain full ownership. You can license it directly to
 
 Tokenizing means you create IP Tokens (IPTs) — fungible tokens that represent fractional ownership and governance rights over the underlying IP. This is the path to community funding. IPT holders get economic exposure to your research, access to token-gated data, and a voice in governance decisions. You decide how many tokens to create and how they're distributed.
 
-If you tokenize, you can run a crowdsale. Molecule supports several sale types, each with different trade-offs between simplicity, investor commitment, and alignment incentives. The sale types are shown in the flowchart above. Funds raised go directly into your Lab's treasury — fully transparent, fully under your control. For the detailed mechanics of IP-NFTs, IPTs, and crowdsale options, see the Tokenized IPs section.
+If you tokenize, you can run a crowdsale. Molecule supports several sale types, each with different trade-offs between simplicity, investor commitment, and alignment incentives. Funds raised go directly into your Lab's treasury — fully transparent, fully under your control. For the detailed mechanics of IP-NFTs, IPTs, and crowdsale options, see the Tokenized IPs section.
 
 ### Step 4: Use AI Agents to Accelerate Your Research
 
@@ -53,7 +53,7 @@ Molecule integrates BioAgents, an open-source AI scientist framework built speci
 
 A Literature Agent searches and synthesises scientific literature relevant to your research question. It returns findings with inline citations, so you can trace every claim back to its source paper. You can point it at a question like "What compounds have shown efficacy against target X in the last three years?" and receive a structured synthesis — not a summary, but a cited analysis you can build on.
 
-An Analysis Agent operates on data you've uploaded to your Lab. Upload a dataset — genomic data, assay results, clinical measurements — and the agent runs analysis, generates visualisations, and identifies patterns. The results are written back to your Lab as new versioned records, each with a content identifier and permanent onchain reference.
+An Analysis Agent operates on data you've uploaded to your Lab. Upload a dataset — genomic data, assay results, clinical measurements — and the agent runs analysis, generates visualisations, and identifies patterns. The results are written back to your Lab as new versioned records, each with a content identifier in the Lab's permanent, anchored provenance record.
 
 A Hypothesis Agent takes findings from literature searches and data analyses and generates testable hypotheses. It considers the current state of your research, what has and hasn't worked, and proposes next steps with supporting evidence.
 

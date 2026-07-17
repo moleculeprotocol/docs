@@ -12,7 +12,6 @@
 * [Roles & Permissions](core-concepts/roles-and-permissions.md)
 * [Module Registry](core-concepts/module-registry/README.md)
   * [Validator Module](core-concepts/module-registry/validator-module.md)
-  * [Data Module](core-concepts/module-registry/data-module.md)
   * [Fallback Modules](core-concepts/module-registry/fallback-modules.md)
   * [Executor Modules](core-concepts/module-registry/executor-modules.md)
   * [Coin-to-Company Model](core-concepts/module-registry/rwa-equity.md)
@@ -23,6 +22,7 @@
 * [Data](core-concepts/data/README.md)
   * [Data Storage](core-concepts/data/data-storage.md)
   * [Data Privacy & Access](core-concepts/data/data-privacy-and-access.md)
+  * [Data Anchoring (DID Linking)](core-concepts/module-registry/data-module.md)
   * [Data API & Integration](core-concepts/data/data-api-and-integration.md)
 
 ## API Reference
@@ -52,7 +52,7 @@
   * [Tokenizer](references/contracts/tokenizer.md)
   * [AccessResolver](references/contracts/accessresolver.md)
   * [CrowdSale](references/contracts/crowdsale.md)
-* [Subgraph](references/subgraph.md)
+* [Subgraph (Deprecated)](references/subgraph.md)
 * [MCP Tools](references/mcp-tools.md)
 * [Labs API](references/labs-api.md)
 

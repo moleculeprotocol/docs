@@ -1,8 +1,8 @@
-# ⚙️ Programmatic File Upload
+# ⚙️ Labs API
 
 ## Overview
 
-The Programmatic File Upload API allows developers to automate file uploads to Molecule Labs datarooms without requiring browser-based user interaction. This enables integration with automated workflows, data pipelines, CI/CD systems, and external applications.
+The Labs API allows developers to interact with Molecule Labs datarooms without requiring browser-based user interaction. This enables integration with automated workflows, data pipelines, CI/CD systems, and external applications.
 
 ### Use Cases
 
@@ -36,7 +36,7 @@ The Labs API has different authentication requirements depending on the operatio
 - `getServiceSignInMessage` - Get the message a service signs to obtain a token
 - `getDidLinkStatus` - Get background DID-linking status for a lab
 - `legalAgreementStatus` - Check whether a lab's legal agreement is signed
-- `onChainActivity` - On-chain event feed for a lab or wallet
+- `onChainActivity` - Onchain event feed for a lab or wallet
 - `listLabMembers` - List a lab's members
 
 ```bash
@@ -56,7 +56,7 @@ x-api-key: YOUR_API_KEY
 
 **Protected mutations include:**
 
-- `createLab` - Create a lab (data room) for an on-chain lab (OCL) · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+- `createLab` - Create a lab (data room) for an onchain lab (OCL) · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `initiateCreateOrUpdateFile` - Initiate file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `finishCreateOrUpdateFile` - Complete file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `updateFileMetadata` - Update file metadata
@@ -67,7 +67,6 @@ x-api-key: YOUR_API_KEY
 - `signLegalAgreement` - Record acceptance of a legal agreement
 - `generateDataEncryptionKey` - Generate a standalone data encryption key · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `decryptDataKey` - Decrypt a file's data key for an authorized caller · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
-- `dataRoomPassphrase` - Get Telegram bot passphrase for a dataroom
 - `extendServiceToken` - Extend service token expiration
 - `revokeServiceToken` - Revoke a service token
 
@@ -140,7 +139,7 @@ Staging:    https://staging.graphql.api.molecule.xyz/graphql
 
 ### Step 1: Create Lab
 
-Register a Kamu-backed lab (data room) for an on-chain lab (OCL) that already exists on-chain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
+Register a Kamu-backed lab (data room) for an onchain lab (OCL) that already exists onchain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
 
 > **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
 
@@ -172,7 +171,7 @@ The mutation takes a single `CreateLabInput` object:
 
 | Field | Type   | Required | Description                                                    |
 | ----- | ------ | -------- | -------------------------------------------------------------- |
-| oclId | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the on-chain lab |
+| oclId | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the onchain lab |
 
 **Prerequisites:**
 
@@ -185,7 +184,7 @@ The mutation takes a single `CreateLabInput` object:
    - **Service Token** (recommended for automation): Obtain from Molecule team via Discord
    - **Privy Token** (for user-initiated requests): Use your authenticated Privy session
 
-3. **LabNFT Must Be Minted**: The on-chain lab (LabNFT / `oclId`) must already exist on-chain before registering the lab
+3. **LabNFT Must Be Minted**: The onchain lab (LabNFT / `oclId`) must already exist onchain before registering the lab
 
 **Authentication Options:**
 
@@ -263,7 +262,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
       "isSuccess": false,
       "message": "User is not authorized for this lab",
       "error": {
-        "message": "On-chain verification failed: wallet address is not owner or authorized signer",
+        "message": "Onchain verification failed: wallet address is not owner or authorized signer",
         "code": "OWNERSHIP_VERIFICATION_FAILED",
         "retryable": false
       },
@@ -295,7 +294,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 **How It Works:**
 
 1. **Authentication Check**: Validates service token or Privy token
-2. **On-Chain Verification**: Verifies you own or are an authorized signer for the LabNFT (`oclId`)
+2. **Onchain Verification**: Verifies you own or are an authorized signer for the LabNFT (`oclId`)
 3. **Lab Creation**: Registers the Kamu-backed lab and its data room for the `oclId`
 4. **Whitelist Update**: Automatically adds your wallet address to the lab whitelist
 5. **Returns Result**: Lab details if successful, error details if failed
@@ -304,7 +303,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 - **Automate Lab Creation**: Register labs programmatically after minting LabNFTs
 - **CI/CD Integration**: Automatically set up data rooms for new research labs
-- **Batch Operations**: Register multiple labs for a portfolio of on-chain labs
+- **Batch Operations**: Register multiple labs for a portfolio of onchain labs
 - **User Self-Service**: Allow users to create their own lab data rooms
 
 **Getting Service Token Access:**
@@ -743,21 +742,14 @@ query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
     nodes {
       oclId
       shortname
+      name
+      description
       labAccountAddress
       labNftTokenId
-      systemTime
-      eventTime
+      latestContributionAt
       trlValue
       trlRationale
       isVerified
-      account {
-        accountName
-      }
-      dataRoom {
-        id
-        alias
-        status
-      }
     }
     totalCount
     pageInfo {
@@ -769,6 +761,8 @@ query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
   }
 }
 ```
+
+> The `labs` list returns lightweight `LabRef` objects. Data-room contents and account details are not part of `LabRef` — fetch them per lab via [`labWithDataRoomAndFiles`](#get-single-project-with-files).
 
 **Parameters:**
 
@@ -796,7 +790,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query ListProjects($page: Int, $perPage: Int) { labs(page: $page, perPage: $perPage) { nodes { oclId shortname dataRoom { id alias } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
+    "query": "query ListProjects($page: Int, $perPage: Int) { labs(page: $page, perPage: $perPage) { nodes { oclId shortname name labAccountAddress } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
     "variables": {
       "page": 0,
       "perPage": 20
@@ -1617,60 +1611,6 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ---
 
-## Dataroom Utilities
-
-### Get Dataroom Passphrase
-
-Retrieve the Telegram bot passphrase for connecting to a dataroom's notification channel. This passphrase is used to authenticate with the Molecule Telegram bot for receiving real-time updates about dataroom activity.
-
-**GraphQL Mutation:**
-
-```graphql
-mutation GetDataRoomPassphrase($oclId: String!) {
-  dataRoomPassphrase(oclId: $oclId)
-}
-```
-
-**Parameters:**
-
-| Parameter | Type   | Required | Description                        |
-| --------- | ------ | -------- | ---------------------------------- |
-| oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
-
-**Example Request:**
-
-```bash
-curl -X POST https://production.graphql.api.molecule.xyz/graphql \
-  -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
-  -d '{
-    "query": "mutation GetDataRoomPassphrase($oclId: String!) { dataRoomPassphrase(oclId: $oclId) }",
-    "variables": {
-      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042"
-    }
-  }'
-```
-
-**Success Response:**
-
-```json
-{
-  "data": {
-    "dataRoomPassphrase": "apple-banana-cherry"
-  }
-}
-```
-
-**Use Case:**
-
-- Connect the Molecule Telegram bot to receive notifications about file uploads, announcements, and other dataroom activity
-- The passphrase is a 3-word phrase separated by dashes
-
-> **Note**: This is a mutation (not a query) because it may have side effects related to notification channel setup. Requires admin access to the specified lab.
-
----
-
 ## Error Handling
 
 All API responses follow a consistent error format:
@@ -1746,6 +1686,7 @@ All API responses follow a consistent error format:
 
 - **Default Limit**: 5GB per lab/project
 - **Custom Limits**: Can be increased upon request - contact the Molecule team
+- **Note**: the Labs web app additionally caps individual uploads at 100 MB per file; API uploads are not subject to that app-side cap
 
 ### Supported File Types
 
@@ -1760,6 +1701,8 @@ All API responses follow a consistent error format:
 | HOLDERS | Visible only to IP Token (IPT) holders       |
 | ADMIN   | Visible only to project administrators       |
 
+All three values are accepted by the API. Note that the Labs web app currently writes only `PUBLIC` (regular files) or `ADMIN` (confidential files) — `HOLDERS` is set via the API only.
+
 ### Optional Metadata
 
 Enhance file discoverability with optional metadata:
@@ -1773,11 +1716,11 @@ Enhance file discoverability with optional metadata:
 
 ## Advanced: Encrypted File Upload
 
-For files requiring client-side encryption, pass `encryption: true` to `initiateCreateOrUpdateFile` and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, on-chain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page.
+For files requiring client-side encryption, obtain a data encryption key via the `generateDataEncryptionKey` mutation, encrypt locally, upload as normal, and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, onchain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page.
 
-### Initiate with encryption
+### Obtain a DEK, then encrypt locally
 
-`initiateCreateOrUpdateFile(..., encryption: true)` returns `plaintextDEK`, `encryptedDEK`, and `encryptionSystem` in addition to the upload URL. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory.
+`generateDataEncryptionKey` (no arguments) returns `plaintextDEK`, `encryptedDek`, and `encryptionSystem`. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory. The upload itself uses the standard `initiateCreateOrUpdateFile` → PUT → `finishCreateOrUpdateFile` flow, with the encrypted bytes uploaded to the presigned URL.
 
 ### Encryption Metadata Parameter (Onchain-Verified Envelope Encryption, current default)
 
@@ -1788,7 +1731,7 @@ $encryptionMetadata: EncryptionMetadataInput
 ```json
 {
   "encryptionMetadata": {
-    "encryptionSystem": "<echo value returned by initiateCreateOrUpdateFile>",
+    "encryptionSystem": "<echo value returned by generateDataEncryptionKey>",
     "encryptedDek": "BASE64_WRAPPED_DEK",
     "iv": "BASE64_AES_GCM_IV",
     "contentHash": "sha256-...",
@@ -1799,7 +1742,7 @@ $encryptionMetadata: EncryptionMetadataInput
 }
 ```
 
-`encryptionSystem` is **backend-set** — clients must echo the value returned on `initiateCreateOrUpdateFile` rather than hardcode it. This keeps the roadmap rollover to BLS threshold key custody transparent to existing integrations.
+`encryptionSystem` is **backend-set** — clients must echo the value returned by `generateDataEncryptionKey` rather than hardcode it. This keeps the roadmap rollover to BLS threshold key custody transparent to existing integrations.
 
 #### `accessControlConditions` — gating decryption by role
 
@@ -1807,9 +1750,9 @@ $encryptionMetadata: EncryptionMetadataInput
 
 The placeholder `:userAddress` in `functionParams` is substituted with the authenticated caller's wallet at evaluate time. The full `EvmContractCondition` JSON shape, the worked OR-composite example, and condition-evaluator semantics are documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer) page.
 
-#### Role Management (on-chain, off this API surface)
+#### Role Management (onchain, off this API surface)
 
-Role grants are **on-chain transactions on the `AccessResolver` contract**, not Labs API mutations. Lab owners (and active Contributors, for the Viewer slot) call `grantRole(oclId, account, role, expiry, isAgent)` / `revokeRole(oclId, account)` directly via viem / ethers / Safe. The Labs API only _consumes_ role state at decrypt time through the `accessControlConditions` evaluator. See [Roles & Permissions](../core-concepts/roles-and-permissions.md) for the capability matrix, grant lifecycle (expiry, `isAgent`), and the [`AccessResolver` reference](../references/contracts/accessresolver.md) for the on-chain interface.
+Role grants are **onchain transactions on the `AccessResolver` contract**, not Labs API mutations. Lab owners (and active Contributors, for the Viewer slot) call `grantRole(oclId, account, role, expiry, isAgent)` / `revokeRole(oclId, account)` directly via viem / ethers / Safe. The Labs API only _consumes_ role state at decrypt time through the `accessControlConditions` evaluator. See [Roles & Permissions](../core-concepts/roles-and-permissions.md) for the capability matrix, grant lifecycle (expiry, `isAgent`), and the [`AccessResolver` reference](../references/contracts/accessresolver.md) for the onchain interface.
 
 ### Encryption Metadata Parameter (Lit Protocol, legacy)
 
@@ -2184,15 +2127,15 @@ query GetDidLinkStatus($oclId: String!) {
 | --------- | ------ | -------- | ---------------------------------- |
 | oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
 
-`status` is a `DidLinkingStatus`: `PENDING`, `SUBMITTED`, `LINKED`, or `FAILED` (`null` before the first linking attempt). `linkedDidCount` reflects the number of active on-chain DID links observed by the event indexer.
+`status` is a `DidLinkingStatus`: `PENDING`, `SUBMITTED`, `LINKED`, or `FAILED` (`null` before the first linking attempt). `linkedDidCount` reflects the number of active onchain DID links observed by the event indexer.
 
 ---
 
-## On-Chain Activity
+## Onchain Activity
 
-### On-Chain Activity Feed
+### Onchain Activity Feed
 
-Return the on-chain event feed for an OCL or a wallet. Exactly one of `oclId` / `wallet` must be supplied. Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last row's `id` to fetch the next page.
+Return the onchain event feed for an OCL or a wallet. Exactly one of `oclId` / `wallet` must be supplied. Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last row's `id` to fetch the next page.
 
 ```graphql
 query OnChainActivity(
@@ -2301,7 +2244,7 @@ Top-level identifiers on `Lab` / `LabRef` were renamed away from the legacy IP-N
 | `ipnftAddress` | `labAccountAddress` | ERC-6551 token-bound account address                        |
 | `ipnftTokenId` | `labNftTokenId`     | LabNFT tokenId (decimal string)                             |
 
-> The linked legacy IP-NFT (for labs migrated from one) is still available as the nested `ipnft` object and the `ipnftId` field on `Lab` / `LabRef`.
+> The linked legacy IP-NFT (for labs migrated from one) is still available as the nested `ipnft` object on `Lab` / `LabRef`; `LabRef` additionally exposes a scalar `ipnftId` field.
 
 ---
 
