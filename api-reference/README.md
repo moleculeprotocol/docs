@@ -32,7 +32,7 @@ Create IP-NFTs from research projects and tokenize them into fungible IP Tokens 
 * Mint new IP-NFTs with legal agreements
 * Upload artwork and metadata to IPFS
 * Tokenize IP-NFTs into tradeable ERC-20 tokens
-* Manage the complete on-chain minting workflow
+* Manage the complete onchain minting workflow
 
 **Authentication:** API Key required
 
@@ -46,12 +46,12 @@ Upload files to lab datarooms for secure, decentralized research data storage, a
 
 **Purpose:**
 
-* Create labs (datarooms) for on-chain labs (OCLs)
+* Create labs (datarooms) for onchain labs (OCLs)
 * Automate file uploads to lab datarooms
 * Integrate with data pipelines and CI/CD
 * Batch upload research data
 * Manage file versions, metadata, and LabNFT display metadata
-* Query labs, files, members, activity, and on-chain events (mostly public access)
+* Query labs, files, members, activity, and onchain events (mostly public access)
 * Manage service tokens and legal-agreement signing
 
 **Authentication:**

@@ -33,7 +33,6 @@ Contracts that can initiate transactions _from_ a Lab account. When installed, a
 
 Extend a Lab's interface by registering new function selectors. When a call arrives at the Lab for a function the core contract doesn't recognise, the Lab routes it to whichever fallback module is registered for that selector. This enables Labs to respond to entirely new interfaces without modifying the core contract. A fallback module might add ERC-1155 receiver support, implement a custom governance voting interface, or expose data querying functions.
 
-The ERC-7579 standard also defines **hooks** — pre- and post-execution checks around module logic. In the current contracts, hooks exist only as an unused interface definition: there is no hook storage or dispatch, so no hook can be configured today.
 
 ### The Attestation Model
 

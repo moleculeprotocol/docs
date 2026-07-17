@@ -2,14 +2,14 @@
 
 ## Overview
 
-The Tokenization API enables developers to programmatically mint IP-NFTs (Intellectual Property NFTs) and tokenize them into fungible IP Tokens (IPTs). This API combines off-chain GraphQL mutations with on-chain blockchain transactions to create legally-bound, tradeable intellectual property assets.
+The Tokenization API enables developers to generate Lab (OCL) membership agreements and tokenize Labs into Lab Tokens on Base. On Ethereum mainnet, developers can programmatically mint IP-NFTs (Intellectual Property NFTs) and tokenize them into fungible IP Tokens (IPTs). This API combines offchain GraphQL mutations with onchain blockchain transactions to create legally-bound, tradeable intellectual property assets.
 
 **Capabilities:**
 
+* Generate Lab (OCL) membership agreements and tokenize Labs into Lab Tokens on Base
 * Mint new IP-NFTs with legal assignment agreements
 * Upload artwork and metadata to IPFS
 * Create fungible IP Tokens (IPTs) from existing IP-NFTs
-* Generate Lab (OCL) membership agreements and tokenize Labs into Lab Tokens on Base
 * Manage the complete tokenization lifecycle
 * Integrate with smart contracts via viem/ethers
 
@@ -350,7 +350,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ## OCL Membership Agreement
 
-Generate the membership agreement for an on-chain lab (OCL). This is the OCL-side counterpart to `generateIptMembershipAgreement`: it produces the terms document a Lab token holder accepts when the Lab is tokenized. Unlike the IPFS-backed agreements above, it returns an `agreementKey` (an S3 object key) rather than an IPFS CID, paired with a SHA-256 `agreementContentHash` that binds the signature to the exact document.
+Generate the membership agreement for an onchain lab (OCL). This is the OCL-side counterpart to `generateIptMembershipAgreement`: it produces the terms document a Lab token holder accepts when the Lab is tokenized. Unlike the IPFS-backed agreements above, it returns an `agreementKey` (an S3 object key) rather than an IPFS CID, paired with a SHA-256 `agreementContentHash` that binds the signature to the exact document.
 
 ### generateOclMembershipAgreement
 
@@ -430,7 +430,7 @@ Step 4: Tokenize (BLOCKCHAIN, Base)
 ↓ Result: ERC-20 Lab Token contract deployed ✓
 ```
 
-The terms message is reconstructed on-chain by `OclTermsPermissioner.specificTermsV1()` — the backend's `getOclTermsMessage` returns byte-identical text, so always sign exactly the string the API returns.
+The terms message is reconstructed onchain by `OclTermsPermissioner.specificTermsV1()` — the backend's `getOclTermsMessage` returns byte-identical text, so always sign exactly the string the API returns.
 
 ### OclTokenizer Contract Functions
 
@@ -609,7 +609,7 @@ For complete code examples including:
 ### Basic Example Structure
 
 ```javascript
-// 1. Reserve token ID on-chain
+// 1. Reserve token ID onchain
 const reservationId = await reserveIpnft();
 
 // 2. Generate legal agreement
@@ -628,7 +628,7 @@ const termsSignature = await signTerms(termsMessage);
 // 8. Get backend authorization
 const authorization = await signoffMetadata(termsSignature);
 
-// 9. Mint IP-NFT on-chain
+// 9. Mint IP-NFT onchain
 const txHash = await mintReservation(reservationId, metadata.url, authorization);
 
 console.log('IP-NFT minted!', txHash);

@@ -6,7 +6,7 @@ icon: gavel
 
 ## AccessResolver Overview
 
-The `AccessResolver` contract is the on-chain authorization primitive for Onchain Labs. It answers two questions:
+The `AccessResolver` contract is the onchain authorization primitive for Onchain Labs. It answers two questions:
 
 1. **"Is this wallet an authorized signer for a given IP-NFT or ERC-6551 Token Bound Account?"** — used by the file-encryption layer to gate decryption of confidential data-room files and by back-office flows that need to resolve Safe multisigs and Ownable contracts to their leaf EOAs.
 2. **"What role does this wallet hold on a given lab, and is the grant still active?"** — the V3 role system (`ROLE_VIEWER`, `ROLE_CONTRIBUTOR`) with per-grant expiry and `isAgent` metadata, hierarchical (Owner > Contributor > Viewer), and administered per `oclId`.
@@ -131,7 +131,7 @@ The first four are the contract's custom errors; the rest are inherited from Ope
 
 ### Integration Guide
 
-The same `accessControlConditions` shape is reused across both Molecule's Onchain-Verified Envelope Encryption and the legacy Lit Protocol path — `AccessResolver` is the on-chain oracle either way. New integrations should drive encryption through the Labs API (`initiateCreateOrUpdateFile` / `decryptDataKey`); the Lit examples below remain valid for legacy files.
+The same `accessControlConditions` shape is reused across both Molecule's Onchain-Verified Envelope Encryption and the legacy Lit Protocol path — `AccessResolver` is the onchain oracle either way. New integrations should drive encryption through the Labs API (`initiateCreateOrUpdateFile` / `decryptDataKey`); the Lit examples below remain valid for legacy files.
 
 #### Use as an Access Control Condition (current)
 

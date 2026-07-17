@@ -25,7 +25,7 @@ _ERC-721_ makes the Lab a tradable, transferable NFT compatible with the entire 
 
 _ERC-6551_ gives the NFT its own smart contract wallet, known as a Token Bound Account. The wallet has no private key of its own — it derives its authority entirely from the current NFT owner. The account address is deterministic, computed from the chain ID, the NFT contract address, the token ID, and a salt. This means the address is known before deployment and is consistent across any chain where the ERC-6551 Registry is deployed.
 
-_ERC-4337_ introduces account abstraction, enabling gasless transactions through paymasters and a validation pipeline that decouples signature verification from execution (transaction batching is part of the standard but not yet enabled — Labs currently execute single calls). Users interact with Labs by signing intents offchain; the protocol handles gas, relay, and execution.
+_ERC-4337_ introduces account abstraction, enabling gasless transactions through paymasters and a validation pipeline that decouples signature verification from execution. Users interact with Labs by signing intents offchain; the protocol handles gas, relay, and execution.
 
 _ERC-7579_ defines a modular account interface. Labs can install executor modules (which perform actions on behalf of the Lab) and fallback modules (which extend the Lab with new function selectors) without changing the core contract. This means Labs can gain new capabilities — licensing logic, governance, oracle integrations, automated royalty distribution — through modules developed by Molecule or third-party developers.
 
@@ -43,7 +43,7 @@ This separation is what makes Labs composable. A Lab can be sold on a marketplac
 
 ### What Labs Own
 
-<table><thead><tr><th width="174.08203125">Asset Type</th><th>Description</th></tr></thead><tbody><tr><td>IP-NFTs</td><td>Onchain representation of intellectual property rights</td></tr><tr><td>IP Tokens</td><td>Fungible tokens created from tokenizing IP-NFTs</td></tr><tr><td>Treasury</td><td>ETH, stablecoins, or any ERC-20 tokens</td></tr><tr><td>Data References</td><td>CIDs pointing to encrypted research data stored off-chain</td></tr><tr><td>Child Labs</td><td>Nested Labs for hierarchical research programs <em>(roadmap)</em></td></tr><tr><td>Licenses</td><td>License NFTs for time-bound IP access — held as ordinary NFTs; rentable ERC-4907 mechanics are roadmap</td></tr><tr><td>External Assets</td><td>Any ERC-20/721/1155 from the broader ecosystem</td></tr></tbody></table>
+<table><thead><tr><th width="174.08203125">Asset Type</th><th>Description</th></tr></thead><tbody><tr><td>IP-NFTs</td><td>Onchain representation of intellectual property rights</td></tr><tr><td>IP Tokens</td><td>Fungible tokens created from tokenizing IP-NFTs</td></tr><tr><td>Treasury</td><td>ETH, stablecoins, or any ERC-20 tokens</td></tr><tr><td>Data References</td><td>CIDs pointing to encrypted research data stored offchain</td></tr><tr><td>Child Labs</td><td>Nested Labs for hierarchical research programs <em>(roadmap)</em></td></tr><tr><td>Licenses</td><td>License NFTs for time-bound IP access — held as ordinary NFTs; rentable ERC-4907 mechanics are roadmap</td></tr><tr><td>External Assets</td><td>Any ERC-20/721/1155 from the broader ecosystem</td></tr></tbody></table>
 
 Because the Token Bound Account is a general-purpose smart contract wallet, a Lab can hold any asset that any Ethereum account can hold. The asset types listed above represent the assets that are semantically meaningful within the Molecule ecosystem, but the wallet is not limited to these.
 
@@ -59,9 +59,9 @@ All modules must be attested by a trusted Molecule attestor in the ERC-7484 regi
 
 The modular architecture enables Labs to support delegated permissions without transferring ownership. Lab owners can authorize scoped, expiring access — for example, allowing a collaborator to upload data to the data room, or an AI agent to decrypt specific files for the duration of a research session — without surrendering the LabNFT or treasury control.
 
-Delegated access is enforced on-chain by the `AccessResolver` contract, which implements a hierarchical role system per-lab: **Owner** (the LabNFT holder, resolved through the ERC-6551 TBA), **Contributor** (full data-room access, can manage Viewers), and **Viewer** (read-only). Each grant carries an optional expiry and an `isAgent` flag to distinguish AI-agent session keys from human collaborators. The core Lab contract itself still only recognises the NFT owner and the ERC-4337 EntryPoint — roles are layered on top and consulted by the GraphQL API, encryption layer, and UI.
+Delegated access is enforced onchain by the `AccessResolver` contract, which implements a hierarchical role system per-lab: **Owner** (the LabNFT holder, resolved through the ERC-6551 TBA), **Contributor** (full data-room access, can manage Viewers), and **Viewer** (read-only). Each grant carries an optional expiry and an `isAgent` flag to distinguish AI-agent session keys from human collaborators. The core Lab contract itself still only recognises the NFT owner and the ERC-4337 EntryPoint — roles are layered on top and consulted by the GraphQL API, encryption layer, and UI.
 
-See [Roles & Permissions](roles-and-permissions.md) for the capability matrix, grant semantics, and the on-chain interface.
+See [Roles & Permissions](roles-and-permissions.md) for the capability matrix, grant semantics, and the onchain interface.
 
 ### Onchain Activity Log
 
@@ -71,8 +71,6 @@ Every transaction executed through a Lab creates a permanent, timestamped onchai
 
 This creates a verifiable chain of custody for the entire research lifecycle. Reputation accrues to the Lab's permanent address, not to a CV, not to an institution. When collaborators or funders evaluate a project, the evidence is cryptographic and publicly auditable.
 
-### Lab Tokenization _(Coming soon)_
+### Lab Tokenization
 
-Labs will be able to affiliate with or mint a Group Token to create an economic layer around the Lab's assets. The planned model allows Lab owners to select or mint an ERC-20 token, attach a fee router to direct revenue from the Lab's assets (IP licensing royalties, dataset access payments, trading fees, DeFi yield), enable staking for token holders to receive a share of fee flows, and optionally configure automatic token buybacks from revenue.
-
-_\*This feature is part of the V3 roadmap and is not yet available in the current protocol deployment._
+Labs will be able to affiliate with or mint a Lab Token to create an economic layer around the Lab's assets. The planned model allows Lab owners to select or mint an ERC-20 token, attach a fee router to direct revenue from the Lab's assets (IP licensing royalties, dataset access payments, trading fees, DeFi yield), enable staking for token holders to receive a share of fee flows, and optionally configure automatic token buybacks from revenue.

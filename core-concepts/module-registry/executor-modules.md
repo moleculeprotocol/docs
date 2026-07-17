@@ -87,8 +87,6 @@ The ERC-7484 Module Registry ensures only attested executor contracts can be ins
 
 Installation requires a validated UserOperation through the EntryPoint, meaning the Lab owner must explicitly approve every executor. No executor can self-install.
 
-Hooks — per-executor pre-execution checks such as spending limits or target restrictions — are defined by ERC-7579 but exist only as an unused interface in the current contracts; today the executor's own logic and the owner-change guard are the bounding mechanisms.
-
 Lab owners can revoke an executor's access at any time via `uninstallModule`, which clears its `ExecutorManager` registration and calls the executor's `onUninstall` handler.
 
 ### Contract Reference

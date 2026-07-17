@@ -38,7 +38,7 @@ POST /x402/labs/{mutation}
 | `/x402/labs/initiateCreateOrUpdateFile`      | `initiateCreateOrUpdateFile`   | Start a file upload; returns a presigned URL             |
 | `/x402/labs/finishCreateOrUpdateFile`        | `finishCreateOrUpdateFile`     | Finalise a file upload with metadata                     |
 | `/x402/labs/createAnnouncement`              | `createAnnouncement`           | Publish a lab announcement                               |
-| `/x402/labs/createLab`                       | `createLab`                    | Create a lab (data room) for an on-chain lab (OCL)       |
+| `/x402/labs/createLab`                       | `createLab`                    | Create a lab (data room) for an onchain lab (OCL)       |
 | `/x402/labs/generateDataEncryptionKey`       | `generateDataEncryptionKey`    | Generate a data encryption key (DEK) for encrypted uploads |
 | `/x402/labs/decryptDataKey`                  | `decryptDataKey`               | Decrypt a file's data key for an authorized caller       |
 

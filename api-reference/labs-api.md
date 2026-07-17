@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Programmatic File Upload API allows developers to automate file uploads to Molecule Labs datarooms without requiring browser-based user interaction. This enables integration with automated workflows, data pipelines, CI/CD systems, and external applications.
+The Labs API allows developers to interact with Molecule Labs datarooms without requiring browser-based user interaction. This enables integration with automated workflows, data pipelines, CI/CD systems, and external applications.
 
 ### Use Cases
 
@@ -36,7 +36,7 @@ The Labs API has different authentication requirements depending on the operatio
 - `getServiceSignInMessage` - Get the message a service signs to obtain a token
 - `getDidLinkStatus` - Get background DID-linking status for a lab
 - `legalAgreementStatus` - Check whether a lab's legal agreement is signed
-- `onChainActivity` - On-chain event feed for a lab or wallet
+- `onChainActivity` - Onchain event feed for a lab or wallet
 - `listLabMembers` - List a lab's members
 
 ```bash
@@ -56,7 +56,7 @@ x-api-key: YOUR_API_KEY
 
 **Protected mutations include:**
 
-- `createLab` - Create a lab (data room) for an on-chain lab (OCL) · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+- `createLab` - Create a lab (data room) for an onchain lab (OCL) · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `initiateCreateOrUpdateFile` - Initiate file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `finishCreateOrUpdateFile` - Complete file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `updateFileMetadata` - Update file metadata
@@ -139,7 +139,7 @@ Staging:    https://staging.graphql.api.molecule.xyz/graphql
 
 ### Step 1: Create Lab
 
-Register a Kamu-backed lab (data room) for an on-chain lab (OCL) that already exists on-chain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
+Register a Kamu-backed lab (data room) for an onchain lab (OCL) that already exists onchain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
 
 > **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
 
@@ -171,7 +171,7 @@ The mutation takes a single `CreateLabInput` object:
 
 | Field | Type   | Required | Description                                                    |
 | ----- | ------ | -------- | -------------------------------------------------------------- |
-| oclId | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the on-chain lab |
+| oclId | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the onchain lab |
 
 **Prerequisites:**
 
@@ -184,7 +184,7 @@ The mutation takes a single `CreateLabInput` object:
    - **Service Token** (recommended for automation): Obtain from Molecule team via Discord
    - **Privy Token** (for user-initiated requests): Use your authenticated Privy session
 
-3. **LabNFT Must Be Minted**: The on-chain lab (LabNFT / `oclId`) must already exist on-chain before registering the lab
+3. **LabNFT Must Be Minted**: The onchain lab (LabNFT / `oclId`) must already exist onchain before registering the lab
 
 **Authentication Options:**
 
@@ -262,7 +262,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
       "isSuccess": false,
       "message": "User is not authorized for this lab",
       "error": {
-        "message": "On-chain verification failed: wallet address is not owner or authorized signer",
+        "message": "Onchain verification failed: wallet address is not owner or authorized signer",
         "code": "OWNERSHIP_VERIFICATION_FAILED",
         "retryable": false
       },
@@ -303,7 +303,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 - **Automate Lab Creation**: Register labs programmatically after minting LabNFTs
 - **CI/CD Integration**: Automatically set up data rooms for new research labs
-- **Batch Operations**: Register multiple labs for a portfolio of on-chain labs
+- **Batch Operations**: Register multiple labs for a portfolio of onchain labs
 - **User Self-Service**: Allow users to create their own lab data rooms
 
 **Getting Service Token Access:**
@@ -1716,7 +1716,7 @@ Enhance file discoverability with optional metadata:
 
 ## Advanced: Encrypted File Upload
 
-For files requiring client-side encryption, obtain a data encryption key via the `generateDataEncryptionKey` mutation, encrypt locally, upload as normal, and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, on-chain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page.
+For files requiring client-side encryption, obtain a data encryption key via the `generateDataEncryptionKey` mutation, encrypt locally, upload as normal, and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, onchain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page.
 
 ### Obtain a DEK, then encrypt locally
 
@@ -1750,9 +1750,9 @@ $encryptionMetadata: EncryptionMetadataInput
 
 The placeholder `:userAddress` in `functionParams` is substituted with the authenticated caller's wallet at evaluate time. The full `EvmContractCondition` JSON shape, the worked OR-composite example, and condition-evaluator semantics are documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer) page.
 
-#### Role Management (on-chain, off this API surface)
+#### Role Management (onchain, off this API surface)
 
-Role grants are **on-chain transactions on the `AccessResolver` contract**, not Labs API mutations. Lab owners (and active Contributors, for the Viewer slot) call `grantRole(oclId, account, role, expiry, isAgent)` / `revokeRole(oclId, account)` directly via viem / ethers / Safe. The Labs API only _consumes_ role state at decrypt time through the `accessControlConditions` evaluator. See [Roles & Permissions](../core-concepts/roles-and-permissions.md) for the capability matrix, grant lifecycle (expiry, `isAgent`), and the [`AccessResolver` reference](../references/contracts/accessresolver.md) for the on-chain interface.
+Role grants are **onchain transactions on the `AccessResolver` contract**, not Labs API mutations. Lab owners (and active Contributors, for the Viewer slot) call `grantRole(oclId, account, role, expiry, isAgent)` / `revokeRole(oclId, account)` directly via viem / ethers / Safe. The Labs API only _consumes_ role state at decrypt time through the `accessControlConditions` evaluator. See [Roles & Permissions](../core-concepts/roles-and-permissions.md) for the capability matrix, grant lifecycle (expiry, `isAgent`), and the [`AccessResolver` reference](../references/contracts/accessresolver.md) for the onchain interface.
 
 ### Encryption Metadata Parameter (Lit Protocol, legacy)
 
@@ -2127,7 +2127,7 @@ query GetDidLinkStatus($oclId: String!) {
 | --------- | ------ | -------- | ---------------------------------- |
 | oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
 
-`status` is a `DidLinkingStatus`: `PENDING`, `SUBMITTED`, `LINKED`, or `FAILED` (`null` before the first linking attempt). `linkedDidCount` reflects the number of active on-chain DID links observed by the event indexer.
+`status` is a `DidLinkingStatus`: `PENDING`, `SUBMITTED`, `LINKED`, or `FAILED` (`null` before the first linking attempt). `linkedDidCount` reflects the number of active onchain DID links observed by the event indexer.
 
 ---
 
@@ -2135,7 +2135,7 @@ query GetDidLinkStatus($oclId: String!) {
 
 ### On-Chain Activity Feed
 
-Return the on-chain event feed for an OCL or a wallet. Exactly one of `oclId` / `wallet` must be supplied. Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last row's `id` to fetch the next page.
+Return the onchain event feed for an OCL or a wallet. Exactly one of `oclId` / `wallet` must be supplied. Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last row's `id` to fetch the next page.
 
 ```graphql
 query OnChainActivity(

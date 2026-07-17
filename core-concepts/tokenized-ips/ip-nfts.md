@@ -130,7 +130,7 @@ Once minted inside a Lab, IP-NFTs become the anchor for a range of protocol inte
 
 #### IP Licensing via ERC-4907 _(roadmap)_
 
-The V3 architecture is designed to support onchain IP licensing through the ERC-4907 rentable NFT standard: a pharmaceutical company or research institution would license an IP-NFT for a defined period in a single transaction, with the fee routed to the Lab's treasury and a verifiable onchain record of the grant while the Lab retains ownership. Similarly, licensing royalties are planned to be distributable via the ERC-2981 royalty standard. **Neither standard is implemented in the current IPNFT contract** — today, licensing runs through off-chain agreements (with `grantReadAccess` providing onchain, time-bound data access), and these mechanics are roadmap items.
+The V3 architecture is designed to support onchain IP licensing through the ERC-4907 rentable NFT standard: a pharmaceutical company or research institution would license an IP-NFT for a defined period in a single transaction, with the fee routed to the Lab's treasury and a verifiable onchain record of the grant while the Lab retains ownership. Similarly, licensing royalties are planned to be distributable via the ERC-2981 royalty standard. **Neither standard is implemented in the current IPNFT contract** — today, licensing runs through offchain agreements (with `grantReadAccess` providing onchain, time-bound data access), and these mechanics are roadmap items.
 
 ### Technical Reference
 

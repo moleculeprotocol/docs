@@ -975,7 +975,7 @@ You can combine multiple filters in a single query. All filters are combined wit
 
 ```typescript
 {
-  id: String                    // Unique identifier — the on-chain tokenId as a string (e.g. "37")
+  id: String                    // Unique identifier — the onchain tokenId as a string (e.g. "37")
   oclId: String                 // Linked lab oclId, null when the IP-NFT has no linked lab
   createdAt: DateTime           // Creation timestamp
   updatedAt: DateTime           // Last update timestamp

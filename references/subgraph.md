@@ -6,10 +6,10 @@ icon: webhook
 
 ## Molecule Subgraph Documentation
 
-The Molecule Subgraph indexes on-chain events from the legacy IP-NFT protocol contracts (IP-NFTs, IPTs, crowdsales, marketplace activity). It's powered by The Graph and requires no authentication. The subgraph source lives in the [IPNFT repository](https://github.com/moleculeprotocol/IPNFT/tree/main/subgraph).
+The Molecule Subgraph indexes onchain events from the legacy IP-NFT protocol contracts (IP-NFTs, IPTs, crowdsales, marketplace activity). It's powered by The Graph and requires no authentication. The subgraph source lives in the [IPNFT repository](https://github.com/moleculeprotocol/IPNFT/tree/main/subgraph).
 
 {% hint style="warning" %}
-**Service status:** the Satsuma-hosted endpoints below are currently unreachable (the hosting domain no longer resolves). For indexed IP-NFT, IPT, and market data, use the actively maintained [Data API](../api-reference/data-api.md) instead. The entity reference below matches the subgraph schema source and remains valid for self-hosted deployments.
+**Service status:** This service is deprecated. For indexed IP-NFT, IPT, and market data, use the actively maintained [Data API](../api-reference/data-api.md) instead. The entity reference below matches the subgraph schema source and remains valid for self-hosted deployments.
 {% endhint %}
 
 ### Quick Start
@@ -81,7 +81,7 @@ IPTokens are dynamically created through the Tokenizer. It is recommended not to
 
 #### On-Chain Query
 
-To find an IPToken address on-chain, use the following method:
+To find an IPToken address onchain, use the following method:
 
 ```solidity
 IIPToken ipToken = Tokenizer.synthesized(ipnftId);

@@ -61,7 +61,7 @@ The account supports two execution paths: direct calls by the NFT owner, and Use
 
 <figure><img src="../.gitbook/assets/Mermaid Chart - Create complex, visual diagrams with text.-2026-02-06-032520.png" alt=""><figcaption></figcaption></figure>
 
-Path B enables gasless transactions (via Paymasters) and off-chain signature relay — neither of which requires the user to hold ETH or manage gas directly. (Batched execution is defined by the standard but not yet supported — only single-call execution modes are enabled.) The ERC-7579 `execute(ExecMode, bytes)` variant is restricted to EntryPoint-only access, ensuring modular execution is always mediated by ERC-4337 validation.
+Path B enables gasless transactions (via Paymasters) and offchain signature relay — neither of which requires the user to hold ETH or manage gas directly. (Batched execution is defined by the standard but not yet supported — only single-call execution modes are enabled.) The ERC-7579 `execute(ExecMode, bytes)` variant is restricted to EntryPoint-only access, ensuring modular execution is always mediated by ERC-4337 validation.
 
 ### Ownership Transfer
 

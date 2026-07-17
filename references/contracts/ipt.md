@@ -21,7 +21,7 @@ IPToken contracts are not deployed individually. They are created as EIP-1167 mi
 
 IPTokens do not have fixed addresses. To find the IPToken for a given IP-NFT:
 
-**On-chain:**
+**Onchain:**
 
 ```solidity
 IIPToken ipToken = Tokenizer.synthesized(ipnftId);
@@ -154,7 +154,7 @@ struct Metadata {
 
 #### Security Considerations
 
-**Controller-gated supply.** Only the Tokenizer or the current IP-NFT holder can issue or cap tokens. This is enforced on-chain by the `onlyTokenizerOrIPNFTController` modifier.
+**Controller-gated supply.** Only the Tokenizer or the current IP-NFT holder can issue or cap tokens. This is enforced onchain by the `onlyTokenizerOrIPNFTController` modifier.
 
 **Irreversible capping.** Once `cap()` is called, the supply is permanently frozen. There is no mechanism to uncap a token. This protects holders from unexpected dilution.
 

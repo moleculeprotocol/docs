@@ -1,6 +1,6 @@
 ---
 description: >-
-  The Coin-to-Company module bridges onchain IP Token ownership with off-chain
+  The Coin-to-Company module bridges onchain IP Token ownership with offchain
   shareholder rights, enabling a compliant pathway from token holder to
   real-world equity participant
 icon: envelope-ribbon
@@ -10,7 +10,7 @@ icon: envelope-ribbon
 
 ## Coin-to-Company (C2C)
 
-The C2C module will provide a compliant pathway for IP Token holders to qualify for real-world equity in the research projects they support. It bridges the gap between onchain token ownership — which provides governance participation and economic exposure — and off-chain shareholder rights, which confer legal ownership in the underlying entity.
+The C2C module will provide a compliant pathway for IP Token holders to qualify for real-world equity in the research projects they support. It bridges the gap between onchain token ownership — which provides governance participation and economic exposure — and offchain shareholder rights, which confer legal ownership in the underlying entity.
 
 This is an opt-in framework. Token holders who prefer the liquidity and simplicity of standard IP Tokens continue operating exactly as before. Only those who choose to pursue equity enter the lock-and-qualify process.
 
@@ -28,9 +28,9 @@ The C2C module implements a lock-and-qualify process managed through the Lab's m
 
 **Identity verification.** The holder completes a KYC/AML process to verify their identity. Upon successful verification, they receive an onchain credential (a non-transferable soulbound token) that attests to their verified status. This credential is required before any equity qualification can proceed.
 
-**Equity qualification.** With locked tokens and a verified identity, the holder is eligible to enter into traditional legal agreements with the project's legal entity. The actual equity grant is executed off-chain through standard corporate processes — share purchase agreements, subscription documents, or equivalent instruments depending on the jurisdiction.
+**Equity qualification.** With locked tokens and a verified identity, the holder is eligible to enter into traditional legal agreements with the project's legal entity. The actual equity grant is executed offchain through standard corporate processes — share purchase agreements, subscription documents, or equivalent instruments depending on the jurisdiction.
 
-**Ongoing enforcement.** Once a holder is designated as a shareholder, their locked tokens cannot be unlocked. Exit from the shareholder position requires an off-chain request and administrative approval, ensuring that equity holders maintain their token commitment throughout their shareholder status.
+**Ongoing enforcement.** Once a holder is designated as a shareholder, their locked tokens cannot be unlocked. Exit from the shareholder position requires an offchain request and administrative approval, ensuring that equity holders maintain their token commitment throughout their shareholder status.
 
 Locking tokens does not automatically grant equity. It establishes eligibility. The locked token serves as proof of commitment — it prevents a holder from completing KYC, receiving equity, and immediately selling their tokens on the open market.
 

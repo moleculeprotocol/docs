@@ -84,10 +84,6 @@ IPT holders participate in governance over the underlying intellectual property.
 * Whether to accept or reject collaboration proposals
 * Clawback proceedings (recovering misused funds)
 
-#### Revenue Sharing
-
-When the Lab generates revenue — through IP licensing fees, dataset access payments, or milestone payouts — the funds flow into the Lab's treasury. IPT holders have a claim on this revenue, distributable proportional to their token holdings.
-
 #### Data Access
 
 IPT holders can be granted access to the Lab's data room. The IP-NFT's `canRead` function, combined with Molecule's Onchain-Verified Envelope Encryption (Lit Protocol retained for legacy files), enables token-gated access to premium research data, manuscripts, and experimental results.

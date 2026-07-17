@@ -50,7 +50,7 @@ Beyond validating UserOperations, the Root Validator also implements ERC-1271 co
 
 This allows external contracts to ask the Lab whether a given signature was produced by its authorised controller. The validator performs the same dual ECDSA check — raw hash recovery, then EIP-191 prefixed recovery — and returns the ERC-1271 magic value (`0x1626ba7e`) on success or an invalid marker on failure.
 
-This capability is critical for the Lab's composability within the broader Ethereum ecosystem. It enables the Lab to sign off-chain messages, approve token permits, participate in governance votes, interact with marketplaces, and integrate with any protocol that supports ERC-1271 contract signatures — all while deriving authority from NFT ownership.
+This capability is critical for the Lab's composability within the broader Ethereum ecosystem. It enables the Lab to sign offchain messages, approve token permits, participate in governance votes, interact with marketplaces, and integrate with any protocol that supports ERC-1271 contract signatures — all while deriving authority from NFT ownership.
 
 ### Validator vs. Other Module Types
 

@@ -48,7 +48,7 @@ Every action within a Lab generates data. Datasets are stored on decentralized i
 
 #### _(iii) AI Agents for Autonomous Science_
 
-Molecule is integrating BioAgents — an open-source AI scientist framework by bio.xyz achieving state-of-the-art results on the BixBench scientific reasoning benchmark. BioAgents runs specialized agents for planning, literature search, data analysis, hypothesis generation, and reflection. It will operate as an executor module on Lab accounts: the Lab's treasury funds compute, the data room provides datasets, and all outputs are written back as versioned data references. Labs support three modes — Fully Autonomous (agents run independently within safety boundaries), Human-Directed (agents assist while researchers retain strategic control) and fully Human-run Labs.&#x20;
+Molecule is integrating BIOS — an open-source AI scientist framework by bio.xyz achieving state-of-the-art results on the BixBench scientific reasoning benchmark. BIOS runs specialized agents for planning, literature search, data analysis, hypothesis generation, and reflection. It will operate as an executor module on Lab accounts: the Lab's treasury funds compute, the data room provides datasets, and all outputs are written back as versioned data references. Labs support three modes — Fully Autonomous (agents run independently within safety boundaries), Human-Directed (agents assist while researchers retain strategic control) and fully Human-run Labs.&#x20;
 
 ### **Who Uses It?**
 
