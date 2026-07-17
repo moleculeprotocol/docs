@@ -10,15 +10,15 @@ icon: binary-circle-check
 
 ## Data Anchoring (DID Linking)
 
-Every Lab's research data lives offchain — in its data room, versioned and provenance-tracked by Kamu (ODF). DID linking is the mechanism that anchors that offchain identity onchain: the data room (and the Lab's data-platform account) each carry a [W3C DID](https://www.w3.org/TR/did-core/) (`did:odf:…`), and the `MoleculeOclDidRegistry` contract binds those DIDs to the Lab's canonical `oclId` in a record that anyone can read and verify with nothing but an RPC connection.
+Every Lab's research data lives offchain in its data room, and is versioned and provenance-tracked by Kamu (ODF). DID linking is the mechanism that anchors that offchain identity onchain: the data room (and the Lab's data-platform account) each carry a [W3C DID](https://www.w3.org/TR/did-core/) (`did:odf:…`), and the `MoleculeOclDidRegistry` contract binds those DIDs to the Lab's canonical `oclId` in a record that anyone can read and verify with nothing but an RPC connection.
 
 This is a deliberately novel piece of infrastructure. Rather than storing data references in a database and asking the world to trust it, Molecule turns the Lab ↔ data binding itself into a first-class onchain object — cryptographically co-attested by two independent parties, versioned, and permanently auditable.
 
 ### The Trust Problem
 
-Without an onchain anchor, the mapping between a Lab and its research data exists only inside an offchain service. The Lab's account would hold assets, manage its treasury, and control IP — but its link to the actual scientific work would rest on trusting a database. Anyone claiming "this dataset belongs to that Lab" would have nothing verifiable to point at.
+Without an onchain anchor, the mapping between a Lab and its research data exists only inside an offchain service. The Lab's account would hold assets, manage its treasury, and control IP, but its link to the actual scientific work would rest on trusting a database. Anyone claiming "this dataset belongs to that Lab" would have nothing verifiable to point at.
 
-DID linking solves this. Once linked, the association is public onchain state: a third party — an investor doing due diligence, a protocol composing on top of Labs, an indexer building analytics — can resolve a Lab's data identity directly from the chain and check exactly who vouched for the binding.
+DID linking solves this. Once linked, the association is public onchain state: a third party — an investor conducting due diligence, a protocol composing on top of Labs, an indexer building analytics — can resolve a Lab's data identity directly from the chain and check exactly who vouched for the binding.
 
 ### How a Link Is Created
 
@@ -43,7 +43,7 @@ Progress is queryable via the Labs API: `getDidLinkStatus(oclId)` returns the li
 
 A link is only accepted if **two independent parties** sign off on it, and the registry verifies both signatures onchain before writing anything:
 
-* **Kamu (the data platform)** attests that the dataset's own ed25519 key genuinely signed the link request — i.e. the data source itself consented to the binding. The raw ed25519 proof is recorded onchain alongside the link.
+* **Kamu (the data platform)** attests that the dataset's own ed25519 key genuinely signed the link request i.e. the data source itself consented to the binding. The raw ed25519 proof is recorded onchain alongside the link.
 * **Molecule** attests, via an EIP-712 signature, that it authorized this specific `oclId → DID` binding for this exact request.
 
 Attesters are resolved by recovered signature address — not by array position — and must be distinct; a missing, duplicated, or mismatched attester reverts the transaction. The relayer that submits the transaction is *untrusted for authenticity*: it holds the only role allowed to call `linkDid`, but it cannot forge a link, because it controls neither attester key. Every request is additionally replay-protected (single-use request IDs per Lab/provider/subject), deadline-bound, and EIP-712 domain-bound to the specific registry contract and chain.
