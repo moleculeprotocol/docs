@@ -11,9 +11,10 @@ icon: users-gear
 
 A Lab's NFT holder is its sole ultimate controller — transferring the LabNFT transfers the entire project. In practice, most research projects need to delegate day-to-day data-room work (uploading files, posting announcements, decrypting confidential research) to collaborators and AI agents without surrendering ownership.
 
-The role system lets a Lab owner grant scoped, expiring access to specific wallets — human or agent — while keeping ownership, treasury control, and the ability to revoke access at any time.
+The role system lets a Lab owner grant scoped, expiring access to specific wallets — human or agent — while keeping ownership, treasury control, and the ability to revoke access at any time. Invites via email are possible, meaning team members do not have to be web3-native to participate.&#x20;
 
-Roles are enforced on-chain by the `AccessResolver` contract and honoured by every downstream system (GraphQL API, file encryption, UI) that checks them. Because grants are made to wallet addresses, every grantee needs a wallet.
+\
+Roles are enforced on-chain by the `AccessResolver` contract and honoured by every downstream system (GraphQL API, file encryption, UI) that checks them.
 
 ## Role Hierarchy
 
