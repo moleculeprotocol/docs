@@ -9,9 +9,9 @@ icon: seal-question
 
 #### 1. **Create a Lab**
 
-Log onto lab.molecule.xyz and create a Lab. To begin, all you will need is an image, a title and a description. From there, you can fill your Lab with files, data and team members.&#x20;
+Log onto [labs.molecule.xyz](https://labs.molecule.xyz) and create a Lab. To begin, all you will need is an image, a title and a description. From there, you can fill your Lab with files, data and team members.&#x20;
 
-The Lab is gasless to create — the mint fee is currently set to zero and transaction fees are sponsored by Molecule's off-chain relayer infrastructure — so there is no financial barrier to entry. From the moment it's minted, it can hold assets, store data, interact with DeFi protocols, and accumulate a verifiable track record.
+The Lab is gasless to create — the mint fee is currently set to zero and transaction fees are sponsored through Privy's account-abstraction (ERC-4337) infrastructure — so there is no financial barrier to entry. From the moment it's minted, it can hold assets, store data, interact with DeFi protocols, and accumulate a verifiable track record.
 
 #### **2. Research & Store Data**
 

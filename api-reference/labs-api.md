@@ -1686,6 +1686,7 @@ All API responses follow a consistent error format:
 
 - **Default Limit**: 5GB per lab/project
 - **Custom Limits**: Can be increased upon request - contact the Molecule team
+- **Note**: the Labs web app additionally caps individual uploads at 100 MB per file; API uploads are not subject to that app-side cap
 
 ### Supported File Types
 
@@ -1699,6 +1700,8 @@ All API responses follow a consistent error format:
 | PUBLIC  | Visible to anyone with access to the project |
 | HOLDERS | Visible only to IP Token (IPT) holders       |
 | ADMIN   | Visible only to project administrators       |
+
+All three values are accepted by the API. Note that the Labs web app currently writes only `PUBLIC` (regular files) or `ADMIN` (confidential files) — `HOLDERS` is set via the API only.
 
 ### Optional Metadata
 

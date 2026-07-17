@@ -15,7 +15,7 @@ This guide walks you through the journey from your perspective. For the technica
 
 Creating a Lab is a single action. You mint a Lab NFT and instantly receive a permanent onchain identity — a wallet address that belongs to your research project. If you sell the project, the entire Lab transfers in one transaction.
 
-The practical experience is straightforward: connect your wallet, click create, and your Lab exists. There's no gas cost — Molecule sponsors the transaction fees for Lab creation if you connect via email. From this moment, your Lab can hold assets, store data, and accumulate a track record.
+The practical experience is straightforward: sign in, click create, and your Lab exists. You can sign in with Google, X, an email code, or an external Ethereum wallet — email and social sign-ins come with a built-in wallet, so no crypto setup is needed. There's no gas cost — Molecule sponsors the transaction fees for Lab creation when you use email or social sign-in. From this moment, your Lab can hold assets, store data, and accumulate a track record.
 
 A few things worth knowing early on. Your Lab address is permanent and deterministic, meaning it works across any EVM chain without needing to be bridged or migrated. Everything you do — uploading a file, receiving funds, minting IP — is recorded as a transaction on this address. Over time, this becomes your project's verifiable CV.&#x20;
 

@@ -58,6 +58,10 @@ struct RoleGrant {
 
 A Lab owner granting access to an agent should set `isAgent = true` and a short `expiry` — typically the agent's session-key lifetime. When the session expires, the agent must request a new grant before it can continue to decrypt files or post announcements.
 
+## How Invites Work in the App
+
+In the Labs app, members can be invited by wallet address, ENS name, or **email**. Email and social (Google / X) sign-ins are backed by a Privy-provisioned embedded wallet, so invitees don't need to be web3-native — the role grant still lands on a wallet address under the hood. If the invited email already belongs to a registered account, the app grants the role on-chain immediately (the transaction is gas-sponsored); if the email isn't registered yet, the invitee receives a sign-up email and can be invited again once they've joined.
+
 ## Scope: Per-Lab, Not Per-File
 
 Roles are scoped to a **lab** — identified by the canonical `oclId` (a packed 32-byte identifier combining version, namespace, tokenId, and the TBA address). There is no per-data-room or per-file role; file-level access is enforced by the Onchain-Verified Envelope Encryption layer, which ultimately resolves back to the same `AccessResolver` predicates (`hasRole`, `isAuthorizedSignerForTba`, `isAuthorizedSignerForIpnft`) when evaluating a decryption request.
