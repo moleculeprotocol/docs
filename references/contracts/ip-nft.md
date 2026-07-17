@@ -62,9 +62,9 @@ function mintReservation(address to, uint256 reservationId, string calldata _tok
 ```
 {% endcode %}
 
-**grantReadAccess**
+**grantReadAccess** _(legacy)_
 
-Grants time-limited read access to encrypted files.
+Grants time-limited read access to encrypted files. Deprecated as a data-access path — current data-room access is managed via Lab roles on the [AccessResolver](accessresolver.md); only files with legacy access conditions still evaluate this.
 
 ```solidity
 function grantReadAccess(address reader, uint256 tokenId, uint256 until) external
@@ -82,9 +82,9 @@ function amendMetadata(uint256 tokenId, string calldata _newTokenURI, bytes call
 
 #### Read Functions
 
-**canRead**
+**canRead** _(legacy)_
 
-Checks if an address has read access.
+Checks if an address has read access. Evaluated only for files with legacy access conditions — see the note on `grantReadAccess` above.
 
 ```solidity
 function canRead(address reader, uint256 tokenId) external view returns (bool)

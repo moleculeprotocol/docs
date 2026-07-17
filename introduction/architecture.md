@@ -9,7 +9,7 @@ icon: microchip
 
 ### Contract Topology
 
-The protocol is implemented as a set of interconnected Solidity contracts deployed on Ethereum and EVM-compatible chains. At the center is the `OnChainLab` — the account implementation that unifies the standards described in the On-Chain Lab section into a single deployable contract.
+The protocol is implemented as a set of interconnected Solidity contracts deployed on Ethereum and EVM-compatible chains. At the center is the `OnChainLab` — the account implementation that unifies the standards described in the Molecule Labs section into a single deployable contract.
 
 &#x20;Surrounding it are the factory, registry, proxy, and validation contracts that handle deployment, upgradeability, and security gating. The diagram below shows how these components relate to one another.
 

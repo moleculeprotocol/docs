@@ -2,7 +2,7 @@
 icon: webhook
 ---
 
-# Subgraph
+# Subgraph (Deprecated)
 
 ## Molecule Subgraph Documentation
 
@@ -79,7 +79,7 @@ Or explore interactively in the [Playground](https://subgraph.satsuma-prod.com/m
 
 IPTokens are dynamically created through the Tokenizer. It is recommended not to hardcode IPToken addresses. Instead, use the methods outlined below to retrieve them.
 
-#### On-Chain Query
+#### Onchain Query
 
 To find an IPToken address onchain, use the following method:
 

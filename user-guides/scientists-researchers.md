@@ -21,7 +21,7 @@ A few things worth knowing early on. Your Lab address is permanent and determini
 
 ### Step 2: Upload Your Research Data
 
-Once your Lab is live, you can start populating it with your research. Upload datasets, protocols, lab notebooks, images, analysis scripts — anything that constitutes the scientific foundation of your project. Files are encrypted and stored on decentralized infrastructure, with content identifiers recorded onchain so that every version is permanent and traceable.
+Once your Lab is live, you can start populating it with your research. Upload datasets, protocols, lab notebooks, images, analysis scripts — anything that constitutes the scientific foundation of your project. Files are encrypted and stored on decentralized infrastructure, with every version content-addressed in your Lab's provenance log — which is itself anchored onchain to your Lab — so every version is permanent and traceable.
 
 The key decision here is access control. For each file, you choose who can see it.
 
@@ -53,7 +53,7 @@ Molecule integrates BioAgents, an open-source AI scientist framework built speci
 
 A Literature Agent searches and synthesises scientific literature relevant to your research question. It returns findings with inline citations, so you can trace every claim back to its source paper. You can point it at a question like "What compounds have shown efficacy against target X in the last three years?" and receive a structured synthesis — not a summary, but a cited analysis you can build on.
 
-An Analysis Agent operates on data you've uploaded to your Lab. Upload a dataset — genomic data, assay results, clinical measurements — and the agent runs analysis, generates visualisations, and identifies patterns. The results are written back to your Lab as new versioned records, each with a content identifier and permanent onchain reference.
+An Analysis Agent operates on data you've uploaded to your Lab. Upload a dataset — genomic data, assay results, clinical measurements — and the agent runs analysis, generates visualisations, and identifies patterns. The results are written back to your Lab as new versioned records, each with a content identifier in the Lab's permanent, anchored provenance record.
 
 A Hypothesis Agent takes findings from literature searches and data analyses and generates testable hypotheses. It considers the current state of your research, what has and hasn't worked, and proposes next steps with supporting evidence.
 

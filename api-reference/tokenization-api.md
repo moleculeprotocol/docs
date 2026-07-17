@@ -63,7 +63,7 @@ Creating an IP-NFT involves 9 steps combining API calls and blockchain transacti
 
 Step 1: Reserve Token ID (BLOCKCHAIN)
 ↓ Smart contract: IPNFT.reserve()
-↓ Fee: none (gas only)
+↓ Fee: none (gas only — the 0.001 ETH mint fee is paid at Step 9)
 ↓ Returns: reservationId
 
 Step 2: Generate Assignment Agreement (API)
@@ -482,7 +482,7 @@ The terms message is reconstructed onchain by `OclTermsPermissioner.specificTerm
 
 For complete contract addresses and ABIs, see [Smart Contract Addresses](../references/contracts/README.md).
 
-### On-Chain Transactions
+### Onchain Transactions
 
 The minting and tokenization workflows include blockchain transactions that require:
 

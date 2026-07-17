@@ -88,7 +88,7 @@ The MCP server exposes five tools: querying available IPTs with market data, fet
 
 For programmatic integration — embedding Molecule tools into your own AI application — connect an MCP client to the endpoint and pass its tools to your LLM call, so the model can query Molecule data as part of its reasoning process. Any MCP-compatible client works, including the Vercel AI SDK's MCP client. The MCP Tools reference includes the full setup, self-hosting instructions for private deployments, and caching configuration.
 
-### Querying On-Chain State via Subgraph
+### Querying Onchain State via Subgraph
 
 For indexed onchain data — IP-NFT minting events, IPT creation, crowdsale participation, token transfers — the subgraph provides a GraphQL interface over historical blockchain data. This is the right tool for analytics dashboards, portfolio trackers, historical queries, and any application that needs to reconstruct the full timeline of protocol events.
 

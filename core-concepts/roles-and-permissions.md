@@ -74,7 +74,7 @@ The role system exists only on **Base** (the canonical chain) and **Base Sepolia
 
 Every `grantRole` / `revokeRole` / `hasRole` / `getRole` call runs `_validateOclId`, which verifies the `oclId`'s version byte, namespace byte, TBA code, LabNFT binding, and canonical-chain metadata. Malformed identifiers revert with `InvalidOclId`.
 
-## On-Chain Interface
+## Onchain Interface
 
 ```solidity
 function grantRole(bytes32 oclId, address account, uint8 role, uint64 expiry, bool isAgent) external;
@@ -129,4 +129,4 @@ Use these events to reconstruct the team-members list for a lab offchain; the on
 
 * [AccessResolver contract reference](../references/contracts/accessresolver.md) — full ABI, deployments, signer-authorization predicates (`isAuthorizedSignerForIpnft`, `isAuthorizedSignerForTba`).
 * [Data Privacy & Access](data/data-privacy-and-access.md) — how role checks feed into file encryption / decryption.
-* [On-Chain Lab](onchain-lab.md) — how `oclId` is derived and why ownership resolves through the TBA.
+* [Molecule Labs](onchain-lab.md) — how `oclId` is derived and why ownership resolves through the TBA.

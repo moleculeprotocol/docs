@@ -294,7 +294,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 **How It Works:**
 
 1. **Authentication Check**: Validates service token or Privy token
-2. **On-Chain Verification**: Verifies you own or are an authorized signer for the LabNFT (`oclId`)
+2. **Onchain Verification**: Verifies you own or are an authorized signer for the LabNFT (`oclId`)
 3. **Lab Creation**: Registers the Kamu-backed lab and its data room for the `oclId`
 4. **Whitelist Update**: Automatically adds your wallet address to the lab whitelist
 5. **Returns Result**: Lab details if successful, error details if failed
@@ -2131,9 +2131,9 @@ query GetDidLinkStatus($oclId: String!) {
 
 ---
 
-## On-Chain Activity
+## Onchain Activity
 
-### On-Chain Activity Feed
+### Onchain Activity Feed
 
 Return the onchain event feed for an OCL or a wallet. Exactly one of `oclId` / `wallet` must be supplied. Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last row's `id` to fetch the next page.
 
