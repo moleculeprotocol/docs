@@ -32,7 +32,6 @@
 ## AI Tooling
 
 * [MIRA](ai-tooling/mira.md)
-* [BIOS (AI Scientist)](ai-tooling/bios-ai-scientist.md)
 
 ## USER GUIDES
 
@@ -50,17 +49,10 @@
   * [CrowdSale](references/contracts/crowdsale.md)
 * [Subgraph (Deprecated)](references/subgraph.md)
 * [MCP Tools](references/mcp-tools.md)
-* [Labs API](references/labs-api.md)
 
 ## Security
 
 * [Audits](security/audits.md)
-* [Bug Bounty](security/bug-bounty.md)
-
-## RISKS
-
-* [Legal Risks](risks/legal-risks.md)
-* [Smart Contract Risks](risks/smart-contract-risks.md)
 
 ## Resources
 

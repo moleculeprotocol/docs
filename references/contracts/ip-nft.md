@@ -8,7 +8,7 @@ icon: transformer-bolt
 
 ### Overview
 
-The **IP-NFT** contract is an ERC-721 NFT that represents onchain intellectual property ownership. Each IP-NFT is a unique token that enables trading, fractionalization into IPTokens, and use as collateral for funding. They form the foundation of the Molecule Protocol, linking legal IP rights with onchain ownership.
+The **IP-NFT** contract is an ERC-721 NFT that represents onchain intellectual property ownership. Each IP-NFT is a unique token that enables trading, fractionalization into IPTokens, and use as collateral for funding.&#x20;
 
 ### Contract Details
 
@@ -138,7 +138,7 @@ function tokenURI(uint256 tokenId) public view returns (string memory)
 ### Related Contracts
 
 * [Tokenizer](tokenizer.md): Fractionalize IP-NFTs into IPTokens.
-* [SchmackoSwap](README.md): Trade IP-NFTs (see the address table).
+* [SchmackoSwap](./): Trade IP-NFTs (see the address table).
 * [AccessResolver](accessresolver.md): File access integration.
 * [CrowdSale](crowdsale.md): Fundraise via IPTokens.
 
