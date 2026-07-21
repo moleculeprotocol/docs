@@ -11,15 +11,15 @@ The `AccessResolver` contract is the onchain authorization primitive for Onchain
 1. **"Is this wallet an authorized signer for a given IP-NFT or ERC-6551 Token Bound Account?"** — used by the file-encryption layer to gate decryption of confidential data-room files and by back-office flows that need to resolve Safe multisigs and Ownable contracts to their leaf EOAs.
 2. **"What role does this wallet hold on a given lab, and is the grant still active?"** — the V3 role system (`ROLE_VIEWER`, `ROLE_CONTRIBUTOR`) with per-grant expiry and `isAgent` metadata, hierarchical (Owner > Contributor > Viewer), and administered per `oclId`.
 
-See [Roles & Permissions](../../core-concepts/roles-and-permissions.md) for the product-level role model and [Data Privacy & Access](../../core-concepts/data/data-privacy-and-access.md) for how these predicates feed into the encryption / decryption pipeline.
+See [Roles & Permissions](../../core-infrastructure/roles-and-permissions.md) for the product-level role model and [Data Privacy & Access](../../core-infrastructure/data/data-privacy-and-access.md) for how these predicates feed into the encryption / decryption pipeline.
 
 ### Contract Details
 
-| Property | Value                                       |
-| -------- | ------------------------------------------- |
-| Contract | AccessResolver (V3)                         |
-| Type     | UUPS Upgradeable Proxy                      |
-| Solidity | 0.8.30                                      |
+| Property | Value                                                                    |
+| -------- | ------------------------------------------------------------------------ |
+| Contract | AccessResolver (V3)                                                      |
+| Type     | UUPS Upgradeable Proxy                                                   |
+| Solidity | 0.8.30                                                                   |
 | Storage  | Preserves V1/V2 layout; V3 adds `_roles` map and `labNftContractAddress` |
 
 #### Deployments
@@ -74,7 +74,7 @@ The **V3 role system runs only on Base and Base Sepolia**. The Ethereum Mainnet 
 
 #### Role Management (V3)
 
-The V3 role system adds hierarchical, per-lab roles (`ROLE_VIEWER = 1`, `ROLE_CONTRIBUTOR = 2`) administered per canonical `oclId`. `hasRole` is hierarchical: Contributor passes Viewer checks, and the Lab Owner (resolved via the OCL TBA) passes every check. See [Roles & Permissions](../../core-concepts/roles-and-permissions.md) for the full model and capability matrix.
+The V3 role system adds hierarchical, per-lab roles (`ROLE_VIEWER = 1`, `ROLE_CONTRIBUTOR = 2`) administered per canonical `oclId`. `hasRole` is hierarchical: Contributor passes Viewer checks, and the Lab Owner (resolved via the OCL TBA) passes every check. See [Roles & Permissions](../../core-infrastructure/roles-and-permissions.md) for the full model and capability matrix.
 
 ```solidity
 uint8 public constant ROLE_VIEWER = 1;
@@ -109,11 +109,11 @@ function initializeV3(address _labNftContractAddress) public; // onlyOwner, rein
 
 #### Events
 
-*   **RoleGranted(oclId, account, role, expiry, isAgent, grantedBy)** — emitted when a role is granted.
-*   **RoleRevoked(oclId, account, role, revokedBy)** — emitted when a role is revoked. Revoking an account with no stored grant (`role == 0`) returns silently without emitting; revoking an expired-but-present grant still requires authorization and emits.
-*   **Initialized(uint64 version)** — emitted when the contract is initialized or reinitialized.
-*   **OwnershipTransferred(previousOwner, newOwner)** — emitted on contract-owner change.
-*   **Upgraded(implementation)** — emitted when the UUPS implementation is upgraded.
+* **RoleGranted(oclId, account, role, expiry, isAgent, grantedBy)** — emitted when a role is granted.
+* **RoleRevoked(oclId, account, role, revokedBy)** — emitted when a role is revoked. Revoking an account with no stored grant (`role == 0`) returns silently without emitting; revoking an expired-but-present grant still requires authorization and emits.
+* **Initialized(uint64 version)** — emitted when the contract is initialized or reinitialized.
+* **OwnershipTransferred(previousOwner, newOwner)** — emitted on contract-owner change.
+* **Upgraded(implementation)** — emitted when the UUPS implementation is upgraded.
 
 #### Errors
 
@@ -123,9 +123,9 @@ function initializeV3(address _labNftContractAddress) public; // onlyOwner, rein
 | `InvalidRole(uint8 role)`                              | Role must be `ROLE_VIEWER (1)` or `ROLE_CONTRIBUTOR (2)`.                     |
 | `UnauthorizedRoleAdmin(bytes32 oclId, address, uint8)` | Caller lacks permission for the requested grant/revoke.                       |
 | `OwnersOverflow(uint256)`                              | Owner-resolution exceeded `MAX_OWNERS (50)` or recursion depth 10.            |
-| `OwnableUnauthorizedAccount(address)` *(inherited)*    | Caller is not the contract owner for owner-only functions.                    |
-| `OwnableInvalidOwner(address)` *(inherited)*           | Invalid owner address provided.                                               |
-| `UUPSUnauthorizedCallContext()` *(inherited)*          | Upgrade called in an incorrect context.                                       |
+| `OwnableUnauthorizedAccount(address)` _(inherited)_    | Caller is not the contract owner for owner-only functions.                    |
+| `OwnableInvalidOwner(address)` _(inherited)_           | Invalid owner address provided.                                               |
+| `UUPSUnauthorizedCallContext()` _(inherited)_          | Upgrade called in an incorrect context.                                       |
 
 The first four are the contract's custom errors; the rest are inherited from OpenZeppelin.
 
@@ -135,7 +135,7 @@ The same `accessControlConditions` shape is reused across both Molecule's Onchai
 
 #### Use as an Access Control Condition (current)
 
-For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` array referencing this contract's predicates to the file's `encryptionMetadata`. The example below gates decryption on _LabNFT owner OR active Contributor OR active Viewer_ by OR'ing `isAuthorizedSignerForTba` with `hasRole(oclId, :userAddress, ROLE_VIEWER)` (hierarchy makes one role check cover Contributor + Viewer). Substitute `<accessresolver-address>` with the deployment matching the chain the backend evaluator targets — see [Deployments](#deployments) above:
+For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` array referencing this contract's predicates to the file's `encryptionMetadata`. The example below gates decryption on _LabNFT owner OR active Contributor OR active Viewer_ by OR'ing `isAuthorizedSignerForTba` with `hasRole(oclId, :userAddress, ROLE_VIEWER)` (hierarchy makes one role check cover Contributor + Viewer). Substitute `<accessresolver-address>` with the deployment matching the chain the backend evaluator targets — see [Deployments](accessresolver.md#deployments) above:
 
 ```json
 [
@@ -184,7 +184,7 @@ For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` ar
 ]
 ```
 
-`:userAddress` is substituted with the authenticated caller at evaluate time. See [Data Privacy & Access](../../core-concepts/data/data-privacy-and-access.md) for the full upload / decrypt flow, condition shape definitions, and evaluator behaviour.
+`:userAddress` is substituted with the authenticated caller at evaluate time. See [Data Privacy & Access](../../core-infrastructure/data/data-privacy-and-access.md) for the full upload / decrypt flow, condition shape definitions, and evaluator behaviour.
 
 #### With Lit Protocol _(legacy)_
 
@@ -239,12 +239,12 @@ const isAuthorized = await client.readContract({
 
 Use any of the predicates below as the `functionName` of an `EvmContractCondition` pointing at this contract.
 
-| Predicate                                                                | Gates                                                              | Role-aware |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------ | :--------: |
-| `isAuthorizedSignerForIpnft(address signer, uint256 ipnftId)`            | Direct + recursive ownership of the IP-NFT (Safe / Ownable / TBA). |            |
-| `isAuthorizedSignerForTba(address signer, address account)`              | Authorized signer of an ERC-6551 TBA, including its bound NFT owner. |            |
-| `hasRole(bytes32 oclId, address account, uint8 role)`                    | Active, non-expired role grant on the lab; honours Owner > Contributor > Viewer hierarchy. |     ✓      |
-| `isApprovedLock(address tokenAddress, address signer)`                   | Holds and is approved on a locked token (used by locked-token gating). |            |
+| Predicate                                                     | Gates                                                                                      | Role-aware |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | :--------: |
+| `isAuthorizedSignerForIpnft(address signer, uint256 ipnftId)` | Direct + recursive ownership of the IP-NFT (Safe / Ownable / TBA).                         |            |
+| `isAuthorizedSignerForTba(address signer, address account)`   | Authorized signer of an ERC-6551 TBA, including its bound NFT owner.                       |            |
+| `hasRole(bytes32 oclId, address account, uint8 role)`         | Active, non-expired role grant on the lab; honours Owner > Contributor > Viewer hierarchy. |      ✓     |
+| `isApprovedLock(address tokenAddress, address signer)`        | Holds and is approved on a locked token (used by locked-token gating).                     |            |
 
 The legacy Lit helper string IDs `ipnft_read` / `authorized_ipnft_signer` resolve to these same predicates internally and are retained for legacy Lit-encrypted files only — new integrations should write the `EvmContractCondition` shape directly.
 

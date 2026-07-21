@@ -9,13 +9,13 @@ icon: cabinet-filing
 
 ### What is the Module Registry?
 
-The Module Registry is the onchain attestation system that governs which modules can be installed on Onchain Labs. It implements the ERC-7484 standard — a registry where trusted attestors vouch for module contracts before any Lab can use them. This creates a permissionless development model with a security gate: anyone can build a module, but it must be attested before it can be installed.
+The Module Registry is the onchain attestation system that governs which modules can be installed on Labs. It implements the ERC-7484 standard — a registry where trusted attestors vouch for module contracts before any Lab can use them. This creates a permissionless development model with a security gate: anyone can build a module, but it must be attested before it can be installed.
 
 The Module Registry is a separate contract from the Labs themselves. It stores attestation records for every module in the ecosystem and exposes query functions that Labs call during module installation to verify that a module has been approved.
 
 ### Why Modules?
 
-An Onchain Lab's core contract handles identity, ownership, validation, and execution. It does not contain application logic for fundraising, data management, licensing, governance, or any other domain-specific capability. These are provided by modules.
+An Lab's core contract handles identity, ownership, validation, and execution. It does not contain application logic for fundraising, data management, licensing, governance, or any other domain-specific capability. These are provided by modules.
 
 This separation matters because scientific research projects evolve. A Lab might start with basic data storage, later add fundraising capabilities to run a token sale, then install licensing logic when results are ready for commercialisation, and eventually add governance modules when the community needs decision-making tools. At no point does the Lab need to migrate to a new contract, re-register assets, or break its onchain history. The identity, treasury, data references, and reputation all persist — only the capabilities change.
 
@@ -23,7 +23,7 @@ The alternative — building every possible feature into the core Lab contract �
 
 ### Module Types
 
-Onchain Labs support two module types, defined by the ERC-7579 modular account standard.
+Labs support two module types, defined by the ERC-7579 modular account standard.
 
 #### (i) Executor modules
 
@@ -32,7 +32,6 @@ Contracts that can initiate transactions _from_ a Lab account. When installed, a
 #### (ii) Fallback modules
 
 Extend a Lab's interface by registering new function selectors. When a call arrives at the Lab for a function the core contract doesn't recognise, the Lab routes it to whichever fallback module is registered for that selector. This enables Labs to respond to entirely new interfaces without modifying the core contract. A fallback module might add ERC-1155 receiver support, implement a custom governance voting interface, or expose data querying functions.
-
 
 ### The Attestation Model
 
@@ -60,9 +59,9 @@ When a call arrives at a Lab's smart account for a function the core contract do
 
 The two module types differ by direction:
 
-**Fallback modules** extend the Lab's *inbound* interface. Calls to their registered selectors arrive through the ERC-4337 EntryPoint (the account's caller policy enforces EntryPoint-only dispatch), letting the Lab respond to interfaces the core contract doesn't natively implement — data-reference recording, custom query functions, receiver interfaces.
+**Fallback modules** extend the Lab's _inbound_ interface. Calls to their registered selectors arrive through the ERC-4337 EntryPoint (the account's caller policy enforces EntryPoint-only dispatch), letting the Lab respond to interfaces the core contract doesn't natively implement — data-reference recording, custom query functions, receiver interfaces.
 
-**Executor modules** drive *outbound* execution. An installed executor **contract** (EOAs cannot be executors) calls `executeFromExecutor` on the Lab to trigger actions on its behalf — automated distributions, scheduled operations, cross-protocol integrations. At execution time the account re-checks the executor's attestation and that the Lab's owner hasn't changed since installation.
+**Executor modules** drive _outbound_ execution. An installed executor **contract** (EOAs cannot be executors) calls `executeFromExecutor` on the Lab to trigger actions on its behalf — automated distributions, scheduled operations, cross-protocol integrations. At execution time the account re-checks the executor's attestation and that the Lab's owner hasn't changed since installation.
 
 ### Module Installation and Security
 

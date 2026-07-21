@@ -89,7 +89,7 @@ All Molecule APIs require authentication with an API key. To request access:
 * **Most queries are public**: API Key only for read operations. Exception: `legalAgreementTemplate` requires a Service Token or an authenticated session.
 * **Write mutations are protected**: API Key + Service Token required. Exception: `generateServiceToken` mints a token and needs only an API Key plus a Privy session or wallet signature.
 * **Service Token**: Identifies which specific lab/dataroom you have write access to
-* File-level access control is handled via Molecule's Onchain-Verified Envelope Encryption (Lit Protocol retained for legacy files), not query authentication — see [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md)
+* File-level access control is handled via Molecule's Onchain-Verified Envelope Encryption (Lit Protocol retained for legacy files), not query authentication — see [Data Privacy & Access](../core-infrastructure/data/data-privacy-and-access.md)
 
 ***
 
@@ -112,13 +112,13 @@ Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your 
 
 ### 2. Choose Your API
 
-| If you want to...                    | Use this API                                             |
-| ------------------------------------ | -------------------------------------------------------- |
-| Browse IP-NFTs and IPTs              | [Data API](data-api.md)                                  |
-| Check market prices and trading data | [Data API](data-api.md)                                  |
-| Mint a new IP-NFT                    | [Tokenization API](tokenization-api.md)                  |
-| Create IP Tokens from an IP-NFT      | [Tokenization API](tokenization-api.md)                  |
-| Upload files to a Lab dataroom       | [Labs API](labs-api.md)                                  |
+| If you want to...                    | Use this API                            |
+| ------------------------------------ | --------------------------------------- |
+| Browse IP-NFTs and IPTs              | [Data API](data-api.md)                 |
+| Check market prices and trading data | [Data API](data-api.md)                 |
+| Mint a new IP-NFT                    | [Tokenization API](tokenization-api.md) |
+| Create IP Tokens from an IP-NFT      | [Tokenization API](tokenization-api.md) |
+| Upload files to a Lab dataroom       | [Labs API](labs-api.md)                 |
 
 ### 3. Make Your First Request
 
@@ -147,9 +147,9 @@ If you encounter any issues or have questions about the APIs:
 
 ## Additional Resources
 
-* [Smart Contract Addresses](../references/contracts/README.md)
-* [What are IP-NFTs?](../core-concepts/tokenized-ips/ip-nfts.md)
-* [What are IP Tokens?](../core-concepts/tokenized-ips/ipts.md)
+* [Smart Contract Addresses](../references/contracts/)
+* [What are IP-NFTs?](/broken/pages/KwndI1F7C0AjzwZSZcfF)
+* [What are IP Tokens?](/broken/pages/XTBBR15vWibKYJh1WX75)
 
 ***
 

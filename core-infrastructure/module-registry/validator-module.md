@@ -1,6 +1,6 @@
 ---
 description: >-
-  How Onchain Labs authenticate and authorise operations through modular,
+  How Labs authenticate and authorise operations through modular,
   NFT-ownership-derived signature verification
 icon: hexagon-nodes
 ---
@@ -9,7 +9,7 @@ icon: hexagon-nodes
 
 ### Validator Module
 
-A Validator Module determines who is authorised to act on behalf of an Onchain Lab. It is the first and most fundamental security gate in the system — without a functioning validator, a Lab cannot process any transaction.
+A Validator Module determines who is authorised to act on behalf of a Lab. It is the first and most fundamental security gate in the system — without a functioning validator, a Lab cannot process any transaction.
 
 Every time a transaction is submitted through the ERC-4337 EntryPoint, the Lab's account contract delegates the signature check to its installed validator. The validator resolves the current owner of the Lab NFT onchain, recovers the signer from the submitted signature, and compares the two. If they match, the operation proceeds. If not, it is rejected before any execution takes place.
 
@@ -77,7 +77,7 @@ The type system leaves the door open to alternative authentication schemes in fu
 
 The Root Validator is deployed and verified on Base mainnet (chain ID 8453) and Base Sepolia:
 
-<table><thead><tr><th width="182.12109375">Contract</th><th>Address (Base mainnet & Base Sepolia)</th></tr></thead><tbody><tr><td>RootValidator</td><td><code>0xb31d39ECc0cb26478E258C8f7e9C906115f494f6</code></td></tr></tbody></table>
+<table><thead><tr><th width="182.12109375">Contract</th><th>Address (Base mainnet &#x26; Base Sepolia)</th></tr></thead><tbody><tr><td>RootValidator</td><td><code>0xb31d39ECc0cb26478E258C8f7e9C906115f494f6</code></td></tr></tbody></table>
 
 Source code: `src/modules/validator/RootValidator.sol`
 
@@ -91,4 +91,3 @@ The Root Validator implements the `IValidator` interface from ERC-7579. Any cust
 * `onUninstall(bytes calldata data)` — Called when the module is removed. Used to clean up storage.
 * `isModuleType(uint256 typeId)` — Returns `true` for `MODULE_TYPE_VALIDATOR` (`1`).
 * `isInitialized(address smartAccount)` — Returns whether the module has been initialised for a given account.
-

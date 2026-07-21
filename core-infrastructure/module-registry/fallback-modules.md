@@ -57,7 +57,7 @@ ERC-7579 defines optional pre/post-execution hooks around module calls. In the c
 
 ### Use Cases
 
-Fallback modules enable OnChain Labs to support capabilities that are not part of the core account contract. Example use cases include:
+Fallback modules enable Labs to support capabilities that are not part of the core account contract. Example use cases include:
 
 * **Token receiving** — Implementing `onERC721Received`, `onERC1155Received`, or similar callback interfaces so the Lab can receive NFTs and multi-token transfers
 * **Flash loan participation** — Implementing flash loan callback interfaces to allow Labs to act as flash loan receivers
@@ -78,9 +78,9 @@ The state counter increment on every fallback invocation provides an additional 
 
 ### Contract Reference
 
-| Contract              | Role                                                         | Source                         |
-| --------------------- | ------------------------------------------------------------ | ------------------------------ |
-| `SelectorManager.sol` | Manages per-selector fallback configuration and storage      | `src/core/SelectorManager.sol` |
-| `OnChainLab.sol`      | Contains the `fallback()` handler and `installModule` logic  | `src/OnChainLab.sol`           |
-| `ExecLib.sol`         | Provides the `doFallback2771Call` dispatch helper            | `src/utils/ExecLib.sol`        |
-| `Constants.sol`       | Defines module types, call types, and storage slots          | `src/types/Constants.sol`      |
+| Contract              | Role                                                        | Source                         |
+| --------------------- | ----------------------------------------------------------- | ------------------------------ |
+| `SelectorManager.sol` | Manages per-selector fallback configuration and storage     | `src/core/SelectorManager.sol` |
+| `OnChainLab.sol`      | Contains the `fallback()` handler and `installModule` logic | `src/OnChainLab.sol`           |
+| `ExecLib.sol`         | Provides the `doFallback2771Call` dispatch helper           | `src/utils/ExecLib.sol`        |
+| `Constants.sol`       | Defines module types, call types, and storage slots         | `src/types/Constants.sol`      |

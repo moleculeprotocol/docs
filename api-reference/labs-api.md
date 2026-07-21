@@ -6,15 +6,15 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 
 ### Use Cases
 
-- **Automated Data Pipelines**: Schedule regular data synchronization from research systems
-- **CI/CD Integration**: Automatically publish build artifacts and test results
-- **External System Integration**: Connect third-party tools and platforms to your Lab
-- **Batch Operations**: Upload multiple files programmatically
-- **Monitoring & Alerting**: Automated upload of logs and metrics
+* **Automated Data Pipelines**: Schedule regular data synchronization from research systems
+* **CI/CD Integration**: Automatically publish build artifacts and test results
+* **External System Integration**: Connect third-party tools and platforms to your Lab
+* **Batch Operations**: Upload multiple files programmatically
+* **Monitoring & Alerting**: Automated upload of logs and metrics
 
 > **Ready for Production**: This API is production-ready and actively used by projects for automated data management. To request API access, please join our [Discord community](https://t.co/L0VEiy4Bjk) and reach out to our team.
 
----
+***
 
 ## Authentication
 
@@ -26,18 +26,18 @@ The Labs API has different authentication requirements depending on the operatio
 
 **These queries** are public and only require an API Key:
 
-- `labs` - List all labs with pagination
-- `labWithDataRoomAndFiles` - Get lab details and files
-- `labActivity` - Get activity feed for a lab, (available filters: ANNOUNCEMENT | FILE)
-- `activities` - Get global activity feed, (available filters: ANNOUNCEMENT | FILE)
-- `dataRoomFile` - Get file by path
-- `searchLabs` - Search across labs, files, and announcements
-- `fileCategoriesAndTags` - List valid file categories and their tags
-- `getServiceSignInMessage` - Get the message a service signs to obtain a token
-- `getDidLinkStatus` - Get background DID-linking status for a lab
-- `legalAgreementStatus` - Check whether a lab's legal agreement is signed
-- `onChainActivity` - Onchain event feed for a lab or wallet
-- `listLabMembers` - List a lab's members
+* `labs` - List all labs with pagination
+* `labWithDataRoomAndFiles` - Get lab details and files
+* `labActivity` - Get activity feed for a lab, (available filters: ANNOUNCEMENT | FILE)
+* `activities` - Get global activity feed, (available filters: ANNOUNCEMENT | FILE)
+* `dataRoomFile` - Get file by path
+* `searchLabs` - Search across labs, files, and announcements
+* `fileCategoriesAndTags` - List valid file categories and their tags
+* `getServiceSignInMessage` - Get the message a service signs to obtain a token
+* `getDidLinkStatus` - Get background DID-linking status for a lab
+* `legalAgreementStatus` - Check whether a lab's legal agreement is signed
+* `onChainActivity` - Onchain event feed for a lab or wallet
+* `listLabMembers` - List a lab's members
 
 ```bash
 x-api-key: YOUR_API_KEY
@@ -45,7 +45,7 @@ x-api-key: YOUR_API_KEY
 
 **Authenticated query** — API Key **plus** a Service Token, or an authenticated user session:
 
-- `legalAgreementTemplate` - Get the populated agreement to sign (the signer's authenticated session, or a service token)
+* `legalAgreementTemplate` - Get the populated agreement to sign (the signer's authenticated session, or a service token)
 
 ### Protected Mutations (Write Operations)
 
@@ -56,21 +56,21 @@ x-api-key: YOUR_API_KEY
 
 **Protected mutations include:**
 
-- `createLab` - Create a lab (data room) for an onchain lab (OCL) · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
-- `initiateCreateOrUpdateFile` - Initiate file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
-- `finishCreateOrUpdateFile` - Complete file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
-- `updateFileMetadata` - Update file metadata
-- `deleteDataRoomFile` - Delete a file
-- `createAnnouncement` - Create an announcement · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
-- `updateLabNftMetadata` - Update LabNFT display metadata (OCL admin only)
-- `generateLabImageUploadUrl` - Get a presigned URL to upload a LabNFT image (OCL admin only)
-- `signLegalAgreement` - Record acceptance of a legal agreement
-- `generateDataEncryptionKey` - Generate a standalone data encryption key · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
-- `decryptDataKey` - Decrypt a file's data key for an authorized caller · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
-- `extendServiceToken` - Extend service token expiration
-- `revokeServiceToken` - Revoke a service token
+* `createLab` - Create a lab (data room) for an onchain lab (OCL) · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+* `initiateCreateOrUpdateFile` - Initiate file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+* `finishCreateOrUpdateFile` - Complete file upload · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+* `updateFileMetadata` - Update file metadata
+* `deleteDataRoomFile` - Delete a file
+* `createAnnouncement` - Create an announcement · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+* `updateLabNftMetadata` - Update LabNFT display metadata (OCL admin only)
+* `generateLabImageUploadUrl` - Get a presigned URL to upload a LabNFT image (OCL admin only)
+* `signLegalAgreement` - Record acceptance of a legal agreement
+* `generateDataEncryptionKey` - Generate a standalone data encryption key · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+* `decryptDataKey` - Decrypt a file's data key for an authorized caller · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+* `extendServiceToken` - Extend service token expiration
+* `revokeServiceToken` - Revoke a service token
 
-> **`generateServiceToken` is the bootstrap exception**: it mints a Service Token, so it needs only an API Key plus either a Privy session or a wallet signature — not a pre-existing Service Token. See [Obtaining Tokens](#obtaining-tokens).
+> **`generateServiceToken` is the bootstrap exception**: it mints a Service Token, so it needs only an API Key plus either a Privy session or a wallet signature — not a pre-existing Service Token. See [Obtaining Tokens](labs-api.md#obtaining-tokens).
 
 > **Pay-per-call alternative.** Mutations tagged 💳 above can also be called through the [x402 Gateway](x402-gateway.md), which settles a USDC payment on Base per request and mints a short-lived service token on the fly — no long-lived credentials required. Useful for autonomous AI agents and third-party tools that pay for users.
 
@@ -85,14 +85,14 @@ To obtain access credentials:
 
 1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
 2. Contact the Molecule team and provide:
-   - Your wallet address (will be linked to the service token)
-   - Intended use case / service name
-   - Which lab/dataroom you need access to
-   - Desired token expiration period
+   * Your wallet address (will be linked to the service token)
+   * Intended use case / service name
+   * Which lab/dataroom you need access to
+   * Desired token expiration period
 3. The team will generate and provide you with:
-   - **API Key** - Used for all Molecule APIs
-   - **Service Token** (JWT string) - Grants access to specific lab
-   - **Token ID** - For management operations
+   * **API Key** - Used for all Molecule APIs
+   * **Service Token** (JWT string) - Grants access to specific lab
+   * **Token ID** - For management operations
 
 ### Using Your Credentials
 
@@ -111,18 +111,18 @@ X-Service-Token: YOUR_SERVICE_TOKEN
 
 **Why two tokens for mutations?**
 
-- **API Key**: Authenticates you as a valid Molecule API user
-- **Service Token**: Identifies which specific lab/dataroom you have write access to
+* **API Key**: Authenticates you as a valid Molecule API user
+* **Service Token**: Identifies which specific lab/dataroom you have write access to
 
 **Security Warnings:**
 
-- Service tokens are shown only once during generation - store them securely immediately
-- Never commit tokens or API keys to version control
-- Never log credentials in application logs
-- Store in environment variables or secure secret management systems
-- Rotate tokens regularly (quarterly recommended)
+* Service tokens are shown only once during generation - store them securely immediately
+* Never commit tokens or API keys to version control
+* Never log credentials in application logs
+* Store in environment variables or secure secret management systems
+* Rotate tokens regularly (quarterly recommended)
 
----
+***
 
 ## API Endpoints
 
@@ -135,7 +135,7 @@ Production: https://production.graphql.api.molecule.xyz/graphql
 Staging:    https://staging.graphql.api.molecule.xyz/graphql
 ```
 
----
+***
 
 ### Step 1: Create Lab
 
@@ -169,21 +169,19 @@ mutation CreateLab($oclId: String!) {
 
 The mutation takes a single `CreateLabInput` object:
 
-| Field | Type   | Required | Description                                                    |
-| ----- | ------ | -------- | -------------------------------------------------------------- |
+| Field | Type   | Required | Description                                                   |
+| ----- | ------ | -------- | ------------------------------------------------------------- |
 | oclId | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the onchain lab |
 
 **Prerequisites:**
 
 1. **LabNFT Ownership**: You must own the LabNFT for the `oclId` or be an authorized signer for it
-   - For individual wallets: You must be the owner
-   - For multisig/Safe wallets: You must be one of the Safe owners
-   - For ERC-4337 accounts: You must be an authorized account owner
-
+   * For individual wallets: You must be the owner
+   * For multisig/Safe wallets: You must be one of the Safe owners
+   * For ERC-4337 accounts: You must be an authorized account owner
 2. **Authentication**: One of the following:
-   - **Service Token** (recommended for automation): Obtain from Molecule team via Discord
-   - **Privy Token** (for user-initiated requests): Use your authenticated Privy session
-
+   * **Service Token** (recommended for automation): Obtain from Molecule team via Discord
+   * **Privy Token** (for user-initiated requests): Use your authenticated Privy session
 3. **LabNFT Must Be Minted**: The onchain lab (LabNFT / `oclId`) must already exist onchain before registering the lab
 
 **Authentication Options:**
@@ -301,10 +299,10 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 **Use Cases:**
 
-- **Automate Lab Creation**: Register labs programmatically after minting LabNFTs
-- **CI/CD Integration**: Automatically set up data rooms for new research labs
-- **Batch Operations**: Register multiple labs for a portfolio of onchain labs
-- **User Self-Service**: Allow users to create their own lab data rooms
+* **Automate Lab Creation**: Register labs programmatically after minting LabNFTs
+* **CI/CD Integration**: Automatically set up data rooms for new research labs
+* **Batch Operations**: Register multiple labs for a portfolio of onchain labs
+* **User Self-Service**: Allow users to create their own lab data rooms
 
 **Getting Service Token Access:**
 
@@ -313,15 +311,15 @@ To obtain a service token for automated lab creation:
 1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
 2. Contact the Molecule team
 3. Provide:
-   - Your wallet address
-   - Use case description
-   - Intended automation workflow
+   * Your wallet address
+   * Use case description
+   * Intended automation workflow
 4. You'll receive:
-   - API Key (for all APIs)
-   - Service Token (JWT for lab creation)
-   - Token expiration date
+   * API Key (for all APIs)
+   * Service Token (JWT for lab creation)
+   * Token expiration date
 
----
+***
 
 ### Step 2: Initiate File Upload
 
@@ -484,18 +482,18 @@ mutation FinishFileUpload(
 
 **Parameters:**
 
-| Parameter   | Type     | Required | Description                                                 |
-| ----------- | -------- | -------- | ----------------------------------------------------------- |
-| oclId       | String   | Yes      | Same oclId used in Step 1                                   |
-| uploadToken | String   | Yes      | Token received from Step 1                                  |
-| path        | String   | No\*     | File name for NEW files (e.g., `research-data.pdf`)         |
-| ref         | String   | No\*     | Dataset ID for NEW VERSIONS of existing files               |
-| accessLevel | String   | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`            |
-| changeBy    | String   | Yes      | Wallet address of user making the change                    |
-| description | String   | No       | Optional file description                                   |
-| tags        | [String] | No       | Optional tags for categorization                            |
-| categories  | [String] | No       | Optional categories for organization                        |
-| contentText | String   | No       | Optional searchable text content (used for semantic search) |
+| Parameter   | Type      | Required | Description                                                 |
+| ----------- | --------- | -------- | ----------------------------------------------------------- |
+| oclId       | String    | Yes      | Same oclId used in Step 1                                   |
+| uploadToken | String    | Yes      | Token received from Step 1                                  |
+| path        | String    | No\*     | File name for NEW files (e.g., `research-data.pdf`)         |
+| ref         | String    | No\*     | Dataset ID for NEW VERSIONS of existing files               |
+| accessLevel | String    | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`            |
+| changeBy    | String    | Yes      | Wallet address of user making the change                    |
+| description | String    | No       | Optional file description                                   |
+| tags        | \[String] | No       | Optional tags for categorization                            |
+| categories  | \[String] | No       | Optional categories for organization                        |
+| contentText | String    | No       | Optional searchable text content (used for semantic search) |
 
 _\*Use `path` for new files OR `ref` for versions - not both_
 
@@ -539,7 +537,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 }
 ```
 
----
+***
 
 ### Step 5: Create Announcement
 
@@ -573,12 +571,12 @@ mutation CreateAnnouncement(
 
 **Parameters:**
 
-| Parameter   | Type     | Required | Description                                      |
-| ----------- | -------- | -------- | ------------------------------------------------ |
-| oclId       | String   | Yes      | Canonical 32-byte oclId of the lab               |
-| headline    | String   | Yes      | Announcement title/headline                      |
-| body        | String   | Yes      | Announcement body (supports Markdown)            |
-| attachments | [String] | No       | Array of file DIDs to attach to the announcement |
+| Parameter   | Type      | Required | Description                                      |
+| ----------- | --------- | -------- | ------------------------------------------------ |
+| oclId       | String    | Yes      | Canonical 32-byte oclId of the lab               |
+| headline    | String    | Yes      | Announcement title/headline                      |
+| body        | String    | Yes      | Announcement body (supports Markdown)            |
+| attachments | \[String] | No       | Array of file DIDs to attach to the announcement |
 
 **Example Request:**
 
@@ -598,7 +596,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
----
+***
 
 ### Step 6: Update File Metadata
 
@@ -639,15 +637,15 @@ mutation UpdateFileMetadata(
 
 **Parameters:**
 
-| Parameter   | Type     | Required | Description                                                   |
-| ----------- | -------- | -------- | ------------------------------------------------------------- |
-| oclId       | String   | Yes      | Canonical 32-byte oclId of the lab                            |
-| ref         | String   | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response |
-| accessLevel | String   | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`              |
-| description | String   | No       | Updated file description                                      |
-| tags        | [String] | No       | Updated tags for categorization                               |
-| categories  | [String] | No       | Updated categories for organization                           |
-| contentText | String   | No       | Updated searchable text content                               |
+| Parameter   | Type      | Required | Description                                                   |
+| ----------- | --------- | -------- | ------------------------------------------------------------- |
+| oclId       | String    | Yes      | Canonical 32-byte oclId of the lab                            |
+| ref         | String    | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response |
+| accessLevel | String    | Yes      | File visibility: `PUBLIC`, `HOLDERS`, or `ADMIN`              |
+| description | String    | No       | Updated file description                                      |
+| tags        | \[String] | No       | Updated tags for categorization                               |
+| categories  | \[String] | No       | Updated categories for organization                           |
+| contentText | String    | No       | Updated searchable text content                               |
 
 > **Note**: The `changeBy` field (wallet address) is automatically derived from your authentication and does not need to be provided as a parameter.
 
@@ -672,7 +670,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
----
+***
 
 ### Step 7: Delete File
 
@@ -722,7 +720,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
----
+***
 
 ### Querying Projects and Files
 
@@ -762,7 +760,7 @@ query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
 }
 ```
 
-> The `labs` list returns lightweight `LabRef` objects. Data-room contents and account details are not part of `LabRef` — fetch them per lab via [`labWithDataRoomAndFiles`](#get-single-project-with-files).
+> The `labs` list returns lightweight `LabRef` objects. Data-room contents and account details are not part of `LabRef` — fetch them per lab via [`labWithDataRoomAndFiles`](labs-api.md#get-single-project-with-files).
 
 **Parameters:**
 
@@ -847,7 +845,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
-> The optional CMS-enriched fields `trlValue`, `trlRationale`, and `isVerified` (see [List All Projects](#list-all-projects)) are also available on this query and are hydrated only when requested.
+> The optional CMS-enriched fields `trlValue`, `trlRationale`, and `isVerified` (see [List All Projects](labs-api.md#list-all-projects)) are also available on this query and are hydrated only when requested.
 
 #### Get File by Path
 
@@ -1008,10 +1006,10 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 **Use Cases:**
 
-- Announcement detail pages requiring full file metadata
-- Download links for announcement attachments
-- Encrypted file access (Onchain-Verified Envelope Encryption for new files, Lit Protocol for legacy)
-- Projects with many announcements (efficient pagination)
+* Announcement detail pages requiring full file metadata
+* Download links for announcement attachments
+* Encrypted file access (Onchain-Verified Envelope Encryption for new files, Lit Protocol for legacy)
+* Projects with many announcements (efficient pagination)
 
 #### Global Activity Feed
 
@@ -1104,7 +1102,7 @@ query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
 }
 ```
 
----
+***
 
 ### Searching Labs
 
@@ -1188,13 +1186,13 @@ query SearchLabs(
 
 **Available Filters:**
 
-| Filter         | Type      | Description                                           |
-| -------------- | --------- | ----------------------------------------------------- |
-| byOclIds       | [String!] | Filter by specific lab oclIds                         |
-| byTags         | [String!] | Filter files by tags                                  |
-| byCategories   | [String!] | Filter files by categories                            |
-| byAccessLevels | [String!] | Filter files by access level (PUBLIC, HOLDERS, ADMIN) |
-| byKinds        | [String!] | Filter by result type                                 |
+| Filter         | Type       | Description                                           |
+| -------------- | ---------- | ----------------------------------------------------- |
+| byOclIds       | \[String!] | Filter by specific lab oclIds                         |
+| byTags         | \[String!] | Filter files by tags                                  |
+| byCategories   | \[String!] | Filter files by categories                            |
+| byAccessLevels | \[String!] | Filter files by access level (PUBLIC, HOLDERS, ADMIN) |
+| byKinds        | \[String!] | Filter by result type                                 |
 
 **Example - Basic Search:**
 
@@ -1236,12 +1234,12 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 Search results are returned as a union type. Use the `__typename` field to determine result type:
 
-- **SearchLabsFileHit**: File search result
-  - Access via: `entry.file`
-  - Contains: file metadata, tags, categories, download URL
-- **SearchLabsAnnouncementHit**: Announcement search result
-  - Access via: `announcement`
-  - Contains: headline, body, lab reference, **typed attachments** (file objects)
+* **SearchLabsFileHit**: File search result
+  * Access via: `entry.file`
+  * Contains: file metadata, tags, categories, download URL
+* **SearchLabsAnnouncementHit**: Announcement search result
+  * Access via: `announcement`
+  * Contains: headline, body, lab reference, **typed attachments** (file objects)
 
 **JavaScript Example:**
 
@@ -1299,7 +1297,7 @@ nodes.forEach((node) => {
 });
 ```
 
----
+***
 
 ## Complete Example
 
@@ -1473,13 +1471,13 @@ module.exports = { uploadFileToLabs };
 API_KEY="your-api-key" SERVICE_TOKEN="your-service-token" WALLET_ADDRESS="0x..." node upload.js data.pdf 0x0101000000000000000000000000000000000000000000000000000000000042
 ```
 
----
+***
 
 ## Service Token Management
 
 ### Obtaining Tokens
 
-Service tokens must be requested from the Molecule team (see [Authentication](#authentication) section above).
+Service tokens must be requested from the Molecule team (see [Authentication](labs-api.md#authentication) section above).
 
 Alternatively, a service can obtain a token **self-service** by proving control of its wallet — useful for autonomous agents, bots, and CI/CD pipelines that don't have a browser-based Privy session. This is a two-step flow: fetch the deterministic sign-in message, sign it with the service wallet, then exchange the signature for a token.
 
@@ -1609,7 +1607,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
----
+***
 
 ## Error Handling
 
@@ -1647,51 +1645,51 @@ All API responses follow a consistent error format:
 
 **"Missing service token" error:**
 
-- Ensure `X-Service-Token` header is included in requests
-- Verify token is not empty or malformed
+* Ensure `X-Service-Token` header is included in requests
+* Verify token is not empty or malformed
 
 **"Service does not have access to lab" error:**
 
-- Verify your wallet address (linked to service token) has admin access to the lab/dataroom
-- Check that the oclId format is correct: a 32-byte hex string with `0x` prefix
+* Verify your wallet address (linked to service token) has admin access to the lab/dataroom
+* Check that the oclId format is correct: a 32-byte hex string with `0x` prefix
 
 **"Token expired" error:**
 
-- Request a new token from the Molecule team, or
-- Use `extendServiceToken` mutation to extend expiration
+* Request a new token from the Molecule team, or
+* Use `extendServiceToken` mutation to extend expiration
 
 **Upload to presigned URL fails:**
 
-- Ensure binary file upload (use `--data-binary` in curl)
-- Verify headers match those returned in Step 1
-- Check that presigned URL hasn't expired (expires after ~15 minutes)
+* Ensure binary file upload (use `--data-binary` in curl)
+* Verify headers match those returned in Step 1
+* Check that presigned URL hasn't expired (expires after \~15 minutes)
 
 **"File not found" error (updateFileMetadata, deleteDataRoomFile):**
 
-- Verify the file `ref` (DID) or `path` is correct
-- Check that the file exists in the specified dataroom
-- Ensure you have access to the dataroom
+* Verify the file `ref` (DID) or `path` is correct
+* Check that the file exists in the specified dataroom
+* Ensure you have access to the dataroom
 
 **"Invalid search filters" error (searchLabs):**
 
-- Verify filter values match expected types (arrays of strings)
-- Check that access level values are: PUBLIC, HOLDERS, or ADMIN
-- Ensure oclId format is correct if using byOclIds filter
+* Verify filter values match expected types (arrays of strings)
+* Check that access level values are: PUBLIC, HOLDERS, or ADMIN
+* Ensure oclId format is correct if using byOclIds filter
 
----
+***
 
 ## File Requirements & Limits
 
 ### Storage Limits
 
-- **Default Limit**: 5GB per lab/project
-- **Custom Limits**: Can be increased upon request - contact the Molecule team
-- **Note**: the Labs web app additionally caps individual uploads at 100 MB per file; API uploads are not subject to that app-side cap
+* **Default Limit**: 5GB per lab/project
+* **Custom Limits**: Can be increased upon request - contact the Molecule team
+* **Note**: the Labs web app additionally caps individual uploads at 100 MB per file; API uploads are not subject to that app-side cap
 
 ### Supported File Types
 
-- All file types are supported
-- Common types: PDF, PNG, JPEG, CSV, JSON, ZIP, etc.
+* All file types are supported
+* Common types: PDF, PNG, JPEG, CSV, JSON, ZIP, etc.
 
 ### Access Levels
 
@@ -1707,16 +1705,16 @@ All three values are accepted by the API. Note that the Labs web app currently w
 
 Enhance file discoverability with optional metadata:
 
-- **description**: Human-readable description of the file
-- **tags**: Array of tags for categorization (e.g., `["research", "q4-2024"]`)
-- **categories**: Array of categories for organization (e.g., `["data", "results"]`)
-- **contentText**: Searchable text content for full-text search
+* **description**: Human-readable description of the file
+* **tags**: Array of tags for categorization (e.g., `["research", "q4-2024"]`)
+* **categories**: Array of categories for organization (e.g., `["data", "results"]`)
+* **contentText**: Searchable text content for full-text search
 
----
+***
 
 ## Advanced: Encrypted File Upload
 
-For files requiring client-side encryption, obtain a data encryption key via the `generateDataEncryptionKey` mutation, encrypt locally, upload as normal, and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, onchain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md) page.
+For files requiring client-side encryption, obtain a data encryption key via the `generateDataEncryptionKey` mutation, encrypt locally, upload as normal, and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, onchain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../core-infrastructure/data/data-privacy-and-access.md) page.
 
 ### Obtain a DEK, then encrypt locally
 
@@ -1748,11 +1746,11 @@ $encryptionMetadata: EncryptionMetadataInput
 
 `accessControlConditions` is a JSON-stringified array of `EvmContractCondition` predicates joined by `BooleanCondition` separators (`and` / `or`). The backend evaluates each predicate against live chain state at decrypt time via viem `readContract`, short-circuits booleans, and fails closed on RPC error. To gate decryption on _LabNFT owner OR active Contributor OR active Viewer_, OR `AccessResolver.isAuthorizedSignerForTba(:userAddress, tba)` against `AccessResolver.hasRole(oclId, :userAddress, ROLE_VIEWER)` — the role-hierarchy collapses Contributor + Viewer into one check on the canonical chain (Base).
 
-The placeholder `:userAddress` in `functionParams` is substituted with the authenticated caller's wallet at evaluate time. The full `EvmContractCondition` JSON shape, the worked OR-composite example, and condition-evaluator semantics are documented on the [Data Privacy & Access](../core-concepts/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer) page.
+The placeholder `:userAddress` in `functionParams` is substituted with the authenticated caller's wallet at evaluate time. The full `EvmContractCondition` JSON shape, the worked OR-composite example, and condition-evaluator semantics are documented on the [Data Privacy & Access](../core-infrastructure/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer) page.
 
 #### Role Management (onchain, off this API surface)
 
-Role grants are **onchain transactions on the `AccessResolver` contract**, not Labs API mutations. Lab owners (and active Contributors, for the Viewer slot) call `grantRole(oclId, account, role, expiry, isAgent)` / `revokeRole(oclId, account)` directly via viem / ethers / Safe. The Labs API only _consumes_ role state at decrypt time through the `accessControlConditions` evaluator. See [Roles & Permissions](../core-concepts/roles-and-permissions.md) for the capability matrix, grant lifecycle (expiry, `isAgent`), and the [`AccessResolver` reference](../references/contracts/accessresolver.md) for the onchain interface.
+Role grants are **onchain transactions on the `AccessResolver` contract**, not Labs API mutations. Lab owners (and active Contributors, for the Viewer slot) call `grantRole(oclId, account, role, expiry, isAgent)` / `revokeRole(oclId, account)` directly via viem / ethers / Safe. The Labs API only _consumes_ role state at decrypt time through the `accessControlConditions` evaluator. See [Roles & Permissions](../core-infrastructure/roles-and-permissions.md) for the capability matrix, grant lifecycle (expiry, `isAgent`), and the [`AccessResolver` reference](../references/contracts/accessresolver.md) for the onchain interface.
 
 ### Encryption Metadata Parameter (Lit Protocol, legacy)
 
@@ -1776,52 +1774,52 @@ Role grants are **onchain transactions on the `AccessResolver` contract**, not L
 
 **When to Use Encryption:**
 
-- Sensitive research data requiring access control
-- Compliance requirements for data protection
-- Conditional access based on token ownership or lab role
+* Sensitive research data requiring access control
+* Compliance requirements for data protection
+* Conditional access based on token ownership or lab role
 
----
+***
 
 ## Best Practices
 
 ### Token Security
 
-- **Never commit tokens** to version control (add to `.gitignore`)
-- **Use environment variables** to store tokens
-- **Rotate tokens regularly** (quarterly recommended)
-- **Use secrets management systems** in production (AWS Secrets Manager, HashiCorp Vault, etc.)
-- **Revoke immediately** if a token is compromised
+* **Never commit tokens** to version control (add to `.gitignore`)
+* **Use environment variables** to store tokens
+* **Rotate tokens regularly** (quarterly recommended)
+* **Use secrets management systems** in production (AWS Secrets Manager, HashiCorp Vault, etc.)
+* **Revoke immediately** if a token is compromised
 
 ### Storage Management
 
-- Monitor your 5GB storage limit per project
-- Organize files with meaningful names and metadata
-- Use categories and tags for easy file discovery
-- Clean up old or unnecessary files regularly
+* Monitor your 5GB storage limit per project
+* Organize files with meaningful names and metadata
+* Use categories and tags for easy file discovery
+* Clean up old or unnecessary files regularly
 
 ### Metadata Best Practices
 
-- **Use descriptive tags**: `["experiment-1", "2024-q4", "preliminary"]`
-- **Organize with categories**: `["raw-data", "analysis", "results"]`
-- **Add descriptions**: Help collaborators understand file contents
-- **Include searchable text** (`contentText`): Enables full-text search via `searchLabs`
-- **Update metadata as needed**: Use `updateFileMetadata` to refine tags and descriptions without re-uploading files
+* **Use descriptive tags**: `["experiment-1", "2024-q4", "preliminary"]`
+* **Organize with categories**: `["raw-data", "analysis", "results"]`
+* **Add descriptions**: Help collaborators understand file contents
+* **Include searchable text** (`contentText`): Enables full-text search via `searchLabs`
+* **Update metadata as needed**: Use `updateFileMetadata` to refine tags and descriptions without re-uploading files
 
 ### Access Control
 
-- Use `ADMIN` for sensitive internal documents
-- Use `HOLDERS` for IPT holder-exclusive content
-- Use `PUBLIC` for community-facing data
-- Review access levels regularly as your project evolves
+* Use `ADMIN` for sensitive internal documents
+* Use `HOLDERS` for IPT holder-exclusive content
+* Use `PUBLIC` for community-facing data
+* Review access levels regularly as your project evolves
 
 ### Search and Discovery
 
-- **Use contentText**: Populate `contentText` field when uploading files to enable full-text search
-- **Tag consistently**: Use consistent tag names across files for better filtering
-- **Filter strategically**: Combine filters (tags + access levels) to narrow search results
-- **Test search queries**: Use `searchLabs` to verify your files are discoverable
+* **Use contentText**: Populate `contentText` field when uploading files to enable full-text search
+* **Tag consistently**: Use consistent tag names across files for better filtering
+* **Filter strategically**: Combine filters (tags + access levels) to narrow search results
+* **Test search queries**: Use `searchLabs` to verify your files are discoverable
 
----
+***
 
 ## Lab Members
 
@@ -1870,7 +1868,7 @@ query ListLabMembers($oclId: String!) {
 | isAgent       | Boolean         | True if the member is an agent identity (surfaced for UI; not used for authorization)                                  |
 | grantedAt     | String          | ISO-8601 timestamp the row was first persisted                                                                         |
 
----
+***
 
 ## File Categories & Tags
 
@@ -1897,7 +1895,7 @@ query FileCategoriesAndTags {
 
 Each entry in `data` is a `FileCategory` with a `name` and its list of allowed `tags`.
 
----
+***
 
 ## LabNFT Metadata
 
@@ -1963,7 +1961,7 @@ mutation GenerateLabImageUploadUrl($oclId: String!, $contentType: String!) {
 | oclId       | String | Yes      | Canonical 32-byte oclId of the lab                                                      |
 | contentType | String | Yes      | Image MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`, `image/svg+xml`) |
 
----
+***
 
 ## Legal Agreements
 
@@ -2088,7 +2086,7 @@ mutation SignLegalAgreement($input: SignLegalAgreementInput!) {
 | entity        | String             | No       | Echoed verbatim; see `signerName`                                                                                        |
 | title         | String             | No       | Echoed verbatim; see `signerName`                                                                                        |
 
----
+***
 
 ## DID Linking
 
@@ -2129,7 +2127,7 @@ query GetDidLinkStatus($oclId: String!) {
 
 `status` is a `DidLinkingStatus`: `PENDING`, `SUBMITTED`, `LINKED`, or `FAILED` (`null` before the first linking attempt). `linkedDidCount` reflects the number of active onchain DID links observed by the event indexer.
 
----
+***
 
 ## Onchain Activity
 
@@ -2175,13 +2173,13 @@ query OnChainActivity(
 
 \* Provide exactly one of `oclId` or `wallet`. `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt`, or `bio-agent`. `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
 
----
+***
 
 ## Data Encryption Keys
 
 ### Generate a Data Encryption Key
 
-Generate a standalone data encryption key (DEK) for client-side encryption outside the file-upload flow. Returns both the plaintext DEK (used to encrypt data locally, then wiped) and the KMS-encrypted DEK (stored alongside the ciphertext). Requires authentication (Privy user or service token). See [Advanced: Encrypted File Upload](#advanced-encrypted-file-upload) for the file-upload encryption path.
+Generate a standalone data encryption key (DEK) for client-side encryption outside the file-upload flow. Returns both the plaintext DEK (used to encrypt data locally, then wiped) and the KMS-encrypted DEK (stored alongside the ciphertext). Requires authentication (Privy user or service token). See [Advanced: Encrypted File Upload](labs-api.md#advanced-encrypted-file-upload) for the file-upload encryption path.
 
 ```graphql
 mutation GenerateDataEncryptionKey {
@@ -2205,7 +2203,7 @@ mutation GenerateDataEncryptionKey {
 | encryptedDek     | String | Base64-encoded KMS-encrypted DEK (only present on success) |
 | encryptionSystem | String | Encryption system used (always `"kms"`)                    |
 
----
+***
 
 ## Deprecated & Renamed Operations
 
@@ -2246,17 +2244,17 @@ Top-level identifiers on `Lab` / `LabRef` were renamed away from the legacy IP-N
 
 > The linked legacy IP-NFT (for labs migrated from one) is still available as the nested `ipnft` object on `Lab` / `LabRef`; `LabRef` additionally exposes a scalar `ipnftId` field.
 
----
+***
 
 ## Getting Support
 
 If you encounter any issues or have questions about the Programmatic File Upload API:
 
-1. Check this documentation and [troubleshooting section](#troubleshooting)
-2. Review the [complete example](#complete-example) for implementation guidance
+1. Check this documentation and [troubleshooting section](labs-api.md#troubleshooting)
+2. Review the [complete example](labs-api.md#complete-example) for implementation guidance
 3. Join our [Discord community](https://t.co/L0VEiy4Bjk) for support
 4. Contact the Molecule Labs development team directly
 
----
+***
 
 _Last updated: July 2026_

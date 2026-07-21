@@ -6,24 +6,20 @@
 * [How it works](introduction/how-it-works.md)
 * [Architecture](introduction/architecture.md)
 
-## Core Concepts
+## Core Infrastructure
 
-* [Molecule Labs](core-concepts/onchain-lab.md)
-* [Roles & Permissions](core-concepts/roles-and-permissions.md)
-* [Module Registry](core-concepts/module-registry/README.md)
-  * [Validator Module](core-concepts/module-registry/validator-module.md)
-  * [Fallback Modules](core-concepts/module-registry/fallback-modules.md)
-  * [Executor Modules](core-concepts/module-registry/executor-modules.md)
-  * [Coin-to-Company Model](core-concepts/module-registry/rwa-equity.md)
-  * [Fundraising (coming soon)](core-concepts/module-registry/fundraising-coming-soon.md)
-* [Tokenized IPs](core-concepts/tokenized-ips/README.md)
-  * [IP-NFTs](core-concepts/tokenized-ips/ip-nfts.md)
-  * [IPTs](core-concepts/tokenized-ips/ipts.md)
-* [Data](core-concepts/data/README.md)
-  * [Data Storage](core-concepts/data/data-storage.md)
-  * [Data Privacy & Access](core-concepts/data/data-privacy-and-access.md)
-  * [Data Anchoring (DID Linking)](core-concepts/module-registry/data-module.md)
-  * [Data API & Integration](core-concepts/data/data-api-and-integration.md)
+* [Molecule Labs](core-infrastructure/onchain-lab.md)
+* [Roles & Permissions](core-infrastructure/roles-and-permissions.md)
+* [Coin-to-Company Model](core-infrastructure/rwa-equity.md)
+* [Module Registry](core-infrastructure/module-registry/README.md)
+  * [Validator Module](core-infrastructure/module-registry/validator-module.md)
+  * [Fallback Modules](core-infrastructure/module-registry/fallback-modules.md)
+  * [Executor Modules](core-infrastructure/module-registry/executor-modules.md)
+* [Data](core-infrastructure/data/README.md)
+  * [Data Storage](core-infrastructure/data/data-storage.md)
+  * [Data Privacy & Access](core-infrastructure/data/data-privacy-and-access.md)
+  * [Data Anchoring (DID Linking)](core-infrastructure/data/data-module.md)
+  * [Data API & Integration](core-infrastructure/data/data-api-and-integration.md)
 
 ## API Reference
 

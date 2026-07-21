@@ -6,7 +6,7 @@ description: Mission & Vision of Molecule
 
 ### **What is Molecule?**
 
-Molecule is the infrastructure for recording, tokenizing, funding, and accelerating scientific research onchain via human and agent-driven science. It does so through several technical and operational structures;
+Molecule is the infrastructure for recording, tokenizing, funding, and accelerating scientific research via human and agent-driven science and blockchain technology. It does so through several technical and operational structures;
 
 * A **modular Lab (our flagship product)** that acts as a sovereign, programmable container for research projects
 * A **data layer** that securely captures and encrypts sensitive research data, while simultaneously creating an immutable and verifiable record of progress
@@ -40,11 +40,11 @@ At its core, Molecule provides primitives to:
 
 #### _(i) Modular Lab_
 
-A sovereign smart contract wallet bound to an NFT. It holds assets, executes transactions, stores data references, and interacts with protocols - all under a persistent onchain identity. Its modular architecture (ERC-7579) allows new capabilities to be installed over time: licensing, governance, oracles, tokenization, and AI agent execution. Modules are gated by an attestation registry. The Lab is also a platform for tokenizing any research asset - IP can be minted as NFTs, fractionalized into tokens, and made available for trading and community ownership. Transfer the LabNFT and you transfer the entire project - treasury, data, IP, and history - in a single transaction.
+A sovereign smart contract wallet bound to an NFT. It holds assets, executes transactions, stores data references, and interacts with protocols - all under a persistent onchain identity. Its modular architecture (ERC-7579) allows new capabilities to be installed over time: licensing, governance, oracles, tokenization, and AI agent execution. The Lab is also a platform for tokenizing any research asset, and made available for trading and community ownership. Transfer the LabNFT and you transfer the entire project - treasury, data, IP, and history - in a single transaction.
 
 #### _(ii) Data Infrastructure & API Access_
 
-Every action within a Lab generates data. Datasets are stored on decentralized infrastructure ~~(IPFS, Arweave)~~ with provenance tracking and encryption. Access is configurable (see Roles & Permissions). The DeSci API provides programmatic read and write access to Lab data rooms, transforming each Lab from a static wallet into a live data endpoint that agents and integrations can operate on continuously.
+Every action within a Lab generates data. Datasets are stored on decentralized infrastructure with provenance tracking and encryption. Access is configurable (see _Roles & Permissions_). The DeSci API provides programmatic read and write access to Lab data rooms, transforming each Lab from a static wallet into a live data endpoint that agents and integrations can operate on continuously.
 
 #### _(iii) AI Agents for Autonomous Science_
 
