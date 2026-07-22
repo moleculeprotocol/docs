@@ -26,7 +26,7 @@ When researchers and funders want to collaborate, the coordination layer between
 
 ### Solution
 
-Molecule exists to address these problems at the infrastructure level, replacing slow and gatekept processes with a system built for speed, transparency, and liquidity. The root of our solution begins with the Lab. Each Lab acts as a sovereign container with a persistent identity, where research outputs are recorded and managed, IP is minted and fractionalized, and funding is raised transparently. This turns scientific research from illiquid institutional output into liquid, investable, and verifiable onchain assets with a continuous track record. Researchers can fund work directly, funders can access early-stage science, and ownership is shared through transparent, programmable structures.
+Molecule exists to address these problems at the infrastructure level, replacing slow and gatekept processes with a system built for speed, transparency, and liquidity. The root of our solution begins with the Lab. Each Lab acts as a sovereign container with a persistent identity, where research outputs are recorded and managed, IP is registered and tokenized, and funding is raised transparently. This turns scientific research from illiquid institutional output into liquid, investable, and verifiable onchain assets with a continuous track record. Researchers can fund work directly, funders can access early-stage science, and ownership is shared through transparent, programmable structures.
 
 At its core, Molecule provides primitives to:
 

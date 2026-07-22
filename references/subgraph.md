@@ -47,7 +47,7 @@ Or explore interactively in the [Playground](https://subgraph.satsuma-prod.com/m
 
 * **Ipnft**: IP-NFT tokens
   * Key Fields: `id` (the tokenId), `owner`, `tokenURI`, `symbol`, `createdAt`, `metadata`, `ipToken`
-* **IPT**: Tokenized IP-NFTs (ERC-20)
+* **IPT**: IP Tokens (ERC-20)
   * Key Fields: `id` (the IPT contract address), `name`, `symbol`, `agreementCid`, `totalIssued`, `circulatingSupply`, `capped`, `ipnft`, `createdAt`
 * **IPTBalance**: User balances of IPTs
   * Key Fields: `id`, `ipt`, `owner`, `balance`, `agreementSignature`
@@ -77,19 +77,9 @@ Or explore interactively in the [Playground](https://subgraph.satsuma-prod.com/m
 
 #### Finding IPToken Addresses
 
-IPTokens are dynamically created through the Tokenizer. It is recommended not to hardcode IPToken addresses. Instead, use the methods outlined below to retrieve them.
-
-#### Onchain Query
-
-To find an IPToken address onchain, use the following method:
-
-```solidity
-IIPToken ipToken = Tokenizer.synthesized(ipnftId);
-```
+IPToken contract addresses are dynamic. It is recommended not to hardcode IPToken addresses. Instead, retrieve them via the subgraph:
 
 #### Subgraph Query
-
-Alternatively, query via a subgraph using the query structure below:
 
 ```graphql
 {

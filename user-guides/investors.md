@@ -27,7 +27,7 @@ This distinction matters because it determines where value accrues. If a Lab's d
 
 The Molecule platform is your starting point for finding research worth supporting. It surfaces every active Lab in the ecosystem with its project description, data room activity, funding history, token market data, and AI-generated project scores.
 
-Browse by research category to find projects in your areas of interest. Categories span therapeutic areas, research methodologies, and scientific domains. Each project listing shows the Lab's IP-NFT symbol, its current IPT price and market cap (if tokenized), treasury balance, data room size, and recent activity.&#x20;
+Browse by research category to find projects in your areas of interest. Categories span therapeutic areas, research methodologies, and scientific domains. Each project listing shows the Lab's shortname, its current IPT symbol, price and market cap (if tokenized), treasury balance, data room size, and recent activity.&#x20;
 
 The Investor Portfolio view — a dedicated interface designed specifically for investors — provides a consolidated view of your positions alongside discovery tools, letting you track your holdings and find new opportunities from a single dashboard. Activity feeds surface real-time updates: new data room uploads, announcements, milestone completions, and token market movements across Labs you follow.
 
@@ -53,7 +53,7 @@ MIRA is also available as a Discord bot for community-level discussions and anal
 
 For community supporters and retail investors, the primary way to participate is through IP Token (IPT) purchases on the secondary market or through structured fundraising events.
 
-When a Lab tokenizes its IP-NFT, it creates IP Tokens that represent fractional ownership and governance rights over the underlying intellectual property. Buying IPTs gives you economic exposure to the research's success, access to the Lab's token-gated data room (where premium research data lives), governance rights over key decisions about the IP's direction, and a liquid position that you can trade on secondary markets at any time.
+When a Lab is tokenized, it creates IP Tokens that represent a fractional claim tied to the Lab and governance rights over its research. Buying IPTs gives you economic exposure to the research's success, access to the Lab's token-gated data room (where premium research data lives), governance rights over key decisions about the IP's direction, and a liquid position that you can trade on secondary markets at any time.
 
 IPTs trade on decentralised exchanges with real-time price discovery. You can buy or sell at any time, meaning you're not locked into a multi-year commitment. If a project hits a major milestone — a successful experiment, a licensing deal, a regulatory filing — the market reprices the token in real time. If your investment thesis changes, you can exit.
 
@@ -67,7 +67,7 @@ For a technical reference on token mechanics, see the [IPT](../references/contra
 
 For venture firms, pharmaceutical companies, and bioDAOs evaluating larger commitments, the relevant interaction surfaces go beyond token purchases.
 
-Every Lab's onchain history is a due diligence asset. You can inspect the complete audit trail: when the Lab was created, what data has been uploaded and how often, which IP-NFTs have been minted, how treasury funds have been deployed, what agent activity has occurred, and the full history of announcements and file updates. This replaces the fragmented, document-heavy due diligence process in traditional biotech with a single inspectable onchain record. MIRA's TRL scoring provides a standardised starting point, and the raw data room contents let you drill into the science itself.
+Every Lab's onchain history is a due diligence asset. You can inspect the complete audit trail: when the Lab was created, what data has been uploaded and how often, which IP assets the Lab holds, how treasury funds have been deployed, what agent activity has occurred, and the full history of announcements and file updates. This replaces the fragmented, document-heavy due diligence process in traditional biotech with a single inspectable onchain record. MIRA's TRL scoring provides a standardised starting point, and the raw data room contents let you drill into the science itself.
 
 IP licensing on Molecule is designed to be executed onchain. The architecture anticipates rentable IP-NFTs using the ERC-4907 standard — a pharmaceutical company or research institution would license an IP-NFT for a defined period in a single transaction, with rental fees paid in stablecoins routed to the Lab's treasury and royalties distributed to stakeholders via smart contracts. This onchain licensing flow is on the roadmap (see What's Coming below); today, licensing deals are executed through offchain agreements with proceeds flowing to the Lab's treasury.
 
@@ -105,7 +105,7 @@ The platform is actively evolving. Several features in development are directly 
 
 The **RWA Equity module** will create a bridge between onchain IPT positions and real-world equity rights, making Molecule investable for institutional allocators who require legal ownership structures. This is currently in the design and early implementation phase.
 
-**Group Tokens** (part of the V3 architecture) will enable Lab-level tokenization — instead of buying into individual IP-NFTs, you'll be able to hold tokens representing an entire Lab's portfolio of IP assets. This is analogous to buying into a fund rather than a single asset, providing diversified exposure to a research team's full output.
+**Group Tokens** (part of the V3 architecture) will extend Lab tokenization with portfolio-level economics — fee routing, staking, and buybacks around the tokens representing an entire Lab's output. This is analogous to buying into a fund rather than a single asset, providing diversified exposure to a research team's full portfolio.
 
 **MIRA v3's knowledge graphs** will map the relationships between projects, researchers, institutions, and funding sources across the ecosystem, giving you tools to identify emerging research clusters, track researcher track records across Labs, and discover investment opportunities based on network analysis rather than just individual project metrics.
 

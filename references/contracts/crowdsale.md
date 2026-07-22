@@ -118,7 +118,7 @@ Extends LockingCrowdSale by requiring bidders to stake a secondary token alongsi
 ### Related Contracts
 
 * [IPNFT](ip-nft.md) — The IP-NFT that backs the IPToken being sold.
-* [Tokenizer](tokenizer.md) — Creates the IPToken that serves as the sale's auction token.
+* [IPT](ipt.md) — The token type auctioned in a sale.
 * TimelockedToken — Used by LockingCrowdSale to lock claimed tokens.
 * SchmackoSwap — OTC marketplace for trading IP-NFTs directly (see the [address table](README.md)).
 
