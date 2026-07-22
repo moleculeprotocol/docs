@@ -6,6 +6,12 @@
 * [How it works](introduction/how-it-works.md)
 * [Architecture](introduction/architecture.md)
 
+## USER GUIDES
+
+* [Scientists/Researchers](user-guides/scientists-researchers.md)
+* [Developers/AI Agents](user-guides/developers-ai-agents.md)
+* [Investors](user-guides/investors.md)
+
 ## Core Infrastructure
 
 * [Molecule Labs](core-infrastructure/onchain-lab.md)
@@ -32,12 +38,6 @@
 ## AI Tooling
 
 * [MIRA](ai-tooling/mira.md)
-
-## USER GUIDES
-
-* [Scientists/Researchers](user-guides/scientists-researchers.md)
-* [Developers/AI Agents](user-guides/developers-ai-agents.md)
-* [Investors](user-guides/investors.md)
 
 ## REFERENCES
 

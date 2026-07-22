@@ -88,47 +88,7 @@ const tools = await client.tools();
 ```
 {% endcode %}
 
-### Available Tools
 
-The MCP server exposes five main tools:
-
-1. **molecule-get-ipts**: Retrieves Intellectual Property Tokens with detailed market data.
-2. **molecule-get-project-activity**: Fetches recent activity for a specified IPT.
-3. **molecule-get-ipt-categories**: Lists IPT categories with statistics.
-4. **molecule-get-project-summary**: Provides a comprehensive analysis of a specific IPT.
-5. **molecule-get-ipt-historic-prices**: Gets historical OHLCV price data for trends analysis.
-
-#### Tool Details
-
-**1. molecule-get-ipts**
-
-* Retrieves token metadata and market information.
-* **Prompts**: "What IPTs are available in the Molecule ecosystem?"
-
-**2. molecule-get-project-activity**
-
-* Fetches recent activity for a specific IPT.
-* **Parameter**: `iptSymbol` (string, required)
-* **Prompts**: "What's the recent activity for VITA-FAST?"
-
-**3. molecule-get-ipt-categories**
-
-* Lists categories with aggregated data.
-* **Prompts**: "What research categories does Molecule cover?"
-
-**4. molecule-get-project-summary**
-
-* Provides a detailed overview of a project.
-* **Parameter**: `iptSymbol` (string, required)
-* **Prompts**: "Give me a full summary of the VITA-FAST project."
-
-**5. molecule-get-ipt-historic-prices**
-
-* Retrieves historical price data.
-* **Parameters**:
-  * `iptSymbol` (string, required)
-  * `days` (number, required)
-* **Prompts**: "Show me the 30-day price history for HAIR."
 
 #### Example Conversations
 
