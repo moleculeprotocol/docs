@@ -47,7 +47,7 @@ Or explore interactively in the [Playground](https://subgraph.satsuma-prod.com/m
 
 * **Ipnft**: IP-NFT tokens
   * Key Fields: `id` (the tokenId), `owner`, `tokenURI`, `symbol`, `createdAt`, `metadata`, `ipToken`
-* **IPT**: Tokenized IP-NFTs (ERC-20)
+* **IPT**: IP Tokens (ERC-20)
   * Key Fields: `id` (the IPT contract address), `name`, `symbol`, `agreementCid`, `totalIssued`, `circulatingSupply`, `capped`, `ipnft`, `createdAt`
 * **IPTBalance**: User balances of IPTs
   * Key Fields: `id`, `ipt`, `owner`, `balance`, `agreementSignature`

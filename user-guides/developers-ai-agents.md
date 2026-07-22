@@ -90,7 +90,7 @@ For programmatic integration — embedding Molecule tools into your own AI appli
 
 ### Querying Onchain State via Subgraph
 
-For indexed onchain data — IP-NFT minting events, IPT creation, crowdsale participation, token transfers — the subgraph provides a GraphQL interface over historical blockchain data. This is the right tool for analytics dashboards, portfolio trackers, historical queries, and any application that needs to reconstruct the full timeline of protocol events.
+For indexed onchain data — IP-NFT activity, IPT balances, crowdsale participation, token transfers — the subgraph provides a GraphQL interface over historical blockchain data. This is the right tool for analytics dashboards, portfolio trackers, historical queries, and any application that needs to reconstruct the full timeline of protocol events.
 
 The subgraph indexes Ethereum mainnet and is documented in the Subgraph reference. For queries that combine onchain and offchain data (for example, an IPT's market data alongside its Lab's data room contents), combine subgraph queries with DeSci API and Labs API calls in your application.
 
