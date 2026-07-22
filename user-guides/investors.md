@@ -105,7 +105,7 @@ The platform is actively evolving. Several features in development are directly 
 
 The **RWA Equity module** will create a bridge between onchain IPT positions and real-world equity rights, making Molecule investable for institutional allocators who require legal ownership structures. This is currently in the design and early implementation phase.
 
-**Group Tokens** (part of the V3 architecture) will enable Lab-level tokenization — instead of buying into individual IP-NFTs, you'll be able to hold tokens representing an entire Lab's portfolio of IP assets. This is analogous to buying into a fund rather than a single asset, providing diversified exposure to a research team's full output.
+**Group Tokens** (part of the V3 architecture) will extend Lab tokenization with portfolio-level economics — fee routing, staking, and buybacks around the tokens representing an entire Lab's output. This is analogous to buying into a fund rather than a single asset, providing diversified exposure to a research team's full portfolio.
 
 **MIRA v3's knowledge graphs** will map the relationships between projects, researchers, institutions, and funding sources across the ecosystem, giving you tools to identify emerging research clusters, track researcher track records across Labs, and discover investment opportunities based on network analysis rather than just individual project metrics.
 

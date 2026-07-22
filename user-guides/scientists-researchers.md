@@ -35,13 +35,13 @@ The data you upload is not just storage — it becomes an asset. As your Lab acc
 
 When your research reaches a point where you want to formalise ownership — a novel compound, a validated methodology, a curated dataset — you mint an IP-NFT into your Lab. The IP-NFT is an onchain asset that represents ownership of your intellectual property, anchored to a legal agreement that defines the rights included.
 
-After minting, you have a choice: keep the IP-NFT whole, or tokenize it.
+From there, you have a choice: keep your Lab wholly owned, or tokenize it.
 
-Keeping it whole means you retain full ownership. You can license it directly to a pharma company, sell it outright via an OTC swap, or hold it while the research matures. This path makes sense when you want maximum control or when you're negotiating a single large deal.
+Keeping it whole means you retain full ownership. You can license your IP directly to a pharma company, sell it outright, or hold it while the research matures. This path makes sense when you want maximum control or when you're negotiating a single large deal.
 
-Tokenizing means you create IP Tokens (IPTs) — fungible tokens that represent fractional ownership and governance rights over the underlying IP. This is the path to community funding. IPT holders get economic exposure to your research, access to token-gated data, and a voice in governance decisions. You decide how many tokens to create and how they're distributed.
+Tokenizing means you tokenize your **Lab** into IP Tokens (IPTs) — fungible tokens that represent a fractional claim tied to the Lab and everything it holds. This is the path to community funding. IPT holders get economic exposure to your research, access to token-gated data, and a voice in governance decisions. You decide the token symbol, the initial supply, and how tokens are distributed — and you can permanently cap the supply whenever you choose.
 
-If you tokenize, you can run a crowdsale. Molecule supports several sale types, each with different trade-offs between simplicity, investor commitment, and alignment incentives. Funds raised go directly into your Lab's treasury — fully transparent, fully under your control. For the detailed mechanics of IP-NFTs, IPTs, and crowdsale options, see the Tokenized IPs section.
+Funds raised go directly into your Lab's treasury — fully transparent, fully under your control. For the tokenization mechanics, see the [Tokenization API](../api-reference/tokenization-api.md) and the [Tokenizer](../references/contracts/tokenizer.md) reference.
 
 ### Step 4: Use AI Agents to Accelerate Your Research
 

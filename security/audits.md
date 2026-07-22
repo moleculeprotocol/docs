@@ -23,6 +23,6 @@ icon: stamp
 
 #### Q2 2023 Audit: IPNFT
 
-* **Scope:** IP-NFTs & Fundraises (CrowdSale, Fractionalizer — now Tokenizer, TimelockedToken)
+* **Scope:** IP-NFTs & Fundraises (CrowdSale, TimelockedToken)
 
 {% embed url="https://github.com/pashov/audits/blob/master/solo/pdf/IPNFT-security-review.pdf" %}

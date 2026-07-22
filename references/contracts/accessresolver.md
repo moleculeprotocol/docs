@@ -257,7 +257,7 @@ The legacy Lit helper string IDs `ipnft_read` / `authorized_ipnft_signer` resolv
 ### Related Contracts
 
 * IP-NFT: The contract queried for ownership details.
-* Tokenizer: Converts IP-NFTs into IPTokens.
+* [Tokenizer](tokenizer.md): Tokenizes Labs into IP Tokens.
 
 ### Resources
 
