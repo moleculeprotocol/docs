@@ -10,7 +10,7 @@ Molecule Protocol consists of smart contracts deployed across Ethereum Mainnet a
 
 | Network          | Contract       | Address                                    | Verified URL                                                                         | Function                     |
 | ---------------- | -------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ | ---------------------------- |
-| Ethereum Mainnet | IPNFT          | 0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1 | [Etherscan](https://etherscan.io/address/0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1) | IP-NFT minting and ownership |
+| Ethereum Mainnet | IPNFT          | 0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1 | [Etherscan](https://etherscan.io/address/0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1) | IP-NFT ownership             |
 | Ethereum Mainnet | CrowdSale      | 0xF0A8D23F38E9CbBe01C4Ed37f23BD519b65BC6C2 | [Etherscan](https://etherscan.io/address/0xF0A8D23F38E9CbBe01C4Ed37f23BD519b65BC6C2) | Token sales                  |
 | Ethereum Mainnet | SchmackoSwap   | 0xc09b8577c762b5e97a7d640f242e1d9bfaa7eb9d | [Etherscan](https://etherscan.io/address/0xc09b8577c762b5e97a7d640f242e1d9bfaa7eb9d) | IP-NFT trading               |
 | Ethereum Mainnet | AccessResolver | 0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0 | [Etherscan](https://etherscan.io/address/0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0) | File access control (v2 — signer predicates only; the role system lives on Base) |

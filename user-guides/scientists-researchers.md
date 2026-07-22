@@ -33,7 +33,7 @@ The data you upload is not just storage — it becomes an asset. As your Lab acc
 
 ### Step 3: Register and Tokenize Your IP
 
-When your research reaches a point where you want to formalise ownership — a novel compound, a validated methodology, a curated dataset — you mint an IP-NFT into your Lab. The IP-NFT is an onchain asset that represents ownership of your intellectual property, anchored to a legal agreement that defines the rights included.
+When your research reaches a point where you want to formalise ownership — a novel compound, a validated methodology, a curated dataset — you register that IP to your Lab as an onchain asset, anchored to a legal agreement that defines the rights included.
 
 From there, you have a choice: keep your Lab wholly owned, or tokenize it.
 

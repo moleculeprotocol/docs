@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Molecule Protocol provides programmatic APIs for building applications, integrations, and automated workflows on top of decentralized science infrastructure. These APIs enable developers to query project data, mint IP-NFTs, tokenize intellectual property, and manage research datarooms.
+The Molecule Protocol provides programmatic APIs for building applications, integrations, and automated workflows on top of decentralized science infrastructure. These APIs enable developers to query project data, tokenize research, and manage research datarooms.
 
 ## API Areas
 
@@ -25,14 +25,13 @@ Query and browse IP-NFTs, IP Tokens (IPTs), and market data across the Molecule 
 
 ### 🔐 Tokenization API
 
-Create IP-NFTs from research projects and tokenize them into fungible IP Tokens (IPTs).
+Tokenize Labs into fungible IP Tokens (IPTs) on Base.
 
 **Purpose:**
 
-* Mint new IP-NFTs with legal agreements
-* Upload artwork and metadata to IPFS
-* Tokenize IP-NFTs into tradeable ERC-20 tokens
-* Manage the complete onchain minting workflow
+* Tokenize Labs into tradeable ERC-20 tokens
+* Generate Lab (OCL) membership agreements
+* Manage the complete onchain tokenization workflow
 
 **Authentication:** API Key required
 
@@ -116,8 +115,7 @@ Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your 
 | ------------------------------------ | --------------------------------------- |
 | Browse IP-NFTs and IPTs              | [Data API](data-api.md)                 |
 | Check market prices and trading data | [Data API](data-api.md)                 |
-| Mint a new IP-NFT                    | [Tokenization API](tokenization-api.md) |
-| Create IP Tokens from an IP-NFT      | [Tokenization API](tokenization-api.md) |
+| Tokenize a Lab into IP Tokens (IPTs) | [Tokenization API](tokenization-api.md) |
 | Upload files to a Lab dataroom       | [Labs API](labs-api.md)                 |
 
 ### 3. Make Your First Request
@@ -148,8 +146,6 @@ If you encounter any issues or have questions about the APIs:
 ## Additional Resources
 
 * [Smart Contract Addresses](../references/contracts/)
-* [What are IP-NFTs?](/broken/pages/KwndI1F7C0AjzwZSZcfF)
-* [What are IP Tokens?](/broken/pages/XTBBR15vWibKYJh1WX75)
 
 ***
 
