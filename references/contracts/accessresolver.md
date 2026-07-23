@@ -6,7 +6,7 @@ icon: gavel
 
 ## AccessResolver Overview
 
-The `AccessResolver` contract is the onchain authorization primitive for Onchain Labs. It answers two questions:
+The `AccessResolver` contract is the onchain authorization primitive for Molecule Labs. It answers two questions:
 
 1. **"Is this wallet an authorized signer for a given IP-NFT or ERC-6551 Token Bound Account?"** — used by the file-encryption layer to gate decryption of confidential data-room files and by back-office flows that need to resolve Safe multisigs and Ownable contracts to their leaf EOAs.
 2. **"What role does this wallet hold on a given lab, and is the grant still active?"** — the V3 role system (`ROLE_VIEWER`, `ROLE_CONTRIBUTOR`) with per-grant expiry and `isAgent` metadata, hierarchical (Owner > Contributor > Viewer), and administered per `oclId`.
@@ -131,7 +131,7 @@ The first four are the contract's custom errors; the rest are inherited from Ope
 
 ### Integration Guide
 
-The same `accessControlConditions` shape is reused across both Molecule's Onchain-Verified Envelope Encryption and the legacy Lit Protocol path — `AccessResolver` is the onchain oracle either way. New integrations should drive encryption through the Labs API (`initiateCreateOrUpdateFile` / `decryptDataKey`); the Lit examples below remain valid for legacy files.
+The `accessControlConditions` shape is reused across both Molecule's Onchain-Verified Envelope Encryption — `AccessResolver` is the onchain oracle. New integrations should drive encryption through the Labs API (`initiateCreateOrUpdateFile` / `decryptDataKey`).
 
 #### Use as an Access Control Condition (current)
 
@@ -186,35 +186,6 @@ For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` ar
 
 `:userAddress` is substituted with the authenticated caller at evaluate time. See [Data Privacy & Access](../../core-infrastructure/data/data-privacy-and-access.md) for the full upload / decrypt flow, condition shape definitions, and evaluator behaviour.
 
-#### With Lit Protocol _(legacy)_
-
-Utilize `AccessResolver` as an `EvmContractCondition` in file encryption. Pass the condition directly to the Lit client.
-
-```js
-// AccessResolver as a Lit EvmContractCondition
-const accessCondition = {
-  contractAddress: '0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0', // AccessResolver
-  chain: 'ethereum',
-  functionName: 'isAuthorizedSignerForIpnft',
-  functionParams: [':userAddress', '42'],
-  functionAbi: {
-    name: 'isAuthorizedSignerForIpnft',
-    inputs: [
-      { name: 'signer',  type: 'address' },
-      { name: 'ipnftId', type: 'uint256' }
-    ],
-    outputs: [{ name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  returnValueTest: { key: '', comparator: '=', value: 'true' }
-};
-
-// Encryption with Lit Protocol
-const encrypted = await litClient.encrypt({
-  accessControlConditions: [accessCondition],
-  dataToEncrypt: fileBuffer
-});
 ```
 
 #### Direct Contract Call
@@ -246,8 +217,6 @@ Use any of the predicates below as the `functionName` of an `EvmContractConditio
 | `hasRole(bytes32 oclId, address account, uint8 role)`         | Active, non-expired role grant on the lab; honours Owner > Contributor > Viewer hierarchy. |      ✓     |
 | `isApprovedLock(address tokenAddress, address signer)`        | Holds and is approved on a locked token (used by locked-token gating).                     |            |
 
-The legacy Lit helper string IDs `ipnft_read` / `authorized_ipnft_signer` resolve to these same predicates internally and are retained for legacy Lit-encrypted files only — new integrations should write the `EvmContractCondition` shape directly.
-
 ### Security Considerations
 
 * **Read-only nature**: The contract performs authorization checks but does not modify ownership or access.
@@ -262,4 +231,3 @@ The legacy Lit helper string IDs `ipnft_read` / `authorized_ipnft_signer` resolv
 ### Resources
 
 * **ABI**: Available from the verified contract on [BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B) (source lives in the Molecule Labs contracts repository — contact the team for access)
-* **Lit Protocol Documentation**: [Lit Protocol Developer Docs](https://developer.litprotocol.com/)

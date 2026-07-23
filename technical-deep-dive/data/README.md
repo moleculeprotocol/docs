@@ -5,9 +5,9 @@ icon: database
 
 # Data
 
-### **Data in Onchain Labs**
+### **Data in Molecule Labs**
 
-Every  Lab is a data-centric primitive. When a researcher uploads a dataset, publishes results, or records experimental observations, that data becomes part of the Lab — held alongside its treasury and other assets. The Lab does not just _reference_ data; its onchain identity is cryptographically bound to its data room, so the link between Lab and scientific content is itself verifiable.
+Every Lab is a data-centric primitive. When a researcher uploads a dataset, publishes results, or records experimental observations, that data becomes part of the Lab — held alongside its treasury and other assets. The Lab does not just _reference_ data; its onchain identity is cryptographically bound to its data room, so the link between Lab and scientific content is itself verifiable.
 
 ### Onchain and Offchain
 
@@ -23,7 +23,7 @@ This design gives Labs the best of both worlds. The blockchain provides an immut
 
 The data layer is built from a set of specialised technologies, each handling a different responsibility in the pipeline.
 
-<table><thead><tr><th width="228.42578125">Layer</th><th width="133.84765625">Technology</th><th>Role</th></tr></thead><tbody><tr><td>Upload Gateway</td><td>Filebase</td><td>S3-compatible upload interface. Generates pre-signed URLs for secure browser uploads and automatically pins files to IPFS.</td></tr><tr><td>Decentralised Storage</td><td>IPFS</td><td>Content-addressed storage. Every file receives a unique CID derived from its contents, enabling verifiable retrieval from any IPFS node.</td></tr><tr><td>Permanent Persistence</td><td>Arweave</td><td>Immutable, permanent storage. Ensures research data remains available indefinitely, independent of any single service provider.</td></tr><tr><td>Provenance &#x26; Versioning</td><td>Kamu</td><td>Tracks the complete history of every dataset: versions, transformations, metadata changes, and activity events. Provides a verifiable provenance chain from raw data to published result.</td></tr><tr><td>Encryption &#x26; Access Control</td><td>Onchain-Verified Envelope Encryption + AccessResolver</td><td>Per-file AES-256 DEK wrapped by a protocol-operated key custodian (BLS threshold operator network on roadmap). Access conditions live on Kamu (ODF) and are re-verified against live onchain state (<code>AccessResolver</code>) before the plaintext DEK is released. Legacy files continue to resolve through Lit Protocol.</td></tr></tbody></table>
+<table><thead><tr><th width="228.42578125">Layer</th><th width="133.84765625">Technology</th><th>Role</th></tr></thead><tbody><tr><td>Upload Gateway</td><td>Filebase</td><td>S3-compatible upload interface. Generates pre-signed URLs for secure browser uploads and automatically pins files to IPFS.</td></tr><tr><td>Decentralised Storage</td><td>IPFS</td><td>Content-addressed storage. Every file receives a unique CID derived from its contents, enabling verifiable retrieval from any IPFS node.</td></tr><tr><td>Permanent Persistence</td><td>Arweave</td><td>Immutable, permanent storage. Ensures research data remains available indefinitely, independent of any single service provider.</td></tr><tr><td>Provenance &#x26; Versioning</td><td>Kamu</td><td>Tracks the complete history of every dataset: versions, transformations, metadata changes, and activity events. Provides a verifiable provenance chain from raw data to published result.</td></tr><tr><td>Encryption &#x26; Access Control</td><td>Onchain-Verified Envelope Encryption + AccessResolver</td><td>Per-file AES-256 DEK wrapped by a protocol-operated key custodian (BLS threshold operator network on roadmap). Access conditions live on Kamu (ODF) and are re-verified against live onchain state (<code>AccessResolver</code>) before the plaintext DEK is released.</td></tr></tbody></table>
 
 These components form a layered pipeline: data is encrypted client-side with a per-file wrapped DEK, uploaded through Filebase, pinned to IPFS, persisted on Arweave, and versioned through Kamu — with the data room's identity anchored onchain to the Lab via [DID linking](data-module.md).
 
@@ -39,7 +39,7 @@ A typical data flow through an Onchain Lab follows this sequence:
 
 **Anchor** — The file's CID and metadata are committed to the data room's provenance log, and the data room's DID is bound onchain to the Lab's `oclId` in the DID registry (this happens automatically at Lab creation, with dual co-attestation). Together these create a permanent, tamper-evident link between the Lab's onchain identity and its offchain data: the anchored DID identifies the data room, and the content-addressed log inside it proves what the data room contains.
 
-**Access** — When someone requests a file, the backend re-verifies the stored access conditions against live chain state. If the requester meets the conditions (holds the right tokens, holds an active role grant on the Lab, holds a valid license), the protocol key custodian unwraps the DEK and returns it to the client. The file is retrieved from IPFS or Arweave and decrypted client-side. Legacy Lit-encrypted files continue to decrypt through the Lit SDK until migrated.
+**Access** — When someone requests a file, the backend re-verifies the stored access conditions against live chain state. If the requester meets the conditions (holds the right tokens, holds an active role grant on the Lab, holds a valid license), the protocol key custodian unwraps the DEK and returns it to the client. The file is retrieved from IPFS or Arweave and decrypted client-side.
 
 **Audit** — Every data-room action — uploads, version updates, metadata and access-level changes — is captured in the data room's tamper-evident provenance log, while onchain events (Lab creation, DID links, role grants and revocations) record the control-plane history. Together they form a verifiable chain of custody for the entire research lifecycle.
 
