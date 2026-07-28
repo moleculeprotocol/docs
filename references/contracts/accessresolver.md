@@ -11,7 +11,7 @@ The `AccessResolver` contract is the onchain authorization primitive for Molecul
 1. **"Is this wallet an authorized signer for a given IP-NFT or ERC-6551 Token Bound Account?"** — used by the file-encryption layer to gate decryption of confidential data-room files and by back-office flows that need to resolve Safe multisigs and Ownable contracts to their leaf EOAs.
 2. **"What role does this wallet hold on a given lab, and is the grant still active?"** — the V3 role system (`ROLE_VIEWER`, `ROLE_CONTRIBUTOR`) with per-grant expiry and `isAgent` metadata, hierarchical (Owner > Contributor > Viewer), and administered per `oclId`.
 
-See [Roles & Permissions](../../core-infrastructure/roles-and-permissions.md) for the product-level role model and [Data Privacy & Access](../../core-infrastructure/data/data-privacy-and-access.md) for how these predicates feed into the encryption / decryption pipeline.
+See [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md) for the product-level role model and [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) for how these predicates feed into the encryption / decryption pipeline.
 
 ### Contract Details
 
@@ -77,7 +77,7 @@ The **V3 role system runs only on Base and Base Sepolia**. The Ethereum Mainnet 
 
 #### Role Management (V3)
 
-The V3 role system adds hierarchical, per-lab roles (`ROLE_VIEWER = 1`, `ROLE_CONTRIBUTOR = 2`) administered per canonical `oclId`. `hasRole` is hierarchical: Contributor passes Viewer checks, and the Lab Owner (resolved via the OCL TBA) passes every check. See [Roles & Permissions](../../core-infrastructure/roles-and-permissions.md) for the full model and capability matrix.
+The V3 role system adds hierarchical, per-lab roles (`ROLE_VIEWER = 1`, `ROLE_CONTRIBUTOR = 2`) administered per canonical `oclId`. `hasRole` is hierarchical: Contributor passes Viewer checks, and the Lab Owner (resolved via the OCL TBA) passes every check. See [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md) for the full model and capability matrix.
 
 ```solidity
 uint8 public constant ROLE_VIEWER = 1;
@@ -183,7 +183,7 @@ For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` ar
 ]
 ```
 
-`:userAddress` is substituted with the authenticated caller at evaluate time. See [Data Privacy & Access](../../core-infrastructure/data/data-privacy-and-access.md) for the full upload / decrypt flow, condition shape definitions, and evaluator behaviour.
+`:userAddress` is substituted with the authenticated caller at evaluate time. See [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) for the full upload / decrypt flow, condition shape definitions, and evaluator behaviour.
 
 #### Direct Contract Call
 

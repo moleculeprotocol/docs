@@ -82,9 +82,9 @@ A Lab can attach a pre-existing ERC-20 as its IPT instead of minting a new one. 
 ### Related Contracts
 
 * [Tokenizer](tokenizer.md) — deploys and controls IPTs
-* [Molecule Labs](../../core-infrastructure/onchain-lab.md) — the Lab the IPT is tied to
+* [Molecule Labs](../../technical-deep-dive/onchain-lab.md) — the Lab the IPT is tied to
 
 ### Resources
 
 * **Tokenization flow & API**: [Tokenization API](../../api-reference/tokenization-api.md)
-* **Query existing IPTs**: [Data API](../../api-reference/data-api.md) (`ipts`, `markets`)
+* **Query existing IPTs**: [IPNFT API (Deprecated)](../../api-reference/ipnft-api.md) (`ipts`, `markets`)

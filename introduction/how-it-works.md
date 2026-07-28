@@ -15,7 +15,7 @@ The Lab is free to create — so there is no financial barrier to entry. From th
 
 #### **2. Research & Store Data**
 
-Upload datasets, protocols, images, and results directly to your Lab. Files are encrypted and stored on decentralized infrastructure, every version content-addressed in the data room's provenance log — and the data room itself anchored onchain to your Lab via [DID linking](../core-infrastructure/data/data-module.md) — creating an immutable provenance trail. Every version is tracked — negative results, intermediate datasets, and methodological notes all become part of the Lab's permanent history.
+Upload datasets, protocols, images, and results directly to your Lab. Files are encrypted and stored on decentralized infrastructure, every version content-addressed in the data room's provenance log — and the data room itself anchored onchain to your Lab via [DID linking](../technical-deep-dive/data/data-module.md) — creating an immutable provenance trail. Every version is tracked — negative results, intermediate datasets, and methodological notes all become part of the Lab's permanent history.
 
 Set access per file — public or confidential. This means you can share raw data publicly to build credibility, gate premium datasets behind access permissions, or keep sensitive pre-publication results private until you're ready. Your Lab's data room is also accessible via the Labs API, so agents, partners, and integrations can read and write to it programmatically.
 
