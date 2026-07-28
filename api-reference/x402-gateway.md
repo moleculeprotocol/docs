@@ -21,7 +21,7 @@ Use the gateway when:
 - **You want pay-per-call economics.** Each mutation has its own price; no subscription or prepaid balance.
 - **You're building third-party tooling that pays for users.** The payer wallet is recorded as the mutation author.
 
-Use the standard [Labs API](labs-api.md) with a service token when you have long-lived credentials for a known lab.
+Use the standard [Labs API](labs-api/README.md) with a service token when you have long-lived credentials for a known lab.
 
 ---
 
@@ -198,12 +198,12 @@ async function callX402(mutation: string, query: string, variables: any) {
 }
 ```
 
-See the [Developers / AI Agents guide](../user-guides/developers-ai-agents.md) for end-to-end agent integration patterns, and the [Labs API reference](labs-api.md) for the full GraphQL signatures of each gated mutation.
+See the [Developers / AI Agents guide](../user-guides/developers-ai-agents.md) for end-to-end agent integration patterns, and the [Labs API reference](labs-api/README.md) for the full GraphQL signatures of each gated mutation.
 
 ---
 
 ## Related
 
-- [Labs API](labs-api.md) — full mutation signatures and variable types
+- [Labs API](labs-api/README.md) — full mutation signatures and variable types
 - [Developers / AI Agents](../user-guides/developers-ai-agents.md) — agent integration guide
 - [x402 specification](https://www.x402.org/)

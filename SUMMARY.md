@@ -2,9 +2,10 @@
 
 ## INTRODUCTION
 
-* [🔬 Overview](README.md)
+* [🔬 Overview](introduction/README.md)
 * [How it works](introduction/how-it-works.md)
 * [Architecture](introduction/architecture.md)
+* [Why Desci?](introduction/why-desci.md)
 
 ## USER GUIDES
 
@@ -12,28 +13,35 @@
 * [Developers/AI Agents](user-guides/developers-ai-agents.md)
 * [Investors](user-guides/investors.md)
 
-## Core Infrastructure
+## Technical Deep Dive
 
-* [Molecule Labs](core-infrastructure/onchain-lab.md)
-* [Roles & Permissions](core-infrastructure/roles-and-permissions.md)
-* [Coin-to-Company Model](core-infrastructure/rwa-equity.md)
-* [Module Registry](core-infrastructure/module-registry/README.md)
-  * [Validator Module](core-infrastructure/module-registry/validator-module.md)
-  * [Fallback Modules](core-infrastructure/module-registry/fallback-modules.md)
-  * [Executor Modules](core-infrastructure/module-registry/executor-modules.md)
-* [Data](core-infrastructure/data/README.md)
-  * [Data Storage](core-infrastructure/data/data-storage.md)
-  * [Data Privacy & Access](core-infrastructure/data/data-privacy-and-access.md)
-  * [Data Anchoring (DID Linking)](core-infrastructure/data/data-module.md)
-  * [Data API & Integration](core-infrastructure/data/data-api-and-integration.md)
+* [Molecule Labs](technical-deep-dive/onchain-lab.md)
+* [Roles & Permissions](technical-deep-dive/roles-and-permissions.md)
+* [Coin-to-Company Model](technical-deep-dive/rwa-equity.md)
+* [Module Registry](technical-deep-dive/module-registry/README.md)
+  * [Validator Module](technical-deep-dive/module-registry/validator-module.md)
+  * [Fallback Modules](technical-deep-dive/module-registry/fallback-modules.md)
+  * [Executor Modules](technical-deep-dive/module-registry/executor-modules.md)
+* [Data](technical-deep-dive/data/README.md)
+  * [Data Storage](technical-deep-dive/data/data-storage.md)
+  * [Data Privacy & Access](technical-deep-dive/data/data-privacy-and-access.md)
+  * [Data Anchoring (DID Linking)](technical-deep-dive/data/data-module.md)
+  * [Data API & Integration](technical-deep-dive/data/data-api-and-integration.md)
 
 ## API Reference
 
 * [📡 API Overview](api-reference/README.md)
-* [📊 Data API](api-reference/data-api.md)
+* [🔐 Authentication](api-reference/authentication.md)
+* [⚙️ Labs API](api-reference/labs-api/README.md)
+  * [Lab Management](api-reference/labs-api/lab-management.md)
+  * [Files](api-reference/labs-api/files.md)
+  * [Browse & Search](api-reference/labs-api/browse-and-search.md)
+  * [Legal Agreements](api-reference/labs-api/legal-agreements.md)
+  * [Service Tokens](api-reference/labs-api/service-tokens.md)
 * [🔐 Tokenization API](api-reference/tokenization-api.md)
-* [⚙️ Labs API](api-reference/labs-api.md)
 * [x402 Gateway](api-reference/x402-gateway.md)
+* [📊 IPNFT API (Deprecated)](api-reference/ipnft-api.md)
+* [🕘 API Changelog & Migration](api-reference/changelog.md)
 
 ## AI Tooling
 
@@ -42,18 +50,11 @@
 ## REFERENCES
 
 * [Contracts](references/contracts/README.md)
-  * [IP-NFT](references/contracts/ip-nft.md)
   * [IPT](references/contracts/ipt.md)
   * [Tokenizer](references/contracts/tokenizer.md)
   * [AccessResolver](references/contracts/accessresolver.md)
-  * [CrowdSale](references/contracts/crowdsale.md)
-* [Subgraph (Deprecated)](references/subgraph.md)
 * [MCP Tools](references/mcp-tools.md)
 
 ## Security
 
 * [Audits](security/audits.md)
-
-## Resources
-
-* [FAQs](resources/faqs.md)

@@ -6,16 +6,6 @@ icon: book
 
 Molecule Protocol consists of smart contracts deployed across Ethereum Mainnet and Base L2. These contracts enable the creation, tokenization, and trading of intellectual property assets.
 
-#### Ethereum/Base Mainnet
-
-| Network          | Contract       | Address                                    | Verified URL                                                                         | Function                     |
-| ---------------- | -------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ | ---------------------------- |
-| Ethereum Mainnet | IPNFT          | 0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1 | [Etherscan](https://etherscan.io/address/0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1) | IP-NFT ownership             |
-| Ethereum Mainnet | CrowdSale      | 0xF0A8D23F38E9CbBe01C4Ed37f23BD519b65BC6C2 | [Etherscan](https://etherscan.io/address/0xF0A8D23F38E9CbBe01C4Ed37f23BD519b65BC6C2) | Token sales                  |
-| Ethereum Mainnet | SchmackoSwap   | 0xc09b8577c762b5e97a7d640f242e1d9bfaa7eb9d | [Etherscan](https://etherscan.io/address/0xc09b8577c762b5e97a7d640f242e1d9bfaa7eb9d) | IP-NFT trading               |
-| Ethereum Mainnet | AccessResolver | 0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0 | [Etherscan](https://etherscan.io/address/0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0) | File access control (v2 — signer predicates only; the role system lives on Base) |
-| Base             | LaunchFactory  | 0xD915e2bA3E22352344de245aC227EcaC0776a1A4 | [BaseScan](https://basescan.org/address/0xD915e2bA3E22352344de245aC227EcaC0776a1A4)  | Catalyst token launches      |
-
 #### Base Mainnet — Molecule Labs core (v0.1.0)
 
 The Lab smart-account stack is deployed on Base (chain ID 8453), the canonical chain for Molecule Labs:
@@ -31,9 +21,6 @@ The Lab smart-account stack is deployed on Base (chain ID 8453), the canonical c
 | OclTokenizer (proxy)   | 0x62F532C3f563D974deEc103AAb8cC597f4f9c84E | [BaseScan](https://basescan.org/address/0x62F532C3f563D974deEc103AAb8cC597f4f9c84E) | Lab tokenization (IPT factory)              |
 | OclTermsPermissioner   | 0x125A12C880934826c80A54ce216B6c1F542603eE | [BaseScan](https://basescan.org/address/0x125A12C880934826c80A54ce216B6c1F542603eE) | Membership-agreement signature verification |
 
-#### Sepolia Testnet
-
-<table><thead><tr><th>Contract</th><th width="297.61328125">Address</th><th>Verified Link</th></tr></thead><tbody><tr><td>IPNFT</td><td>0x152B444e60C526fe4434C721561a077269FcF61a</td><td><a href="https://sepolia.etherscan.io/address/0x152B444e60C526fe4434C721561a077269FcF61a">View on Etherscan</a></td></tr><tr><td>CrowdSale</td><td>0x8cA737E2cdaE1Ceb332bEf7ba9eA711a3a2f8037</td><td><a href="https://sepolia.etherscan.io/address/0x8cA737E2cdaE1Ceb332bEf7ba9eA711a3a2f8037">View on Etherscan</a></td></tr><tr><td>SchmackoSwap</td><td>0x9e4c638e703d0Af3a3B9eb488dE79A16d402698f</td><td><a href="https://sepolia.etherscan.io/address/0x9e4c638e703d0Af3a3B9eb488dE79A16d402698f">View on Etherscan</a></td></tr></tbody></table>
 
 #### Base Sepolia Testnet
 
@@ -43,15 +30,25 @@ The Lab smart-account stack is deployed on Base (chain ID 8453), the canonical c
 | OclTokenizer (proxy) | 0xEe19e0Db8a7e59538710FAF6ed3ab655BCfCdB24 | [View on BaseScan](https://sepolia.basescan.org/address/0xEe19e0Db8a7e59538710FAF6ed3ab655BCfCdB24) |
 | OclTermsPermissioner | 0x2196e7181393b8045F34b66f571F1566922Aa4dB | [View on BaseScan](https://sepolia.basescan.org/address/0x2196e7181393b8045F34b66f571F1566922Aa4dB) |
 
+#### Ethereum/Base Mainnet (IPNFT Related Contracts) UNMAINTAINED
+
+| Network          | Contract       | Address                                    | Verified URL                                                                         | Function                     |
+| ---------------- | -------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ | ---------------------------- |
+| Ethereum Mainnet | IPNFT          | 0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1 | [Etherscan](https://etherscan.io/address/0xcaD88677CA87a7815728C72D74B4ff4982d54Fc1) | IP-NFT ownership             |
+| Ethereum Mainnet | CrowdSale      | 0xF0A8D23F38E9CbBe01C4Ed37f23BD519b65BC6C2 | [Etherscan](https://etherscan.io/address/0xF0A8D23F38E9CbBe01C4Ed37f23BD519b65BC6C2) | Token sales                  |
+| Ethereum Mainnet | AccessResolver | 0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0 | [Etherscan](https://etherscan.io/address/0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0) | File access control (v2 — signer predicates only; the role system lives on Base) |
+
+#### Sepolia Testnet (IPNFT Related Contracts) UNMAINTAINED
+
+<table><thead><tr><th>Contract</th><th width="297.61328125">Address</th><th>Verified Link</th></tr></thead><tbody><tr><td>IPNFT</td><td>0x152B444e60C526fe4434C721561a077269FcF61a</td><td><a href="https://sepolia.etherscan.io/address/0x152B444e60C526fe4434C721561a077269FcF61a">View on Etherscan</a></td></tr><tr><td>CrowdSale</td><td>0x8cA737E2cdaE1Ceb332bEf7ba9eA711a3a2f8037</td><td><a href="https://sepolia.etherscan.io/address/0x8cA737E2cdaE1Ceb332bEf7ba9eA711a3a2f8037">View on Etherscan</a></td></tr></tbody></table>
+
 ### Upgrade Pattern
 
-The IPNFT and OclTokenizer contracts use the **UUPS (Universal Upgradeable Proxy Standard)** pattern:
+The OclTokenizer contracts use the **UUPS (Universal Upgradeable Proxy Standard)** pattern:
 
 * Proxy contracts hold state and delegate calls to implementation contracts
 * Only the contract owner can authorize upgrades
 * Contract addresses remain stable across upgrades
-
-CrowdSale and SchmackoSwap are **not upgradeable** - they are deployed as standard contracts.
 
 ### IP Token Cloning
 

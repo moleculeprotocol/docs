@@ -44,11 +44,11 @@ A sovereign smart contract wallet bound to an NFT. It holds assets, executes tra
 
 #### _(ii) Data Infrastructure & API Access_
 
-Every action within a Lab generates data. Datasets are stored on decentralized infrastructure with provenance tracking and encryption. Access is configurable (see _Roles & Permissions_). The DeSci API provides programmatic read and write access to Lab data rooms, transforming each Lab from a static wallet into a live data endpoint that agents and integrations can operate on continuously.
+Every action within a Lab generates data. Datasets are stored on decentralized infrastructure with provenance tracking and encryption. Access is configurable (see _Roles & Permissions_). The Molecule API provides programmatic read and write access to Lab data rooms, transforming each Lab from a static wallet into a live data endpoint that agents and integrations can operate on continuously.
 
 #### _(iii) AI Agents for Autonomous Science_
 
-Molecule is integrating BIOS — an open-source AI scientist framework by bio.xyz achieving state-of-the-art results on the BixBench scientific reasoning benchmark. BIOS runs specialized agents for planning, literature search, data analysis, hypothesis generation, and reflection. It will operate as an executor module on Lab accounts: the Lab's treasury funds compute, the data room provides datasets, and all outputs are written back as versioned data references. Labs support three modes — Fully Autonomous (agents run independently within safety boundaries), Human-Directed (agents assist while researchers retain strategic control) and fully Human-run Labs.&#x20;
+Labs are designed to be operated by agents, not only by people. Through the Labs API, an agent reads datasets from a Lab's data room, runs analysis, and writes findings back as versioned, content-addressed records carrying the same provenance and access controls as human-generated data. Agents authenticate with service tokens, or pay per call through the x402 Gateway. For agents that need to act inside a Lab's onchain context — treasury operations, permissions, protocol interactions — executor modules define the boundaries they can transact within, supporting both Human-Directed operation (agents assist, humans approve) and Fully Autonomous operation within onchain constraints. MIRA, Molecule's research assistant, sits on top of this layer, delivering ecosystem-wide research insights and standardized project scoring.&#x20;
 
 ### **Who Uses It?**
 

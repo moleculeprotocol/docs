@@ -60,9 +60,9 @@ This distinction has practical consequences. A Lab's root validator is installed
 
 The `ValidationManager`'s type system defines three validation types — `VALIDATION_TYPE_ROOT`, `VALIDATION_TYPE_VALIDATOR`, and `VALIDATION_TYPE_PERMISSION` — but only root validation is active today; the others are architected but not yet enabled.
 
-### Why This Matters for Onchain Labs
+### Why This Matters for Molecule Labs
 
-The validator module design reflects the core principle of the Onchain Labs architecture: the Lab's identity is persistent, but its controller is transient. A research project's onchain history, reputation, treasury, and data belong to the Lab. The validator simply determines who holds the keys at any given moment.
+The validator module design reflects the core principle of the Molecule Labs architecture: the Lab's identity is persistent, but its controller is transient. A research project's onchain history, reputation, treasury, and data belong to the Lab. The validator simply determines who holds the keys at any given moment.
 
 This separation makes ownership transfers clean and complete. When a DAO acquires a Lab by purchasing its NFT, the validator immediately recognises the new owner. When a research team transitions leadership, they transfer the NFT and the new lead gains full control. The Lab's accumulated history, installed modules, and recorded data remain intact and uninterrupted throughout.
 

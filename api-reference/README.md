@@ -6,20 +6,26 @@ The Molecule Protocol provides programmatic APIs for building applications, inte
 
 ## API Areas
 
-### 📊 Data API
+### 📁 Labs API
 
-Query and browse IP-NFTs, IP Tokens (IPTs), and market data across the Molecule ecosystem.
+Upload files to lab datarooms for secure, decentralized research data storage, and query labs, members, activity, and legal-agreement status.
 
 **Purpose:**
 
-* Browse all IP-NFTs and IPTs on the platform
-* Query metadata, ownership, and project details
-* Access trading data and market metrics
-* Build marketplace UIs and token screeners
+* Create labs (datarooms) for onchain labs (OCLs)
+* Automate file uploads to lab datarooms
+* Integrate with data pipelines and CI/CD
+* Batch upload research data
+* Manage file versions, metadata, and LabNFT display metadata
+* Query labs, files, members, activity, and onchain events (mostly public access)
+* Manage service tokens and legal-agreement signing
 
-**Authentication:** API Key required
+**Authentication:**
 
-[View Data API Documentation →](data-api.md)
+* **Most queries** (read operations): API Key only — public. One exception, `legalAgreementTemplate`, needs a Service Token or an authenticated session.
+* **Write mutations** (write operations): API Key plus **either** a Service Token (`X-Service-Token`) **or** a Privy user session (`Authorization` + `x-wallet-address`) — the two paths are interchangeable. Exceptions: `extendServiceToken` and `revokeServiceToken` are Service-Token-only, and `generateServiceToken` bootstraps a token from a Privy session or wallet signature.
+
+[View Labs API Documentation →](labs-api/README.md)
 
 ***
 
@@ -39,56 +45,42 @@ Tokenize Labs into fungible IP Tokens (IPTs) on Base.
 
 ***
 
-### 📁 Labs API
+### 💳 x402 Gateway
 
-Upload files to lab datarooms for secure, decentralized research data storage, and query labs, members, activity, and legal-agreement status.
+Pay-per-call HTTP 402 gateway that fronts a set of Labs API write mutations with per-request USDC settlement on Base.
 
 **Purpose:**
 
-* Create labs (datarooms) for onchain labs (OCLs)
-* Automate file uploads to lab datarooms
-* Integrate with data pipelines and CI/CD
-* Batch upload research data
-* Manage file versions, metadata, and LabNFT display metadata
-* Query labs, files, members, activity, and onchain events (mostly public access)
-* Manage service tokens and legal-agreement signing
+* Give autonomous agents and third-party tools write access without a long-lived service token
+* Pay per mutation call in USDC, settled on Base
+* Mint short-lived, scoped service tokens on the fly after payment
 
-**Authentication:**
+**Authentication:** Per-request stablecoin payment (no long-lived service token required)
 
-* **Most queries** (read operations): API Key only — public. One exception, `legalAgreementTemplate`, needs a Service Token or an authenticated session.
-* **Write mutations** (write operations): API Key + Service Token required — except `generateServiceToken`, which bootstraps a token from a Privy session or wallet signature.
+[View x402 Gateway Documentation →](x402-gateway.md)
 
-[View Labs API Documentation →](labs-api.md)
+***
+
+### 📊 IPNFT API (Deprecated)
+
+Query and browse IP-NFTs, IP Tokens (IPTs), and market data across the Molecule ecosystem.
+
+**Purpose:**
+
+* Browse all IP-NFTs and IPTs on the platform
+* Query metadata, ownership, and project details
+* Access trading data and market metrics
+* Build marketplace UIs and token screeners
+
+**Authentication:** API Key required
+
+[View IPNFT API Documentation (Deprecated) →](ipnft-api.md)
 
 ***
 
 ## Authentication
 
-### Obtaining API Access
-
-All Molecule APIs require authentication with an API key. To request access:
-
-1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
-2. Contact the Molecule team with your use case
-3. You'll receive:
-   * **API Key** - Required for all APIs
-   * **Service Token** - Additional token for Labs API (if needed)
-
-### Authentication Headers
-
-| API                      | Required Headers                                              | Example                                                                                         |
-| ------------------------ | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **Data API**             | `x-api-key`                                                   | `x-api-key: YOUR_API_KEY`                                                                       |
-| **Tokenization API**     | `x-api-key`                                                   | `x-api-key: YOUR_API_KEY`                                                                       |
-| **Labs API (queries)**   | `x-api-key`                                                   | `x-api-key: YOUR_API_KEY`                                                                       |
-| **Labs API (mutations)** | <p><code>x-api-key</code><br><code>X-Service-Token</code></p> | <p><code>x-api-key: YOUR_API_KEY</code><br><code>X-Service-Token: YOUR_SERVICE_TOKEN</code></p> |
-
-**Labs API Authentication Details:**
-
-* **Most queries are public**: API Key only for read operations. Exception: `legalAgreementTemplate` requires a Service Token or an authenticated session.
-* **Write mutations are protected**: API Key + Service Token required. Exception: `generateServiceToken` mints a token and needs only an API Key plus a Privy session or wallet signature.
-* **Service Token**: Identifies which specific lab/dataroom you have write access to
-* File-level access control is handled via Molecule's Onchain-Verified Envelope Encryption (Lit Protocol retained for legacy files), not query authentication — see [Data Privacy & Access](../core-infrastructure/data/data-privacy-and-access.md)
+All Molecule APIs require an API key; the Labs API additionally uses a Service Token for write operations. Obtaining credentials, the per-API header requirements, and the full Labs API authentication model (public queries vs. protected mutations) are documented on the dedicated [Authentication](authentication.md) page.
 
 ***
 
@@ -111,23 +103,24 @@ Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your 
 
 ### 2. Choose Your API
 
-| If you want to...                    | Use this API                            |
-| ------------------------------------ | --------------------------------------- |
-| Browse IP-NFTs and IPTs              | [Data API](data-api.md)                 |
-| Check market prices and trading data | [Data API](data-api.md)                 |
-| Tokenize a Lab into IP Tokens (IPTs) | [Tokenization API](tokenization-api.md) |
-| Upload files to a Lab dataroom       | [Labs API](labs-api.md)                 |
+| If you want to...                        | Use this API                            |
+| ---------------------------------------- | --------------------------------------- |
+| Upload files to a Lab dataroom           | [Labs API](labs-api/README.md)          |
+| Tokenize a Lab into IP Tokens (IPTs)     | [Tokenization API](tokenization-api.md) |
+| Pay per call without a long-lived token  | [x402 Gateway](x402-gateway.md)         |
+| Browse IP-NFTs and IPTs (legacy)         | [IPNFT API (Deprecated)](ipnft-api.md)  |
+| Check market prices and trading data (legacy) | [IPNFT API (Deprecated)](ipnft-api.md) |
 
 ### 3. Make Your First Request
 
-**Example (Data API):**
+**Example (Labs API — public `labs` query, API key only):**
 
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
-    "query": "query { ipnfts(limit: 5) { id name trlValue } }"
+    "query": "query { labs(perPage: 5) { nodes { oclId name shortname } totalCount } }"
   }'
 ```
 
