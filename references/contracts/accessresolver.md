@@ -26,18 +26,18 @@ See [Roles & Permissions](../../core-infrastructure/roles-and-permissions.md) fo
 
 The **V3 role system runs only on Base and Base Sepolia**. The Ethereum Mainnet and Sepolia deployments are **v2** — they expose the signer predicates (`isAuthorizedSignerForIpnft`, `isAuthorizedSignerForTba`, …) but have **no role functions** (`grantRole` / `hasRole` / `revokeRole` / `getRole`).
 
-* **Base (canonical chain — v3, roles live here)**
-  * Address: `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B`
-  * [Verified on BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B)
-* **Base Sepolia (v3)**
-  * Address: `0x5493F472602C87318EA5Eff753cDD593bf9bF559`
-  * [Verified on BaseScan](https://sepolia.basescan.org/address/0x5493F472602C87318EA5Eff753cDD593bf9bF559)
-* **Ethereum Mainnet (v2 — signer predicates only)**
-  * Address: `0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0`
-  * [Verified on Etherscan](https://etherscan.io/address/0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0)
-* **Sepolia Testnet (v2 — signer predicates only)**
-  * Address: `0xd9b492fd34b1579C052b2EA25970178B3011Ce6B`
-  * [Verified on Etherscan](https://sepolia.etherscan.io/address/0xd9b492fd34b1579C052b2EA25970178B3011Ce6B)
+- **Base (canonical chain — v3, roles live here)**
+  - Address: `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B`
+  - [Verified on BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B)
+- **Base Sepolia (v3)**
+  - Address: `0x5493F472602C87318EA5Eff753cDD593bf9bF559`
+  - [Verified on BaseScan](https://sepolia.basescan.org/address/0x5493F472602C87318EA5Eff753cDD593bf9bF559)
+- **Ethereum Mainnet (v2 — signer predicates only)**
+  - Address: `0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0`
+  - [Verified on Etherscan](https://etherscan.io/address/0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0)
+- **Sepolia Testnet (v2 — signer predicates only)**
+  - Address: `0xd9b492fd34b1579C052b2EA25970178B3011Ce6B`
+  - [Verified on Etherscan](https://sepolia.etherscan.io/address/0xd9b492fd34b1579C052b2EA25970178B3011Ce6B)
 
 ### How It Works
 
@@ -48,29 +48,32 @@ The **V3 role system runs only on Base and Base Sepolia**. The Ethereum Mainnet 
 
 #### Signer Authorization (V1/V2)
 
-*   **isAuthorizedSignerForIpnft**: Checks if an address is authorized for a specific IP-NFT, resolving Safe multisigs and Ownable wrappers recursively.
+- **isAuthorizedSignerForIpnft**: Checks if an address is authorized for a specific IP-NFT, resolving Safe multisigs and Ownable wrappers recursively.
 
-    ```solidity
-    function isAuthorizedSignerForIpnft(address signer, uint256 ipnftId)
-        external view returns (bool);
-    ```
-*   **isAuthorizedSignerForTba**: Determines if an address can act on behalf of an ERC-6551 Token Bound Account. Fast path uses `isValidSigner`; slow path resolves the TBA's bound NFT owner (handles Safe-held NFTs).
+  ```solidity
+  function isAuthorizedSignerForIpnft(address signer, uint256 ipnftId)
+      external view returns (bool);
+  ```
 
-    ```solidity
-    function isAuthorizedSignerForTba(address signer, address account)
-        external view returns (bool);
-    ```
-*   **ownersOfIpnft**: Returns the deduplicated leaf (EOA) owners of an IP-NFT after recursively unwrapping Safe multisigs and Ownable smart accounts.
+- **isAuthorizedSignerForTba**: Determines if an address can act on behalf of an ERC-6551 Token Bound Account. Fast path uses `isValidSigner`; slow path resolves the TBA's bound NFT owner (handles Safe-held NFTs).
 
-    ```solidity
-    function ownersOfIpnft(uint256 ipnftId) external view returns (address[] memory);
-    ```
-*   **isApprovedLock**: Checks if a signer holds a locked token and is approved (used by locked-token-gated access conditions).
+  ```solidity
+  function isAuthorizedSignerForTba(address signer, address account)
+      external view returns (bool);
+  ```
 
-    ```solidity
-    function isApprovedLock(address tokenAddress, address signer)
-        external view returns (bool);
-    ```
+- **ownersOfIpnft**: Returns the deduplicated leaf (EOA) owners of an IP-NFT after recursively unwrapping Safe multisigs and Ownable smart accounts.
+
+  ```solidity
+  function ownersOfIpnft(uint256 ipnftId) external view returns (address[] memory);
+  ```
+
+- **isApprovedLock**: Checks if a signer holds a locked token and is approved (used by locked-token-gated access conditions).
+
+  ```solidity
+  function isApprovedLock(address tokenAddress, address signer)
+      external view returns (bool);
+  ```
 
 #### Role Management (V3)
 
@@ -109,11 +112,11 @@ function initializeV3(address _labNftContractAddress) public; // onlyOwner, rein
 
 #### Events
 
-* **RoleGranted(oclId, account, role, expiry, isAgent, grantedBy)** — emitted when a role is granted.
-* **RoleRevoked(oclId, account, role, revokedBy)** — emitted when a role is revoked. Revoking an account with no stored grant (`role == 0`) returns silently without emitting; revoking an expired-but-present grant still requires authorization and emits.
-* **Initialized(uint64 version)** — emitted when the contract is initialized or reinitialized.
-* **OwnershipTransferred(previousOwner, newOwner)** — emitted on contract-owner change.
-* **Upgraded(implementation)** — emitted when the UUPS implementation is upgraded.
+- **RoleGranted(oclId, account, role, expiry, isAgent, grantedBy)** — emitted when a role is granted.
+- **RoleRevoked(oclId, account, role, revokedBy)** — emitted when a role is revoked. Revoking an account with no stored grant (`role == 0`) returns silently without emitting; revoking an expired-but-present grant still requires authorization and emits.
+- **Initialized(uint64 version)** — emitted when the contract is initialized or reinitialized.
+- **OwnershipTransferred(previousOwner, newOwner)** — emitted on contract-owner change.
+- **Upgraded(implementation)** — emitted when the UUPS implementation is upgraded.
 
 #### Errors
 
@@ -148,7 +151,7 @@ For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` ar
     "functionAbi": {
       "name": "isAuthorizedSignerForTba",
       "inputs": [
-        { "name": "signer",  "type": "address" },
+        { "name": "signer", "type": "address" },
         { "name": "account", "type": "address" }
       ],
       "outputs": [{ "name": "", "type": "bool" }],
@@ -163,17 +166,13 @@ For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` ar
     "contractAddress": "<accessresolver-address>",
     "chain": "base",
     "functionName": "hasRole",
-    "functionParams": [
-      "0x0101<20hex-tokenId><40hex-tba>",
-      ":userAddress",
-      "1"
-    ],
+    "functionParams": ["0x0101<20hex-tokenId><40hex-tba>", ":userAddress", "1"],
     "functionAbi": {
       "name": "hasRole",
       "inputs": [
-        { "name": "oclId",   "type": "bytes32" },
+        { "name": "oclId", "type": "bytes32" },
         { "name": "account", "type": "address" },
-        { "name": "role",    "type": "uint8"   }
+        { "name": "role", "type": "uint8" }
       ],
       "outputs": [{ "name": "", "type": "bool" }],
       "stateMutability": "view",
@@ -186,23 +185,21 @@ For Onchain-Verified Envelope Encryption, attach an `accessControlConditions` ar
 
 `:userAddress` is substituted with the authenticated caller at evaluate time. See [Data Privacy & Access](../../core-infrastructure/data/data-privacy-and-access.md) for the full upload / decrypt flow, condition shape definitions, and evaluator behaviour.
 
-```
-
 #### Direct Contract Call
 
 Read a predicate directly with viem to check access outside of an encryption flow.
 
 ```js
-import { createPublicClient, http } from 'viem';
-import { mainnet } from 'viem/chains';
+import { createPublicClient, http } from "viem";
+import { mainnet } from "viem/chains";
 
 const client = createPublicClient({ chain: mainnet, transport: http() });
 
 const isAuthorized = await client.readContract({
-  address: '0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0', // AccessResolver
+  address: "0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0", // AccessResolver
   abi: accessResolverAbi,
-  functionName: 'isAuthorizedSignerForIpnft',
-  args: [userAddress, 42n]
+  functionName: "isAuthorizedSignerForIpnft",
+  args: [userAddress, 42n],
 });
 ```
 
@@ -214,20 +211,20 @@ Use any of the predicates below as the `functionName` of an `EvmContractConditio
 | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | :--------: |
 | `isAuthorizedSignerForIpnft(address signer, uint256 ipnftId)` | Direct + recursive ownership of the IP-NFT (Safe / Ownable / TBA).                         |            |
 | `isAuthorizedSignerForTba(address signer, address account)`   | Authorized signer of an ERC-6551 TBA, including its bound NFT owner.                       |            |
-| `hasRole(bytes32 oclId, address account, uint8 role)`         | Active, non-expired role grant on the lab; honours Owner > Contributor > Viewer hierarchy. |      ✓     |
+| `hasRole(bytes32 oclId, address account, uint8 role)`         | Active, non-expired role grant on the lab; honours Owner > Contributor > Viewer hierarchy. |     ✓      |
 | `isApprovedLock(address tokenAddress, address signer)`        | Holds and is approved on a locked token (used by locked-token gating).                     |            |
 
 ### Security Considerations
 
-* **Read-only nature**: The contract performs authorization checks but does not modify ownership or access.
-* **Failure handling**: Access is denied if contract call fails.
-* **Network verification**: Ensure querying on the correct network.
+- **Read-only nature**: The contract performs authorization checks but does not modify ownership or access.
+- **Failure handling**: Access is denied if contract call fails.
+- **Network verification**: Ensure querying on the correct network.
 
 ### Related Contracts
 
-* IP-NFT: The contract queried for ownership details.
-* [Tokenizer](tokenizer.md): Tokenizes Labs into IP Tokens.
+- IP-NFT: The contract queried for ownership details.
+- [Tokenizer](tokenizer.md): Tokenizes Labs into IP Tokens.
 
 ### Resources
 
-* **ABI**: Available from the verified contract on [BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B) (source lives in the Molecule Labs contracts repository — contact the team for access)
+- **ABI**: Available from the verified contract on [BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B) (source lives in the Molecule Labs contracts repository — contact the team for access)

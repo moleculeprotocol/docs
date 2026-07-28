@@ -23,7 +23,7 @@ Upload files to lab datarooms for secure, decentralized research data storage, a
 **Authentication:**
 
 * **Most queries** (read operations): API Key only — public. One exception, `legalAgreementTemplate`, needs a Service Token or an authenticated session.
-* **Write mutations** (write operations): API Key + Service Token required — except `generateServiceToken`, which bootstraps a token from a Privy session or wallet signature.
+* **Write mutations** (write operations): API Key plus **either** a Service Token (`X-Service-Token`) **or** a Privy user session (`Authorization` + `x-wallet-address`) — the two paths are interchangeable. Exceptions: `extendServiceToken` and `revokeServiceToken` are Service-Token-only, and `generateServiceToken` bootstraps a token from a Privy session or wallet signature.
 
 [View Labs API Documentation →](labs-api/README.md)
 

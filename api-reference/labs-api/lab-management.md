@@ -8,6 +8,8 @@ Operations for creating and administering a Lab: creating the dataroom, managing
 
 Register a Kamu-backed lab (data room) for an onchain lab (OCL) that already exists onchain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
 
+> **Prerequisite — the LabNFT must be minted first.** `createLab` does not mint anything; it attaches a dataroom to an OCL that already exists. Minting happens onchain via `OnChainLabFactory.mintAndCreateAccount`, which mints the LabNFT and deploys its bound account in one transaction — see [Lab Creation](../../introduction/architecture.md#lab-creation) for the contract-level flow, or [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is and how `oclId` is derived from the minted token. If you'd rather not touch the contracts directly, the Molecule app does this for you in [Step 1: Create Your Onchain Lab](../../user-guides/scientists-researchers.md#step-1-create-your-onchain-lab).
+
 > **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
 
 **GraphQL Mutation:**
