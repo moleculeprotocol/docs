@@ -125,7 +125,7 @@ function cap(LabToken labToken) external
 ### Related Contracts
 
 * [IPT](ipt.md) — the ERC-20 IP Token this factory deploys
-* [Molecule Labs](../../core-infrastructure/onchain-lab.md) — the Lab primitive being tokenized
+* [Molecule Labs](../../technical-deep-dive/onchain-lab.md) — the Lab primitive being tokenized
 
 ### Resources
 
