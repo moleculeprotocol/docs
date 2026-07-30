@@ -2,13 +2,13 @@
 
 Operations for creating and administering a Lab: creating the dataroom, managing its LabNFT display metadata, managing members, and linking its decentralised identifier (DID).
 
----
+***
 
 ## Create Lab
 
 Register a Kamu-backed lab (data room) for an onchain lab (OCL) that already exists onchain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
 
-> **Prerequisite — the LabNFT must be minted first.** `createLab` does not mint anything; it attaches a dataroom to an OCL that already exists. Minting happens onchain via `OnChainLabFactory.mintAndCreateAccount`, which mints the LabNFT and deploys its bound account in one transaction — see [Lab Creation](../../introduction/architecture.md#lab-creation) for the contract-level flow, or [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is and how `oclId` is derived from the minted token. If you'd rather not touch the contracts directly, the Molecule app does this for you in [Step 1: Create Your Onchain Lab](../../user-guides/scientists-researchers.md#step-1-create-your-onchain-lab).
+> **Prerequisite — the LabNFT must be minted first.** `createLab` does not mint anything; it attaches a dataroom to an OCL that already exists. Minting happens onchain via `OnChainLabFactory.mintAndCreateAccount`, which mints the LabNFT and deploys its bound account in one transaction — see [Lab Creation](../../technical-deep-dive/architecture.md#lab-creation) for the contract-level flow, or [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is and how `oclId` is derived from the minted token. If you'd rather not touch the contracts directly, the Molecule app does this for you in [Step 1: Create Your Onchain Lab](../../user-guides/scientists-researchers.md#step-1-create-your-onchain-lab).
 
 > **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
 
@@ -45,12 +45,12 @@ The mutation takes a single `CreateLabInput` object:
 **Prerequisites:**
 
 1. **LabNFT Ownership**: You must own the LabNFT for the `oclId` or be an authorized signer for it
-   - For individual wallets: You must be the owner
-   - For multisig/Safe wallets: You must be one of the Safe owners
-   - For ERC-4337 accounts: You must be an authorized account owner
+   * For individual wallets: You must be the owner
+   * For multisig/Safe wallets: You must be one of the Safe owners
+   * For ERC-4337 accounts: You must be an authorized account owner
 2. **Authentication**: One of the following:
-   - **Service Token** (recommended for automation): Obtain from Molecule team via Discord
-   - **Privy Token** (for user-initiated requests): Use your authenticated Privy session
+   * **Service Token** (recommended for automation): Obtain from Molecule team via Discord
+   * **Privy Token** (for user-initiated requests): Use your authenticated Privy session
 3. **LabNFT Must Be Minted**: The onchain lab (LabNFT / `oclId`) must already exist onchain before registering the lab
 
 **Authentication Options:**
@@ -168,10 +168,10 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 **Use Cases:**
 
-- **Automate Lab Creation**: Register labs programmatically after minting LabNFTs
-- **CI/CD Integration**: Automatically set up data rooms for new research labs
-- **Batch Operations**: Register multiple labs for a portfolio of onchain labs
-- **User Self-Service**: Allow users to create their own lab data rooms
+* **Automate Lab Creation**: Register labs programmatically after minting LabNFTs
+* **CI/CD Integration**: Automatically set up data rooms for new research labs
+* **Batch Operations**: Register multiple labs for a portfolio of onchain labs
+* **User Self-Service**: Allow users to create their own lab data rooms
 
 **Getting Service Token Access:**
 
@@ -180,15 +180,15 @@ To obtain a service token for automated lab creation:
 1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
 2. Contact the Molecule team
 3. Provide:
-   - Your wallet address
-   - Use case description
-   - Intended automation workflow
+   * Your wallet address
+   * Use case description
+   * Intended automation workflow
 4. You'll receive:
-   - API Key (for all APIs)
-   - Service Token (JWT for lab creation)
-   - Token expiration date
+   * API Key (for all APIs)
+   * Service Token (JWT for lab creation)
+   * Token expiration date
 
----
+***
 
 ## Get Single Project with Files
 
@@ -241,7 +241,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 > The optional CMS-enriched fields `trlValue`, `trlRationale`, and `isVerified` (see [List All Projects](browse-and-search.md#list-all-projects)) are also available on this query and are hydrated only when requested.
 
----
+***
 
 ## LabNFT Metadata
 
@@ -307,10 +307,9 @@ mutation GenerateLabImageUploadUrl($oclId: String!, $contentType: String!) {
 | oclId       | String | Yes      | Canonical 32-byte oclId of the lab                                                      |
 | contentType | String | Yes      | Image MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`, `image/svg+xml`) |
 
----
+***
 
-
----
+***
 
 ## Lab Members
 
@@ -359,10 +358,9 @@ query ListLabMembers($oclId: String!) {
 | isAgent       | Boolean         | True if the member is an agent identity (surfaced for UI; not used for authorization)                                  |
 | grantedAt     | String          | ISO-8601 timestamp the row was first persisted                                                                         |
 
----
+***
 
-
----
+***
 
 ## DID Linking
 
@@ -403,5 +401,4 @@ query GetDidLinkStatus($oclId: String!) {
 
 `status` is a `DidLinkingStatus`: `PENDING`, `SUBMITTED`, `LINKED`, or `FAILED` (`null` before the first linking attempt). `linkedDidCount` reflects the number of active onchain DID links observed by the event indexer.
 
----
-
+***

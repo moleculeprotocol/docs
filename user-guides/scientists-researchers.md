@@ -1,94 +1,49 @@
 ---
-description: Your Path into DeSci
+description: >-
+  This guide is for the early-stage biotech researcher or scientist-founder
+  moving science toward a company, often because the work is unconventional or
+  too early for a clean venture or grant fit.
 icon: user-magnifying-glass
 ---
 
-# Scientists/Researchers
+# Scientists
 
-**Who This Guide Is For**
+### Creating a Lab
 
-You're a researcher — at a university, an independent lab, or somewhere in between — and you have scientific work that deserves funding, recognition, and a path to real-world impact. Maybe you have preliminary data sitting on a hard drive. Maybe you just have a hypothesis and the skills to test it. Molecule gives you a way to take that work onchain, fund it, and run it — without waiting for institutional approval or traditional grant cycles.
+Setting one up takes an email address, with no wallet or prior crypto experience needed, and the first Lab is free to create. A researcher begins with an image, a title, and a short description, then fills the Lab with files, datasets, and collaborators over time. Because there is no financial barrier to entry, a Lab can begin accumulating a verifiable track record from the moment it exists.
 
-This guide walks you through the journey from your perspective. For the technical details behind each step, the Core Concepts section covers the architecture in depth. Here, we focus on what you actually do at each stage, why it matters for your research, and the choices you'll make along the way.
+### Two Ways to Work
 
-### Step 1: Create Your Onchain Lab
+Everything inside a Lab is available through Molecule's interface, where a researcher signs in by email, uploads files, invites collaborators, and manages funding without touching any code.&#x20;
 
-Creating a Lab is a single action. You mint a Lab NFT and instantly receive a permanent onchain identity — a wallet address that belongs to your research project. If you sell the project, the entire Lab transfers in one transaction.
+For a workflow that already runs on scripts or AI agents, the same Lab is reachable through an API key, and files, updates, and project activity move through the same underlying data whichever pathway is used. An agent-native researcher can pull work into their own tools and push new findings back, keeping the Lab's public record current throughout.&#x20;
 
-The practical experience is straightforward: sign in, click create, and your Lab exists. You can sign in with Google, X, an email code, or an external Ethereum wallet — email and social sign-ins come with a built-in wallet, so no crypto setup is needed. There's no gas cost — Molecule sponsors the transaction fees for Lab creation when you use email or social sign-in. From this moment, your Lab can hold assets, store data, and accumulate a track record.
+Both pathways carry the same security and access rules, so working through the API never changes who can see what.
 
-A few things worth knowing early on. Your Lab address is permanent and deterministic, meaning it works across any EVM chain without needing to be bridged or migrated. Everything you do — uploading a file, receiving funds, minting IP — is recorded as a transaction on this address. Over time, this becomes your project's verifiable CV.&#x20;
+### Storing and Sharing Research
 
-### Step 2: Upload Your Research Data
+Files are encrypted before they reach Molecule's servers, and only named people can open them, giving a researcher the ease of a cloud drive with security a drive does not provide. Access is set per file, so raw data can be shared publicly to build credibility while premium datasets and sensitive pre-publication results stay gated until the researcher chooses to release them. The Lab carries a public reporting surface alongside the confidential workspace, and the owner decides what stays private and what becomes visible. Collaborators join as a contributor or viewer.&#x20;
 
-Once your Lab is live, you can start populating it with your research. Upload datasets, protocols, lab notebooks, images, analysis scripts — anything that constitutes the scientific foundation of your project. Files are encrypted and stored on decentralized infrastructure, with every version content-addressed in your Lab's provenance log — which is itself anchored onchain to your Lab — so every version is permanent and traceable.
+### Building a Record Worth Showing
 
-The key decision here is access control. For each file, you choose who can see it.
+Files and the meaningful actions around them are timestamped and presented as a clean, credible history, so where a cloud drive only stores files, a Lab turns ongoing work into a record a funder can rely on. That record carries direct commercial weight. A funder can perform due diligence by inspecting how much data a Lab has generated and how its funding was deployed, seeing at a glance the progress the work has made, which replaces the opaque and fragmented diligence process common in early-stage biotech with something auditable. Labs that show consistent progress and responsible treasury management build the kind of track record that attracts more funding and better collaborators, creating a flywheel effect.
 
-Public files are visible to anyone. Use this for data that builds credibility — published datasets, methodology descriptions, summary results. This is how you signal to the community and potential funders that your Lab is active and producing real work.
+### Raising Funds
 
-Private files remain encrypted and visible only to you (and any roles you delegate). Pre-publication results, sensitive patient data, or trade secrets stay protected until you choose otherwise.
+Alongside conventional routes like venture capital and grants, a researcher can run a token sale directly from the Lab to fund the science. Funds raised flow into the Lab's treasury under the researcher's control, and the community that forms becomes the base that Coin-to-Company later has the option to convert into real ownership.
 
-The data you upload is not just storage — it becomes an asset. As your Lab accumulates data, its value grows. Funders evaluate Labs partly by the depth and quality of their data rooms. AI agents (covered below) can operate on your data continuously. And every file upload is a recorded event in your Lab's onchain history, contributing to your project's verifiable track record. For details on the underlying storage and encryption infrastructure, see Data Storage and Data Privacy & Access.
+### MIRA, a Living Assessment
 
-### Step 3: Register and Tokenize Your IP
+MIRA, the Lab's built-in research assistant, gives a continuously updating read on the project. It analyses the non-confidential data in the Lab, surfaces concrete suggestions for strengthening the work, and rates the project against the Technology Readiness Level scale adapted from NASA. That TRL rating also appears on the public project page for funders and updates automatically as new information enters the Lab, so it never goes stale. MIRA does not read confidential files, and it does not conduct research or make decisions on the researcher's behalf.
 
-When your research reaches a point where you want to formalise ownership — a novel compound, a validated methodology, a curated dataset — you register that IP to your Lab as an onchain asset, anchored to a legal agreement that defines the rights included.
+### From Funding to a Company
 
-From there, you have a choice: keep your Lab wholly owned, or tokenize it.
+Once a funding community has formed around a project's token, Coin-to-Company gives token holders a documented, legally grounded route to equity in the company behind the science, moving through locking, verification, application, and, if approved, holding both token and equity. Equity issued this way qualifies for  United States tax advantages, and long-term shareholders may exclude a portion of capital gains under established rules for qualifying small business stock.
 
-Keeping it whole means you retain full ownership. You can license your IP directly to a pharma company, sell it outright, or hold it while the research matures. This path makes sense when you want maximum control or when you're negotiating a single large deal.
+### What Changes for the Researcher
 
-Tokenizing means you tokenize your **Lab** into IP Tokens (IPTs) — fungible tokens that represent a fractional claim tied to the Lab and everything it holds. This is the path to community funding. IPT holders get economic exposure to your research, access to token-gated data, and a voice in governance decisions. You decide the token symbol, the initial supply, and how tokens are distributed — and you can permanently cap the supply whenever you choose.
-
-Funds raised go directly into your Lab's treasury — fully transparent, fully under your control. For the tokenization mechanics, see the [Tokenization API](../api-reference/tokenization-api.md) and the [Tokenizer](../references/contracts/tokenizer.md) reference.
-
-### Step 4: Use AI Agents to Accelerate Your Research
-
-This is where Molecule diverges from a traditional funding platform. Your Lab isn't just a container for assets — it's an environment where AI agents can actively work on your research.
-
-Molecule integrates BioAgents, an open-source AI scientist framework built specifically for biological and life sciences research. BioAgents is a multi-agent system where specialised agents handle different parts of the research workflow, and you direct their focus.
-
-**What the agents actually do:**
-
-A Literature Agent searches and synthesises scientific literature relevant to your research question. It returns findings with inline citations, so you can trace every claim back to its source paper. You can point it at a question like "What compounds have shown efficacy against target X in the last three years?" and receive a structured synthesis — not a summary, but a cited analysis you can build on.
-
-An Analysis Agent operates on data you've uploaded to your Lab. Upload a dataset — genomic data, assay results, clinical measurements — and the agent runs analysis, generates visualisations, and identifies patterns. The results are written back to your Lab as new versioned records, each with a content identifier in the Lab's permanent, anchored provenance record.
-
-A Hypothesis Agent takes findings from literature searches and data analyses and generates testable hypotheses. It considers the current state of your research, what has and hasn't worked, and proposes next steps with supporting evidence.
-
-A Planning Agent coordinates multi-step research workflows. It looks at your research objectives, available data, and agent capabilities, then generates a sequence of literature and analysis tasks to execute.
-
-A Reflection Agent periodically reviews the overall progress of your research — what's been discovered, what methodology is working, where gaps remain — and updates the research direction accordingly.
-
-**How this fits into your Lab:**
-
-The agents read from your Lab's data room through the Labs API, perform their work, and write findings back as new data. Every agent output — a literature synthesis, an analysis result, a generated hypothesis — becomes a permanent, versioned record in your Lab. This means agent work compounds over time. Today's analysis feeds tomorrow's hypothesis, which drives next week's experiment, which produces new data for the agent to analyse.
-
-You can run agents in two modes. In Human-Directed mode, agents assist while you retain strategic control — you review outputs, approve directions, and decide what to pursue. In Fully Autonomous mode, agents operate independently within predefined safety boundaries (spending limits, scope restrictions, approval requirements for high-value actions). The mode you choose is recorded onchain and visible to your stakeholders.
-
-The practical implication is that your Lab can produce research output around the clock — scanning literature while you sleep, analysing data over weekends, identifying promising directions while you're focused on wet-lab work. The agent's compute costs come directly from your Lab's treasury, so there's no separate billing system. Research expenditure is a transparent line item in your Lab's onchain history.
-
-For more details on the BIOS AI Scientist and MIRA, see the AI Tooling section.
-
-### Step 5: Grow, License, and Compound
-
-With data accumulating, IP registered, a community of IPT holders, and agents running continuous research cycles, your Lab enters a compounding phase. Every action feeds the next.
-
-New data improves agent analyses. Better analyses strengthen IP positions. Stronger IP attracts more funding. More funding enables larger experiments. Larger experiments produce more data. The Lab's onchain track record grows with every cycle, making it progressively easier to attract collaborators, licensees, and capital.
-
-Revenue can come from multiple directions: licensing IP to industry partners for upfront or royalty payments, charging access fees for premium datasets, receiving milestone payouts from funding organisations, or eventual acquisition of the Lab itself. Smart contracts handle royalty distributions and revenue sharing automatically — you set the terms, the protocol enforces them.
-
-When the time comes, your Lab is fully portable. Sell it to a pharmaceutical company, pass it to a successor researcher, merge it into a larger research DAO, or nest it under a parent Lab that represents a multi-program research initiative. Because the Lab is an NFT, everything it holds transfers in a single transaction — data, IP, tokens, treasury, history, and reputation.
-
-### Summary: What Changes for You
-
-The traditional path: apply for grants, wait months, do research within rigid institutional frameworks, file patents through tech transfer offices that take years and large equity cuts, hope for licensing interest from industry, and repeat.
-
-The Molecule path: create a Lab in seconds, upload your data, raise funds directly from a global community, put AI agents to work on your research continuously, and build a verifiable track record that follows you — not your institution — for your entire career.
-
-Your science. Your Lab. Your terms.
+Rather than waiting on a grant cycle or a venture fit that may not exist, a researcher creates up a Lab in minutes, then works through the interface or the API depending on how the research already runs. Work can be stored securely and shared selectively from the first day, and a token sale opens funding. MIRA keeps a living read on how the project is maturing, and if a funding community forms around the work, Coin-to-Company can carry it all the way to a real company.
 
 {% embed url="https://desci-codes.gitbook.io/desci.codes/templates/model-agreements" %}
 
-Refer to DeSci codes for more Legal and governance templates
+Refer to DeSci codes for more Legal and governance templates.

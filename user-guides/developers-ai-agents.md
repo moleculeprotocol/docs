@@ -2,6 +2,7 @@
 description: >-
   Build on Molecule: Integrate Labs, extend the protocol, and deploy autonomous
   research agents
+hidden: true
 icon: robot
 ---
 

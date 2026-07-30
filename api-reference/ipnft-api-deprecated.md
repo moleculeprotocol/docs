@@ -1,0 +1,2 @@
+# 📊 IPNFT API (Deprecated)
+

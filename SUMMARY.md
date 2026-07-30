@@ -2,19 +2,18 @@
 
 ## INTRODUCTION
 
-* [🔬 Overview](introduction/README.md)
-* [How it works](introduction/how-it-works.md)
-* [Architecture](introduction/architecture.md)
+* [🔬 Why Molecule?](README.md)
 * [Why Desci?](introduction/why-desci.md)
 
 ## USER GUIDES
 
-* [Scientists/Researchers](user-guides/scientists-researchers.md)
+* [Scientists](user-guides/scientists-researchers.md)
+* [Funders](user-guides/investors.md)
 * [Developers/AI Agents](user-guides/developers-ai-agents.md)
-* [Investors](user-guides/investors.md)
 
 ## Technical Deep Dive
 
+* [Architecture](technical-deep-dive/architecture.md)
 * [Molecule Labs](technical-deep-dive/onchain-lab.md)
 * [Roles & Permissions](technical-deep-dive/roles-and-permissions.md)
 * [Coin-to-Company Model](technical-deep-dive/rwa-equity.md)
@@ -40,7 +39,7 @@
   * [Service Tokens](api-reference/labs-api/service-tokens.md)
 * [🔐 Tokenization API](api-reference/tokenization-api.md)
 * [x402 Gateway](api-reference/x402-gateway.md)
-* [📊 IPNFT API (Deprecated)](api-reference/ipnft-api.md)
+* [📊 IPNFT API (Deprecated)](api-reference/ipnft-api-deprecated.md)
 * [🕘 API Changelog & Migration](api-reference/changelog.md)
 
 ## AI Tooling
