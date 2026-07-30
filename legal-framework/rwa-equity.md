@@ -44,8 +44,6 @@ The framework maintains a deliberate separation: the token is not equity. This i
 
 Holding locked tokens is a prerequisite for pursuing equity through separate legal agreements. The onchain components (locking, credential verification, status tracking) provide the infrastructure, but the equity grant itself occurs through traditional legal channels. This structure means the token does not need to be classified as a security in jurisdictions where that would create compliance burdens for the broader holder base. Those who want equity follow the qualification path. Those who do not want equity continue holding standard, liquid IP Tokens with no additional obligations.
 
-### Current Status
+\
+You can find the [full legal whitepaper](https://molecule.xyz/blog/the-coin-to-company-model) on the Molecule website, as well as the [legal templates on DeSci.Codes](https://desci-codes.gitbook.io/desci.codes/templates/v2-coin-to-company/governance-agreements).&#x20;
 
-The `TimelockedToken.sol` contract in the repository provides a foundation for time-based token locking, and the existing token infrastructure supports the token economics that underpin the framework.
-
-The modular account infrastructure that would host the equity module — the `SelectorManager`, `ExecutorManager`, the ERC-7484 registry, and the `installModule` flow — is implemented and deployed.

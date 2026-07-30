@@ -1,8 +1,9 @@
 ---
 description: Mission & Vision of Molecule
+icon: microscope
 ---
 
-# 🔬 Overview
+# Why Molecule?
 
 ### **What is Molecule?**
 
@@ -14,7 +15,7 @@ Molecule is the infrastructure for recording, tokenizing, funding, and accelerat
 * A **legal layer** that ensures research projects can bridge from the onchain, web-based world into a fully compliant company-based structure
 * A **community layer** consisting of over 30K+ biotech professionals, funders, founders, web3 builders, content creators, and more
 
-These primitives create a framework for scientists to develop and commercialise critical healthcare discoveries, armed with the strength of blockchain technology, artificial intelligence, and an established "Decentralised Science" ecosystem.&#x20;
+These primitives create a framework for scientists to develop and commercialise critical healthcare discoveries, armed with the strength of blockchain technology, artificial intelligence, and an established "Decentralised Science" ecosystem.
 
 ### **Core problem**
 
@@ -22,7 +23,7 @@ Early-stage research projects, often the ones with the most transformative poten
 
 Compounding this is the state of scientific IP itself. Much of it sits locked in analog formats, siloed within individual institutions, and gatekept by processes that make it difficult to license, share, or build upon. Discoveries that could accelerate other research, or attract funding on their own merits, instead sit dormant because there's no efficient way to represent, value, or transfer them.
 
-When researchers and funders want to collaborate, the coordination layer between them is broken.  What should be a straightforward relationship between the people funding research and the people conducting it instead becomes an exercise in administrative friction.
+When researchers and funders want to collaborate, the coordination layer between them is broken. What should be a straightforward relationship between the people funding research and the people conducting it instead becomes an exercise in administrative friction.
 
 ### Solution
 
@@ -32,7 +33,7 @@ At its core, Molecule provides primitives to:
 
 * **Create a Lab** that unifies all research assets under one identity
 * **Store research data** with encryption and granular access control
-* **Tokenize** intellectual property&#x20;
+* **Tokenize** intellectual property
 * **Raise capital** through transparent, community-driven funding
 * **Deploy AI agents** that operate autonomously within Labs
 
@@ -48,7 +49,7 @@ Every action within a Lab generates data. Datasets are stored on decentralized i
 
 #### _(iii) AI Agents for Autonomous Science_
 
-Labs are designed to be operated by agents, not only by people. Through the Labs API, an agent reads datasets from a Lab's data room, runs analysis, and writes findings back as versioned, content-addressed records carrying the same provenance and access controls as human-generated data. Agents authenticate with service tokens, or pay per call through the x402 Gateway. For agents that need to act inside a Lab's onchain context — treasury operations, permissions, protocol interactions — executor modules define the boundaries they can transact within, supporting both Human-Directed operation (agents assist, humans approve) and Fully Autonomous operation within onchain constraints. MIRA, Molecule's research assistant, sits on top of this layer, delivering ecosystem-wide research insights and standardized project scoring.&#x20;
+Labs are designed to be operated by agents, not only by people. Through the Labs API, an agent reads datasets from a Lab's data room, runs analysis, and writes findings back as versioned, content-addressed records carrying the same provenance and access controls as human-generated data. Agents authenticate with service tokens, or pay per call through the x402 Gateway. For agents that need to act inside a Lab's onchain context — treasury operations, permissions, protocol interactions — executor modules define the boundaries they can transact within, supporting both Human-Directed operation (agents assist, humans approve) and Fully Autonomous operation within onchain constraints. MIRA, Molecule's research assistant, sits on top of this layer, delivering ecosystem-wide research insights and standardized project scoring.
 
 ### **Who Uses It?**
 

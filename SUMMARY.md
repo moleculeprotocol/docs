@@ -2,7 +2,7 @@
 
 ## INTRODUCTION
 
-* [🔬 Why Molecule?](README.md)
+* [Why Molecule?](README.md)
 * [Why Desci?](introduction/why-desci.md)
 
 ## USER GUIDES
@@ -16,7 +16,6 @@
 * [Architecture](technical-deep-dive/architecture.md)
 * [Molecule Labs](technical-deep-dive/onchain-lab.md)
 * [Roles & Permissions](technical-deep-dive/roles-and-permissions.md)
-* [Coin-to-Company Model](technical-deep-dive/rwa-equity.md)
 * [Module Registry](technical-deep-dive/module-registry/README.md)
   * [Validator Module](technical-deep-dive/module-registry/validator-module.md)
   * [Fallback Modules](technical-deep-dive/module-registry/fallback-modules.md)
@@ -26,6 +25,11 @@
   * [Data Privacy & Access](technical-deep-dive/data/data-privacy-and-access.md)
   * [Data Anchoring (DID Linking)](technical-deep-dive/data/data-module.md)
   * [Data API & Integration](technical-deep-dive/data/data-api-and-integration.md)
+
+## Legal Framework
+
+* [Assignment Agreement](legal-framework/assignment-agreement.md)
+* [Coin-to-Company Model](legal-framework/rwa-equity.md)
 
 ## API Reference
 
