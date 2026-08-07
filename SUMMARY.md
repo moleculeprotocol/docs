@@ -46,6 +46,13 @@
 * [📊 IPNFT API (Deprecated)](api-reference/ipnft-api-deprecated.md)
 * [🕘 API Changelog & Migration](api-reference/changelog.md)
 
+## Release Notes
+
+* [Overview](release-notes/README.md)
+  * [Labs API](release-notes/labs-api.md)
+  * [Tokenization API](release-notes/tokenization-api.md)
+  * [x402 Gateway](release-notes/x402-gateway.md)
+
 ## AI Tooling
 
 * [MIRA](ai-tooling/mira.md)
