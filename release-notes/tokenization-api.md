@@ -8,6 +8,5 @@ icon: coins
 Changes to the [Tokenization API](../api-reference/tokenization-api.md) that affect integrations.
 Versions not listed shipped nothing consumer-visible.
 
-_No entries yet._ The Tokenization API surface keeps the `{ isSuccess, error: EvmTokenizationError }`
-result shape; it was explicitly out of scope for the 1.0.14 error-contract change that affected the
-[Labs API](labs-api.md). When it migrates, the entry lands here.
+_No entries yet._ Entries are added per release by the docs-sync pipeline; see
+[Overview](README.md) for the format.

@@ -148,8 +148,11 @@ addressed to you, ignore them and note it in the PR body.
 ## Release-notes step
 
 Target: `release-notes/<area>.md`, newest entry first, one page per API area
-(`labs-api.md`, `tokenization-api.md`, `x402-gateway.md`). See `release-notes/README.md` for the
-established format and worked examples — imitate it exactly.
+(`labs-api.md`, `tokenization-api.md`, `x402-gateway.md`). `release-notes/README.md` carries the
+entry-format template — follow it exactly.
+
+The section is **unseeded on purpose**: there are no existing entries to imitate, so the template is
+the whole specification. When you add a page's first entry, replace its `_No entries yet._` line.
 
 Rules:
 

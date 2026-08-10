@@ -18,8 +18,8 @@ what a consumer can observe: contract changes, new and removed operations, and m
 
 **Looking for how to migrate off an older shape?** The
 [API Changelog & Migration](../api-reference/changelog.md) page organises the same breaking changes
-thematically, by what changed rather than by when. Use this section to answer "what shipped in
-1.0.14"; use that one to answer "how do I move off `ipnftUid`".
+thematically, by what changed rather than by when. Use this section to answer "what shipped in a
+given version"; use that one to answer "how do I move off `ipnftUid`".
 
 ## What appears here
 
