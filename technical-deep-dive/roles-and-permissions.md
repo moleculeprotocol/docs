@@ -41,6 +41,29 @@ A Contributor cannot "downgrade" another Contributor to Viewer — downgrades ar
 
 > **Protocol admin.** In addition to per-lab owners, the `AccessResolver` contract owner — Molecule's protocol multisig — is a global role admin: it can grant and revoke roles on any lab and passes every `hasRole` check. This is the operational escape hatch for support and recovery flows.
 
+## Opening a Lab Beyond Its Members
+
+The role model answers "who is a member of this Lab". Some Labs want a second, wider answer for a narrow set of actions — an open call for datasets, a bounty hub where any solver may submit results, a token-gated community drop. For those, a Lab owner can attach an **access policy**: a per-capability rule that grants specific data-room actions to callers who hold no role at all.
+
+A policy is enforced offchain, by the Labs API, and is **strictly additive** — membership is checked first, and a role grant always wins:
+
+```
+allowed(caller, capability) =
+     membership grants it              (role model — checked first)
+  OR the Lab's policy rule grants it   (strictly additive fallback)
+```
+
+Because a policy can only ever add access, owners and members never lose access whatever a policy says, and locking the owner out is structurally impossible. A Lab without a policy behaves exactly as described in the sections above.
+
+Four capabilities can be opened, each independently: adding files, modifying them (new versions, metadata, moves), deleting them, and creating announcements. Each is set to one of three rule kinds — membership only (the default), any authenticated caller, or any caller whose wallet satisfies an [access-control-condition array](data/data-privacy-and-access.md#condition-shape) such as holding a token. A rule can additionally be time-boxed to a deadline, or wired to a caller-independent condition that closes it once it becomes true — "permissionless until this bounty contract reports itself closed".
+
+Two boundaries are worth stating explicitly:
+
+* **Permissionless is not unauthenticated.** Contributors without a role still authenticate with a wallet-backed identity — a Privy session or a self-issued service token. What the policy removes is the membership requirement, not the identity requirement, so every contribution stays attributable.
+* **Openness never escalates into administration.** Changing the policy, editing LabNFT metadata, uploading a Lab image, and signing the legal agreement are hardcoded to the owner and can never appear in a policy. Role grants themselves remain onchain and owner-controlled, and every data-room write still requires the owner to have signed the current Assignment Agreement.
+
+The API surface — presets, per-capability rules, condition schema, and error responses — is documented in [Access Policies](../api-reference/labs-api/access-policies.md).
+
 ## Grants: Expiry & Agent Flag
 
 Each grant is an onchain record with three fields:
@@ -127,6 +150,7 @@ Use these events to reconstruct the team-members list for a lab offchain; the on
 
 ## See Also
 
+* [Access Policies](../api-reference/labs-api/access-policies.md) — opening a Lab's data room beyond its members: presets, per-capability rules, and onchain conditions.
 * [AccessResolver contract reference](../references/contracts/accessresolver.md) — full ABI, deployments, signer-authorization predicates (`isAuthorizedSignerForIpnft`, `isAuthorizedSignerForTba`).
 * [Data Privacy & Access](data/data-privacy-and-access.md) — how role checks feed into file encryption / decryption.
 * [Molecule Labs](onchain-lab.md) — how `oclId` is derived and why ownership resolves through the TBA.
