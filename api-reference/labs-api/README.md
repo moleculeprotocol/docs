@@ -20,7 +20,9 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 
 The Labs API uses API-key authentication for reads and an additional Service Token for writes. Full details — public queries vs. protected mutations, obtaining and using credentials — are on the [Authentication](../authentication.md) page.
 
-See also the functional sections: [Lab Management](lab-management.md), [Files](files.md), [Browse & Search](browse-and-search.md), [Legal Agreements](legal-agreements.md), and [Service Tokens](service-tokens.md).
+See also the functional sections: [Lab Management](lab-management.md), [Access Policies](access-policies.md), [Files](files.md), [Browse & Search](browse-and-search.md), [Legal Agreements](legal-agreements.md), and [Service Tokens](service-tokens.md).
+
+> **Permissionless Labs.** By default a Lab is role-gated: only its owner and contributors can write. A Lab owner can additionally open specific capabilities — file contributions, edits, deletions, announcements — to any authenticated caller, to a deadline, or to wallets satisfying an onchain condition. Note that permissionless does not mean unauthenticated; see [Access Policies](access-policies.md).
 
 ---
 

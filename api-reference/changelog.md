@@ -10,6 +10,38 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ## Labs API
 
+### Lab access policies — permissionless & condition-gated labs
+
+Labs can now open individual data-room capabilities beyond their onchain members. This is **purely additive**: a lab created without a policy behaves exactly as before, including its error responses, and a role grant always wins over a policy, so no existing integration changes.
+
+#### New mutation
+
+| Mutation                | Description                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `updateLabAccessPolicy` | Set a lab's contribution-access policy — open it up, gate it back down (`preset: GATED`), or configure per-capability rules. Owner-only |
+
+#### New input field
+
+`CreateLabInput` gained an optional `accessPolicy: LabAccessPolicyInput`, which creates the lab already open (or condition-gated). Omitting it keeps the default role-gated lab. Passing it restricts `createLab` to the lab owner.
+
+#### New output field
+
+`Lab.accessPolicy` and `LabRef.accessPolicy` expose the stored policy as `LabAccessPolicy` — public, since policies gate access rather than being secrets. Labs without a stored policy return the synthesized `GATED` default. Render from `capabilities`; `preset` is a provenance hint and is `null` for custom configurations.
+
+#### New enums and inputs
+
+`LabAccessPreset` (`GATED` | `OPEN`), `LabCapability` (`ADD_FILES` | `MODIFY_FILES` | `DELETE_FILES` | `CREATE_ANNOUNCEMENTS`), `LabPolicyRuleKind` (`ROLES` | `ANYONE` | `CONDITIONS`), `LabAccessPolicyInput`, `LabCapabilityPolicyInput`, and the output types `LabAccessPolicy` / `LabCapabilityPolicy`.
+
+#### What to watch for when integrating
+
+* Writes to an open lab still require authentication — an API Key plus a Privy session or a Service Token. Permissionless is not unauthenticated.
+* On a policy-granted write, `changeBy` is pinned to the authenticated caller; a spoofed value is ignored.
+* Denials add second-level causes on `details.reason`: `CAPABILITY_DENIED`, `INVALID_ACCESS_POLICY`, `POLICY_CHECK_UNAVAILABLE` (retryable), `LAB_ACCESS_CHECK_FAILED`. No new top-level `error.code` values were introduced.
+
+Full reference: [Access Policies](labs-api/access-policies.md).
+
+---
+
 ### `*V2` operations and pre-OCL naming removed
 
 The legacy `*V2` operations and the pre-OCL naming have been **removed**. The current API is `oclId`-based. If you are migrating from an older integration, use the current names below.

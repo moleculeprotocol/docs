@@ -1,6 +1,6 @@
 # Lab Management
 
-Operations for creating and administering a Lab: creating the dataroom, managing its LabNFT display metadata, managing members, and linking its decentralised identifier (DID).
+Operations for creating and administering a Lab: creating the dataroom, managing its LabNFT display metadata, managing members, and linking its decentralised identifier (DID). Who may contribute to the dataroom is covered in [Access Policies](access-policies.md).
 
 ***
 
@@ -38,9 +38,12 @@ mutation CreateLab($oclId: String!) {
 
 The mutation takes a single `CreateLabInput` object:
 
-| Field | Type   | Required | Description                                                   |
-| ----- | ------ | -------- | ------------------------------------------------------------- |
-| oclId | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the onchain lab |
+| Field        | Type                 | Required | Description                                                                                                     |
+| ------------ | -------------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| oclId        | String               | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the onchain lab                                                    |
+| accessPolicy | LabAccessPolicyInput | No       | Contribution-access policy. Omit for the default role-gated lab — see [Access Policies](access-policies.md) |
+
+> **Creating a lab open to contributions**: pass `accessPolicy: { preset: OPEN }` to let any authenticated caller add files, or configure per-capability rules and onchain conditions. The policy can be changed later with `updateLabAccessPolicy`. Both are owner-only — full details in [Access Policies](access-policies.md).
 
 **Prerequisites:**
 

@@ -2,6 +2,8 @@
 
 Working with files in a Lab dataroom: the three-step upload flow (initiate → upload → finish), plus announcements, metadata updates, deletion, storage limits, and client-side encryption. Creating the Lab itself is covered in [Lab Management](lab-management.md).
 
+> **Who may write.** By default every mutation on this page requires the Lab owner or a contributor. A Lab owner can widen that per action — uploads, edits, deletions, and announcements are individually openable to any authenticated caller, to a deadline, or to wallets satisfying an onchain condition. See [Access Policies](access-policies.md).
+
 ## Step 1: Initiate File Upload
 
 Initiates the upload process and returns a presigned URL for direct file upload.
@@ -169,13 +171,15 @@ mutation FinishFileUpload(
 | uploadToken | String    | Yes      | Token received from Step 1                                  |
 | path        | String    | No\*     | File name for NEW files (e.g., `research-data.pdf`)         |
 | ref         | String    | No\*     | Dataset ID for NEW VERSIONS of existing files               |
-| changeBy    | String    | Yes      | Wallet address of user making the change                    |
+| changeBy    | String    | Yes      | Wallet address of user making the change (see the note below on labs open to non-members) |
 | description | String    | No       | Optional file description                                   |
 | tags        | \[String] | No       | Optional tags for categorization                            |
 | categories  | \[String] | No       | Optional categories for organization                        |
 | contentText | String    | No       | Optional searchable text content (used for semantic search) |
 
 _\*Use `path` for new files OR `ref` for versions - not both_
+
+> **On labs open to non-members** ([Access Policies](access-policies.md)): a caller granted contribution access by policy rather than by role may only create **new** files. Writing a new version (`ref`) or overwriting an existing `path` additionally requires the modify capability, and is otherwise rejected with `UNAUTHORIZED` / `details.reason: "CAPABILITY_DENIED"`. For such writes `changeBy` is also pinned to the authenticated caller — a different value in the argument is ignored, so contributions stay attributable. Members keep their self-declared `changeBy`.
 
 **Example Request (curl):**
 
