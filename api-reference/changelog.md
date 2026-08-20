@@ -8,6 +8,21 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ---
 
+## Authentication
+
+### `x-api-key` replaced by consumer credentials
+
+All Molecule APIs (Labs, Tokenization, and IPNFT (Deprecated) — they share one GraphQL endpoint) now authenticate with a consumer credential instead of an `x-api-key` header. A consumer credential has the shape `mol_<consumerId>_<secret>` and is sent as a standard bearer token.
+
+```diff
+- x-api-key: YOUR_API_KEY
++ Authorization: Bearer mol_<consumerId>_<secret>
+```
+
+**Migration:** Contact the Molecule team for a consumer credential and send it as `Authorization: Bearer mol_<consumerId>_<secret>` instead of `x-api-key`. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before — the Privy `Authorization` header now simply doubles as the primary credential for that path too, rather than riding alongside `x-api-key`. See [Authentication](authentication.md) for the full header reference.
+
+---
+
 ## Labs API
 
 ### GraphQL introspection disabled and query depth capped in production

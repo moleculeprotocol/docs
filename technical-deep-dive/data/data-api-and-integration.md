@@ -46,7 +46,7 @@ The API serves two broad categories of data. Market and token data — represent
 
 Research and Lab data — representing the remaining 15% — includes data room file listings, file versions, announcements, project activity feeds, and semantic search results. This data is served through the Labs API, which reads from Kamu for file metadata and provenance, and generates presigned S3 URLs through Filebase for file uploads and downloads.
 
-The API uses a two-tier authentication model. Read operations (queries) require an API key, issued by the Molecule team upon request. Write operations (mutations) — file uploads, metadata updates, announcements — require both an API key and a service token, which is scoped to a specific wallet address and Lab. Service tokens have configurable expiration and can be extended or revoked through the API. For detailed authentication setup, credential management, and rate limits, see the Labs API reference page.
+The API uses a two-tier authentication model. Read operations (queries) require a consumer credential, issued by the Molecule team upon request. Write operations (mutations) — file uploads, metadata updates, announcements — require both a consumer credential and a service token, which is scoped to a specific wallet address and Lab. Service tokens have configurable expiration and can be extended or revoked through the API. For detailed authentication setup, credential management, and rate limits, see the Labs API reference page.
 
 ### How Consumers Access Data
 
@@ -75,7 +75,7 @@ Search results can be filtered by tags, categories, access levels, and content k
 
 ### Access Levels and Gating
 
-The API enforces access levels at the file level, consistent with the access control model described in the Data Privacy & Access page. Public files are accessible to any API consumer without authentication. Admin-restricted files require a valid API key and service token tied to an authorised wallet. Token-holder-gated files are accepted by the API but require onchain verification for decryption — the API serves the encrypted blob and encryption metadata, and only wallets that satisfy the stored access conditions (re-verified against live chain state) can obtain the unwrapped data encryption key (through `decryptDataKey` for current-flow files).
+The API enforces access levels at the file level, consistent with the access control model described in the Data Privacy & Access page. Public files are accessible to any API consumer without authentication. Admin-restricted files require a valid consumer credential and service token tied to an authorised wallet. Token-holder-gated files are accepted by the API but require onchain verification for decryption — the API serves the encrypted blob and encryption metadata, and only wallets that satisfy the stored access conditions (re-verified against live chain state) can obtain the unwrapped data encryption key (through `decryptDataKey` for current-flow files).
 
 This means the API can serve file metadata (path, version, content type, access level) for any file regardless of access level, but the actual file content for encrypted files is only accessible to authorised parties who satisfy the stored access conditions and then decrypt client-side.
 
