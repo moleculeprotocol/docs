@@ -677,7 +677,11 @@ For files requiring client-side encryption, obtain a data encryption key via the
 
 ### Obtain a DEK, then encrypt locally
 
-`generateDataEncryptionKey` (no arguments) returns `plaintextDEK`, `encryptedDek`, and `encryptionSystem`. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory. The upload itself uses the standard `initiateCreateOrUpdateFile` → PUT → `finishCreateOrUpdateFile` flow, with the encrypted bytes uploaded to the presigned URL.
+> **Breaking change.** `generateDataEncryptionKey` now takes two required arguments, `oclId` and `accessControlConditions`, and returns a `dekContextVersion` field alongside the DEK. Callers still on the old no-argument call will get a validation error — see [Data Encryption Keys](#data-encryption-keys) below for the full shape and why the ACC array has to be supplied up front.
+
+The flow is: choose the file's `accessControlConditions` array → call `generateDataEncryptionKey(oclId, accessControlConditions)` → encrypt locally with the returned `plaintextDEK` → `finishCreateOrUpdateFile` with the **same** `accessControlConditions` and the returned `encryptedDek` passed through **verbatim**. The client uses `plaintextDEK` to AES-256-GCM encrypt the file locally (Web Crypto `SubtleCrypto`), then wipes it from memory. The upload itself uses the standard `initiateCreateOrUpdateFile` → PUT → `finishCreateOrUpdateFile` flow, with the encrypted bytes uploaded to the presigned URL.
+
+Minting a key is gated the same way as the write it feeds — the lab's `ADD_FILES` capability, falling back to `MODIFY_FILES` — so on an [open Lab](access-policies.md) any authenticated caller can request one. See [Access Policies](access-policies.md#capabilities) for the full capability model.
 
 ### Encryption Metadata Parameter (Onchain-Verified Envelope Encryption, current default)
 
@@ -701,6 +705,8 @@ $encryptionMetadata: EncryptionMetadataInput
 
 `encryptionSystem` is **backend-set** — clients must echo the value returned by `generateDataEncryptionKey` rather than hardcode it. This keeps the roadmap rollover to BLS threshold key custody transparent to existing integrations.
 
+`encryptedDek` must also be passed through **exactly** as returned — it carries a `v1:` bound-marker prefix ahead of the base64 ciphertext that records the DEK's binding to this lab and condition array (see [Data Encryption Keys](#data-encryption-keys)). Stripping or altering that prefix makes the file permanently undecryptable.
+
 #### `accessControlConditions` — gating decryption by role
 
 `accessControlConditions` is a JSON-stringified array of `EvmContractCondition` predicates joined by `BooleanCondition` separators (`and` / `or`). The backend evaluates each predicate against live chain state at decrypt time via viem `readContract`, short-circuits booleans, and fails closed on RPC error. To gate decryption on _LabNFT owner OR active Contributor OR active Viewer_, OR `AccessResolver.isAuthorizedSignerForTba(:userAddress, tba)` against `AccessResolver.hasRole(oclId, :userAddress, ROLE_VIEWER)` — the role-hierarchy collapses Contributor + Viewer into one check on the canonical chain (Base).
@@ -723,15 +729,21 @@ Role grants are **onchain transactions on the `AccessResolver` contract**, not L
 
 ### Generate a Data Encryption Key
 
-Generate a standalone data encryption key (DEK) for client-side encryption outside the file-upload flow. Returns both the plaintext DEK (used to encrypt data locally, then wiped) and the KMS-encrypted DEK (stored alongside the ciphertext). Requires authentication (Privy user or service token). See [Advanced: Encrypted File Upload](#advanced-encrypted-file-upload) for the file-upload encryption path.
+Generate a data encryption key (DEK) for client-side encryption of a lab data-room file. Returns the plaintext DEK (used to encrypt data locally, then wiped), the KMS-encrypted DEK (stored alongside the ciphertext), and a `dekContextVersion` marker. Requires authentication (Privy user or service token) and the lab's `ADD_FILES` capability (`MODIFY_FILES` also accepted) — see [Access Policies](access-policies.md#capabilities). See [Advanced: Encrypted File Upload](#advanced-encrypted-file-upload) for the file-upload encryption path.
+
+> **Breaking change.** `oclId` and `accessControlConditions` are now required. The DEK is cryptographically bound (as a KMS `EncryptionContext`) to `{oclId, sha256(canonicalized accessControlConditions)}` — passing a *different* condition array to `finishCreateOrUpdateFile` than the one used here produces a permanently undecryptable file, so treat the pair as one atomic choice.
 
 ```graphql
-mutation GenerateDataEncryptionKey {
-  generateDataEncryptionKey {
+mutation GenerateDataEncryptionKey($oclId: String!, $accessControlConditions: String!) {
+  generateDataEncryptionKey(
+    oclId: $oclId
+    accessControlConditions: $accessControlConditions
+  ) {
     isSuccess
     plaintextDEK
     encryptedDek
     encryptionSystem
+    dekContextVersion
     error {
       message
       code
@@ -741,11 +753,26 @@ mutation GenerateDataEncryptionKey {
 }
 ```
 
-| Field            | Type   | Description                                                |
-| ---------------- | ------ | ---------------------------------------------------------- |
-| plaintextDEK     | String | Base64-encoded plaintext DEK (only present on success)     |
-| encryptedDek     | String | Base64-encoded KMS-encrypted DEK (only present on success) |
-| encryptionSystem | String | Encryption system used (always `"kms"`)                    |
+**Variables:**
+
+```json
+{
+  "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
+  "accessControlConditions": "[{\"conditionType\":\"evmContract\",\"contractAddress\":\"0x...AccessResolver\",\"chain\":\"base\",\"functionName\":\"hasRole\",\"functionParams\":[\"<oclId>\",\":userAddress\",\"1\"],\"functionAbi\":{...},\"returnValueTest\":{\"key\":\"\",\"comparator\":\"=\",\"value\":\"true\"}}]"
+}
+```
+
+| Field                   | Type   | Description                                                                                     |
+| ----------------------- | ------ | ------------------------------------------------------------------------------------------------ |
+| oclId                   | String | Yes — canonical 32-byte oclId of the lab the file will be stored in                              |
+| accessControlConditions | String | Yes — JSON-stringified condition array the file will be gated by; same schema as `EncryptionMetadataInput.accessControlConditions`, validated strictly at mint time |
+
+| Field             | Type   | Description                                                                                  |
+| ----------------- | ------ | ---------------------------------------------------------------------------------------------- |
+| plaintextDEK      | String | Base64-encoded plaintext DEK (only present on success)                                        |
+| encryptedDek      | String | KMS-encrypted DEK, carrying a `v1:` bound-marker prefix — pass it to `finishCreateOrUpdateFile` **verbatim** |
+| encryptionSystem  | String | Encryption system used (always `"kms"`)                                                        |
+| dekContextVersion | String | `"v1"` — the DEK is bound via KMS `EncryptionContext` to this lab and condition array           |
 
 ---
 

@@ -26,14 +26,17 @@ Three properties follow from that ordering:
 
 ## Capabilities
 
-Four capabilities can be opened up. Each maps to the operations it guards:
+Five capabilities can be opened up. Each maps to the operations it guards:
 
-| Capability             | Guards                                                                                                                | Role default       |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| `ADD_FILES`            | `finishCreateOrUpdateFile` with a `path` (new file), and `initiateCreateOrUpdateFile` — which only issues a presigned URL, so either capability qualifies there | Owner, Contributor |
+| Capability             | Guards                                                                                                                | Role default                  |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `ADD_FILES`            | `finishCreateOrUpdateFile` with a `path` (new file), `initiateCreateOrUpdateFile`, and `generateDataEncryptionKey` — each only issues a slot/key, so either capability qualifies there; the authoritative decision happens at `finish` | Owner, Contributor |
 | `MODIFY_FILES`         | `finishCreateOrUpdateFile` with a `ref` (new version) or overwriting an existing `path`, `updateFileMetadata`, `moveEntry` | Owner, Contributor |
 | `DELETE_FILES`         | `deleteDataRoomFile`                                                                                                  | Owner, Contributor |
 | `CREATE_ANNOUNCEMENTS` | `createAnnouncement`                                                                                                  | Owner, Contributor |
+| `DECRYPT_FILES`        | `decryptDataKey` called with an `oclId` — releasing the DEK for an encrypted data-room file. Not part of the `OPEN` preset: an open Lab's encrypted files stay member-readable-only unless the owner adds an explicit rule (see the [recipe](#open-lab-with-readable-encrypted-files) below) | Owner, Contributor, **Viewer** |
+
+`generateDataEncryptionKey` mints the key for an encrypted upload, so it is gated the same way as the write it feeds: `ADD_FILES`, falling back to `MODIFY_FILES`. On a `GATED` Lab this is contributor-or-above; on an `OPEN` Lab (`ADD_FILES: ANYONE`) any authenticated caller may mint one. See [Files](files.md#advanced-encrypted-file-upload) for the full encrypt/upload flow.
 
 Each capability is set to one of three rule kinds:
 
@@ -66,7 +69,7 @@ These operations are hardcoded to the Lab owner and can never appear in a policy
 
 * **Legal agreement.** Every data-room write — including a contribution to a permissionless Lab — stays blocked until the Lab **owner** has signed the current Assignment Agreement. Opening a Lab does not bypass compliance. See [Legal Agreements](legal-agreements.md).
 * **x402 tokens** keep their per-mutation scope, and that scope is checked _before_ membership and the policy. See [x402 Gateway](../x402-gateway.md).
-* **Reads are unchanged.** `labs`, `labWithDataRoomAndFiles`, the activity feeds, `searchLabs`, and `listLabMembers` were public before and stay public. File confidentiality remains a matter of encryption, not of the access policy — see [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md).
+* **Metadata reads are unchanged.** `labs`, `labWithDataRoomAndFiles`, the activity feeds, `searchLabs`, and `listLabMembers` were public before and stay public. Unencrypted file bytes remain public too. The one read-side decision a policy owns is *who can decrypt an encrypted file* — gated by `DECRYPT_FILES` — everything else is unaffected. See [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md).
 
 ***
 
@@ -102,7 +105,7 @@ mutation CreateOpenLab($oclId: String!, $accessPolicy: LabAccessPolicyInput) {
 }
 ```
 
-The policy is written before the data room is registered, so retrying a failed `createLab` cannot strand a Lab with the wrong policy. A default (`GATED`) input stores no policy at all — the absence of a policy _is_ the gated state.
+The policy is written before the data room is registered. If the subsequent Kamu registration then fails, the policy row is rolled back — except on a `PROJECT_CONFLICT` (the data room already exists, so the write was an idempotent no-op and the existing row is kept). Either way, a retried `createLab` cannot strand a Lab with a policy that never actually took effect. A default (`GATED`) input stores no policy at all — the absence of a policy _is_ the gated state.
 
 ***
 
@@ -152,15 +155,15 @@ Enforcement reads the stored policy through a short-lived cache of roughly 15 se
 | Field        | Type                          | Required | Description                                                                                                        |
 | ------------ | ----------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | preset       | LabAccessPreset               | No       | `GATED` or `OPEN` — covers the common cases                                                                        |
-| openUntil    | AWSTimestamp                  | No       | Shorthand: applied as `openUntil` to every rule the preset expands to. Requires `preset: OPEN`                     |
-| closedWhen   | String                        | No       | Shorthand: applied as `closedWhen` to every rule the preset expands to. JSON-stringified array. Requires `preset: OPEN` |
+| openUntil    | AWSTimestamp                  | No       | Shorthand: applied to every non-`ROLES` rule in the expanded document — the preset's rules and any `capabilities` override that doesn't set its own. Requires `preset: OPEN`                     |
+| closedWhen   | String                        | No       | Shorthand: applied to every non-`ROLES` rule in the expanded document, same reach as `openUntil` above. JSON-stringified array. Requires `preset: OPEN` |
 | capabilities | \[LabCapabilityPolicyInput!]  | No       | Advanced per-capability rules, merged over the preset expansion                                                    |
 
 `LabCapabilityPolicyInput`:
 
 | Field      | Type              | Required | Description                                                                                     |
 | ---------- | ----------------- | -------- | ----------------------------------------------------------------------------------------------- |
-| capability | LabCapability     | Yes      | `ADD_FILES`, `MODIFY_FILES`, `DELETE_FILES`, or `CREATE_ANNOUNCEMENTS`                          |
+| capability | LabCapability     | Yes      | `ADD_FILES`, `MODIFY_FILES`, `DELETE_FILES`, `CREATE_ANNOUNCEMENTS`, or `DECRYPT_FILES`         |
 | kind       | LabPolicyRuleKind | Yes      | `ROLES`, `ANYONE`, or `CONDITIONS`                                                              |
 | openUntil  | AWSTimestamp      | No       | Unix seconds; `ANYONE` / `CONDITIONS` only                                                      |
 | conditions | String            | No\*     | JSON-stringified access-control-conditions array. Required for `CONDITIONS`, rejected otherwise |
@@ -173,7 +176,7 @@ The server expands the input deterministically — **preset → top-level shorth
 | Preset  | Expands to                                                                                     |
 | ------- | ---------------------------------------------------------------------------------------------- |
 | `GATED` | `{}` — everything membership-gated. Use it to close a Lab back down                             |
-| `OPEN`  | `ADD_FILES: ANYONE` — contributions only; modify, delete, and announce stay membership-gated    |
+| `OPEN`  | `ADD_FILES: ANYONE` — contributions only; modify, delete, announce, and decrypt stay membership-gated |
 
 ***
 
@@ -233,6 +236,21 @@ accessPolicy: {
   ]
 }
 ```
+
+### Open Lab with Readable Encrypted Files
+
+An `OPEN` Lab's `ADD_FILES: ANYONE` rule lets any authenticated caller upload — including encrypted submissions — but `DECRYPT_FILES` is deliberately excluded from the preset, so those encrypted files stay member-readable-only. Add an explicit rule so a bounty solver can write an encrypted submission and read it back:
+
+```graphql
+accessPolicy: {
+  preset: OPEN,
+  capabilities: [
+    { capability: DECRYPT_FILES, kind: ANYONE }
+  ]
+}
+```
+
+Token-gate the read side instead with `kind: CONDITIONS` — for example, only holders of a bounty NFT may decrypt. Note the layering: `decryptDataKey` still evaluates the *file's own* `accessControlConditions` after this capability gate passes — the policy opens the door to the Lab's decrypt surface, and the file's own condition array decides per file. See [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md#decrypt-authorization) for how the two checks compose.
 
 ### Gate a Lab back down
 
@@ -320,7 +338,7 @@ Write-time validation is strict. A rejected policy fails with `VALIDATION_FAILED
 ## Enforcement
 
 1. **Order of checks** — authentication (Privy session or Service Token, x402 scope included) → membership → policy. The policy is consulted only when membership denies a caller on an _existing_ Lab; a malformed `oclId` or a Lab that does not exist is never rescued by a policy.
-2. **Service tokens act as wallets on open Labs** — a valid token's wallet is treated like a user wallet, which is how autonomous agents contribute without being granted a role. On gated Labs the Service Token path keeps its owner-only semantics.
+2. **Service tokens act as wallets on open Labs** — a valid token's wallet is treated like a user wallet, which is how autonomous agents contribute without being granted a role. On gated Labs the Service Token path keeps its owner-only semantics for the four write capabilities. `DECRYPT_FILES` is the exception: its role default is viewer-or-above for **both** caller kinds, matching the membership check `decryptDataKey` already applied before access policies existed.
 3. **A rule grants** when `openUntil` has not passed, `closedWhen` does not evaluate true, and the caller satisfies `conditions` (`ANYONE` needs no wallet check). Conditions are evaluated against live chain state on each request.
 4. **Add-only means add-only** — a caller granted `ADD_FILES` but not `MODIFY_FILES` cannot write over an existing path. "Create or update" never silently becomes an overwrite.
 5. **Attribution is pinned** — on a policy-granted write, `changeBy` is forced to the authenticated caller and a spoofed `changeBy` argument is ignored. Members keep their self-declared `changeBy`.
@@ -349,7 +367,7 @@ The first row is deliberately indistinguishable from the classic denial: a Lab w
 * [Lab Management](lab-management.md) — creating a Lab, LabNFT metadata, members, DID linking
 * [Files](files.md) — the upload flow and the mutations these capabilities guard
 * [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md) — the onchain role model a policy layers on top of
-* [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) — the condition shape and how conditions are evaluated
+* [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) — the condition shape, `DECRYPT_FILES`'s two-layer check, and DEK binding
 * [Legal Agreements](legal-agreements.md) — the owner-signature gate that applies to every write
 
 ***

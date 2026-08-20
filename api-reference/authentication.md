@@ -101,7 +101,7 @@ Either way, the caller still has to be authorized for the target lab — a Servi
 - `updateLabNftMetadata` - Update LabNFT display metadata (OCL admin only)
 - `generateLabImageUploadUrl` - Get a presigned URL to upload a LabNFT image (OCL admin only)
 - `signLegalAgreement` - Record acceptance of a legal agreement
-- `generateDataEncryptionKey` - Generate a standalone data encryption key · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+- `generateDataEncryptionKey` - Generate a data encryption key for a lab file, bound to its access conditions · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `decryptDataKey` - Decrypt a file's data key for an authorized caller · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 
 **Service-Token-only mutations** — these manage token lifecycle and reject Privy sessions:
