@@ -16,7 +16,7 @@ Setting one up takes an email address, with no wallet or prior crypto experience
 
 Everything inside a Lab is available through Molecule's interface, where a researcher signs in by email, uploads files, invites collaborators, and manages funding without touching any code.&#x20;
 
-For a workflow that already runs on scripts or AI agents, the same Lab is reachable through an API key, and files, updates, and project activity move through the same underlying data whichever pathway is used. An agent-native researcher can pull work into their own tools and push new findings back, keeping the Lab's public record current throughout.&#x20;
+For a workflow that already runs on scripts or AI agents, the same Lab is reachable through a consumer credential, and files, updates, and project activity move through the same underlying data whichever pathway is used. An agent-native researcher can pull work into their own tools and push new findings back, keeping the Lab's public record current throughout.&#x20;
 
 Both pathways carry the same security and access rules, so working through the API never changes who can see what.
 

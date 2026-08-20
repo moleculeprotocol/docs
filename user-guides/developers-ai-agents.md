@@ -18,7 +18,7 @@ The reference pages (Contracts, Labs API, MCP Tools) contain the full API specif
 
 Molecule exposes four primary integration layers, each serving different developer needs.
 
-The Labs API is a GraphQL endpoint for reading and writing to Lab data rooms — the offchain encrypted storage where research files, announcements, and metadata live. This is the primary interface for applications that need to manage scientific data: uploading files, querying project activity, searching across Labs, and managing announcements. Authentication uses API keys for reads and service tokens for writes. The full specification, including every query and mutation, is documented in the Labs API reference.
+The Labs API is a GraphQL endpoint for reading and writing to Lab data rooms — the offchain encrypted storage where research files, announcements, and metadata live. This is the primary interface for applications that need to manage scientific data: uploading files, querying project activity, searching across Labs, and managing announcements. Authentication uses consumer credentials for reads and service tokens for writes. The full specification, including every query and mutation, is documented in the Labs API reference.
 
 The Smart Contracts are the onchain layer. The V2 contracts (IPNFT, CrowdSale, SchmackoSwap) on Ethereum mainnet underpin the existing IP-NFT assets, token sales, and trading. The V3 contracts (OnChainLab, OnChainLabFactory, ERC7484Registry, OclTokenizer, and associated modules) are deployed on Base mainnet and Base Sepolia and introduce the modular account architecture plus Lab tokenization. Contract addresses, ABIs, and upgrade patterns are documented in the Contracts reference. The Architecture page provides the full implementation-level breakdown of how these contracts compose.
 
@@ -52,9 +52,9 @@ The Base Sepolia deployment includes all the infrastructure you need for testing
 
 AI agents that operate on Lab data — reading files, running analyses, writing findings back — interact through the Labs API. The protocol treats agent outputs the same as any other data: versioned records with content identifiers, permanent onchain references, and configurable access control.
 
-The simplest agent integration is read-only: query a Lab's data room for files, download them, perform analysis, and present results. This requires only an API key. Querying `labWithDataRoomAndFiles` gives you the complete file list with download URLs, content types, and encryption metadata. For encrypted files, the agent calls `decryptDataKey` with its service token; the backend evaluates the file's onchain access conditions and, if satisfied, returns the plaintext DEK. Access commonly resolves through a [Viewer or Contributor role grant](../technical-deep-dive/roles-and-permissions.md) on the Lab — granted by the Lab owner with `isAgent = true` and a bounded `expiry` matching the agent's session-key lifetime.
+The simplest agent integration is read-only: query a Lab's data room for files, download them, perform analysis, and present results. This requires only a consumer credential. Querying `labWithDataRoomAndFiles` gives you the complete file list with download URLs, content types, and encryption metadata. For encrypted files, the agent calls `decryptDataKey` with its service token; the backend evaluates the file's onchain access conditions and, if satisfied, returns the plaintext DEK. Access commonly resolves through a [Viewer or Contributor role grant](../technical-deep-dive/roles-and-permissions.md) on the Lab — granted by the Lab owner with `isAgent = true` and a bounded `expiry` matching the agent's session-key lifetime.
 
-A write-enabled agent goes further: it reads data, performs analysis, and writes results back as new files in the Lab's data room. This requires both an API key and a service token. Two paths to a service token:
+A write-enabled agent goes further: it reads data, performs analysis, and writes results back as new files in the Lab's data room. This requires both a consumer credential and a service token. Two paths to a service token:
 
 * **Long-lived service token** — mint one via the `generateServiceToken` mutation (wallet signature or Privy session), or contact the Molecule team. The token is a JWT tied to your wallet; write authorization is resolved from that wallet's onchain role on the target Lab.
 * **Pay-per-call via the** [**x402 Gateway**](../api-reference/x402-gateway.md) — for agents that serve external users, charge per request, or don't have pre-provisioned credentials. The gateway settles a USDC payment on Base per call and mints a short-lived (default 5-minute) service token scoped to one mutation. Available for `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createAnnouncement`, `createLab`, `generateDataEncryptionKey`, and `decryptDataKey`.
@@ -99,4 +99,4 @@ If you're building an AI research agent, start with BioAgents. Fork the reposito
 
 If you just want to give an AI assistant Molecule context, add the MCP server URL to your client's config and you're done in sixty seconds.
 
-For API keys, service tokens, attestation requests, or any integration support, reach out on the Molecule Discord.
+For consumer credentials, service tokens, attestation requests, or any integration support, reach out on the Molecule Discord.

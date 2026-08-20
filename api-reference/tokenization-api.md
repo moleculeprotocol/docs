@@ -15,26 +15,26 @@ The Tokenization API enables developers to generate Lab (OCL) membership agreeme
 
 ## Authentication
 
-All Tokenization API mutations require an API key.
+All Tokenization API mutations require a consumer credential.
 
-### Obtaining an API Key
+### Obtaining a Consumer Credential
 
-To request an API key and access to the full technical integration guide:
+To request a consumer credential and access to the full technical integration guide:
 
 1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
 2. Contact the Molecule team with:
    * Your use case and project details
    * Expected tokenization volume
 3. You'll receive:
-   * **API Key** for authentication
+   * **Consumer credential** (`mol_<consumerId>_<secret>`) for authentication
    * **Technical Integration Guide** with complete code examples and ABI files
 
-### Using Your API Key
+### Using Your Consumer Credential
 
-Include the API key in all requests using the `x-api-key` header:
+Include the consumer credential in all requests using the `Authorization` header:
 
 ```bash
-x-api-key: YOUR_API_KEY
+Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
 ```
 
 ***
@@ -92,7 +92,7 @@ Generate the membership agreement for an onchain lab (OCL) — the terms documen
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -d '{
     "query": "mutation GenerateOclMembershipAgreement($agreementData: AWSJSON!) { generateOclMembershipAgreement(agreementData: $agreementData) { agreementKey agreementUrl agreementContentHash agreementType generatedAt isSuccess error { message } } }",
     "variables": {
@@ -170,7 +170,7 @@ The terms message is reconstructed onchain by `OclTermsPermissioner.specificTerm
 
 ### For Lab Tokenization
 
-* **API Key**: Obtained from Molecule team
+* **Consumer credential**: Obtained from Molecule team
 * **Lab Control**: The caller must be the Lab's controller (the current LabNFT owner)
 * **Base ETH Balance**: Sufficient for gas fees on Base
 * **Token Details**: Symbol and initial supply amount (the token name is derived automatically)
@@ -196,7 +196,7 @@ All mutations follow a consistent error response format:
 
 | Error Code                | Description                                  | Solution                               |
 | ------------------------- | -------------------------------------------- | -------------------------------------- |
-| 401 Unauthorized          | Missing or invalid API key                   | Check `x-api-key` header               |
+| 401 Unauthorized          | Missing or invalid consumer credential       | Check `Authorization: Bearer` header   |
 | 400 Bad Request           | Invalid parameters or malformed JSON         | Verify input data format               |
 | `INVALID_INPUT`           | Required fields missing or malformed         | Verify the input object shape          |
 
@@ -270,7 +270,7 @@ console.log('Lab tokenized!', txHash);
 
 ### Security
 
-* Never expose API keys in client-side code
+* Never expose consumer credentials in client-side code
 * Use environment variables for credentials
 * Implement proper wallet key management
 * Verify all signatures and authorizations

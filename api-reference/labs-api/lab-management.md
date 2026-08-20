@@ -58,14 +58,13 @@ The mutation takes a single `CreateLabInput` object:
 **Option 1: Service Token (Recommended for Automation)**
 
 ```bash
-x-api-key: YOUR_API_KEY
+Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
 X-Service-Token: YOUR_SERVICE_TOKEN
 ```
 
 **Option 2: Privy Token (User-Initiated)**
 
 ```bash
-x-api-key: YOUR_API_KEY
 Authorization: Bearer YOUR_PRIVY_TOKEN
 x-wallet-address: YOUR_WALLET_ADDRESS
 ```
@@ -75,7 +74,7 @@ x-wallet-address: YOUR_WALLET_ADDRESS
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { isSuccess message error { message code retryable } lab { oclId shortname labAccountAddress labNftTokenId } } }",
@@ -184,7 +183,7 @@ To obtain a service token for automated lab creation:
    * Use case description
    * Intended automation workflow
 4. You'll receive:
-   * API Key (for all APIs)
+   * Consumer credential (for all APIs)
    * Service Token (JWT for lab creation)
    * Token expiration date
 
@@ -194,7 +193,7 @@ To obtain a service token for automated lab creation:
 
 Retrieve complete details for a specific lab including all files. This is a **public endpoint** - no authentication required. Look up a lab by its `oclId` or, alternatively, by its human-readable `shortname` — provide exactly one.
 
-> **🔓 Public Endpoint**: The `labWithDataRoomAndFiles` query does not require authentication. You only need the `x-api-key` header - no Service Token is needed. File-level access control is handled via encryption rather than query-level authentication.
+> **🔓 Public Endpoint**: The `labWithDataRoomAndFiles` query does not require authentication. You only need a consumer credential (`Authorization: Bearer`) - no Service Token is needed. File-level access control is handled via encryption rather than query-level authentication.
 
 **GraphQL Query:**
 
@@ -230,7 +229,7 @@ query GetProject($oclId: String!) {
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -d '{
     "query": "query GetProject($oclId: String!) { labWithDataRoomAndFiles(oclId: $oclId) { oclId shortname dataRoom { id files { path contentType accessLevel tags } } } }",
     "variables": {
@@ -317,7 +316,7 @@ mutation GenerateLabImageUploadUrl($oclId: String!, $contentType: String!) {
 
 Return the active members of a lab (owner, contributors, viewers), sourced from the indexed `ocl_user` table. Expired grants are excluded.
 
-> **Public query** — only an API Key is required. The same data is also exposed on the public `Lab` / `LabRef.members` field.
+> **Public query** — only a consumer credential is required. The same data is also exposed on the public `Lab` / `LabRef.members` field.
 
 ```graphql
 query ListLabMembers($oclId: String!) {

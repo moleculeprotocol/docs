@@ -22,8 +22,8 @@ Upload files to lab datarooms for secure, decentralized research data storage, a
 
 **Authentication:**
 
-* **Most queries** (read operations): API Key only — public. One exception, `legalAgreementTemplate`, needs a Service Token or an authenticated session.
-* **Write mutations** (write operations): API Key plus **either** a Service Token (`X-Service-Token`) **or** a Privy user session (`Authorization` + `x-wallet-address`) — the two paths are interchangeable. Exceptions: `extendServiceToken` and `revokeServiceToken` are Service-Token-only, and `generateServiceToken` bootstraps a token from a Privy session or wallet signature.
+* **Most queries** (read operations): consumer credential only — public. One exception, `legalAgreementTemplate`, needs a Service Token or an authenticated session.
+* **Write mutations** (write operations): consumer credential plus **either** a Service Token (`X-Service-Token`) **or** a Privy user session (`Authorization` + `x-wallet-address`) — the two paths are interchangeable. Exceptions: `extendServiceToken` and `revokeServiceToken` are Service-Token-only, and `generateServiceToken` bootstraps a token from a Privy session or wallet signature.
 
 [View Labs API Documentation →](labs-api/README.md)
 
@@ -39,7 +39,7 @@ Tokenize Labs into fungible IP Tokens (IPTs) on Base.
 * Generate Lab (OCL) membership agreements
 * Manage the complete onchain tokenization workflow
 
-**Authentication:** API Key required
+**Authentication:** Consumer credential required
 
 [View Tokenization API Documentation →](tokenization-api.md)
 
@@ -72,7 +72,7 @@ Query and browse IP-NFTs, IP Tokens (IPTs), and market data across the Molecule 
 * Access trading data and market metrics
 * Build marketplace UIs and token screeners
 
-**Authentication:** API Key required
+**Authentication:** Consumer credential required
 
 [View IPNFT API Documentation (Deprecated) →](ipnft-api.md)
 
@@ -80,7 +80,7 @@ Query and browse IP-NFTs, IP Tokens (IPTs), and market data across the Molecule 
 
 ## Authentication
 
-All Molecule APIs require an API key; the Labs API additionally uses a Service Token for write operations. Obtaining credentials, the per-API header requirements, and the full Labs API authentication model (public queries vs. protected mutations) are documented on the dedicated [Authentication](authentication.md) page.
+All Molecule APIs require a consumer credential; the Labs API additionally uses a Service Token for write operations. Obtaining credentials, the per-API header requirements, and the full Labs API authentication model (public queries vs. protected mutations) are documented on the dedicated [Authentication](authentication.md) page.
 
 ***
 
@@ -99,7 +99,7 @@ Staging:    https://staging.graphql.api.molecule.xyz/graphql
 
 ### 1. Get API Access
 
-Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your API key.
+Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your consumer credential.
 
 ### 2. Choose Your API
 
@@ -113,12 +113,12 @@ Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your 
 
 ### 3. Make Your First Request
 
-**Example (Labs API — public `labs` query, API key only):**
+**Example (Labs API — public `labs` query, consumer credential only):**
 
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -d '{
     "query": "query { labs(perPage: 5) { nodes { oclId name shortname } totalCount } }"
   }'

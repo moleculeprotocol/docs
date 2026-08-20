@@ -50,7 +50,7 @@ mutation InitiateFileUpload(
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "mutation InitiateFileUpload($oclId: String!, $contentType: String!, $contentLength: Int!) { initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) { uploadToken uploadUrl uploadUrlExpiry method headers { key value } isSuccess error { message code retryable } } }",
@@ -182,7 +182,7 @@ _\*Use `path` for new files OR `ref` for versions - not both_
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "mutation FinishFileUpload($oclId: String!, $uploadToken: String!, $path: String, $accessLevel: String!, $changeBy: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, changeBy: $changeBy, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { datasetId contentHash version isSuccess message error { message code retryable } } }",
@@ -242,7 +242,7 @@ async function uploadFileToLabs(filePath, oclId, serviceToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.API_KEY,
+        "Authorization": `Bearer ${process.env.CONSUMER_CREDENTIAL}`,
         "X-Service-Token": serviceToken,
       },
       body: JSON.stringify({
@@ -306,7 +306,7 @@ async function uploadFileToLabs(filePath, oclId, serviceToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.API_KEY,
+        "Authorization": `Bearer ${process.env.CONSUMER_CREDENTIAL}`,
         "X-Service-Token": serviceToken,
       },
       body: JSON.stringify({
@@ -388,7 +388,7 @@ module.exports = { uploadFileToLabs };
 **Usage:**
 
 ```bash
-API_KEY="your-api-key" SERVICE_TOKEN="your-service-token" WALLET_ADDRESS="0x..." node upload.js data.pdf 0x0101000000000000000000000000000000000000000000000000000000000042
+CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret" SERVICE_TOKEN="your-service-token" WALLET_ADDRESS="0x..." node upload.js data.pdf 0x0101000000000000000000000000000000000000000000000000000000000042
 ```
 ---
 
@@ -436,7 +436,7 @@ mutation CreateAnnouncement(
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!, $attachments: [String!]) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body, attachments: $attachments) { isSuccess message error { message } } }",
@@ -506,7 +506,7 @@ mutation UpdateFileMetadata(
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "mutation UpdateFileMetadata($oclId: String!, $ref: String!, $accessLevel: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { updateFileMetadata(oclId: $oclId, ref: $ref, accessLevel: $accessLevel, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { ref isSuccess message error { message } } }",
@@ -560,7 +560,7 @@ mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) {
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) { deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) { oclId filePath isSuccess error { message } } }",
@@ -603,7 +603,7 @@ query GetFile($oclId: String!, $path: String!) {
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: YOUR_API_KEY' \
+  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query GetFile($oclId: String!, $path: String!) { dataRoomFile(oclId: $oclId, path: $path) { did path contentType accessLevel downloadUrl } }",
