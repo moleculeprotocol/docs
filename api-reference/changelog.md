@@ -74,7 +74,7 @@ Top-level identifiers on `Lab` / `LabRef` were renamed away from the legacy IP-N
 
 ## IPNFT API (Deprecated)
 
-> The IPNFT API is deprecated. The changes below are preserved for integrations that have not yet migrated. See the [IPNFT API reference](ipnft-api.md).
+> The IPNFT API is deprecated. The changes below are preserved for integrations that have not yet migrated. See the [IPNFT API reference](ipnft-api-deprecated.md).
 
 ### February 2026
 

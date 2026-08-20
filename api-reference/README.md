@@ -74,7 +74,7 @@ Query and browse IP-NFTs, IP Tokens (IPTs), and market data across the Molecule 
 
 **Authentication:** Consumer credential required
 
-[View IPNFT API Documentation (Deprecated) →](ipnft-api.md)
+[View IPNFT API Documentation (Deprecated) →](ipnft-api-deprecated.md)
 
 ***
 
@@ -108,8 +108,8 @@ Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your 
 | Upload files to a Lab dataroom           | [Labs API](labs-api/README.md)          |
 | Tokenize a Lab into IP Tokens (IPTs)     | [Tokenization API](tokenization-api.md) |
 | Pay per call without a long-lived token  | [x402 Gateway](x402-gateway.md)         |
-| Browse IP-NFTs and IPTs (legacy)         | [IPNFT API (Deprecated)](ipnft-api.md)  |
-| Check market prices and trading data (legacy) | [IPNFT API (Deprecated)](ipnft-api.md) |
+| Browse IP-NFTs and IPTs (legacy)         | [IPNFT API (Deprecated)](ipnft-api-deprecated.md)  |
+| Check market prices and trading data (legacy) | [IPNFT API (Deprecated)](ipnft-api-deprecated.md) |
 
 ### 3. Make Your First Request
 
