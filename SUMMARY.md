@@ -37,6 +37,7 @@
 * [🔐 Authentication](api-reference/authentication.md)
 * [⚙️ Labs API](api-reference/labs-api/README.md)
   * [Lab Management](api-reference/labs-api/lab-management.md)
+  * [Access Policies](api-reference/labs-api/access-policies.md)
   * [Files](api-reference/labs-api/files.md)
   * [Browse & Search](api-reference/labs-api/browse-and-search.md)
   * [Legal Agreements](api-reference/labs-api/legal-agreements.md)

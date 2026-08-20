@@ -25,11 +25,79 @@ All Molecule APIs (Labs, Tokenization, and IPNFT (Deprecated) — they share one
 
 ## Labs API
 
+### Lab access policies — permissionless & condition-gated labs
+
+Labs can now open individual data-room capabilities beyond their onchain members. This is **purely additive**: a lab created without a policy behaves exactly as before, including its error responses, and a role grant always wins over a policy, so no existing integration changes.
+
+#### New mutation
+
+| Mutation                | Description                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `updateLabAccessPolicy` | Set a lab's contribution-access policy — open it up, gate it back down (`preset: GATED`), or configure per-capability rules. Owner-only |
+
+#### New input field
+
+`CreateLabInput` gained an optional `accessPolicy: LabAccessPolicyInput`, which creates the lab already open (or condition-gated). Omitting it keeps the default role-gated lab. Passing it restricts `createLab` to the lab owner.
+
+#### New output field
+
+`Lab.accessPolicy` and `LabRef.accessPolicy` expose the stored policy as `LabAccessPolicy` — public, since policies gate access rather than being secrets. Labs without a stored policy return the synthesized `GATED` default. Render from `capabilities`; `preset` is a provenance hint and is `null` for custom configurations.
+
+#### New enums and inputs
+
+`LabAccessPreset` (`GATED` | `OPEN`), `LabCapability` (`ADD_FILES` | `MODIFY_FILES` | `DELETE_FILES` | `CREATE_ANNOUNCEMENTS` | `DECRYPT_FILES`), `LabPolicyRuleKind` (`ROLES` | `ANYONE` | `CONDITIONS`), `LabAccessPolicyInput`, `LabCapabilityPolicyInput`, and the output types `LabAccessPolicy` / `LabCapabilityPolicy`.
+
+#### What to watch for when integrating
+
+* Writes to an open lab still require authentication — an API Key plus a Privy session or a Service Token. Permissionless is not unauthenticated.
+* On a policy-granted write, `changeBy` is pinned to the authenticated caller; a spoofed value is ignored.
+* `DECRYPT_FILES` defaults to viewer-or-above (not contributor-or-above like the write capabilities) and is **not** included in the `OPEN` preset — an open lab's encrypted files stay member-readable-only until the owner adds an explicit rule.
+* Denials add second-level causes on `details.reason`: `CAPABILITY_DENIED`, `INVALID_ACCESS_POLICY`, `POLICY_CHECK_UNAVAILABLE` (retryable), `LAB_ACCESS_CHECK_FAILED`. No new top-level `error.code` values were introduced.
+
+Full reference: [Access Policies](labs-api/access-policies.md).
+
+---
+
+### Breaking: `generateDataEncryptionKey` now requires `oclId` and `accessControlConditions`
+
+Minting a data encryption key is now lab-scoped and bound to the file's condition array up front, closing a gap where an encrypted file's DEK could be re-published under different access conditions after the fact.
+
+* `generateDataEncryptionKey` gained two **required** arguments: `oclId: String!` and `accessControlConditions: String!`. Calls with no arguments now fail `VALIDATION_FAILED`.
+* The returned `encryptedDek` carries a `v1:` bound-marker prefix ahead of the base64 ciphertext — pass it through to `finishCreateOrUpdateFile` **verbatim**. A new `dekContextVersion` field (`"v1"`, or `null` for legacy pre-cutover DEKs) surfaces the binding state on both the mutation result and `EncryptionMetadata`.
+* The DEK is cryptographically bound (KMS `EncryptionContext`) to `{oclId, sha256(canonicalized accessControlConditions)}`. Passing a different condition array to `finishCreateOrUpdateFile` than the one used to generate the key produces a permanently undecryptable file.
+* Minting is gated by the lab's `ADD_FILES` capability (falling back to `MODIFY_FILES`) — the same rule an open lab's contributions follow.
+
+Full reference: [Data Encryption Keys](labs-api/files.md#data-encryption-keys) and [DEK Binding](../technical-deep-dive/data/data-privacy-and-access.md#dek-binding).
+
+---
+
+### New capability: `DECRYPT_FILES`, and a lab-level gate on `decryptDataKey`
+
+`decryptDataKey` called with an `oclId` is now gated by the new `DECRYPT_FILES` access-policy capability *before* the file's own `accessControlConditions` are evaluated. The default behavior is unchanged (viewer-or-above membership, for both a Privy session and a service token) — what's new is that a lab owner can widen it via `updateLabAccessPolicy`, so a non-member who contributed to an open lab can read their own encrypted submission back. The `tokenUri`-only path (IPFS agreement documents, no `oclId`) is unaffected and keeps its existing paid-access carve-out, but now also goes through the same x402 `allowedMutations` scope check as every other gated mutation (previously bypassed on that branch).
+
+Full reference: [Decrypt Authorization](../technical-deep-dive/data/data-privacy-and-access.md#decrypt-authorization).
+
+---
+
+### Breaking: service-token wallet sign-in moves to EIP-712 + single-use nonces
+
+`getServiceSignInMessage` now returns a stateful, single-use challenge instead of a deterministic string, closing a replay gap where one captured signature could mint tokens indefinitely.
+
+* `message` is now JSON-serialized **EIP-712 typed data** — sign it with `eth_signTypedData_v4` (viem `signTypedData`). Signatures over the old plain-text message (`personal_sign`) are **no longer accepted**.
+* The query response gained `nonce`, `issuedAt`, and `expiresAt`. The nonce is single-use, expires after roughly 10 minutes, and must be passed to `generateServiceToken`'s new required-with-signature `nonce` argument. A reused or expired nonce fails `UNAUTHENTICATED` / `details.reason: "INVALID_NONCE"`.
+* `expiresIn` on both `generateServiceToken` and `extendServiceToken` is now clamped to **\[1 hour, 2 years]**; out-of-range or malformed values fail `VALIDATION_FAILED` instead of a masked internal error.
+
+Full reference: [Obtaining Tokens](labs-api/service-tokens.md#obtaining-tokens).
+
+---
+
 ### GraphQL introspection disabled and query depth capped in production
 
 The production endpoint (shared by all Molecule APIs — see [API Overview](README.md)) no longer serves `__schema` / `__type` introspection queries: they now return a validation error. `__typename` still resolves. Selection-set depth is also capped at 10 in production, with scalar leaves counted as a level (`{ root { child { name } } }` is depth 3). A query beyond that limit fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data — a plain GraphQL error, not the catalogued error shape used elsewhere, so handle both.
 
 **Migration:** If your codegen or tooling discovers the schema by introspecting the production endpoint, that now fails — request a current copy of the schema from the Molecule team (see [Getting Support](README.md)) rather than introspecting production. If you see `QueryDepthLimitReached`, flatten the query to 10 levels of nesting or fewer; this limit was not previously enforced.
+
+---
 
 ### `*V2` operations and pre-OCL naming removed
 

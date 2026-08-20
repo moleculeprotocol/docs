@@ -87,6 +87,8 @@ x-wallet-address: YOUR_WALLET_ADDRESS
 
 Either way, the caller still has to be authorized for the target lab — a Service Token carries its own lab scope, and a Privy session is checked against the wallet's onchain role (LabNFT owner, authorized multisig signer, or an active role on `AccessResolver`). Supplying neither returns a `NO_AUTH` error naming both paths.
 
+> **Permissionless labs still authenticate.** A lab owner can open specific capabilities — contributing files, editing, deleting, announcing — to callers who hold no role, either unconditionally, until a deadline, or subject to an onchain condition. That removes the *membership* requirement, never the *identity* one: the caller still presents an API Key plus a Privy session or a Service Token, and any wallet can self-issue a Service Token via the [wallet-signature flow](labs-api/service-tokens.md#obtaining-tokens). See [Access Policies](labs-api/access-policies.md).
+
 **Mutations accepting either path:**
 
 - `createLab` - Create a lab (data room) for an onchain lab (OCL) · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
@@ -95,10 +97,11 @@ Either way, the caller still has to be authorized for the target lab — a Servi
 - `updateFileMetadata` - Update file metadata
 - `deleteDataRoomFile` - Delete a file
 - `createAnnouncement` - Create an announcement · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+- `updateLabAccessPolicy` - Set a lab's contribution-access policy (OCL admin only)
 - `updateLabNftMetadata` - Update LabNFT display metadata (OCL admin only)
 - `generateLabImageUploadUrl` - Get a presigned URL to upload a LabNFT image (OCL admin only)
 - `signLegalAgreement` - Record acceptance of a legal agreement
-- `generateDataEncryptionKey` - Generate a standalone data encryption key · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
+- `generateDataEncryptionKey` - Generate a data encryption key for a lab file, bound to its access conditions · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 - `decryptDataKey` - Decrypt a file's data key for an authorized caller · 💳 also available pay-per-call via [x402 Gateway](x402-gateway.md)
 
 **Service-Token-only mutations** — these manage token lifecycle and reject Privy sessions:

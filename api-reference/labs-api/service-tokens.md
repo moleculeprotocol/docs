@@ -4,7 +4,9 @@
 
 Service tokens must be requested from the Molecule team (see [Authentication](../authentication.md) section above).
 
-Alternatively, a service can obtain a token **self-service** by proving control of its wallet — useful for autonomous agents, bots, and CI/CD pipelines that don't have a browser-based Privy session. This is a two-step flow: fetch the deterministic sign-in message, sign it with the service wallet, then exchange the signature for a token.
+Alternatively, a service can obtain a token **self-service** by proving control of its wallet — useful for autonomous agents, bots, and CI/CD pipelines that don't have a browser-based Privy session. This is a three-step flow: fetch a sign-in message carrying a single-use nonce, sign it with the service wallet, then exchange the signature (and nonce) for a token.
+
+> **Breaking change.** The sign-in message is now **EIP-712 typed data**, not a plain string, and must be signed with `eth_signTypedData_v4` — signatures over the old `personal_sign` message are no longer accepted. Each message also embeds a server-issued, single-use `nonce` that expires after about 10 minutes; a captured signature can mint exactly one token, and only within that window.
 
 **Step 1 — Get the sign-in message (`getServiceSignInMessage`):**
 
@@ -15,6 +17,9 @@ query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
     serviceName: $serviceName
   ) {
     message
+    nonce
+    issuedAt
+    expiresAt
   }
 }
 ```
@@ -26,21 +31,43 @@ query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
 
 Public query — no authentication required.
 
-**Step 2 — Exchange the signature for a token (`generateServiceToken`):**
+| Field      | Type         | Description                                                                                                       |
+| ---------- | ------------ | ------------------------------------------------------------------------------------------------------------------ |
+| message    | String       | JSON-serialized EIP-712 typed data (`{domain, types, primaryType, message}`) — sign this whole string, don't hand-edit it |
+| nonce      | String       | Single-use nonce embedded in `message`; echo it into `generateServiceToken`                                        |
+| issuedAt   | AWSTimestamp | Unix seconds the message was issued at                                                                             |
+| expiresAt  | AWSTimestamp | Unix seconds the nonce (and any signature over it) expires at — sign and redeem before this                       |
 
-Sign the returned `message` with the service wallet, then submit the signature:
+**Step 2 — Sign the typed data:**
+
+Sign `message` with `eth_signTypedData_v4`, then submit the signature and nonce:
+
+```ts
+import { createWalletClient, http } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+
+const account = privateKeyToAccount(SERVICE_WALLET_PRIVATE_KEY);
+const client = createWalletClient({ account, transport: http(RPC_URL) });
+
+const typedData = JSON.parse(message); // `message` from Step 1
+const messageSignature = await client.signTypedData({ account, ...typedData });
+```
+
+**Step 3 — Exchange the signature for a token (`generateServiceToken`):**
 
 ```graphql
 mutation GenerateServiceToken(
   $serviceName: String!
   $walletAddress: String!
   $messageSignature: String!
+  $nonce: String!
   $expiresIn: String
 ) {
   generateServiceToken(
     serviceName: $serviceName
     walletAddress: $walletAddress
     messageSignature: $messageSignature
+    nonce: $nonce
     expiresIn: $expiresIn
   ) {
     token
@@ -54,14 +81,15 @@ mutation GenerateServiceToken(
 }
 ```
 
-| Parameter        | Type   | Required | Description                                                                  |
-| ---------------- | ------ | -------- | ---------------------------------------------------------------------------- |
-| serviceName      | String | Yes      | Name of the service the token is issued for                                  |
-| walletAddress    | String | No\*     | Service wallet address (required together with `messageSignature`)           |
-| messageSignature | String | No\*     | Hex-encoded signature of the sign-in message (required with `walletAddress`) |
-| expiresIn        | String | No       | Token lifetime (e.g. `"30d"`, `"720h"`)                                      |
+| Parameter        | Type   | Required | Description                                                                                                                                    |
+| ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| serviceName      | String | Yes      | Name of the service the token is issued for                                                                                                      |
+| walletAddress    | String | No\*     | Service wallet address (required together with `messageSignature` and `nonce`)                                                                  |
+| messageSignature | String | No\*     | Hex-encoded `eth_signTypedData_v4` signature over the typed data from Step 1                                                                     |
+| nonce            | String | No\*     | The nonce from Step 1; consumed atomically on a successful mint — reusing it fails with `UNAUTHENTICATED` / `details.reason: "INVALID_NONCE"`     |
+| expiresIn        | String | No       | Token lifetime (e.g. `"30d"`, `"720h"`), clamped to **\[1 hour, 2 years]** — out of range or malformed fails `VALIDATION_FAILED`. Defaults to 180 days |
 
-\* `walletAddress` and `messageSignature` must be provided together for signature-based issuance. The returned `token` is the JWT to pass as `X-Service-Token` on subsequent requests.
+\* `walletAddress`, `messageSignature`, and `nonce` must all be provided together for signature-based issuance. The returned `token` is the JWT to pass as `X-Service-Token` on subsequent requests. The same `expiresIn` clamp applies to `extendServiceToken` below.
 
 ## Extending Token Expiration
 
@@ -84,7 +112,7 @@ mutation ExtendServiceToken($tokenId: String!, $expiresIn: String!) {
 | Parameter | Type   | Description                                     |
 | --------- | ------ | ----------------------------------------------- |
 | tokenId   | String | Token ID provided when token was generated      |
-| expiresIn | String | New duration (e.g., `"30d"`, `"720h"`, `"90d"`) |
+| expiresIn | String | New duration (e.g., `"30d"`, `"720h"`, `"90d"`), clamped to **\[1 hour, 2 years]** |
 
 **Example:**
 
