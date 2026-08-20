@@ -58,7 +58,7 @@ The mutation takes a single `CreateLabInput` object:
 **Option 1: Service Token (Recommended for Automation)**
 
 ```bash
-Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
+Authorization: YOUR_CONSUMER_CREDENTIAL
 X-Service-Token: YOUR_SERVICE_TOKEN
 ```
 
@@ -74,7 +74,7 @@ x-wallet-address: YOUR_WALLET_ADDRESS
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
+  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { isSuccess message error { message code retryable } lab { oclId shortname labAccountAddress labNftTokenId } } }",
@@ -229,7 +229,7 @@ query GetProject($oclId: String!) {
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
+  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
     "query": "query GetProject($oclId: String!) { labWithDataRoomAndFiles(oclId: $oclId) { oclId shortname dataRoom { id files { path contentType accessLevel tags } } } }",
     "variables": {

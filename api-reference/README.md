@@ -118,7 +118,7 @@ Contact the Molecule team via [Discord](https://t.co/L0VEiy4Bjk) to obtain your 
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
+  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
     "query": "query { labs(perPage: 5) { nodes { oclId name shortname } totalCount } }"
   }'

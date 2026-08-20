@@ -72,7 +72,7 @@ These fields are sourced from the Molecule CMS and hydrated only when requested 
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
+  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
     "query": "query ListProjects($page: Int, $perPage: Int) { labs(page: $page, perPage: $perPage) { nodes { oclId shortname name labAccountAddress trlValue } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
     "variables": {
@@ -189,7 +189,7 @@ query GetProjectActivity(
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
+  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
     "query": "query GetActivity($oclId: String!, $page: Int) { labActivity(oclId: $oclId, page: $page, perPage: 20) { pageInfo { hasNextPage currentPage totalPages } nodes { __typename ... on LabEventAnnouncement { announcement { headline attachments { did path contentType } } } } } }",
     "variables": {
@@ -393,7 +393,7 @@ query SearchLabs(
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
+  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query SearchLabs($prompt: String!, $page: Int, $perPage: Int) { searchLabs(prompt: $prompt, page: $page, perPage: $perPage) { nodes { __typename ... on SearchLabsFileHit { entry { lab { oclId shortname } path file { contentType description tags } } } ... on SearchLabsAnnouncementHit { announcement { headline body } lab { shortname } } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
@@ -410,7 +410,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
+  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query SearchLabs($prompt: String!, $filters: SearchLabsFilters) { searchLabs(prompt: $prompt, filters: $filters) { nodes { __typename ... on SearchLabsFileHit { entry { path file { tags accessLevel } } } } totalCount } }",
@@ -442,7 +442,7 @@ const searchResults = await fetch(apiUrl, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${process.env.CONSUMER_CREDENTIAL}`,
+    "Authorization": process.env.CONSUMER_CREDENTIAL,
     "X-Service-Token": process.env.SERVICE_TOKEN,
   },
   body: JSON.stringify({

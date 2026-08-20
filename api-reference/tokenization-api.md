@@ -31,10 +31,10 @@ To request a consumer credential and access to the full technical integration gu
 
 ### Using Your Consumer Credential
 
-Include the consumer credential in all requests using the `Authorization` header:
+Include the consumer credential in all requests using the `Authorization` header, with no `Bearer` prefix:
 
 ```bash
-Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
+Authorization: YOUR_CONSUMER_CREDENTIAL
 ```
 
 ***
@@ -92,7 +92,7 @@ Generate the membership agreement for an onchain lab (OCL) — the terms documen
 ```bash
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
-  -H 'Authorization: Bearer YOUR_CONSUMER_CREDENTIAL' \
+  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
     "query": "mutation GenerateOclMembershipAgreement($agreementData: AWSJSON!) { generateOclMembershipAgreement(agreementData: $agreementData) { agreementKey agreementUrl agreementContentHash agreementType generatedAt isSuccess error { message } } }",
     "variables": {

@@ -12,17 +12,19 @@ All Molecule APIs require authentication with a consumer credential. To request 
    * **Consumer credential** (`mol_<consumerId>_<secret>`) - Required for all APIs
    * **Service Token** - Additional token for Labs API (if needed)
 
-Send the consumer credential as a bearer token: `Authorization: Bearer mol_<consumerId>_<secret>`. Treat the entire string as a secret — it is not split into a public/private part.
+Send the consumer credential as the `Authorization` header value directly — **no `Bearer` prefix**: `Authorization: mol_<consumerId>_<secret>`. This differs from the Privy path below, which does use `Bearer`; adding `Bearer` in front of a consumer credential makes the request fail authentication. Treat the entire string as a secret — it is not split into a public/private part.
 
 ## Authentication Headers
 
 | API                                       | Required Headers                                                                                                  | Example                                                                                                                       |
 | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| **Labs API (queries)**                    | `Authorization`                                                                                                   | `Authorization: Bearer mol_<consumerId>_<secret>`                                                                            |
-| **Labs API (mutations, service token)**   | <p><code>Authorization</code><br><code>X-Service-Token</code></p>                                                 | <p><code>Authorization: Bearer mol_&lt;consumerId&gt;_&lt;secret&gt;</code><br><code>X-Service-Token: YOUR_SERVICE_TOKEN</code></p> |
+| **Labs API (queries)**                    | `Authorization`                                                                                                   | `Authorization: mol_<consumerId>_<secret>`                                                                                   |
+| **Labs API (mutations, service token)**   | <p><code>Authorization</code><br><code>X-Service-Token</code></p>                                                 | <p><code>Authorization: mol_&lt;consumerId&gt;_&lt;secret&gt;</code><br><code>X-Service-Token: YOUR_SERVICE_TOKEN</code></p>        |
 | **Labs API (mutations, Privy user)**      | <p><code>Authorization</code><br><code>x-wallet-address</code></p>                                                | <p><code>Authorization: Bearer PRIVY_TOKEN</code><br><code>x-wallet-address: 0x…</code></p>                                  |
-| **Tokenization API**                      | `Authorization`                                                                                                   | `Authorization: Bearer mol_<consumerId>_<secret>`                                                                            |
-| **IPNFT API (Deprecated)**                | `Authorization`                                                                                                   | `Authorization: Bearer mol_<consumerId>_<secret>`                                                                            |
+| **Tokenization API**                      | `Authorization`                                                                                                   | `Authorization: mol_<consumerId>_<secret>`                                                                                   |
+| **IPNFT API (Deprecated)**                | `Authorization`                                                                                                   | `Authorization: mol_<consumerId>_<secret>`                                                                                   |
+
+> **No `Bearer` prefix on consumer credentials.** `mol_<consumerId>_<secret>` goes directly in the `Authorization` header. Only a Privy user token uses `Authorization: Bearer <token>`.
 
 ***
 
@@ -58,7 +60,7 @@ Summary of the model:
 - `listLabMembers` - List a lab's members
 
 ```bash
-Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
+Authorization: YOUR_CONSUMER_CREDENTIAL
 ```
 
 **Authenticated query** — consumer credential **plus** a Service Token, or an authenticated user session:
@@ -72,7 +74,7 @@ All write mutations require a **consumer credential** plus proof of caller ident
 **Option 1 — Service Token** (services, bots, agents, CI/CD):
 
 ```bash
-Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
+Authorization: YOUR_CONSUMER_CREDENTIAL
 X-Service-Token: YOUR_SERVICE_TOKEN
 ```
 
@@ -105,7 +107,7 @@ Either way, the caller still has to be authorized for the target lab — a Servi
 - `revokeServiceToken` - Revoke a service token
 
 ```bash
-Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
+Authorization: YOUR_CONSUMER_CREDENTIAL
 X-Service-Token: YOUR_SERVICE_TOKEN
 ```
 
@@ -133,13 +135,13 @@ To obtain access credentials:
 **For all queries** (read-only operations):
 
 ```bash
-Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
+Authorization: YOUR_CONSUMER_CREDENTIAL
 ```
 
 **For mutations** (write operations) — as a service:
 
 ```bash
-Authorization: Bearer YOUR_CONSUMER_CREDENTIAL
+Authorization: YOUR_CONSUMER_CREDENTIAL
 X-Service-Token: YOUR_SERVICE_TOKEN
 ```
 
