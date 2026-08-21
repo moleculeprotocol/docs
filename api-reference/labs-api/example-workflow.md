@@ -1,6 +1,8 @@
-# Example Workflow: Authenticate, Mint, Create, Sign, Encrypt, Upload
+# Example Workflow: Authenticate, Mint, Create, Sign, Upload
 
-A complete, runnable walkthrough that takes a wallet with **no prior credentials and no onchain lab** all the way to an encrypted file living in its dataroom: prove control of the wallet to mint a service token, mint the LabNFT, register the dataroom, sign the assignment agreement, then encrypt and upload a file. Each step below links back to its full reference; the [Complete Script](#complete-script) at the end wires all five together.
+A complete, runnable walkthrough that takes a wallet with **no prior credentials and no onchain lab** all the way to a file living in its dataroom: prove control of the wallet to mint a service token, mint the LabNFT, register the dataroom, sign the assignment agreement, then upload a file. Each step below links back to its full reference; the [Complete Script](#complete-script) at the end wires all five together.
+
+> **Encryption is optional.** Step 5 below shows the encrypted path since it's the more involved one to get right, but most files don't need it — a plain `PUBLIC` upload skips the DEK request and `encryptionMetadata` entirely and is just the three-call `initiateCreateOrUpdateFile` → PUT → `finishCreateOrUpdateFile` flow from [Files](files.md). Reach for encryption when the file is confidential and access should be gated by onchain role or ownership — see [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md).
 
 This is the workflow an autonomous agent needs to run end-to-end without any browser-based user interaction or manually provisioned Service Token — the only thing it needs ahead of time is a consumer credential and a funded wallet. It's written against **staging** (Base Sepolia, testnet ETH) end to end; see [Running in Production](#running-in-production) at the bottom for the values to swap.
 
@@ -242,7 +244,9 @@ if (!signResult.signLegalAgreement.isSuccess) {
 }
 ```
 
-## Step 5: Encrypt and Upload a File
+## Step 5: Upload a File (Encrypted)
+
+> **Skip 5a–5c if you don't need encryption.** For a `PUBLIC` file, go straight to 5d with `accessLevel: "PUBLIC"` and omit `encryptionMetadata` — that's the whole upload. The DEK request, local AES-256-GCM encryption, and `accessControlConditions` below are only for files that must be access-gated.
 
 Request a data encryption key, AES-256-GCM encrypt the file locally via Web Crypto, then run the standard three-step upload with `encryptionMetadata` attached. Uses `ACCESS_RESOLVER_ADDRESS` / `ACCESS_CONDITION_CHAIN` from the config block. Full reference: [Files — Advanced: Encrypted File Upload](files.md#advanced-encrypted-file-upload) and [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md).
 
@@ -575,7 +579,7 @@ async function main() {
   }
   console.log("4/5 Agreement signed —", signResult.signLegalAgreement.path);
 
-  // ---- Step 5: Encrypt and Upload a File ----
+  // ---- Step 5: Upload a File (encrypted — see the callout above Step 5) ----
   const plaintext = readFileSync(filePath);
 
   const dekResult = await graphql(`
