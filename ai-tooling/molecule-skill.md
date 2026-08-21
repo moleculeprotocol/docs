@@ -74,7 +74,7 @@ The operating wallet pays real costs: USDC on Base for x402-billed mutations plu
 
 ### Configuration
 
-All configuration and secrets are supplied as environment variables injected into the MCP server process by your agent harness. Secrets are never passed as tool arguments and never appear in the agent conversation. The concrete values for staging and production (endpoints, chain, contract addresses) are provided with plugin access.
+All configuration and secrets are supplied as environment variables injected into the MCP server process by your agent harness. Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys. The concrete values for staging and production (endpoints, chain, contract addresses) are provided with plugin access.
 
 | Variable                                                     | Purpose                                                                                |
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
@@ -96,11 +96,11 @@ The wallet variables are all optional until you pick a backend — configure the
 
 ### Security Model
 
-The plugin is designed so that secrets and confidential data cannot leak into the agent conversation:
+The plugin is designed to keep secrets and confidential data out of the agent conversation:
 
-* **Secrets stay in the environment.** Tools read credentials from environment variables only; the agent passes file paths, queries, and addresses — never keys or tokens.
-* **The encryption key never leaves the server.** For private uploads, the data-encryption key is held in MCP server memory and referenced by an opaque handle; the plaintext key is never returned to the agent, written to a file, or logged.
-* **Fail-closed confidentiality.** Once a file enters the private upload path, the server itself refuses to upload that file's plaintext or to finalize it as public — even if the agent were instructed to. A failed private upload aborts; it never falls back to a public one.
+* **Secrets stay in the environment.** Tools read credentials from environment variables; the agent passes file paths, queries, and addresses — no tool requires a key or token as an argument. The one deliberate exception is service-token bootstrapping: the `issue_service_token` tools return the issued JWT so you can store it in your harness's secret configuration. Prefer issuing it once during setup (and setting `MOLECULE_SERVICE_TOKEN`) over issuing per run, so the token stays out of agent transcripts.
+* **The encryption key never leaves the server.** For private uploads, the data-encryption key is held in MCP server memory and referenced by an opaque, short-lived handle; the plaintext key is never returned to the agent, written to a file, or logged.
+* **Fail-closed confidentiality.** Once a file enters the private upload path, the server refuses — for the lifetime of the server process, with no override flag — to upload that file's plaintext or to finalize it as public, even if the agent were instructed to. A failed private upload aborts; it never falls back to a public one.
 * **Local encryption.** Files are encrypted with AES-256-GCM before upload, byte-for-byte compatible with the Labs client encryption, and verified by content hash after decryption.
 
 ### Installation
