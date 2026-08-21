@@ -74,7 +74,7 @@ The operating wallet pays real costs: USDC on Base for x402-billed mutations plu
 
 ### Configuration
 
-All configuration and secrets are plain **process environment variables** read by the MCP server subprocess — set them wherever your harness injects env into MCP servers (the `env` block of the MCP registration, or Claude Code's settings files as shown in [Installation](molecule-skill.md#claude-code)). Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys. The x402 Gateway base URL and contract addresses for each environment are provided with plugin access.
+All configuration and secrets are plain **process environment variables** read by the MCP server subprocess — set them wherever your harness injects env into MCP servers (the `env` block of the MCP registration, or Claude Code's settings files as shown in [Installation](molecule-skill.md#claude-code)). Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys. The x402 Gateway base URL and contract addresses for each environment are provided by the Molecule team (see [Getting the Plugin](molecule-skill.md#getting-the-plugin)).
 
 | Variable                                                     | Purpose                                                                                |
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
@@ -105,10 +105,16 @@ The plugin is designed to keep secrets and confidential data out of the agent co
 
 ### Getting the Plugin
 
-The plugin ships as a single directory, `molecule-plugin/`, from a repository that is not publicly listed — request access on our [Discord community](https://t.co/L0VEiy4Bjk), and you'll receive it together with the environment-specific configuration values (x402 Gateway base URL and contract addresses). What you get:
+The plugin is open source — install it from [moleculeprotocol/mol-labs-plugin](https://github.com/moleculeprotocol/mol-labs-plugin):
+
+```bash
+git clone https://github.com/moleculeprotocol/mol-labs-plugin.git
+```
+
+You'll still need the environment-specific configuration values that aren't published — the x402 Gateway base URL, contract addresses, and your API credentials — request them on our [Discord community](https://t.co/L0VEiy4Bjk). The repository layout:
 
 ```
-molecule-plugin/
+mol-labs-plugin/
 ├── .claude-plugin/                     # Claude Code plugin manifest ("molecule-desci") + marketplace
 ├── .codex-plugin/                      # OpenAI Codex plugin manifest
 ├── .mcp.json                           # registers the "molecule" MCP server (uv run mcp/server.py)
@@ -141,13 +147,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh   # or: brew install uv
 Load the plugin directory directly:
 
 ```bash
-claude --plugin-dir /path/to/molecule-plugin
+claude --plugin-dir /path/to/mol-labs-plugin
 ```
 
-or, if your team hosts it as a marketplace repo:
+or install it straight from GitHub via the plugin marketplace:
 
 ```
-/plugin marketplace add <owner>/<repo>
+/plugin marketplace add moleculeprotocol/mol-labs-plugin
 /plugin install molecule-desci@molecule-desci-marketplace
 ```
 
@@ -173,14 +179,14 @@ Register the MCP server in `~/.codex/config.toml` and give it the same environme
 ```toml
 [mcp_servers.molecule]
 command = "uv"
-args = ["run", "/path/to/molecule-plugin/mcp/server.py"]
+args = ["run", "/path/to/mol-labs-plugin/mcp/server.py"]
 
 [mcp_servers.molecule.env]
 ENVIRONMENT = "staging"
 MOLECULE_LABS_URL = "https://staging.graphql.api.molecule.xyz/graphql"
 CHAIN_ID = "84532"
 WALLET_BACKEND = "privy"
-# ...plus the gateway URL, contract addresses, and secrets from your access package
+# ...plus the gateway URL, contract addresses, and secrets from the Molecule team
 ```
 
 Then copy `skills/aura-orchestrator/SKILL.md` into the skills directory your Codex version scans (check `/skills`), or surface it through `AGENTS.md`.
@@ -194,7 +200,7 @@ Any harness that can spawn a stdio MCP server works — register it with the equ
   "mcpServers": {
     "molecule": {
       "command": "uv",
-      "args": ["run", "/path/to/molecule-plugin/mcp/server.py"],
+      "args": ["run", "/path/to/mol-labs-plugin/mcp/server.py"],
       "env": { "ENVIRONMENT": "staging" }
     }
   }
@@ -204,7 +210,7 @@ Any harness that can spawn a stdio MCP server works — register it with the equ
 #### Verify the install (offline, no secrets)
 
 ```bash
-cd /path/to/molecule-plugin/mcp && uv run smoke.py
+cd /path/to/mol-labs-plugin/mcp && uv run smoke.py
 ```
 
 This lists every tool and exercises the pure-compute ones (encryption round-trip, ABI encoding, access-condition building) without any network access or credentials.
