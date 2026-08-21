@@ -16,7 +16,7 @@ It ships as a cross-harness agent plugin with two parts:
 * **The `aura-orchestrator` skill** (`SKILL.md`) — a step-by-step runbook the agent follows: resolve or create an Onchain Lab (LabNFT plus its token-bound account), register it, upload files to the data room, announce, and optionally grant roles or hand the Lab off to another owner.
 * **The `molecule` MCP server** — a typed [Model Context Protocol](https://modelcontextprotocol.io) server that performs every network, onchain, and cryptographic operation as a single tool call. Paid mutations are settled automatically through the [x402 Gateway](../api-reference/x402-gateway.md).
 
-The skill format (`SKILL.md`) and MCP are open standards, so the same plugin works under Claude Code, OpenAI Codex, and any other MCP-capable agent harness.
+The skill format (`SKILL.md`) and MCP are open standards, so the same plugin works under Claude Code, OpenAI Codex, and any other MCP-capable agent harness. To obtain and install it, jump to [Getting the Plugin](molecule-skill.md#getting-the-plugin).
 
 {% hint style="info" %}
 This is a different component from the read-only [MCP Tools](../references/mcp-tools.md) server, which answers ecosystem data questions (IPT prices, project activity). The Molecule skill's MCP server runs locally, holds your credentials, signs transactions, and writes to Labs.
@@ -74,15 +74,15 @@ The operating wallet pays real costs: USDC on Base for x402-billed mutations plu
 
 ### Configuration
 
-All configuration and secrets are supplied as environment variables injected into the MCP server process by your agent harness. Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys. The concrete values for staging and production (endpoints, chain, contract addresses) are provided with plugin access.
+All configuration and secrets are plain **process environment variables** read by the MCP server subprocess — set them wherever your harness injects env into MCP servers (the `env` block of the MCP registration, or Claude Code's settings files as shown in [Installation](molecule-skill.md#claude-code)). Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys. The x402 Gateway base URL and contract addresses for each environment are provided with plugin access.
 
 | Variable                                                     | Purpose                                                                                |
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
 | `ENVIRONMENT`                                                | Deployment profile: `staging` (Base Sepolia) or `production` (Base)                     |
-| `MOLECULE_LABS_URL`                                          | Labs API GraphQL endpoint                                                               |
+| `MOLECULE_LABS_URL`                                          | Labs API GraphQL endpoint for the chosen environment — see [API Overview](../api-reference/README.md) for the URLs |
 | `MOLECULE_CLIENT_URL`                                        | Labs app base URL, used to build project links in announcements                         |
-| `X402_GATEWAY_URL`                                           | x402 Gateway base URL                                                                   |
-| `CHAIN_ID`                                                   | Chain of the selected environment                                                       |
+| `X402_GATEWAY_URL`                                           | x402 Gateway base URL (endpoint paths are documented on the [x402 Gateway](../api-reference/x402-gateway.md) page) |
+| `CHAIN_ID`                                                   | `84532` (Base Sepolia) or `8453` (Base), matching `ENVIRONMENT`                         |
 | `EVM_RPC_URL`                                                | RPC endpoint for onchain reads and broadcasts (optional; falls back to a public node)   |
 | `ONCHAIN_LAB_FACTORY_ADDRESS`, `LABNFT_ADDRESS`, `ACCESS_RESOLVER_ADDRESS` | Onchain Lab contract addresses for the selected environment — see the [Contracts reference](../references/contracts/) |
 | `WALLET_BACKEND`                                             | Wallet backend selector: `privy` or `eoa` (auto-selected when only one is configured)   |
@@ -103,18 +103,111 @@ The plugin is designed to keep secrets and confidential data out of the agent co
 * **Fail-closed confidentiality.** Once a file enters the private upload path, the server refuses — for the lifetime of the server process, with no override flag — to upload that file's plaintext or to finalize it as public, even if the agent were instructed to. A failed private upload aborts; it never falls back to a public one.
 * **Local encryption.** Files are encrypted with AES-256-GCM before upload, byte-for-byte compatible with the Labs client encryption, and verified by content hash after decryption.
 
-### Installation
+### Getting the Plugin
 
-The plugin runs on any MCP-capable harness. The MCP server is a Python process launched via [`uv`](https://docs.astral.sh/uv/) or a plain virtualenv, with dependencies resolved automatically on first run.
+The plugin ships as a single directory, `molecule-plugin/`, from a repository that is not publicly listed — request access on our [Discord community](https://t.co/L0VEiy4Bjk), and you'll receive it together with the environment-specific configuration values (x402 Gateway base URL and contract addresses). What you get:
 
-* **Claude Code** — install the plugin directory (or add it from a plugin marketplace); the skill and the MCP server register automatically.
-* **OpenAI Codex and other MCP hosts** — register the MCP server in the harness configuration and point the harness at the skill file.
+```
+molecule-plugin/
+├── .claude-plugin/                     # Claude Code plugin manifest ("molecule-desci") + marketplace
+├── .codex-plugin/                      # OpenAI Codex plugin manifest
+├── .mcp.json                           # registers the "molecule" MCP server (uv run mcp/server.py)
+├── skills/aura-orchestrator/SKILL.md   # the skill: the runbook the agent follows
+└── mcp/server.py                       # the MCP server (Python, stdio transport)
+```
 
-Detailed, harness-specific installation steps and an offline smoke test ship with the plugin itself.
+The skill itself is a standard `SKILL.md` file — frontmatter that tells the harness when to use it, followed by the phase-by-phase runbook:
 
-{% hint style="info" %}
-**Getting access**: the plugin is distributed by the Molecule team. Join our [Discord community](https://t.co/L0VEiy4Bjk) and reach out to receive the plugin together with the configuration values for your environment.
-{% endhint %}
+```yaml
+---
+name: aura-orchestrator
+description: End-to-end DeSci molecule on the OCL (On-Chain Labs) surface —
+  resolve-or-create an on-chain lab (LabNFT + token-bound account), register it,
+  upload files (public or private/encrypted), and announce. Driven entirely
+  through the `molecule` MCP server.
+---
+```
+
+#### Prerequisite: `uv`
+
+The MCP server is launched with [`uv`](https://docs.astral.sh/uv/), which reads the inline dependency header in `server.py` and provisions Python dependencies automatically on first run (a plain virtualenv works too — see the plugin's `mcp/README.md`):
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh   # or: brew install uv
+```
+
+#### Claude Code
+
+Load the plugin directory directly:
+
+```bash
+claude --plugin-dir /path/to/molecule-plugin
+```
+
+or, if your team hosts it as a marketplace repo:
+
+```
+/plugin marketplace add <owner>/<repo>
+/plugin install molecule-desci@molecule-desci-marketplace
+```
+
+The `molecule` MCP server registers automatically from the plugin's `.mcp.json`. Put the environment variables in your project's Claude Code settings — non-secrets in `.claude/settings.json`, secrets in `.claude/settings.local.json` (which stays out of version control), both under the `"env"` key:
+
+```json
+{
+  "env": {
+    "ENVIRONMENT": "staging",
+    "MOLECULE_LABS_URL": "https://staging.graphql.api.molecule.xyz/graphql",
+    "CHAIN_ID": "84532",
+    "WALLET_BACKEND": "privy"
+  }
+}
+```
+
+Then run the skill: `/molecule-desci:aura-orchestrator` (attach or point it at the research file you want published).
+
+#### OpenAI Codex
+
+Register the MCP server in `~/.codex/config.toml` and give it the same environment:
+
+```toml
+[mcp_servers.molecule]
+command = "uv"
+args = ["run", "/path/to/molecule-plugin/mcp/server.py"]
+
+[mcp_servers.molecule.env]
+ENVIRONMENT = "staging"
+MOLECULE_LABS_URL = "https://staging.graphql.api.molecule.xyz/graphql"
+CHAIN_ID = "84532"
+WALLET_BACKEND = "privy"
+# ...plus the gateway URL, contract addresses, and secrets from your access package
+```
+
+Then copy `skills/aura-orchestrator/SKILL.md` into the skills directory your Codex version scans (check `/skills`), or surface it through `AGENTS.md`.
+
+#### Other MCP hosts
+
+Any harness that can spawn a stdio MCP server works — register it with the equivalent of:
+
+```json
+{
+  "mcpServers": {
+    "molecule": {
+      "command": "uv",
+      "args": ["run", "/path/to/molecule-plugin/mcp/server.py"],
+      "env": { "ENVIRONMENT": "staging" }
+    }
+  }
+}
+```
+
+#### Verify the install (offline, no secrets)
+
+```bash
+cd /path/to/molecule-plugin/mcp && uv run smoke.py
+```
+
+This lists every tool and exercises the pure-compute ones (encryption round-trip, ABI encoding, access-condition building) without any network access or credentials.
 
 ### Related Pages
 
