@@ -42,7 +42,7 @@ Phase 3 is the only branch in the workflow:
 * **Public** — the file is uploaded as-is with `accessLevel: PUBLIC`.
 * **Private** — the file is encrypted client-side with AES-256-GCM before upload and finalized with encryption metadata plus onchain access conditions (a role on the Lab, or being an authorized signer of its token-bound account). Only wallets satisfying those conditions can later decrypt it — see [Data Privacy & Access](../technical-deep-dive/data/data-privacy-and-access.md) for how access is evaluated.
 
-Both paths are billed per mutation through the x402 Gateway; the private path additionally uses a service token for the key-management calls.
+Both paths are billed per mutation through the x402 Gateway; the private path additionally uses a [service token](molecule-skill.md#the-service-token) for the key-management calls.
 
 ### MCP Server Tools
 
@@ -93,6 +93,17 @@ All configuration and secrets are plain **process environment variables** read b
 | `MOLECULE_SERVICE_TOKEN`                                     | Service token for private-upload key management (secret)                                |
 
 The wallet variables are all optional until you pick a backend — configure the Privy trio or the EOA key, not both (unless you pin `WALLET_BACKEND`).
+
+#### The Service Token
+
+The service token is an **off-chain JWT bound to a wallet** — issued by signing a sign-in message with that wallet, not minted on chain. The skill needs it **only for private (encrypted) uploads**: the key-management calls that generate and decrypt the file's data-encryption key authenticate with it, while public uploads and all x402-paid mutations work without one.
+
+Two things matter in practice:
+
+* **Which wallet the token is bound to decides what it can decrypt.** The backend authorizes `decryptDataKey` against the token's bound wallet, so that wallet must satisfy the file's access conditions (a role on the Lab, or being an authorized signer of its token-bound account).
+* **How to get one.** Preferably issue it once during setup and store it as `MOLECULE_SERVICE_TOKEN`. The plugin can do the issuance itself, matching your wallet backend: `issue_service_token` signs the sign-in message with the Privy agent wallet, `issue_owner_service_token` signs with the owner EOA. Both return the JWT for you to place in your harness's secret configuration. The underlying two-step GraphQL flow (plus extending and revoking tokens) is documented in [Service Token Management](../api-reference/labs-api/service-tokens.md).
+
+If the token is missing or expired, the DEK tools fail with an error naming it — nothing falls back to an unauthenticated call.
 
 ### Security Model
 
