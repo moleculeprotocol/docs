@@ -57,6 +57,7 @@
 ## AI Tooling
 
 * [MIRA](ai-tooling/mira.md)
+* [Molecule Skill](ai-tooling/molecule-skill.md)
 
 ## REFERENCES
 
