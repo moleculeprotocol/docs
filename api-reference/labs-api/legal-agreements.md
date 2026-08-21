@@ -4,6 +4,118 @@ The legal-agreement flow is three operations: fetch the populated template + `co
 
 > `type` is a `LegalAgreementType` enum. Current value: `ASSIGNMENT_AGREEMENT`.
 
+## EIP-712 Envelope
+
+Every agreement type shares **one** signature schema — `LegalAgreementAcceptance` — forever; adding new agreement types never changes it, since the agreement type is itself a signed field. Sign this typed-data payload with the wallet returned by `legalAgreementTemplate`, then submit the signature to `signLegalAgreement` below.
+
+### Domain
+
+| Field               | Value                                                                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`               | `"MoleculeOcl"`                                                                                                                            |
+| `version`            | `"1"`                                                                                                                                      |
+| `chainId`            | the **deployment's L2 chain** — `84532` (Base Sepolia) on dev/staging, `8453` (Base) in production. This is the chain the LabNFT lives on, not the OCL "canonical chain id" used for CREATE2 address derivation. |
+| `verifyingContract`  | the environment's LabNFT proxy, **lowercased** — `0x13ff210695fdb54a7f928eccc28bc3486c05bb28` (dev/staging), `0x9f96027eeafb9ad5f2b5d7043b36ee96b2eebe92` (production) |
+
+### Types
+
+```
+LegalAgreementAcceptance(
+  bytes32 oclId,           // lowercased 0x… 32-byte lab id
+  string  agreementType,   // registry SLUG — e.g. "assignment-agreement" — NOT the GraphQL enum value
+  bytes32 contentHash,     // contentHash from legalAgreementTemplate, echoed verbatim
+  string  templateVersion, // templateVersion from legalAgreementTemplate, echoed verbatim
+  address signer,          // lowercased signer wallet — must equal walletAddress
+  uint64  issuedAt         // unix seconds, echoed verbatim from legalAgreementTemplate
+)
+```
+
+> **`agreementType` is the registry slug, not the `LegalAgreementType` enum value.** The GraphQL enum (`type: LegalAgreementType`) uses `ASSIGNMENT_AGREEMENT`; the signed `agreementType` field uses the human-readable slug the wallet renders to the user. Signing with the enum value instead of the slug produces a digest the backend can't match — `signLegalAgreement` fails with `INVALID_SIGNATURE`.
+
+| `LegalAgreementType` (GraphQL enum) | `agreementType` (signed slug) |
+| ------------------------------------ | ------------------------------- |
+| `ASSIGNMENT_AGREEMENT`               | `assignment-agreement`          |
+
+Verification is off-chain (viem `verifyTypedData` — EOA and EIP-1271, so Safe/smart-contract wallets work) against the LabNFT's current owner. `verifyingContract` is the LabNFT proxy purely as wallet-rendered scope and for forward compatibility with onchain verification — verification itself does not call the contract.
+
+### Building the Typed Data (viem)
+
+```javascript
+const typedData = {
+  domain: {
+    name: "MoleculeOcl",
+    version: "1",
+    chainId: 84532, // 8453 in production
+    verifyingContract: "0x13ff210695fdb54a7f928eccc28bc3486c05bb28", // per-environment LabNFT proxy, lowercased
+  },
+  types: {
+    LegalAgreementAcceptance: [
+      { name: "oclId", type: "bytes32" },
+      { name: "agreementType", type: "string" },
+      { name: "contentHash", type: "bytes32" },
+      { name: "templateVersion", type: "string" },
+      { name: "signer", type: "address" },
+      { name: "issuedAt", type: "uint64" },
+    ],
+  },
+  primaryType: "LegalAgreementAcceptance",
+  message: {
+    oclId: oclId.toLowerCase(),
+    agreementType: "assignment-agreement", // registry slug for ASSIGNMENT_AGREEMENT
+    contentHash, // from legalAgreementTemplate, verbatim
+    templateVersion, // from legalAgreementTemplate, verbatim
+    signer: walletAddress.toLowerCase(),
+    issuedAt: BigInt(issuedAt), // from legalAgreementTemplate, verbatim
+  },
+};
+
+const signature = await walletClient.signTypedData(typedData);
+```
+
+Pass `signature` — plus the same `issuedAt`, and any `signerName` / `entity` / `title` you got from the template call — into [Sign Legal Agreement](#sign-legal-agreement-mutation) below.
+
+### Test Vector
+
+Use this to verify your EIP-712 implementation produces byte-identical output before wiring it up against a live wallet. Signed with the well-known Anvil/Hardhat default test account #0 — **never use this key outside local testing.**
+
+| Field         | Value                                                                       |
+| ------------- | ---------------------------------------------------------------------------- |
+| private key   | `0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`         |
+| signer        | `0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266`                                 |
+
+Domain:
+
+```json
+{
+  "name": "MoleculeOcl",
+  "version": "1",
+  "chainId": 84532,
+  "verifyingContract": "0x13ff210695fdb54a7f928eccc28bc3486c05bb28"
+}
+```
+
+Message:
+
+```json
+{
+  "oclId": "0x0101000000000000000000007777777777777777777777777777777777777777",
+  "agreementType": "assignment-agreement",
+  "contentHash": "0xc0ffee0000000000000000000000000000000000000000000000000000000042",
+  "templateVersion": "1.0.0",
+  "signer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "issuedAt": 1781136000
+}
+```
+
+Expected output:
+
+| Name                              | Value                                                                                                                               |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| EIP-712 digest (`hashTypedData`)   | `0x054f310942709f9aabf643fec035b1b9a726356b4e78f0f5c1f93ae9ad659ba8`                                                                |
+| Signature (`signTypedData`)        | `0x327ecaa2da9382370bda32176794a231154e25be5d0e37f0fd4011ac067d94d752d816db038764f8a4a251457a42d2df3bbbc710b3909af421e5c7984c4464e61b` |
+
+If your implementation doesn't reproduce these, check first for mixed-case addresses (EIP-712 hashes raw bytes so case doesn't affect the digest, but some libraries reject invalid-checksum mixed case before they get that far — use lowercase throughout) and for `issuedAt` sent as a `number` instead of the `uint64`/`bigint` the type expects.
+
 ## Get Legal Agreement Template (query)
 
 Return the populated agreement the given wallet is expected to sign, plus the `contentHash` for the EIP-712 envelope. Read-only.

@@ -4,11 +4,121 @@ Operations for creating and administering a Lab: creating the dataroom, managing
 
 ***
 
+## Mint the LabNFT
+
+Before `createLab` can attach a dataroom, an onchain lab (OCL) has to exist: a LabNFT minted to your wallet with its ERC-6551 account (Token Bound Account) deployed. This step is **onchain only** — there is no Labs API mutation for it. See [Lab Creation](../../technical-deep-dive/architecture.md#lab-creation) for the contract-level flow and [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is. If you'd rather not touch contracts directly, the Molecule app does this for you in [Step 1: Create Your Onchain Lab](../../user-guides/scientists-researchers.md#step-1-create-your-onchain-lab).
+
+### Contract Addresses
+
+| Chain                  | `OnChainLabFactory`                         | `LabNFT` (proxy)                            |
+| ----------------------- | -------------------------------------------- | -------------------------------------------- |
+| Base Mainnet (`8453`)   | `0xECdF4f05384056507485C90aeAb0a83268760D6E` | `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92` |
+| Base Sepolia (`84532`)  | `0xd629FE2310b4309a212495F10A47f8436dcEfD90` | `0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28` |
+
+Full deployment list, including every other OCL contract: [Contracts reference](../../references/contracts/README.md).
+
+### Mint
+
+Call `mintAndCreateAccount` on the factory. It mints the LabNFT to `to` and deploys the bound account in the same transaction, returning `(account, tokenId)`. The call is `payable` — read the current fee off the LabNFT's `mintFeeWei()` and send it as `value`, or the transaction reverts.
+
+```solidity
+function mintAndCreateAccount(address to) external payable returns (address account, uint256 tokenId);
+```
+
+**Example (viem):**
+
+```javascript
+import {
+  createPublicClient,
+  createWalletClient,
+  http,
+  parseAbi,
+  parseEventLogs,
+} from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { baseSepolia } from "viem/chains"; // use `base` + the mainnet addresses in production
+
+const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90";
+const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28";
+
+const factoryAbi = parseAbi([
+  "function mintAndCreateAccount(address to) external payable returns (address account, uint256 tokenId)",
+]);
+const labNftAbi = parseAbi([
+  "function mintFeeWei() external view returns (uint256)",
+  "event OclIdentityCreated(address indexed account, bytes32 indexed oclId, uint256 indexed tokenId, bytes32 salt, uint256 canonicalChainId)",
+]);
+
+const account = privateKeyToAccount(process.env.WALLET_PRIVATE_KEY);
+const publicClient = createPublicClient({ chain: baseSepolia, transport: http() });
+const walletClient = createWalletClient({ account, chain: baseSepolia, transport: http() });
+
+const mintFeeWei = await publicClient.readContract({
+  address: LABNFT_ADDRESS,
+  abi: labNftAbi,
+  functionName: "mintFeeWei",
+});
+
+const txHash = await walletClient.writeContract({
+  address: FACTORY_ADDRESS,
+  abi: factoryAbi,
+  functionName: "mintAndCreateAccount",
+  args: [account.address],
+  value: mintFeeWei,
+});
+
+const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
+
+// The canonical oclId comes straight off the LabNFT's OclIdentityCreated
+// event — no manual packing needed for the happy path.
+const [identity] = parseEventLogs({
+  abi: labNftAbi,
+  eventName: "OclIdentityCreated",
+  logs: receipt.logs.filter(
+    (l) => l.address.toLowerCase() === LABNFT_ADDRESS.toLowerCase(),
+  ),
+});
+
+console.log("oclId:", identity.args.oclId);
+console.log("tokenId:", identity.args.tokenId.toString());
+console.log("labAccountAddress:", identity.args.account);
+```
+
+`OclIdentityCreated` fires on the LabNFT contract itself (not the factory); filter receipt logs to `LABNFT_ADDRESS` before decoding. The factory's own `AccountProvisioned` event confirms the account was deployed but does not carry `oclId` as a topic.
+
+### How `oclId` Is Derived
+
+`identity.args.oclId` above is already the value `createLab` expects — normalize to lowercase and you're done. For reference, or to cross-check the emitted value, `oclId` is a bit-packed `bytes32`:
+
+| Bytes    | Field     | Value                                          |
+| -------- | --------- | ----------------------------------------------- |
+| 1 (MSB)  | version   | `0x01`                                          |
+| 1        | namespace | `0x01` (EVM)                                    |
+| 10       | tokenId   | big-endian `uint80`                             |
+| 20 (LSB) | account   | the ERC-6551 Token Bound Account, lowercased    |
+
+```javascript
+function computeOclId(tokenId, accountAddress) {
+  const packed =
+    (0x01n << 248n) |
+    (0x01n << 240n) |
+    (tokenId << 160n) |
+    BigInt(accountAddress.toLowerCase());
+  return "0x" + packed.toString(16).padStart(64, "0");
+}
+```
+
+Note the chain id is **not** encoded in `oclId` — it's implied by which `LabNFT` deployment minted the token.
+
+Once you have `oclId`, continue to [Create Lab](#create-lab) below.
+
+***
+
 ## Create Lab
 
 Register a Kamu-backed lab (data room) for an onchain lab (OCL) that already exists onchain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
 
-> **Prerequisite — the LabNFT must be minted first.** `createLab` does not mint anything; it attaches a dataroom to an OCL that already exists. Minting happens onchain via `OnChainLabFactory.mintAndCreateAccount`, which mints the LabNFT and deploys its bound account in one transaction — see [Lab Creation](../../technical-deep-dive/architecture.md#lab-creation) for the contract-level flow, or [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is and how `oclId` is derived from the minted token. If you'd rather not touch the contracts directly, the Molecule app does this for you in [Step 1: Create Your Onchain Lab](../../user-guides/scientists-researchers.md#step-1-create-your-onchain-lab).
+> **Prerequisite — the LabNFT must be minted first.** `createLab` does not mint anything; it attaches a dataroom to an OCL that already exists onchain. See [Mint the LabNFT](#mint-the-labnft) above for the contract call and how to derive `oclId` from the result. If you'd rather not touch the contracts directly, the Molecule app does this for you in [Step 1: Create Your Onchain Lab](../../user-guides/scientists-researchers.md#step-1-create-your-onchain-lab).
 
 > **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
 

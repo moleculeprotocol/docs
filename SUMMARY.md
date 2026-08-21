@@ -41,6 +41,7 @@
   * [Browse & Search](api-reference/labs-api/browse-and-search.md)
   * [Legal Agreements](api-reference/labs-api/legal-agreements.md)
   * [Service Tokens](api-reference/labs-api/service-tokens.md)
+  * [Example Workflow: Mint → Upload](api-reference/labs-api/example-workflow.md)
 * [🔐 Tokenization API](api-reference/tokenization-api.md)
 * [x402 Gateway](api-reference/x402-gateway.md)
 * [📊 IPNFT API (Deprecated)](api-reference/ipnft-api-deprecated.md)

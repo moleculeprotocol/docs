@@ -20,7 +20,7 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 
 The Labs API uses consumer-credential authentication for reads and an additional Service Token for writes. Full details — public queries vs. protected mutations, obtaining and using credentials — are on the [Authentication](../authentication.md) page.
 
-See also the functional sections: [Lab Management](lab-management.md), [Files](files.md), [Browse & Search](browse-and-search.md), [Legal Agreements](legal-agreements.md), and [Service Tokens](service-tokens.md).
+See also the functional sections: [Lab Management](lab-management.md), [Files](files.md), [Browse & Search](browse-and-search.md), [Legal Agreements](legal-agreements.md), and [Service Tokens](service-tokens.md). For a full end-to-end walkthrough — mint a LabNFT, register its dataroom, sign the assignment agreement, then encrypt and upload a file — see [Example Workflow](example-workflow.md).
 
 ---
 
