@@ -89,10 +89,15 @@ All configuration and secrets are plain **process environment variables** read b
 | `EVM_WALLET_ADDRESS`                                         | Watch-only address for reads and the optional hand-off target                           |
 | `PRIVY_APP_ID`, `PRIVY_APP_SECRET`, `PRIVY_WALLET_ID`        | Privy backend credentials (secret)                                                      |
 | `WALLET_PRIVATE_KEY`                                         | EOA backend private key (secret)                                                        |
-| `MOLECULE_API_KEY`                                           | API key for Labs API queries (secret)                                                   |
+| `MOLECULE_CONSUMER_CREDENTIAL`                               | Your `mol_<consumerId>_<secret>` consumer credential for Labs API calls, sent as the `Authorization` header — see [Authentication](../api-reference/authentication.md) (secret) |
+| `MOLECULE_API_KEY`                                           | Legacy shared API key — fallback only, while the `mol_` credential migration completes (secret) |
 | `MOLECULE_SERVICE_TOKEN`                                     | Service token for private-upload key management (secret)                                |
 
 The wallet variables are all optional until you pick a backend — configure the Privy trio or the EOA key, not both (unless you pin `WALLET_BACKEND`).
+
+{% hint style="info" %}
+**Use a `mol_` consumer credential.** The Labs API is moving from one shared API key to per-consumer credentials — a single `mol_<consumerId>_<secret>` string sent as the `Authorization` header with **no `Bearer` prefix** (see [Authentication](../api-reference/authentication.md)). Set it as `MOLECULE_CONSUMER_CREDENTIAL`; keep `MOLECULE_API_KEY` only if you still hold the legacy shared key. If both are set, the plugin sends both headers, so the same configuration works throughout the migration.
+{% endhint %}
 
 #### The Service Token
 
@@ -122,7 +127,7 @@ The plugin is open source — install it from [moleculeprotocol/mol-labs-plugin]
 git clone https://github.com/moleculeprotocol/mol-labs-plugin.git
 ```
 
-You'll still need the environment-specific configuration values that aren't published — the x402 Gateway base URL, contract addresses, and your API credentials — request them on our [Discord community](https://t.co/L0VEiy4Bjk). The repository layout:
+You'll still need the environment-specific configuration values that aren't published — the x402 Gateway base URL, contract addresses, and a `mol_` consumer credential — request them on our [Discord community](https://t.co/L0VEiy4Bjk). The repository layout:
 
 ```
 mol-labs-plugin/
