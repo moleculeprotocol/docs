@@ -48,8 +48,14 @@ mutation GenerateServiceToken(
     serviceName
     expiresAt
     createdAt
-    isSuccess
     message
+    error {
+      code
+      message
+      requestId
+      retryable
+      details
+    }
   }
 }
 ```
@@ -63,6 +69,8 @@ mutation GenerateServiceToken(
 
 \* `walletAddress` and `messageSignature` must be provided together for signature-based issuance. The returned `token` is the JWT to pass as `X-Service-Token` on subsequent requests.
 
+Success ⇔ `error == null`. On failure `error` carries the catalogue `code` (e.g. `UNAUTHENTICATED` when the signature does not verify), `message` mirrors `error.message`, and `token`, `tokenId`, `expiresAt` and `createdAt` are `null` (`serviceName` may echo the name you sent) — guard for `null`, not for empty strings, and branch on `error`, never on the token fields.
+
 ## Extending Token Expiration
 
 You can extend your service token's expiration using the `extendServiceToken` mutation:
@@ -73,8 +81,14 @@ mutation ExtendServiceToken($tokenId: String!, $expiresIn: String!) {
     token
     tokenId
     expiresAt
-    isSuccess
     message
+    error {
+      code
+      message
+      requestId
+      retryable
+      details
+    }
   }
 }
 ```
@@ -93,7 +107,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'X-Service-Token: YOUR_CURRENT_TOKEN' \
   -d '{
-    "query": "mutation ExtendServiceToken($tokenId: String!, $expiresIn: String!) { extendServiceToken(tokenId: $tokenId, expiresIn: $expiresIn) { token tokenId expiresAt isSuccess message } }",
+    "query": "mutation ExtendServiceToken($tokenId: String!, $expiresIn: String!) { extendServiceToken(tokenId: $tokenId, expiresIn: $expiresIn) { token tokenId expiresAt message error { code message requestId retryable details } } }",
     "variables": {
       "tokenId": "your-token-id",
       "expiresIn": "90d"
@@ -101,7 +115,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   }'
 ```
 
-**Important:** Extension returns a **new JWT token** - update your stored token accordingly.
+**Important:** Extension returns a **new JWT token** - update your stored token accordingly. On failure `error` is set and `token` and `expiresAt` are `null`; `tokenId` may echo the id you sent, so branch on `error`, not on the token fields.
 
 ## Revoking Tokens
 
@@ -111,12 +125,20 @@ Revoke a service token immediately (e.g., if compromised):
 mutation RevokeServiceToken($tokenId: String!) {
   revokeServiceToken(tokenId: $tokenId) {
     tokenId
-    isSuccess
     message
     revokedAt
+    error {
+      code
+      message
+      requestId
+      retryable
+      details
+    }
   }
 }
 ```
+
+Success ⇔ `error == null`. On failure `message` mirrors `error.message`; do not infer the outcome from `tokenId` or `revokedAt` — `tokenId` may echo the id you sent, and when the token was already revoked (`CONFLICT`, reason `ALREADY_REVOKED`) `revokedAt` carries the original revocation time.
 
 **Example:**
 
@@ -125,7 +147,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'X-Service-Token: YOUR_CURRENT_TOKEN' \
   -d '{
-    "query": "mutation RevokeServiceToken($tokenId: String!) { revokeServiceToken(tokenId: $tokenId) { tokenId isSuccess message revokedAt } }",
+    "query": "mutation RevokeServiceToken($tokenId: String!) { revokeServiceToken(tokenId: $tokenId) { tokenId message revokedAt error { code message requestId retryable details } } }",
     "variables": {
       "tokenId": "your-token-id"
     }

@@ -203,11 +203,10 @@ mutation {
     oclId: "0x0101000000000000000000000000000000000000000000000000000000000042"
     filePath: "raw/experiment-01.csv"   # OR tokenUri + agreementUrl for IPFS agreements
   ) {
-    isSuccess
     plaintextDEK   # base64, client-only, wipe after use
     iv             # base64 AES-GCM IV from stored metadata
-    message
-    error { message code retryable }
+    message        # mirrors error.message on failure
+    error { code message requestId retryable details }   # null on success
   }
 }
 ```
@@ -222,7 +221,7 @@ AI agents encrypt and decrypt lab files through the same GraphQL interface, usin
 * **Role grant** — The Lab owner grants the agent's wallet a Contributor (or Viewer) role via `AccessResolver.grantRole` with `isAgent = true` and a bounded `expiry`. The `isAgent` flag is surfaced in the team-members UI so agent session keys are clearly distinguished from human collaborators.
 * **Encrypt** — The agent calls `generateDataEncryptionKey`, receives a plaintext DEK, encrypts the file locally (Node.js `crypto` / Web Crypto), uploads the ciphertext via `initiateCreateOrUpdateFile` → PUT, then calls `finishCreateOrUpdateFile` with the encryption metadata.
 * **Decrypt** — The agent calls `decryptDataKey(oclId, filePath)`. The backend evaluates the stored conditions against live chain state; a valid Viewer/Contributor grant satisfies the `hasRole` predicate. The backend returns the plaintext DEK over TLS; the agent decrypts locally.
-* **Expiry** — When the role grant expires (`block.timestamp >= expiry`), `hasRole` returns `false` and `decryptDataKey` starts failing with a conditions-not-met error. The agent must request a fresh grant — typically from an owner-controlled orchestrator — before it can continue.
+* **Expiry** — When the role grant expires (`block.timestamp >= expiry`), `hasRole` returns `false` and `decryptDataKey` stops returning a key: the result comes back with `plaintextDEK: null` and a non-null in-band `error` (typically `code` `UNAUTHORIZED` — the wallet no longer holds a qualifying role) instead; branch on `error.code` as described in the Labs API [Error Handling](../../api-reference/labs-api/README.md#error-handling) section. The agent must request a fresh grant — typically from an owner-controlled orchestrator — before it can continue.
 
 See the [Developers / AI Agents guide](../../user-guides/developers-ai-agents.md) for end-to-end agent integration patterns and the [MCP Tools reference](../../references/mcp-tools.md) for the read-side agent toolset.
 

@@ -127,12 +127,13 @@ Register a Kamu-backed lab (data room) for an onchain lab (OCL) that already exi
 ```graphql
 mutation CreateLab($oclId: String!) {
   createLab(input: { oclId: $oclId }) {
-    isSuccess
     message
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
     lab {
       oclId
@@ -187,7 +188,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { isSuccess message error { message code retryable } lab { oclId shortname labAccountAddress labNftTokenId } } }",
+    "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { message error { code message requestId retryable details } lab { oclId shortname labAccountAddress labNftTokenId } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042"
     }
@@ -200,7 +201,6 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 {
   "data": {
     "createLab": {
-      "isSuccess": true,
       "message": "Lab created successfully",
       "error": null,
       "lab": {
@@ -216,31 +216,41 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 **Error Responses:**
 
-**Not Authorized (No Token):**
+`createLab` reports failures in-band: `error` is `null` on success and a full `ApiError` on failure. Branch on `error.code` (and, where documented, the `reason` key inside `error.details`, a JSON-encoded string) — never on message text. The top-level `message` mirrors `error.message` on failure.
 
-```json
-{
-  "errors": [
-    {
-      "message": "Admin authorization required. Please contact Molecule team for service token access.",
-      "extensions": { "code": "UNAUTHORIZED" }
-    }
-  ]
-}
-```
-
-**Not the LabNFT Owner:**
+**Not Authenticated (No Token):**
 
 ```json
 {
   "data": {
     "createLab": {
-      "isSuccess": false,
-      "message": "User is not authorized for this lab",
+      "message": "Authentication required. Please provide either a service token (x-service-token header) or Privy authentication token (Authorization header + x-wallet-address header). Contact Molecule tech team to obtain a service token.",
       "error": {
-        "message": "Onchain verification failed: wallet address is not owner or authorized signer",
-        "code": "OWNERSHIP_VERIFICATION_FAILED",
-        "retryable": false
+        "code": "UNAUTHENTICATED",
+        "message": "Authentication required. Please provide either a service token (x-service-token header) or Privy authentication token (Authorization header + x-wallet-address header). Contact Molecule tech team to obtain a service token.",
+        "requestId": "8f1e4c9a-2b7d-4e10-9c3a-5d6f7a8b9c0d",
+        "retryable": false,
+        "details": "{\"reason\":\"NO_AUTH\"}"
+      },
+      "lab": null
+    }
+  }
+}
+```
+
+**Not the LabNFT Owner (Privy user token):**
+
+```json
+{
+  "data": {
+    "createLab": {
+      "message": "You are not allowed to perform this operation.",
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "You are not allowed to perform this operation.",
+        "requestId": "2b9c11d0-6f3e-4a71-8d52-c4e9b0a1f7d3",
+        "retryable": false,
+        "details": "{\"reason\":\"UNAUTHORIZED\"}"
       },
       "lab": null
     }
@@ -254,12 +264,13 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 {
   "data": {
     "createLab": {
-      "isSuccess": false,
-      "message": "Lab already exists for this oclId",
+      "message": "Project already exists",
       "error": {
-        "message": "A lab with this oclId already exists",
         "code": "CONFLICT",
-        "retryable": false
+        "message": "Project already exists",
+        "requestId": "5c7d2e81-9a4b-4f06-b3e8-1d0f6a2c8e94",
+        "retryable": false,
+        "details": "{\"reason\":\"PROJECT_CONFLICT\"}"
       },
       "lab": null
     }
@@ -366,13 +377,14 @@ mutation UpdateLabNftMetadata(
   $input: UpdateLabNftMetadataInput!
 ) {
   updateLabNftMetadata(oclId: $oclId, input: $input) {
-    isSuccess
     oclId
     message
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
@@ -399,11 +411,12 @@ mutation GenerateLabImageUploadUrl($oclId: String!, $contentType: String!) {
     uploadUrl
     key
     expiresAt
-    isSuccess
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
@@ -431,7 +444,6 @@ Return the active members of a lab (owner, contributors, viewers), sourced from 
 ```graphql
 query ListLabMembers($oclId: String!) {
   listLabMembers(oclId: $oclId) {
-    isSuccess
     message
     members {
       walletAddress
@@ -441,14 +453,11 @@ query ListLabMembers($oclId: String!) {
       isAgent
       grantedAt
     }
-    error {
-      message
-      code
-      retryable
-    }
   }
 }
 ```
+
+Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code (an unknown `oclId` throws `NOT_FOUND`). The response carries `"data": null` (the field is non-nullable, so the error propagates to the root) and `errors[0].path` names `listLabMembers`.
 
 **Parameters:**
 
@@ -480,7 +489,6 @@ Public read-only snapshot of DID-linking state for an OCL. DID-linking runs auto
 ```graphql
 query GetDidLinkStatus($oclId: String!) {
   getDidLinkStatus(oclId: $oclId) {
-    isSuccess
     message
     didLinkStatus {
       oclId
@@ -493,14 +501,11 @@ query GetDidLinkStatus($oclId: String!) {
       attempts
       updatedAt
     }
-    error {
-      message
-      code
-      retryable
-    }
   }
 }
 ```
+
+Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code. The response carries `"data": null` (the field is non-nullable, so the error propagates to the root) and `errors[0].path` names `getDidLinkStatus`.
 
 **Parameters:**
 

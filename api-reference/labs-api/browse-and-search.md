@@ -219,7 +219,6 @@ Get all activity across all projects. This is a **public endpoint** - no authent
 ```graphql
 query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
   activities(page: $page, perPage: $perPage, filter: $filter) {
-    isSuccess
     activities {
       __typename
       ... on LabEventFileAdded {
@@ -292,10 +291,11 @@ query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
         }
       }
     }
-    error
   }
 }
 ```
+
+> **Errors**: a failed `activities` query returns `data: null` with a top-level GraphQL `errors[]` entry whose `errorType` is the error code — see [Error Handling](README.md#error-handling).
 
 ---
 

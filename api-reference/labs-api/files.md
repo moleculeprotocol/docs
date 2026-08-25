@@ -2,6 +2,8 @@
 
 Working with files in a Lab dataroom: the three-step upload flow (initiate → upload → finish), plus announcements, metadata updates, deletion, storage limits, and client-side encryption. Creating the Lab itself is covered in [Lab Management](lab-management.md).
 
+> **Note**: Every mutation on this page returns its failure in-band: the result carries `error: ApiError`, and success means `error` is `null`. Branch on `error.code` — never on `message` text — and quote `requestId` when reporting a problem. See [Error Handling](README.md#error-handling) for the `ApiError` shape, how to read `details`, and the list of error codes.
+
 ## Step 1: Initiate File Upload
 
 Initiates the upload process and returns a presigned URL for direct file upload.
@@ -27,11 +29,12 @@ mutation InitiateFileUpload(
       key
       value
     }
-    isSuccess
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
@@ -53,7 +56,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation InitiateFileUpload($oclId: String!, $contentType: String!, $contentLength: Int!) { initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) { uploadToken uploadUrl uploadUrlExpiry method headers { key value } isSuccess error { message code retryable } } }",
+    "query": "mutation InitiateFileUpload($oclId: String!, $contentType: String!, $contentLength: Int!) { initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) { uploadToken uploadUrl uploadUrlExpiry method headers { key value } error { code message requestId retryable details } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
       "contentType": "application/pdf",
@@ -78,12 +81,13 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
           "value": "application/pdf"
         }
       ],
-      "isSuccess": true,
       "error": null
     }
   }
 }
 ```
+
+On failure `error` is set and the upload fields (`uploadToken`, `uploadUrl`, `uploadUrlExpiry`, `method`, `headers`) are `null`; do not proceed to Step 2 unless `error` is `null`.
 
 ## Step 2: Upload File to Storage
 
@@ -150,12 +154,13 @@ mutation FinishFileUpload(
     datasetId
     contentHash
     version
-    isSuccess
     message
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
@@ -185,7 +190,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation FinishFileUpload($oclId: String!, $uploadToken: String!, $path: String, $accessLevel: String!, $changeBy: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, changeBy: $changeBy, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { datasetId contentHash version isSuccess message error { message code retryable } } }",
+    "query": "mutation FinishFileUpload($oclId: String!, $uploadToken: String!, $path: String, $accessLevel: String!, $changeBy: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, changeBy: $changeBy, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { datasetId contentHash version message error { code message requestId retryable details } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
       "uploadToken": "TOKEN_FROM_STEP_1",
@@ -209,9 +214,30 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
       "datasetId": "did:kamu:...",
       "contentHash": "sha256:abc123...",
       "version": 1,
-      "isSuccess": true,
       "message": "File uploaded successfully",
       "error": null
+    }
+  }
+}
+```
+
+**Failure Response** (HTTP 200, no top-level `errors[]` — `message` mirrors `error.message`):
+
+```json
+{
+  "data": {
+    "finishCreateOrUpdateFile": {
+      "datasetId": null,
+      "contentHash": null,
+      "version": null,
+      "message": "You are not allowed to perform this operation.",
+      "error": {
+        "code": "UNAUTHORIZED",
+        "message": "You are not allowed to perform this operation.",
+        "requestId": "8f1e4c9a-2b7d-4e10-9c3a-5d6f7a8b9c0d",
+        "retryable": false,
+        "details": "{\"reason\":\"UNAUTHORIZED\"}"
+      }
     }
   }
 }
@@ -257,8 +283,7 @@ async function uploadFileToLabs(filePath, oclId, serviceToken) {
               uploadUrl
               method
               headers { key value }
-              isSuccess
-              error { message }
+              error { code message requestId retryable details }
             }
           }
         `,
@@ -271,10 +296,19 @@ async function uploadFileToLabs(filePath, oclId, serviceToken) {
     });
 
     const initiateResult = await initiateResponse.json();
-    if (!initiateResult.data?.initiateCreateOrUpdateFile?.isSuccess) {
+    if (initiateResult.errors?.length) {
+      // Top-level errors on a mutation mean a transport or request-validation failure
+      const e = initiateResult.errors[0];
       throw new Error(
-        initiateResult.data?.initiateCreateOrUpdateFile?.error?.message ||
-          "Failed to initiate upload",
+        `${e.errorType ?? "Request failed"}: ${e.message}${
+          e.errorInfo?.requestId ? ` (requestId ${e.errorInfo.requestId})` : ""
+        }`,
+      );
+    }
+    const initiateError = initiateResult.data.initiateCreateOrUpdateFile.error;
+    if (initiateError) {
+      throw new Error(
+        `${initiateError.code}: ${initiateError.message} (requestId ${initiateError.requestId})`,
       );
     }
 
@@ -326,9 +360,8 @@ async function uploadFileToLabs(filePath, oclId, serviceToken) {
               changeBy: $changeBy
             ) {
               datasetId
-              isSuccess
               message
-              error { message }
+              error { code message requestId retryable details }
             }
           }
         `,
@@ -343,10 +376,18 @@ async function uploadFileToLabs(filePath, oclId, serviceToken) {
     });
 
     const finishResult = await finishResponse.json();
-    if (!finishResult.data?.finishCreateOrUpdateFile?.isSuccess) {
+    if (finishResult.errors?.length) {
+      const e = finishResult.errors[0];
       throw new Error(
-        finishResult.data?.finishCreateOrUpdateFile?.error?.message ||
-          "Failed to finish upload",
+        `${e.errorType ?? "Request failed"}: ${e.message}${
+          e.errorInfo?.requestId ? ` (requestId ${e.errorInfo.requestId})` : ""
+        }`,
+      );
+    }
+    const finishError = finishResult.data.finishCreateOrUpdateFile.error;
+    if (finishError) {
+      throw new Error(
+        `${finishError.code}: ${finishError.message} (requestId ${finishError.requestId})`,
       );
     }
 
@@ -411,12 +452,13 @@ mutation CreateAnnouncement(
     body: $body
     attachments: $attachments
   ) {
-    isSuccess
     message
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
@@ -439,7 +481,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!, $attachments: [String!]) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body, attachments: $attachments) { isSuccess message error { message } } }",
+    "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!, $attachments: [String!]) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body, attachments: $attachments) { message error { code message requestId retryable details } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
       "headline": "Research Milestone Achieved",
@@ -477,12 +519,13 @@ mutation UpdateFileMetadata(
     contentText: $contentText
   ) {
     ref
-    isSuccess
     message
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
@@ -509,7 +552,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation UpdateFileMetadata($oclId: String!, $ref: String!, $accessLevel: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { updateFileMetadata(oclId: $oclId, ref: $ref, accessLevel: $accessLevel, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { ref isSuccess message error { message } } }",
+    "query": "mutation UpdateFileMetadata($oclId: String!, $ref: String!, $accessLevel: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { updateFileMetadata(oclId: $oclId, ref: $ref, accessLevel: $accessLevel, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { ref message error { code message requestId retryable details } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
       "ref": "did:kamu:fed01...",
@@ -535,11 +578,12 @@ mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) {
   deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) {
     oclId
     filePath
-    isSuccess
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
@@ -563,7 +607,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) { deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) { oclId filePath isSuccess error { message } } }",
+    "query": "mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) { deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) { oclId filePath error { code message requestId retryable details } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
       "path": "old-data.pdf",
@@ -625,21 +669,15 @@ Return the valid file categories and their tags from the CMS. Use these when tag
 ```graphql
 query FileCategoriesAndTags {
   fileCategoriesAndTags {
-    isSuccess
     data {
       name
       tags
-    }
-    error {
-      message
-      code
-      retryable
     }
   }
 }
 ```
 
-Each entry in `data` is a `FileCategory` with a `name` and its list of allowed `tags`.
+Each entry in `data` is a `FileCategory` with a `name` and its list of allowed `tags`. Failures arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code (e.g. `UPSTREAM_UNAVAILABLE`); the result type has no `error` field.
 
 ---
 
@@ -724,24 +762,26 @@ Generate a standalone data encryption key (DEK) for client-side encryption outsi
 ```graphql
 mutation GenerateDataEncryptionKey {
   generateDataEncryptionKey {
-    isSuccess
     plaintextDEK
     encryptedDek
     encryptionSystem
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
 ```
 
-| Field            | Type   | Description                                                |
-| ---------------- | ------ | ---------------------------------------------------------- |
-| plaintextDEK     | String | Base64-encoded plaintext DEK (only present on success)     |
-| encryptedDek     | String | Base64-encoded KMS-encrypted DEK (only present on success) |
-| encryptionSystem | String | Encryption system used (always `"kms"`)                    |
+| Field            | Type     | Description                                                |
+| ---------------- | -------- | ---------------------------------------------------------- |
+| plaintextDEK     | String   | Base64-encoded plaintext DEK (only present on success)     |
+| encryptedDek     | String   | Base64-encoded KMS-encrypted DEK (only present on success) |
+| encryptionSystem | String   | Encryption system used (always `"kms"`)                    |
+| error            | ApiError | `null` on success; non-null means the mutation failed      |
 
 ---
 
