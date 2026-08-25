@@ -45,8 +45,25 @@ async function graphql(query, variables) {
     body: JSON.stringify({ query, variables }),
   });
   const { data, errors } = await res.json();
+  // Queries report failure here: a top-level errors[] entry whose errorType is
+  // the catalogue code. Mutations report expected failures in-band instead (see
+  // assertOk); a top-level entry on a mutation means a transport/infrastructure
+  // failure or an invalid request document.
   if (errors) throw new Error(JSON.stringify(errors));
   return data;
+}
+
+// Mutations report failure in-band: `error` is null on success. Throw on a
+// non-null `error` so a failed step stops the workflow with the catalogue
+// `code` and the `requestId` to quote in a bug report.
+function assertOk(result, op) {
+  if (result.error) {
+    // `details` is a JSON-encoded string; JSON.parse(result.error.details ?? "{}").reason
+    // carries the specific cause when there is one.
+    const { code, message, requestId } = result.error;
+    throw new Error(`${op} failed: ${code}: ${message} (requestId ${requestId})`);
+  }
+  return result;
 }
 ```
 
@@ -95,19 +112,17 @@ const tokenResult = await graphql(
       token
       tokenId
       expiresAt
-      isSuccess
       message
+      error { code message requestId retryable details }
     }
   }`,
   { serviceName: SERVICE_NAME, walletAddress: account.address, messageSignature },
 );
-if (!tokenResult.generateServiceToken.isSuccess) {
-  throw new Error(tokenResult.generateServiceToken.message ?? "generateServiceToken failed");
-}
+assertOk(tokenResult.generateServiceToken, "generateServiceToken");
 serviceToken = tokenResult.generateServiceToken.token;
 ```
 
-`generateServiceToken`'s result has no `error` field — check `isSuccess` and fall back to `message` on failure. The returned `token` authorizes this wallet's onchain-resolved role for whatever lab it acts on; it isn't scoped to a single `oclId` up front.
+`generateServiceToken` reports failure the same way as every other mutation: `error` is `null` on success, and on failure it carries the catalogue `code` while `token`, `tokenId` and `expiresAt` are `null` (`message` mirrors `error.message`). The returned `token` authorizes this wallet's onchain-resolved role for whatever lab it acts on; it isn't scoped to a single `oclId` up front.
 
 ## Step 2: Mint the LabNFT
 
@@ -155,17 +170,14 @@ Register the Kamu-backed dataroom for the freshly-minted `oclId`. Full reference
 const createLabResult = await graphql(
   `mutation CreateLab($oclId: String!) {
     createLab(input: { oclId: $oclId }) {
-      isSuccess
       message
-      error { message code retryable }
+      error { code message requestId retryable details }
       lab { oclId shortname labAccountAddress labNftTokenId }
     }
   }`,
   { oclId },
 );
-if (!createLabResult.createLab.isSuccess) {
-  throw new Error(createLabResult.createLab.error?.message ?? "createLab failed");
-}
+assertOk(createLabResult.createLab, "createLab");
 const { labAccountAddress } = createLabResult.createLab.lab;
 ```
 
@@ -181,11 +193,9 @@ const template = await graphql(
       type: ASSIGNMENT_AGREEMENT
       walletAddress: $walletAddress
     ) {
-      isSuccess
       contentHash
       templateVersion
       issuedAt
-      error { message code retryable }
     }
   }`,
   { oclId, walletAddress: account.address },
@@ -223,10 +233,9 @@ const signature = await walletClient.signTypedData({
 const signResult = await graphql(
   `mutation Sign($input: SignLegalAgreementInput!) {
     signLegalAgreement(input: $input) {
-      isSuccess
       path
       message
-      error { message code retryable }
+      error { code message requestId retryable details }
     }
   }`,
   {
@@ -239,9 +248,7 @@ const signResult = await graphql(
     },
   },
 );
-if (!signResult.signLegalAgreement.isSuccess) {
-  throw new Error(signResult.signLegalAgreement.error?.message ?? "signLegalAgreement failed");
-}
+assertOk(signResult.signLegalAgreement, "signLegalAgreement");
 ```
 
 ## Step 5: Upload a File (Encrypted)
@@ -262,14 +269,14 @@ const plaintext = readFileSync(filePath);
 const dekResult = await graphql(`
   mutation {
     generateDataEncryptionKey {
-      isSuccess
       plaintextDEK
       encryptedDek
       encryptionSystem
-      error { message code retryable }
+      error { code message requestId retryable details }
     }
   }
 `);
+assertOk(dekResult.generateDataEncryptionKey, "generateDataEncryptionKey");
 const { plaintextDEK, encryptedDek, encryptionSystem } = dekResult.generateDataEncryptionKey;
 
 // 5b. Encrypt locally (Web Crypto SubtleCrypto), then wipe the plaintext key
@@ -318,12 +325,12 @@ const initiateResult = await graphql(
       uploadUrl
       method
       headers { key value }
-      isSuccess
-      error { message code retryable }
+      error { code message requestId retryable details }
     }
   }`,
   { oclId, contentType: "application/octet-stream", contentLength: ciphertext.length },
 );
+assertOk(initiateResult.initiateCreateOrUpdateFile, "initiateCreateOrUpdateFile");
 const { uploadToken, uploadUrl, headers } = initiateResult.initiateCreateOrUpdateFile;
 
 const uploadHeaders = {};
@@ -349,9 +356,8 @@ const finishResult = await graphql(
       encryptionMetadata: $encryptionMetadata
     ) {
       datasetId
-      isSuccess
       message
-      error { message code retryable }
+      error { code message requestId retryable details }
     }
   }`,
   {
@@ -371,9 +377,7 @@ const finishResult = await graphql(
     },
   },
 );
-if (!finishResult.finishCreateOrUpdateFile.isSuccess) {
-  throw new Error(finishResult.finishCreateOrUpdateFile.error?.message ?? "finishCreateOrUpdateFile failed");
-}
+assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");
 console.log("Uploaded. datasetId:", finishResult.finishCreateOrUpdateFile.datasetId);
 ```
 
@@ -425,8 +429,25 @@ async function graphql(query, variables) {
     body: JSON.stringify({ query, variables }),
   });
   const { data, errors } = await res.json();
+  // Queries report failure here: a top-level errors[] entry whose errorType is
+  // the catalogue code. Mutations report expected failures in-band instead (see
+  // assertOk); a top-level entry on a mutation means a transport/infrastructure
+  // failure or an invalid request document.
   if (errors) throw new Error(JSON.stringify(errors));
   return data;
+}
+
+// Mutations report failure in-band: `error` is null on success. Throw on a
+// non-null `error` so a failed step stops the workflow with the catalogue
+// `code` and the `requestId` to quote in a bug report.
+function assertOk(result, op) {
+  if (result.error) {
+    // `details` is a JSON-encoded string; JSON.parse(result.error.details ?? "{}").reason
+    // carries the specific cause when there is one.
+    const { code, message, requestId } = result.error;
+    throw new Error(`${op} failed: ${code}: ${message} (requestId ${requestId})`);
+  }
+  return result;
 }
 
 async function main() {
@@ -462,15 +483,13 @@ async function main() {
         messageSignature: $messageSignature
       ) {
         token
-        isSuccess
         message
+        error { code message requestId retryable details }
       }
     }`,
     { serviceName: SERVICE_NAME, walletAddress: account.address, messageSignature },
   );
-  if (!tokenResult.generateServiceToken.isSuccess) {
-    throw new Error(tokenResult.generateServiceToken.message ?? "generateServiceToken failed");
-  }
+  assertOk(tokenResult.generateServiceToken, "generateServiceToken");
   serviceToken = tokenResult.generateServiceToken.token;
   console.log("1/5 Got service token");
 
@@ -508,16 +527,14 @@ async function main() {
   const createLabResult = await graphql(
     `mutation CreateLab($oclId: String!) {
       createLab(input: { oclId: $oclId }) {
-        isSuccess
-        error { message code retryable }
+        message
+        error { code message requestId retryable details }
         lab { labAccountAddress }
       }
     }`,
     { oclId },
   );
-  if (!createLabResult.createLab.isSuccess) {
-    throw new Error(createLabResult.createLab.error?.message ?? "createLab failed");
-  }
+  assertOk(createLabResult.createLab, "createLab");
   const { labAccountAddress } = createLabResult.createLab.lab;
   console.log("3/5 Lab created — TBA:", labAccountAddress);
 
@@ -525,11 +542,9 @@ async function main() {
   const template = await graphql(
     `query Template($oclId: String!, $walletAddress: String!) {
       legalAgreementTemplate(oclId: $oclId, type: ASSIGNMENT_AGREEMENT, walletAddress: $walletAddress) {
-        isSuccess
         contentHash
         templateVersion
         issuedAt
-        error { message code retryable }
       }
     }`,
     { oclId, walletAddress: account.address },
@@ -567,16 +582,14 @@ async function main() {
   const signResult = await graphql(
     `mutation Sign($input: SignLegalAgreementInput!) {
       signLegalAgreement(input: $input) {
-        isSuccess
         path
-        error { message code retryable }
+        message
+        error { code message requestId retryable details }
       }
     }`,
     { input: { oclId, type: "ASSIGNMENT_AGREEMENT", walletAddress: account.address, signature, issuedAt } },
   );
-  if (!signResult.signLegalAgreement.isSuccess) {
-    throw new Error(signResult.signLegalAgreement.error?.message ?? "signLegalAgreement failed");
-  }
+  assertOk(signResult.signLegalAgreement, "signLegalAgreement");
   console.log("4/5 Agreement signed —", signResult.signLegalAgreement.path);
 
   // ---- Step 5: Upload a File (encrypted — see the callout above Step 5) ----
@@ -585,14 +598,14 @@ async function main() {
   const dekResult = await graphql(`
     mutation {
       generateDataEncryptionKey {
-        isSuccess
         plaintextDEK
         encryptedDek
         encryptionSystem
-        error { message code retryable }
+        error { code message requestId retryable details }
       }
     }
   `);
+  assertOk(dekResult.generateDataEncryptionKey, "generateDataEncryptionKey");
   const { plaintextDEK, encryptedDek, encryptionSystem } = dekResult.generateDataEncryptionKey;
 
   const cryptoKey = await webcrypto.subtle.importKey(
@@ -635,12 +648,12 @@ async function main() {
         uploadToken
         uploadUrl
         headers { key value }
-        isSuccess
-        error { message code retryable }
+        error { code message requestId retryable details }
       }
     }`,
     { oclId, contentType: "application/octet-stream", contentLength: ciphertext.length },
   );
+  assertOk(initiateResult.initiateCreateOrUpdateFile, "initiateCreateOrUpdateFile");
   const { uploadToken, uploadUrl, headers } = initiateResult.initiateCreateOrUpdateFile;
 
   const uploadHeaders = {};
@@ -666,8 +679,8 @@ async function main() {
         encryptionMetadata: $encryptionMetadata
       ) {
         datasetId
-        isSuccess
-        error { message code retryable }
+        message
+        error { code message requestId retryable details }
       }
     }`,
     {
@@ -687,9 +700,7 @@ async function main() {
       },
     },
   );
-  if (!finishResult.finishCreateOrUpdateFile.isSuccess) {
-    throw new Error(finishResult.finishCreateOrUpdateFile.error?.message ?? "finishCreateOrUpdateFile failed");
-  }
+  assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");
   console.log("5/5 File uploaded — datasetId:", finishResult.finishCreateOrUpdateFile.datasetId);
 }
 
