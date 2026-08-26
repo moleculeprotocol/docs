@@ -31,6 +31,99 @@ The production endpoint (shared by all Molecule APIs — see [API Overview](READ
 
 **Migration:** If your codegen or tooling discovers the schema by introspecting the production endpoint, that now fails — request a current copy of the schema from the Molecule team (see [Getting Support](README.md)) rather than introspecting production. If you see `QueryDepthLimitReached`, flatten the query to 10 levels of nesting or fewer; this limit was not previously enforced.
 
+### `isSuccess` removed (unified error contract)
+
+The Labs API now reports failure one way per operation class, and the `isSuccess` envelope is gone:
+
+- **Queries throw.** A failed query surfaces as an entry in the top-level GraphQL `errors[]` array; the failed field is `null`, and because most Labs query fields are non-null the null propagates and `data` itself comes back `null` (only `labWithDataRoomAndFiles` and `dataRoomFile` null just their own field). `errorType` carries the error code (table below) — the only value to branch on — and `errorInfo { requestId, retryable, details }` carries the correlation id and structured context. Query result types (`ActivitiesResult`, `FileCategoriesAndTagsResult`, `ListLabMembersResult`, `DidLinkStatusResult`, `LegalAgreementTemplateResult`, `ServiceSignInMessageResult`) no longer have an `isSuccess` or an `error` field.
+- **Mutations return errors in-band.** Every mutation `*Result` carries a nullable `error: ApiError`. **Success ⇔ `error == null`.** A top-level `errors[]` entry on a mutation means a transport or infrastructure failure (or an invalid request document), not a business outcome. Where a result keeps a top-level `message`, it mirrors `error.message` on failure and is never empty.
+
+`isSuccess` has been **removed** from every Labs result type, and the `error` field on mutation results is now typed `ApiError` (the previous error type no longer exists). A document that still selects `isSuccess` is rejected at validation (`Field 'isSuccess' in type '…Result' is undefined`) and never executes.
+
+Behaviour that changed alongside the envelope:
+
+- **Auth denials are code-accurate.** The former `AUTH_FAILED` catch-all is split into `UNAUTHENTICATED` (missing, invalid or expired credentials), `UNAUTHORIZED` (authenticated but lacking the role or membership), `NOT_FOUND` (the lab does not exist) and `VALIDATION_FAILED` (malformed input).
+- **Legacy codes live on as `details.reason`.** Codes such as `PROJECT_NOT_FOUND`, `LAB_NOT_FOUND`, `INVALID_OCL_ID` or `SHORTNAME_TAKEN` are no longer top-level codes; they survive as the `reason` key inside `details`, beneath the catalogue code (for example `CONFLICT` with `reason: "SHORTNAME_TAKEN"`). Branch on `code` first and on `reason` only where a page documents it.
+- **Service tokens.** `ServiceTokenResult` and `ServiceTokenRevocationResult` gained `error: ApiError`; `token`, `tokenId`, `serviceName`, `expiresAt`, `createdAt` and `revokedAt` are `null` on failure instead of `""`.
+- **`InitiateFileUploadResult.method`** is nullable and `null` on failure.
+- **`LegalAgreementStatusResult` is dual-surface.** As the `legalAgreementStatus(oclId, type)` query, failures throw and `error` is always `null`. As the `legalAgreementStatus` field on `Lab` / `LabRef`, an upstream failure returns the payload with `error` set (typically `UPSTREAM_UNAVAILABLE`) instead of nulling the lab: `error != null` means the status could not be determined, and only when `error == null` does `signed: false` mean "not signed".
+- `listLabMembers` on an unknown lab throws `NOT_FOUND` (previously a `PROJECT_NOT_FOUND` envelope). `createLab` conflicts return `CONFLICT` with `details.reason` `PROJECT_CONFLICT` (lab already registered) or `ACCOUNT_NAME_CONFLICT`.
+
+> **The Tokenization API is unaffected.** Its operations keep their previous result envelope (a success flag alongside an `error` object), exactly as documented in the [Tokenization API reference](tokenization-api.md). This section applies to the Labs API only.
+
+#### `ApiError`
+
+```graphql
+type ApiError {
+  code: String!       # error code from the table below — the only field to branch on
+  message: String!    # human-readable, never empty; not part of the contract
+  requestId: String!  # correlation id — include it in bug reports
+  retryable: Boolean! # whether an unchanged retry can plausibly succeed
+  details: AWSJSON    # optional structured context — keys: field, reason, hint, docs
+}
+```
+
+On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSync `AWSJSON`), e.g. `"details": "{\"reason\":\"NOT_LAB_OWNER\"}"` — read it with `JSON.parse(error.details ?? "{}")`. On a thrown query error, `errorInfo.details` is a plain object. Ignore keys you do not recognise, and never match on `message` — its wording may change without notice.
+
+#### Error codes
+
+| Code                        | `retryable` | Meaning                                                                  | Typical `details.reason`                                                         |
+| --------------------------- | ----------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| `UNAUTHENTICATED`           | false       | Missing, invalid or expired credentials.                                 | `TOKEN_EXPIRED`, `INVALID_SIGNATURE`, `WALLET_MISMATCH`                          |
+| `UNAUTHORIZED`              | false       | Authenticated but not allowed (role or membership).                      | `NOT_LAB_OWNER`, `NOT_CONTRIBUTOR`, `SERVICE_NOT_WHITELISTED`                    |
+| `NOT_FOUND`                 | false       | The referenced resource does not exist.                                  | `LAB_NOT_FOUND`, `PROJECT_NOT_FOUND`, …                                          |
+| `VALIDATION_FAILED`         | false       | Input failed validation; `details.field` names the offending field.      | `INVALID_OCL_ID`, …                                                              |
+| `CONFLICT`                  | false       | A valid request conflicts with current state.                            | `SHORTNAME_TAKEN`, `ALREADY_SIGNED`, `PROJECT_CONFLICT`, `ACCOUNT_NAME_CONFLICT` |
+| `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until that state changes.  | `TEMPLATE_EXPIRED`, `LEGACY_ENCRYPTION`, `NOT_ENCRYPTED`                         |
+| `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size is over the limit.                            | `FILTER_COMPLEXITY_LIMIT`, `RESULT_CARDINALITY_LIMIT`                            |
+| `RATE_LIMITED`              | **true**    | Throttled — retry with backoff.                                          | —                                                                                |
+| `TIMEOUT`                   | **true**    | Execution exceeded the request budget.                                   | —                                                                                |
+| `UPSTREAM_UNAVAILABLE`      | **true**    | A dependency failed — retry with backoff.                                | `KAMU`, `CMS`, `IPFS`                                                            |
+| `INTERNAL_ERROR`            | **true**    | Unexpected failure; quote `requestId` when reporting it.                 | —                                                                                |
+
+Codes may be added over time, and each addition is announced on this page. Treat a code you do not recognise as non-retryable, keep the raw value for diagnostics and surface it to a human. `PAYMENT_REQUIRED` is reserved for the x402 gateway and is not emitted by the GraphQL API. `details.reason` values are diagnostic refinement, not a contract surface — they may be extended without notice.
+
+#### Before / after
+
+```diff
+# Query selection (listLabMembers) — the envelope field is gone; failures
+# arrive as top-level errors[] with errorType
+  query ListLabMembers($oclId: String!) {
+    listLabMembers(oclId: $oclId) {
+-     isSuccess
+      message
+      members {
+        walletAddress
+        role
+      }
+    }
+  }
+```
+
+```diff
+# Mutation selection (createAnnouncement) — select `error` instead of `isSuccess`
+  mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!) {
+    createAnnouncement(oclId: $oclId, headline: $headline, body: $body) {
+-     isSuccess
+      message
+-     error { message code retryable }
++     error { code message requestId retryable details }
+    }
+  }
+```
+
+```diff
+- if (!result.isSuccess) {
+-   handle(result.error?.code);
+- }
++ if (result.error) {
++   const { reason } = JSON.parse(result.error.details ?? "{}");
++   handle(result.error.code, reason);
++ }
+```
+
+**Migration:** Remove `isSuccess` (and, except on `legalAgreementStatus`, any `error { … }` selection) from every Labs query document — a document that still selects it fails validation and the query never runs — and handle failures from the top-level `errors[]` array, keyed on `errorType`. On mutations, replace `isSuccess` with `error { code message requestId retryable details }`, treat `error == null` as success, and branch on `error.code` (plus `details.reason` where documented), never on `message` text. Replace any check on the former `AUTH_FAILED` catch-all with the split codes listed above, and any `token === ""` / `tokenId === ""` checks on service-token results with `null` checks. If you read `legalAgreementStatus` off a lab object, select `error { code message }` and check it before trusting `signed`. Leave your Tokenization API handling as it is. See [Labs API › Error Handling](labs-api/README.md#error-handling) for the full reference.
+
 ### `*V2` operations and pre-OCL naming removed
 
 The legacy `*V2` operations and the pre-OCL naming have been **removed**. The current API is `oclId`-based. If you are migrating from an older integration, use the current names below.
