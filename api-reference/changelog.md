@@ -10,6 +10,12 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ## Authentication
 
+### Backend credential stores confined to the platform network
+
+The data stores behind API authentication — the consumer credential registry, machine service tokens, and the access whitelist — are now network-confined to Molecule's private cloud network. They are unreachable from outside it, even with valid cloud-account credentials; only the API's own backend can read or write them. This is a hardening change with **no effect on any API, header, token format, or SDK** — consumer credentials, `X-Service-Token`, and Privy user tokens all work exactly as before.
+
+**Migration:** None required.
+
 ### `x-api-key` replaced by consumer credentials
 
 All Molecule APIs (Labs, Tokenization, and IPNFT (Deprecated) — they share one GraphQL endpoint) now authenticate with a consumer credential instead of an `x-api-key` header. A consumer credential has the shape `mol_<consumerId>_<secret>` and is sent directly as the `Authorization` header value, with **no `Bearer` prefix**.
