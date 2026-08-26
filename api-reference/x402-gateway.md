@@ -107,7 +107,7 @@ content-type: application/json
 payment-signature: <base64 x402 payment payload>
 
 {
-  "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body) { isSuccess message error { message } } }",
+  "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body) { message error { code message requestId retryable details } } }",
   "variables": {
     "oclId": "0x0101...abcd",
     "headline": "Milestone 1 complete",
@@ -116,6 +116,8 @@ payment-signature: <base64 x402 payment payload>
   "operationName": "CreateAnnouncement"
 }
 ```
+
+The `200` body is the mutation's GraphQL response verbatim, so read it exactly as on the Labs API: the mutation succeeded when `error` is `null`; otherwise branch on `error.code` — see [Error Handling](labs-api/README.md#error-handling). Note that settlement is triggered by the upstream `2xx`, not by mutation success — a `200` whose body carries a non-null `error` (e.g. `VALIDATION_FAILED`, `UNAUTHORIZED`) is still settled, so you pay for a mutation that failed in-band; only an upstream `4xx`/`5xx` skips settlement. Validate inputs (ids, categories/tags, role) before paying.
 
 Constraints enforced by the gateway (`validateMutationQuery`):
 

@@ -30,7 +30,7 @@ LegalAgreementAcceptance(
 )
 ```
 
-> **`agreementType` is the registry slug, not the `LegalAgreementType` enum value.** The GraphQL enum (`type: LegalAgreementType`) uses `ASSIGNMENT_AGREEMENT`; the signed `agreementType` field uses the human-readable slug the wallet renders to the user. Signing with the enum value instead of the slug produces a digest the backend can't match — `signLegalAgreement` fails with `INVALID_SIGNATURE`.
+> **`agreementType` is the registry slug, not the `LegalAgreementType` enum value.** The GraphQL enum (`type: LegalAgreementType`) uses `ASSIGNMENT_AGREEMENT`; the signed `agreementType` field uses the human-readable slug the wallet renders to the user. Signing with the enum value instead of the slug produces a digest the backend can't match — `signLegalAgreement` returns `error.code` `UNAUTHENTICATED` with `details.reason` `INVALID_SIGNATURE`.
 
 | `LegalAgreementType` (GraphQL enum) | `agreementType` (signed slug) |
 | ------------------------------------ | ------------------------------- |
@@ -137,20 +137,16 @@ query LegalAgreementTemplate(
     entity: $entity
     title: $title
   ) {
-    isSuccess
     agreement
     contentHash
     templateVersion
     agreementType
     issuedAt
-    error {
-      message
-      code
-      retryable
-    }
   }
 }
 ```
+
+This is a query: failures arrive as top-level GraphQL `errors[]` entries with `errorType` set to a catalogue code (e.g. `UNAUTHENTICATED`, `UNAUTHORIZED`, `NOT_FOUND`, `VALIDATION_FAILED`), and `data` comes back `null` (the field is non-nullable, so the error propagates to the root). The result type has no `error` field.
 
 **Parameters:**
 
@@ -172,7 +168,6 @@ Whether (and at which template versions) the agreement has been signed for the l
 ```graphql
 query LegalAgreementStatus($oclId: String!, $type: LegalAgreementType!) {
   legalAgreementStatus(oclId: $oclId, type: $type) {
-    isSuccess
     signed
     isCurrentVersionSigned
     currentTemplateVersion
@@ -185,16 +180,34 @@ query LegalAgreementStatus($oclId: String!, $type: LegalAgreementType!) {
       issuedAt
       signature
     }
-    error {
-      message
-      code
-      retryable
+  }
+}
+```
+
+> **Two surfaces, two failure modes.** As the top-level `legalAgreementStatus(oclId, type)` query above, failures throw like every other query — a top-level GraphQL `errors[]` entry with `errorType` set to a catalogue code — and the payload's `error` field is always `null`. As the `Lab.legalAgreementStatus` / `LabRef.legalAgreementStatus` field, an upstream failure does not null the whole lab: the field returns the payload with `error` set (typically `UPSTREAM_UNAVAILABLE`). There, `error != null` means the status could not be determined and `signed` / `isCurrentVersionSigned` must not be trusted; only when `error == null` does `signed: false` mean "not signed". Select `error { code message requestId retryable details }` on that field and check it before routing a signing flow — for example, inline on `labs`:
+
+```graphql
+query LabsWithAgreementStatus {
+  labs(perPage: 5) {
+    nodes {
+      oclId
+      legalAgreementStatus(type: ASSIGNMENT_AGREEMENT) {
+        signed
+        isCurrentVersionSigned
+        error {
+          code
+          message
+          requestId
+          retryable
+          details
+        }
+      }
     }
   }
 }
 ```
 
-Check `isSuccess` before reading the other fields. `signed` is true if any version has been signed; `isCurrentVersionSigned` reflects the current template version (the FE routes the signing flow on this). The `signedVersions` enrichment is fetched lazily, only when its sub-fields are selected.
+`signed` is true if any version has been signed; `isCurrentVersionSigned` reflects the current template version (the FE routes the signing flow on this). The `signedVersions` enrichment is fetched lazily, only when its sub-fields are selected.
 
 ## Sign Legal Agreement (mutation)
 
@@ -203,7 +216,6 @@ Record acceptance of a legal agreement. The backend regenerates the document fro
 ```graphql
 mutation SignLegalAgreement($input: SignLegalAgreementInput!) {
   signLegalAgreement(input: $input) {
-    isSuccess
     oclId
     path
     contentHash
@@ -212,13 +224,17 @@ mutation SignLegalAgreement($input: SignLegalAgreementInput!) {
     version
     message
     error {
-      message
       code
+      message
+      requestId
       retryable
+      details
     }
   }
 }
 ```
+
+Success ⇔ `error == null`. On failure `message` mirrors `error.message`; branch on `error.code` (and `details.reason` where documented — e.g. `CONFLICT` with reason `ALREADY_SIGNED` when the current template version is already signed, or `FAILED_PRECONDITION` with reason `TEMPLATE_EXPIRED`). `details` is a JSON-encoded string: `JSON.parse(error.details ?? "{}").reason`.
 
 **`SignLegalAgreementInput` fields:**
 

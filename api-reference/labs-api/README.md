@@ -26,52 +26,117 @@ See also the functional sections: [Lab Management](lab-management.md), [Files](f
 
 ## Error Handling
 
-All API responses follow a consistent error format:
+The Labs API is a GraphQL API: once a request is accepted, the response is HTTP `200` whether or not the operation succeeded — success and failure are signalled inside the JSON body, not by the status code. Errors surface through one of two channels, depending on the operation class:
 
-### Error Response Structure
+- **Queries throw.** A failed query adds an entry to the top-level GraphQL `errors[]` array and returns `null` for that field. Most Labs query result types are non-null, so the null propagates and `data` itself comes back `null` (as in the example below); only `labWithDataRoomAndFiles` and `dataRoomFile` are nullable and null just their own field. `errorType` carries the error code (the only value to branch on) and `errorInfo` carries `{ requestId, retryable, details }`.
+- **Mutations return errors in-band.** Every mutation result type carries an `error: ApiError` field. **Success ⇔ `error == null`.** Where the result type also has a top-level `message`, it mirrors `error.message` on failure and is never empty. A top-level `errors[]` entry on a mutation means a transport or infrastructure failure, or that the request document itself failed validation.
+
+Branch on the code — never on `message` text, which may change without notice. Include `requestId` whenever you report a problem.
+
+### Failed Query
+
+```json
+{
+  "data": null,
+  "errors": [
+    {
+      "path": ["listLabMembers"],
+      "message": "Project not found: 0x0101000000000000000000000000000000000000000000000000000000000042",
+      "errorType": "NOT_FOUND",
+      "errorInfo": {
+        "requestId": "8f1e4c9a-2b7d-4e10-9c3a-5d6f7a8b9c0d",
+        "retryable": false,
+        "details": { "reason": "PROJECT_NOT_FOUND" }
+      }
+    }
+  ]
+}
+```
+
+### Failed Mutation
+
+Select `error { code message requestId retryable details }` on every mutation:
+
+```graphql
+type ApiError {
+  code: String!       # error code from the catalogue below — the only field to branch on
+  message: String!    # human-readable, never empty; not part of the contract
+  requestId: String!  # correlation id — include it in bug reports
+  retryable: Boolean! # whether retrying the same request unchanged can plausibly succeed
+  details: AWSJSON    # optional structured context (JSON-encoded string)
+}
+```
+
+```graphql
+mutation InitiateFileUpload($oclId: String!, $contentType: String!, $contentLength: Int!) {
+  initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) {
+    uploadUrl
+    error { code message requestId retryable details }
+  }
+}
+```
 
 ```json
 {
   "data": {
     "initiateCreateOrUpdateFile": {
-      "isSuccess": false,
+      "uploadUrl": null,
       "error": {
-        "message": "Error description",
-        "code": "ERROR_CODE",
-        "retryable": true
+        "code": "UNAUTHORIZED",
+        "message": "You are not allowed to perform this operation.",
+        "requestId": "8f1e4c9a-2b7d-4e10-9c3a-5d6f7a8b9c0d",
+        "retryable": false,
+        "details": "{\"reason\":\"UNAUTHORIZED\"}"
       }
     }
   }
 }
 ```
 
-### Common Error Codes
+In-band `details` is a JSON-encoded string — parse it with `JSON.parse(error.details ?? "{}")` (on thrown queries, `errorInfo.details` is already an object). Documented keys are `field` (the offending input field), `reason` (a more specific cause under the code, e.g. `PROJECT_NOT_FOUND` under `NOT_FOUND`), `hint` and `docs`; ignore unknown keys. `reason` values are diagnostic refinement and may be extended at any time — branch on `code` first.
 
-| Status Code | Error                 | Description                                                   |
-| ----------- | --------------------- | ------------------------------------------------------------- |
-| 401         | Unauthorized          | Missing or invalid service token                              |
-| 403         | Forbidden             | Service token does not have access to the specified lab       |
-| 400         | Bad Request           | Invalid parameters (e.g., missing oclId, invalid contentType) |
-| 404         | Not Found             | Lab or dataroom not found                                     |
-| 413         | Payload Too Large     | File exceeds size limits                                      |
-| 500         | Internal Server Error | Server error - check if retryable and try again               |
+```javascript
+const result = (await response.json()).data.initiateCreateOrUpdateFile; // `response` from your fetch()
+
+if (result.error) {
+  const { code, message, requestId, retryable, details } = result.error;
+  const { reason } = JSON.parse(details ?? "{}");
+  if (retryable) return retryWithBackoff(); // RATE_LIMITED, TIMEOUT, UPSTREAM_UNAVAILABLE, INTERNAL_ERROR
+  throw new Error(`${code}${reason ? `/${reason}` : ""}: ${message} (requestId ${requestId})`);
+}
+```
+
+### Error Codes
+
+| Code                        | `retryable` | Meaning                                                                                              |
+| --------------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+| `UNAUTHENTICATED`           | false       | Missing, invalid or expired credentials                                                              |
+| `UNAUTHORIZED`              | false       | Authenticated, but not allowed (role/membership)                                                     |
+| `NOT_FOUND`                 | false       | Referenced resource doesn't exist                                                                    |
+| `VALIDATION_FAILED`         | false       | Input failed validation (unknown filter/sort fields, out-of-range pagination, malformed ids); `details.field` names the offender |
+| `CONFLICT`                  | false       | Valid request conflicts with current state (e.g. `details.reason` `SHORTNAME_TAKEN`, `ALREADY_SIGNED`) |
+| `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until the state changes (e.g. `TEMPLATE_EXPIRED`)      |
+| `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size over limits                                                               |
+| `RATE_LIMITED`              | **true**    | Throttled — retry with backoff                                                                       |
+| `TIMEOUT`                   | **true**    | Execution exceeded the request budget                                                                |
+| `UPSTREAM_UNAVAILABLE`      | **true**    | A dependency failed (`details.reason` `KAMU`, `CMS`, `IPFS`)                                         |
+| `INTERNAL_ERROR`            | **true**    | Unexpected failure — details are only in our logs, joined by `requestId`                             |
+
+When `retryable` is `true`, retry with exponential backoff; when `false`, the request (or the resource state) must change before retrying. Any code not listed here: preserve it for diagnostics, treat it as non-retryable and surface it to a human — new codes are announced in the [API Changelog](../changelog.md). `PAYMENT_REQUIRED` is reserved for the [x402 Gateway](../x402-gateway.md) and is not emitted by the GraphQL API.
 
 ### Troubleshooting
 
-**"Missing service token" error:**
+**`UNAUTHENTICATED`** — missing, invalid or expired service token:
 
-- Ensure `X-Service-Token` header is included in requests
-- Verify token is not empty or malformed
+- Ensure the `X-Service-Token` header is included in mutation requests
+- Verify the token is not empty or malformed
+- If the token has expired, request a new token from the Molecule team, or use the `extendServiceToken` mutation to extend expiration
 
-**"Service does not have access to lab" error:**
+A missing or malformed consumer credential is rejected before the GraphQL layer runs (an HTTP `401` from the API, not one of the error codes below) — check the `Authorization` header first, see [Authentication](../authentication.md).
 
-- Verify your wallet address (linked to service token) has admin access to the lab/dataroom
-- Check that the oclId format is correct: a 32-byte hex string with `0x` prefix
+**`UNAUTHORIZED`** — the wallet behind the service token lacks the required role on the lab:
 
-**"Token expired" error:**
-
-- Request a new token from the Molecule team, or
-- Use `extendServiceToken` mutation to extend expiration
+- Verify your wallet address (linked to the service token) has admin access to the lab/dataroom (or the role the operation requires)
 
 **Upload to presigned URL fails:**
 
@@ -79,16 +144,19 @@ All API responses follow a consistent error format:
 - Verify headers match those returned in Step 1
 - Check that presigned URL hasn't expired (expires after \~15 minutes)
 
-**"File not found" error (updateFileMetadata, deleteDataRoomFile):**
+**`NOT_FOUND`** — lab, dataroom or file not found:
 
-- Verify the file `ref` (DID) or `path` is correct
-- Check that the file exists in the specified dataroom
-- Ensure you have access to the dataroom
+- Verify the `oclId` refers to a registered lab
+- For `updateFileMetadata` / `deleteDataRoomFile`: verify the file `ref` (DID) or `path` is correct and the file exists in the specified dataroom
 
-**"Invalid search filters" error (searchLabs):**
+**`VALIDATION_FAILED`** — invalid parameters; `details.field` names the offending input:
 
-- Verify filter values match expected types (arrays of strings)
-- Ensure oclId format is correct if using byOclIds filter
+- Check that the `oclId` format is correct: a 32-byte hex string with `0x` prefix
+- For `searchLabs`: verify filter values match expected types (arrays of strings)
+
+**Retryable errors (`RATE_LIMITED`, `TIMEOUT`, `UPSTREAM_UNAVAILABLE`, `INTERNAL_ERROR`):**
+
+- Retry with exponential backoff; if the failure persists, report it with the `requestId`
 
 ---
 
