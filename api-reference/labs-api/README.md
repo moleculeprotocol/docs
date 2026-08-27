@@ -12,15 +12,26 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 - **Batch Operations**: Upload multiple files programmatically
 - **Monitoring & Alerting**: Automated upload of logs and metrics
 
-> **Ready for Production**: This API is production-ready and actively used by projects for automated data management. To request API access, please join our [Discord community](https://t.co/L0VEiy4Bjk) and reach out to our team.
+> **Ready for Production**: This API is production-ready and actively used by projects for automated data management. To get started, see [🚀 Getting Started](../getting-started/README.md) — it covers the one credential you need to request and gets you to a lab with a file in it in about ten minutes.
+
+---
+
+## Where to start
+
+| | |
+| --- | --- |
+| **First time here** | [🚀 Getting Started](../getting-started/README.md) — prerequisites, costs, ten-minute quickstart |
+| **You want runnable code** | [Tutorials](example-workflow.md) — public upload, encrypted upload, agent access, announce |
+| **You're an AI agent** | [Agent one-pager](../getting-started/for-agents.md), or drive this API through the [Molecule Skill](../../ai-tooling/molecule-skill.md) plugin |
+| **You want to pay per call** | [x402 Gateway](../x402-gateway.md) |
 
 ---
 
 ## Authentication
 
-The Labs API uses consumer-credential authentication for reads and an additional Service Token for writes. Full details — public queries vs. protected mutations, obtaining and using credentials — are on the [Authentication](../authentication.md) page.
+The Labs API uses consumer-credential authentication for reads and an additional Service Token for writes — which callers **issue for themselves** by signing a message with their wallet. Full details — public queries vs. protected mutations, obtaining and using credentials — are on the [Authentication](../authentication.md) page.
 
-See also the functional sections: [Lab Management](lab-management.md), [Files](files.md), [Browse & Search](browse-and-search.md), [Legal Agreements](legal-agreements.md), and [Service Tokens](service-tokens.md). For a full end-to-end walkthrough — mint a LabNFT, register its dataroom, sign the assignment agreement, then encrypt and upload a file — see [Example Workflow](example-workflow.md).
+See also the functional sections: [Tutorials](example-workflow.md), [Lab Management](lab-management.md), [Files](files.md), [Browse & Search](browse-and-search.md), and [Service Tokens](service-tokens.md).
 
 ---
 
@@ -130,13 +141,15 @@ When `retryable` is `true`, retry with exponential backoff; when `false`, the re
 
 - Ensure the `X-Service-Token` header is included in mutation requests
 - Verify the token is not empty or malformed
-- If the token has expired, request a new token from the Molecule team, or use the `extendServiceToken` mutation to extend expiration
+- If the token has expired, issue a new one yourself — the two-call [sign-in flow](service-tokens.md#obtaining-a-token) needs no human — or extend the existing one with `extendServiceToken`
 
 A missing or malformed consumer credential is rejected before the GraphQL layer runs (an HTTP `401` from the API, not one of the error codes below) — check the `Authorization` header first, see [Authentication](../authentication.md).
 
 **`UNAUTHORIZED`** — the wallet behind the service token lacks the required role on the lab:
 
-- Verify your wallet address (linked to the service token) has admin access to the lab/dataroom (or the role the operation requires)
+- Check the wallet's role with the public `listLabMembers(oclId)` query. Content writes (uploads, metadata, announcements, moves, deletes) need **Contributor**; `createLab` and the LabNFT-metadata mutations need **Owner**
+- Not the right role? The lab owner grants one onchain — see [Tutorial 3](example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app)
+- **Just granted the role?** Role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after the grant confirms onchain. Retry with backoff; re-issuing the token does not help
 
 **Upload to presigned URL fails:**
 
@@ -202,12 +215,11 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 
 ## Getting Support
 
-If you encounter any issues or have questions about the Programmatic File Upload API:
+If you encounter any issues or have questions about the Labs API:
 
-1. Check this documentation and [troubleshooting section](#troubleshooting)
-2. Review the [complete example](files.md#complete-example) for implementation guidance
-3. Join our [Discord community](https://t.co/L0VEiy4Bjk) for support
-4. Contact the Molecule Labs development team directly
+1. Check this documentation and the [troubleshooting section](#troubleshooting)
+2. Run the [Tutorials](example-workflow.md) against staging — each step lists its expected response and failure modes
+3. Join our [Discord community](https://t.co/L0VEiy4Bjk) for support, quoting the `requestId` from the failing response
 
 ---
 

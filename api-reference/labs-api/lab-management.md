@@ -6,7 +6,7 @@ Operations for creating and administering a Lab: creating the dataroom, managing
 
 ## Mint the LabNFT
 
-Before `createLab` can attach a dataroom, an onchain lab (OCL) has to exist: a LabNFT minted to your wallet with its ERC-6551 account (Token Bound Account) deployed. This step is **onchain only** — there is no Labs API mutation for it. See [Lab Creation](../../technical-deep-dive/architecture.md#lab-creation) for the contract-level flow and [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is. If you'd rather not touch contracts directly, the Molecule app does this for you in [Step 1: Create Your Onchain Lab](../../user-guides/scientists-researchers.md#step-1-create-your-onchain-lab).
+Before `createLab` can attach a dataroom, an onchain lab (OCL) has to exist: a LabNFT minted to your wallet with its ERC-6551 account (Token Bound Account) deployed. This step is **onchain only** — there is no Labs API mutation for it. See [Lab Creation](../../technical-deep-dive/architecture.md#lab-creation) for the contract-level flow and [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is. If you'd rather not touch contracts directly, the Molecule app does this for you — see [Creating a Lab](../../user-guides/scientists-researchers.md#creating-a-lab). For a runnable end-to-end version of the mint, see [Tutorial 1 Step 2](example-workflow.md#step-2-mint-the-labnft).
 
 ### Contract Addresses
 
@@ -118,9 +118,9 @@ Once you have `oclId`, continue to [Create Lab](#create-lab) below.
 
 Register a Kamu-backed lab (data room) for an onchain lab (OCL) that already exists onchain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
 
-> **Prerequisite — the LabNFT must be minted first.** `createLab` does not mint anything; it attaches a dataroom to an OCL that already exists onchain. See [Mint the LabNFT](#mint-the-labnft) above for the contract call and how to derive `oclId` from the result. If you'd rather not touch the contracts directly, the Molecule app does this for you in [Step 1: Create Your Onchain Lab](../../user-guides/scientists-researchers.md#step-1-create-your-onchain-lab).
+> **Prerequisite — the LabNFT must be minted first.** `createLab` does not mint anything; it attaches a dataroom to an OCL that already exists onchain. See [Mint the LabNFT](#mint-the-labnft) above for the contract call and how to derive `oclId` from the result. If you'd rather not touch the contracts directly, the Molecule app does this for you — see [Creating a Lab](../../user-guides/scientists-researchers.md#creating-a-lab).
 
-> **Admin Authorization Required**: This mutation requires either a service token (JWT) from the Molecule team OR a valid Privy authentication token. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
+> **Owner authorization required**: this mutation requires either a **self-issued** service token (see [Service Tokens](service-tokens.md#obtaining-a-token) — no need to ask anyone for one) or a valid Privy session. The caller must be the LabNFT owner (or an authorized multisig signer) for the given `oclId`.
 
 **GraphQL Mutation:**
 
@@ -160,7 +160,7 @@ The mutation takes a single `CreateLabInput` object:
    * For multisig/Safe wallets: You must be one of the Safe owners
    * For ERC-4337 accounts: You must be an authorized account owner
 2. **Authentication**: One of the following:
-   * **Service Token** (recommended for automation): Obtain from Molecule team via Discord
+   * **Service Token** (recommended for automation): [issue one yourself](service-tokens.md#obtaining-a-token) by signing a message with the owner wallet
    * **Privy Token** (for user-initiated requests): Use your authenticated Privy session
 3. **LabNFT Must Be Minted**: The onchain lab (LabNFT / `oclId`) must already exist onchain before registering the lab
 
@@ -219,6 +219,8 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 `createLab` reports failures in-band: `error` is `null` on success and a full `ApiError` on failure. Branch on `error.code` (and, where documented, the `reason` key inside `error.details`, a JSON-encoded string) — never on message text. The top-level `message` mirrors `error.message` on failure.
 
 **Not Authenticated (No Token):**
+
+> The `message` below is returned verbatim by the API and its "contact Molecule tech team" wording is out of date: service tokens are self-issued. Branch on `error.code` / `details.reason`, never on message text — and [issue your own token](service-tokens.md#obtaining-a-token).
 
 ```json
 {
@@ -293,20 +295,16 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 * **Batch Operations**: Register multiple labs for a portfolio of onchain labs
 * **User Self-Service**: Allow users to create their own lab data rooms
 
-**Getting Service Token Access:**
+**Getting a service token:**
 
-To obtain a service token for automated lab creation:
+Issue it yourself — no request, no waiting. Two calls with the owner wallet:
 
-1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
-2. Contact the Molecule team
-3. Provide:
-   * Your wallet address
-   * Use case description
-   * Intended automation workflow
-4. You'll receive:
-   * Consumer credential (for all APIs)
-   * Service Token (JWT for lab creation)
-   * Token expiration date
+1. `getServiceSignInMessage(walletAddress, serviceName)` — public query, returns the message to sign.
+2. Sign it verbatim (EIP-191 `personal_sign`), then `generateServiceToken(serviceName, walletAddress, messageSignature)` — returns the JWT for `X-Service-Token`.
+
+Full parameters and bounds: [Service Tokens](service-tokens.md#obtaining-a-token). Runnable: [Tutorial 1 Step 1](example-workflow.md#step-1-get-a-service-token).
+
+The only credential you have to request is the **consumer credential** — see [Getting Started](../getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) for the request template.
 
 ***
 
@@ -314,7 +312,7 @@ To obtain a service token for automated lab creation:
 
 Retrieve complete details for a specific lab including all files. This is a **public endpoint** - no authentication required. Look up a lab by its `oclId` or, alternatively, by its human-readable `shortname` — provide exactly one.
 
-> **🔓 Public Endpoint**: The `labWithDataRoomAndFiles` query does not require authentication. You only need a consumer credential (`Authorization: Bearer`) - no Service Token is needed. File-level access control is handled via encryption rather than query-level authentication.
+> **🔓 Public Endpoint**: The `labWithDataRoomAndFiles` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token. File-level access control is handled via encryption rather than query-level authentication.
 
 **GraphQL Query:**
 

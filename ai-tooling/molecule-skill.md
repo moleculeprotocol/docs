@@ -74,7 +74,24 @@ The operating wallet pays real costs: USDC on Base for x402-billed mutations plu
 
 ### Configuration
 
-All configuration and secrets are plain **process environment variables** read by the MCP server subprocess — set them wherever your harness injects env into MCP servers (the `env` block of the MCP registration, or Claude Code's settings files as shown in [Installation](molecule-skill.md#claude-code)). Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys. The x402 Gateway base URL and contract addresses for each environment are provided by the Molecule team (see [Getting the Plugin](molecule-skill.md#getting-the-plugin)).
+All configuration and secrets are plain **process environment variables** read by the MCP server subprocess — set them wherever your harness injects env into MCP servers (the `env` block of the MCP registration, or Claude Code's settings files as shown in [Installation](molecule-skill.md#claude-code)). Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys.
+
+Every non-secret value is published: the GraphQL endpoints on [API Overview](../api-reference/README.md), the [x402 Gateway base URLs](../api-reference/x402-gateway.md#gateway-base-urls), and the contract addresses in the [Contracts reference](../references/contracts/). The only thing you have to request is a `mol_` consumer credential — see [Getting Started](../api-reference/getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) for the template.
+
+**Ready-to-paste values per environment:**
+
+| Variable | Staging | Production |
+| -------- | ------- | ---------- |
+| `ENVIRONMENT` | `staging` | `production` |
+| `CHAIN_ID` | `84532` | `8453` |
+| `MOLECULE_LABS_URL` | `https://staging.graphql.api.molecule.xyz/graphql` | `https://production.graphql.api.molecule.xyz/graphql` |
+| `MOLECULE_CLIENT_URL` | `https://testnet.labs.molecule.xyz` | `https://labs.molecule.xyz` |
+| `X402_GATEWAY_URL` | `https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/prod` | `https://0qb5gyw72f.execute-api.eu-central-2.amazonaws.com/prod` |
+| `ONCHAIN_LAB_FACTORY_ADDRESS` | `0xd629FE2310b4309a212495F10A47f8436dcEfD90` | `0xECdF4f05384056507485C90aeAb0a83268760D6E` |
+| `LABNFT_ADDRESS` | `0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28` | `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92` |
+| `ACCESS_RESOLVER_ADDRESS` | `0x5493F472602C87318EA5Eff753cDD593bf9bF559` | `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B` |
+
+Run **`config_doctor`** after setting these: it reports which environment profile and wallet backend are active and names exactly which configuration is still missing, instead of letting a tool guess.
 
 | Variable                                                     | Purpose                                                                                |
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
@@ -127,7 +144,7 @@ The plugin is open source — install it from [moleculeprotocol/mol-labs-plugin]
 git clone https://github.com/moleculeprotocol/mol-labs-plugin.git
 ```
 
-You'll still need the environment-specific configuration values that aren't published — the x402 Gateway base URL, contract addresses, and a `mol_` consumer credential — request them on our [Discord community](https://t.co/L0VEiy4Bjk). The repository layout:
+The one value you have to request is a `mol_` **consumer credential** — ask on our [Discord community](https://t.co/L0VEiy4Bjk) using the [template in Getting Started](../api-reference/getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step). Everything else — endpoints, gateway base URLs, contract addresses — is in the [Configuration](molecule-skill.md#configuration) table above. The repository layout:
 
 ```
 mol-labs-plugin/
@@ -202,7 +219,7 @@ ENVIRONMENT = "staging"
 MOLECULE_LABS_URL = "https://staging.graphql.api.molecule.xyz/graphql"
 CHAIN_ID = "84532"
 WALLET_BACKEND = "privy"
-# ...plus the gateway URL, contract addresses, and secrets from the Molecule team
+# ...plus the gateway URL and contract addresses from the Configuration table, and your secrets
 ```
 
 Then copy `skills/aura-orchestrator/SKILL.md` into the skills directory your Codex version scans (check `/skills`), or surface it through `AGENTS.md`.
@@ -233,6 +250,8 @@ This lists every tool and exercises the pure-compute ones (encryption round-trip
 
 ### Related Pages
 
+* [Getting Started](../api-reference/getting-started/README.md) — the four lanes, prerequisites and costs; this plugin is the "agent runner" lane
+* [Tutorials](../api-reference/labs-api/example-workflow.md) — the same workflow as raw GraphQL, if you want to see the calls underneath
 * [Molecule Labs](../technical-deep-dive/onchain-lab.md) — what an Onchain Lab is
 * [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md) — the role model used by access conditions
 * [Data Privacy & Access](../technical-deep-dive/data/data-privacy-and-access.md) — encryption and access evaluation in depth

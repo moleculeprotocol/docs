@@ -10,6 +10,24 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ## Authentication
 
+### Service tokens are self-issued, and scoped to their own lifecycle
+
+Two clarifications and one hardening, all now reflected across the API docs:
+
+- **Nobody provisions a service token for you.** `generateServiceToken` accepts a wallet signature, so any caller mints its own: `getServiceSignInMessage` → sign the message verbatim (EIP-191 `personal_sign`) → `generateServiceToken`. The only credential that still comes from the Molecule team is the `mol_` consumer credential. Earlier pages described service tokens as team-issued; that was never the only path and is no longer the documented one.
+- **A service token is bound to a wallet, not to a lab.** Docs that described it as identifying "which lab you have write access to" were wrong. It carries a wallet identity; what it may do on a given lab is resolved per request from that wallet's live onchain role. One token therefore works across every lab the wallet has a role on, and a role granted *after* issuance takes effect without re-issuing.
+- **`extendServiceToken` and `revokeServiceToken` are scoped to the caller's own tokens.** The presented token must own the `tokenId` it names; a `tokenId` belonging to another wallet returns the byte-identical `NOT_FOUND` of one that does not exist, so token existence cannot be enumerated.
+
+**Migration:** None required if you already self-issue. If you hold a team-provisioned token, it keeps working — but you can mint and rotate your own. If you built per-lab token issuance, you can collapse it to one token per wallet. If any code called `extendServiceToken` / `revokeServiceToken` for a `tokenId` issued to a different wallet, it now receives `NOT_FOUND`. See [Authentication](authentication.md#obtaining-a-service-token) and [Service Tokens](labs-api/service-tokens.md#obtaining-a-token).
+
+### Contributor role parity for service-token content writes
+
+The six content-write mutations — `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createAnnouncement`, `deleteDataRoomFile`, `updateFileMetadata`, `moveEntry` — now gate a service token on the **Contributor** role, matching the Privy user path per mutation. Previously the service path required lab ownership for these, which meant a wallet granted Contributor on a lab could act through a user session but not through its own service token.
+
+This is what unblocks the "human owns the lab, agent contributes to it" flow: the owner grants the agent's wallet Contributor, and the agent's self-issued token can write. Owner-gated surfaces are unchanged — `createLab`, `updateLabNftMetadata` and `generateLabImageUploadUrl` still require ownership.
+
+**Migration:** None — this is a widening. Note that role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after a grant confirms onchain; retry with backoff rather than re-issuing the token. Walkthrough: [Tutorial 3](labs-api/example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app).
+
 ### Backend credential stores confined to the platform network
 
 The data stores behind API authentication — the consumer credential registry, machine service tokens, and the access whitelist — are now network-confined to Molecule's private cloud network. They are unreachable from outside it, even with valid cloud-account credentials; only the API's own backend can read or write them. This is a hardening change with **no effect on any API, header, token format, or SDK** — consumer credentials, `X-Service-Token`, and Privy user tokens all work exactly as before.
@@ -25,17 +43,33 @@ All Molecule APIs (Labs, Tokenization, and IPNFT (Deprecated) — they share one
 + Authorization: mol_<consumerId>_<secret>
 ```
 
-**Migration:** Contact the Molecule team for a consumer credential and send it as `Authorization: mol_<consumerId>_<secret>` instead of `x-api-key` — do not prefix it with `Bearer`, which is reserved for Privy user tokens and will fail authentication. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before. See [Authentication](authentication.md) for the full header reference.
+**Migration:** Request a consumer credential from the Molecule team ([template](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step)) and send it as `Authorization: mol_<consumerId>_<secret>` instead of `x-api-key` — do not prefix it with `Bearer`, which is reserved for Privy user tokens and will fail authentication. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before. See [Authentication](authentication.md) for the full header reference.
 
 ---
 
 ## Labs API
 
+### Assignment Agreement is no longer a gate, and is out of the API docs
+
+Signing the assignment agreement is **not** a precondition for `createLab`, for uploading files, or for any other Labs API operation. It was previously presented as a required onboarding step, and the `<AGREEMENT_TYPE>_NOT_SIGNED` / `AGREEMENT_CHECK_UNAVAILABLE` failure causes are now dormant — reserved in the catalogue, but not emitted.
+
+The `legalAgreement*` operations remain in the schema and are unchanged, but they have been removed from every onboarding and reference flow, and [Legal Agreements](labs-api/legal-agreements.md) is out of the site navigation. Do not build a new integration around them.
+
+**Migration:** Delete any agreement-signing step from your workflow — it does nothing. If you branch on an agreement status before writing, remove the branch. Nothing in the API changed; only what is required of you did. The onboarding tutorials no longer include the step: [Tutorials](labs-api/example-workflow.md).
+
+### Staging introspection is the supported way to get the schema
+
+Production has introspection disabled (below), but **staging has it enabled** — point codegen, a playground or an SDK generator at `https://staging.graphql.api.molecule.xyz/graphql` with your consumer credential and generate normally. Both environments serve the same schema, so generate against staging and point the generated client at production.
+
+This supersedes the earlier guidance to request a copy of the schema from the Molecule team.
+
+**Migration:** If your codegen currently fails against production, repoint it at staging. See [Getting the schema](getting-started/README.md#getting-the-schema).
+
 ### GraphQL introspection disabled and query depth capped in production
 
 The production endpoint (shared by all Molecule APIs — see [API Overview](README.md)) no longer serves `__schema` / `__type` introspection queries: they now return a validation error. `__typename` still resolves. Selection-set depth is also capped at 10 in production, with scalar leaves counted as a level (`{ root { child { name } } }` is depth 3). A query beyond that limit fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data — a plain GraphQL error, not the catalogued error shape used elsewhere, so handle both.
 
-**Migration:** If your codegen or tooling discovers the schema by introspecting the production endpoint, that now fails — request a current copy of the schema from the Molecule team (see [Getting Support](README.md)) rather than introspecting production. If you see `QueryDepthLimitReached`, flatten the query to 10 levels of nesting or fewer; this limit was not previously enforced.
+**Migration:** If your codegen or tooling discovers the schema by introspecting the production endpoint, that now fails — introspect **staging** instead, where it is enabled, and point the generated client at production (see [Getting the schema](getting-started/README.md#getting-the-schema)). If you see `QueryDepthLimitReached`, flatten the query to 10 levels of nesting or fewer; this limit was not previously enforced.
 
 ### `isSuccess` removed (unified error contract)
 
@@ -168,6 +202,20 @@ Top-level identifiers on `Lab` / `LabRef` were renamed away from the legacy IP-N
 | `ipnftTokenId` | `labNftTokenId`     | LabNFT tokenId (decimal string)                             |
 
 > The linked legacy IP-NFT (for labs migrated from one) is still available as the nested `ipnft` object on `Lab` / `LabRef`; `LabRef` additionally exposes a scalar `ipnftId` field.
+
+---
+
+## x402 Gateway
+
+### Gateway base URLs published, and the 402 challenge is a header
+
+The staging and production gateway base URLs are now published on the [x402 Gateway](x402-gateway.md#gateway-base-urls) page — they no longer have to be requested.
+
+Along with them, one correction that matters for anyone implementing the handshake: the payment requirements arrive as **base64-encoded JSON in the `payment-required` response header**, not in the `402` response body. The body is only `{"isSuccess":false,"message":"Payment required"}`. Client code that parsed the body for `accepts` never saw a price.
+
+**Migration:** Read the challenge from the `payment-required` header and base64-decode it; take `amount`, `asset`, `network` and `payTo` from `accepts[0]`. `amount` is in the asset's smallest unit (USDC has 6 decimals, so `"10000"` is $0.01). Worked example: [Reading the 402 challenge](x402-gateway.md#reading-the-402-challenge).
+
+Also worth knowing: payment buys a short-lived service token for the payer wallet, **not** a role. A mutation the payer is not authorized for returns `200` with `error.code: "UNAUTHORIZED"` and is still settled — check the target lab and your role on it (both free, public queries) before signing.
 
 ---
 

@@ -1,6 +1,6 @@
 # Browse & Search
 
-Cross-cutting read operations that aren't scoped to a single lab you administer: browsing and reading labs and their files, full-text search, and activity feeds. Reads tied to a specific resource live with that resource — e.g. members and DID-link status in [Lab Management](lab-management.md), and legal-agreement status in [Legal Agreements](legal-agreements.md).
+Cross-cutting read operations that aren't scoped to a single lab you administer: browsing and reading labs and their files, full-text search, and activity feeds. Reads tied to a specific resource live with that resource — e.g. members and DID-link status in [Lab Management](lab-management.md).
 
 ## Listing Labs & Activity
 
@@ -394,7 +394,6 @@ query SearchLabs(
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query SearchLabs($prompt: String!, $page: Int, $perPage: Int) { searchLabs(prompt: $prompt, page: $page, perPage: $perPage) { nodes { __typename ... on SearchLabsFileHit { entry { lab { oclId shortname } path file { contentType description tags } } } ... on SearchLabsAnnouncementHit { announcement { headline body } lab { shortname } } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
     "variables": {
@@ -411,7 +410,6 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query SearchLabs($prompt: String!, $filters: SearchLabsFilters) { searchLabs(prompt: $prompt, filters: $filters) { nodes { __typename ... on SearchLabsFileHit { entry { path file { tags accessLevel } } } } totalCount } }",
     "variables": {
@@ -443,7 +441,6 @@ const searchResults = await fetch(apiUrl, {
   headers: {
     "Content-Type": "application/json",
     "Authorization": process.env.CONSUMER_CREDENTIAL,
-    "X-Service-Token": process.env.SERVICE_TOKEN,
   },
   body: JSON.stringify({
     query: `query SearchLabs($prompt: String!) {
@@ -497,7 +494,9 @@ nodes.forEach((node) => {
 
 ### Onchain Activity Feed
 
-Return the onchain event feed for an OCL or a wallet. Exactly one of `oclId` / `wallet` must be supplied. Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last row's `id` to fetch the next page.
+Return the onchain event feed for an OCL or a wallet. At least one of `oclId` / `wallet` must be supplied (they are AND-ed when both are). Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last entry's `id` to fetch the next page.
+
+`onChainActivity` returns **one entry per transaction**: the decoded events of a transaction are classified into a single timeline entry, so an OCL creation renders as one "New Onchain Lab created" row rather than a burst of raw events. The constituent events stay available under `events`. For the flat, one-row-per-event stream, use `rawOnChainActivity` (same filters and cursor semantics).
 
 ```graphql
 query OnChainActivity(
@@ -514,14 +513,20 @@ query OnChainActivity(
   ) {
     id
     chainId
-    contractAddress
-    contractName
-    eventName
+    txHash
     blockNumber
     blockTimestamp
-    txHash
-    logIndex
+    type
+    title
     args
+    events {
+      id
+      contractAddress
+      contractName
+      eventName
+      logIndex
+      args
+    }
   }
 }
 ```
@@ -532,8 +537,19 @@ query OnChainActivity(
 | --------- | ------ | -------- | ------------------------------------------------------------------ |
 | oclId     | String | No\*     | Canonical 32-byte oclId of the lab                                 |
 | wallet    | String | No\*     | Wallet address to filter events by                                 |
-| limit     | Int    | No       | Max rows to return (default: 50)                                   |
-| cursor    | String | No       | Pagination cursor `"<block_number>:<log_index>"` (last row's `id`) |
+| limit     | Int    | No       | Max transaction groups to return (default: 50, max 200)            |
+| cursor    | String | No       | Pagination cursor `"<block_number>:<log_index>"` (last entry's `id`) |
 
-\* Provide exactly one of `oclId` or `wallet`. `contractName` is one of `accessresolver`, `ocl`, `ipnft` or `ipt`. `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
+\* Provide at least one of `oclId` or `wallet`.
+
+**Entry fields:**
+
+| Field | Description |
+| ----- | ----------- |
+| `type` | Machine-readable classification: `OCL_CREATED`, `OCL_TOKENIZED`, `OCL_TRANSFERRED`, `OCL_DID_LINKED`, `ROLE_GRANTED`, `ROLE_REVOKED`, `ROLE_CHANGED`, `IPT_TOKENIZED`, `IPNFT_MINTED`, `IPNFT_TRANSFERRED`, `IPNFT_METADATA_UPDATED`, `OTHER` |
+| `title` | Human-readable summary, e.g. `"Contributor role granted to 0x1234…cdef"` |
+| `args` | Structured facts of the classified action (JSON; addresses lowercased) |
+| `events` | The transaction's raw events in ascending log order — including events that did not match the filter, for full transaction context |
+
+On a raw event, `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt` or `bio-agent`, and `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
 

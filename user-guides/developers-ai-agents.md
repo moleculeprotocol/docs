@@ -2,11 +2,12 @@
 description: >-
   Build on Molecule: Integrate Labs, extend the protocol, and deploy autonomous
   research agents
-hidden: true
 icon: robot
 ---
 
 # Developers/AI Agents
+
+> **Want to start writing code now?** Go to [🚀 Getting Started](../api-reference/getting-started/README.md) — it picks your lane and gets you to a lab with a file in it in about ten minutes. This page is the narrative map of every integration surface, for when you need to decide *what* to build rather than *how* to make the first call.
 
 ### Who This Guide Is For
 
@@ -56,7 +57,7 @@ The simplest agent integration is read-only: query a Lab's data room for files, 
 
 A write-enabled agent goes further: it reads data, performs analysis, and writes results back as new files in the Lab's data room. This requires both a consumer credential and a service token. Two paths to a service token:
 
-* **Long-lived service token** — mint one via the `generateServiceToken` mutation (wallet signature or Privy session), or contact the Molecule team. The token is a JWT tied to your wallet; write authorization is resolved from that wallet's onchain role on the target Lab.
+* **Long-lived service token** — the agent mints its own via the `generateServiceToken` mutation, by signing a message with its wallet (a Privy session works too). No provisioning request. The token is a JWT tied to that wallet; write authorization is resolved per request from the wallet's onchain role on the target Lab. Content writes need **Contributor**. The end-to-end version — agent wallet, human grants the role, agent self-issues and uploads — is [Tutorial 3](../api-reference/labs-api/example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app).
 * **Pay-per-call via the** [**x402 Gateway**](../api-reference/x402-gateway.md) — for agents that serve external users, charge per request, or don't have pre-provisioned credentials. The gateway settles a USDC payment on Base per call and mints a short-lived (default 5-minute) service token scoped to one mutation. Available for `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createAnnouncement`, `createLab`, `generateDataEncryptionKey`, and `decryptDataKey`.
 
 The three-step upload flow (initiate, PUT, finalize) lets you write any file type with metadata including descriptions, tags, categories, and searchable content text. If the file should be confidential, first request a key via `generateDataEncryptionKey` — the backend returns a one-shot plaintext DEK (plus its encrypted form) you use to encrypt locally before upload, attaching the encryption metadata on finish. Every file the agent writes becomes a permanent, versioned record in the Lab's history.
@@ -99,4 +100,6 @@ If you're building an AI research agent, start with BioAgents. Fork the reposito
 
 If you just want to give an AI assistant Molecule context, add the MCP server URL to your client's config and you're done in sixty seconds.
 
-For consumer credentials, service tokens, attestation requests, or any integration support, reach out on the Molecule Discord.
+If you want an AI coding agent to run the whole Lab workflow for you, install the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin — the skill plus MCP server that wraps every network, onchain and cryptographic step as one typed tool call.
+
+Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). Reach out on the Molecule Discord for a consumer credential, a module attestation request, or any integration support.
