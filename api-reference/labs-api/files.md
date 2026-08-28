@@ -2,7 +2,7 @@
 
 Working with files in a Lab dataroom: the three-step upload flow (initiate → upload → finish), plus announcements, metadata updates, deletion, storage limits, and client-side encryption. Creating the Lab itself is covered in [Lab Management](lab-management.md).
 
-> **Looking for a runnable walkthrough?** This page is the per-operation reference. For a first upload with expected responses and failure handling at every step, use [Tutorial 1](example-workflow.md#tutorial-1-create-a-lab-and-upload-a-public-file) (public file) or [Tutorial 2](example-workflow.md#tutorial-2-upload-an-encrypted-file) (encrypted, with a decrypt round trip).
+> **Looking for a runnable walkthrough?** This page is the per-operation reference. For a first upload with expected responses and failure handling at every step, use [Tutorial 1](../getting-started/tutorial-1-public-upload.md) (public file) or [Tutorial 2](../getting-started/tutorial-2-encrypted-upload.md) (encrypted, with a decrypt round trip).
 
 > **Note**: Every mutation on this page returns its failure in-band: the result carries `error: ApiError`, and success means `error` is `null`. Branch on `error.code` — never on `message` text — and quote `requestId` when reporting a problem. See [Error Handling](README.md#error-handling) for the `ApiError` shape, how to read `details`, and the list of error codes.
 
@@ -708,7 +708,7 @@ Enhance file discoverability with optional metadata:
 
 ## Advanced: Encrypted File Upload
 
-> **Step-by-step version:** [Tutorial 2 — Upload an encrypted file](example-workflow.md#tutorial-2-upload-an-encrypted-file), including both access-condition recipes (owner-only, and owner/contributor/viewer) and a decrypt round trip that verifies the gate actually works.
+> **Step-by-step version:** [Tutorial 2 — Upload an encrypted file](../getting-started/tutorial-2-encrypted-upload.md), including both access-condition recipes (owner-only, and owner/contributor/viewer) and a decrypt round trip that verifies the gate actually works.
 
 For files requiring client-side encryption, obtain a data encryption key via the `generateDataEncryptionKey` mutation, encrypt locally, upload as normal, and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, onchain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) page.
 

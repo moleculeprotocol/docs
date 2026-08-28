@@ -21,7 +21,7 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 | | |
 | --- | --- |
 | **First time here** | [🚀 Getting Started](../getting-started/README.md) — prerequisites, costs, ten-minute quickstart |
-| **You want runnable code** | [Tutorials](example-workflow.md) — public upload, encrypted upload, agent access, announce |
+| **You want runnable code** | [Tutorial 1](../getting-started/tutorial-1-public-upload.md) (public upload) · [2](../getting-started/tutorial-2-encrypted-upload.md) (encrypted) · [3](../getting-started/tutorial-3-agent-access.md) (agent access) · [4](../getting-started/tutorial-4-announce.md) (announce) |
 | **You're an AI agent** | [Agent one-pager](../getting-started/for-agents.md), or drive this API through the [Molecule Skill](../../ai-tooling/molecule-skill.md) plugin |
 | **You want to pay per call** | [x402 Gateway](../x402-gateway.md) |
 
@@ -31,7 +31,7 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 
 The Labs API uses consumer-credential authentication for reads and an additional Service Token for writes — which callers **issue for themselves** by signing a message with their wallet. Full details — public queries vs. protected mutations, obtaining and using credentials — are on the [Authentication](../authentication.md) page.
 
-See also the functional sections: [Tutorials](example-workflow.md), [Lab Management](lab-management.md), [Files](files.md), [Browse & Search](browse-and-search.md), and [Service Tokens](service-tokens.md).
+See also the functional sections: [Lab Management](lab-management.md), [Files](files.md), [Browse & Search](browse-and-search.md), and [Service Tokens](service-tokens.md). For runnable end-to-end walkthroughs, see the [tutorials](../getting-started/README.md) under Getting Started.
 
 ---
 
@@ -148,7 +148,7 @@ A missing or malformed consumer credential is rejected before the GraphQL layer 
 **`UNAUTHORIZED`** — the wallet behind the service token lacks the required role on the lab:
 
 - Check the wallet's role with the public `listLabMembers(oclId)` query. Content writes (uploads, metadata, announcements, moves, deletes) need **Contributor**; `createLab` and the LabNFT-metadata mutations need **Owner**
-- Not the right role? The lab owner grants one onchain — see [Tutorial 3](example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app)
+- Not the right role? The lab owner grants one onchain — see [Tutorial 3](../getting-started/tutorial-3-agent-access.md)
 - **Just granted the role?** Role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after the grant confirms onchain. Retry with backoff; re-issuing the token does not help
 
 **Upload to presigned URL fails:**
@@ -218,7 +218,7 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 If you encounter any issues or have questions about the Labs API:
 
 1. Check this documentation and the [troubleshooting section](#troubleshooting)
-2. Run the [Tutorials](example-workflow.md) against staging — each step lists its expected response and failure modes
+2. Run the [Tutorials](../getting-started/README.md) against staging — each step lists its expected response and failure modes
 3. Join our [Discord community](https://t.co/L0VEiy4Bjk) for support, quoting the `requestId` from the failing response
 
 ---

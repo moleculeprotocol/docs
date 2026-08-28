@@ -251,7 +251,7 @@ This lists every tool and exercises the pure-compute ones (encryption round-trip
 ### Related Pages
 
 * [Getting Started](../api-reference/getting-started/README.md) — the four lanes, prerequisites and costs; this plugin is the "agent runner" lane
-* [Tutorials](../api-reference/labs-api/example-workflow.md) — the same workflow as raw GraphQL, if you want to see the calls underneath
+* [Tutorials](../api-reference/getting-started/README.md) — the same workflow as raw GraphQL, if you want to see the calls underneath
 * [Molecule Labs](../technical-deep-dive/onchain-lab.md) — what an Onchain Lab is
 * [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md) — the role model used by access conditions
 * [Data Privacy & Access](../technical-deep-dive/data/data-privacy-and-access.md) — encryption and access evaluation in depth

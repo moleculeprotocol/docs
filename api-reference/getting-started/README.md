@@ -7,9 +7,16 @@ icon: rocket
 
 # 🚀 Getting Started
 
-This is the entry point to the Molecule API. It does three things: helps you **pick a lane**, lists the **two prerequisites** you actually need, and walks a **ten-minute quickstart** that ends with a lab you can see.
+This is the entry point to the Molecule API. It helps you **pick a lane**, lists the **two prerequisites** you actually need, and hands you a **ten-minute quickstart** that ends with a lab you can see. The four tutorials underneath it take the same ground step by step.
 
-Everything below runs against **staging** (Base Sepolia, testnet funds). Nothing here spends real money. The [staging → production swap table](../labs-api/example-workflow.md#running-in-production) is at the end of the tutorials.
+Everything here runs against **staging** (Base Sepolia, testnet funds). Nothing spends real money. This page also holds the two things every tutorial shares: the [shared setup block](#shared-setup) and the [staging → production swap table](#running-in-production).
+
+| | |
+| --- | --- |
+| [**Tutorial 1**](tutorial-1-public-upload.md) | Create a lab and upload a public file — **start here** |
+| [**Tutorial 2**](tutorial-2-encrypted-upload.md) | Upload an encrypted file, verified with a decrypt round trip |
+| [**Tutorial 3**](tutorial-3-agent-access.md) | Give your agent access to a lab you created in the app |
+| [**Tutorial 4**](tutorial-4-announce.md) | Announce the dataset |
 
 ***
 
@@ -20,9 +27,9 @@ Four ways to write to a Lab. They are not ranked — pick by who is calling.
 | Your situation | Lane | Start here |
 | -------------- | ---- | ---------- |
 | **I run an AI coding agent** (Claude Code, Codex, Cursor) and want it to do the whole workflow | **Molecule Skill plugin** — a skill + MCP server that wraps every network, onchain and crypto operation as one tool call | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
-| **I'm scripting against the API** in Node/TypeScript and want to see the raw calls | **Raw GraphQL + viem** — self-issue a service token, mint, upload | [Tutorial 1](../labs-api/example-workflow.md#tutorial-1-create-a-lab-and-upload-a-public-file) |
+| **I'm scripting against the API** in Node/TypeScript and want to see the raw calls | **Raw GraphQL + viem** — self-issue a service token, mint, upload | [Tutorial 1](tutorial-1-public-upload.md) |
 | **I have no credential, or I want to pay per call** instead of holding a long-lived token | **x402 gateway** — settle USDC on Base per request, no service token to provision | [x402 Gateway](../x402-gateway.md) |
-| **I already made my lab in the app** (email sign-in, no wallet) **and now I want my agent writing into it** | **Agent-as-Contributor** — the human grants a role, the agent issues its own token | [Tutorial 3](../labs-api/example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app) |
+| **I already made my lab in the app** (email sign-in, no wallet) **and now I want my agent writing into it** | **Agent-as-Contributor** — the human grants a role, the agent issues its own token | [Tutorial 3](tutorial-3-agent-access.md) |
 
 The lanes compose. A common shape is the plugin lane for the workflow plus x402 for the paid mutations, which is exactly what the plugin does by default.
 
@@ -101,9 +108,69 @@ claude --plugin-dir /path/to/mol-labs-plugin
 
 ***
 
+## Shared setup
+
+Every environment-specific value lives in this one block; swapping to production is a matter of replacing it with the table in [Running in Production](#running-in-production).
+
+```javascript
+import { baseSepolia } from "viem/chains"; // production: `base`
+
+// ---- Staging (Base Sepolia) config — see "Running in Production" to swap ----
+const GRAPHQL_URL = "https://staging.graphql.api.molecule.xyz/graphql";
+const CHAIN = baseSepolia;
+const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90"; // OnChainLabFactory
+const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28"; // LabNFT (proxy)
+const ACCESS_RESOLVER_ADDRESS = "0x5493F472602C87318EA5Eff753cDD593bf9bF559"; // AccessResolver
+const ACCESS_CONDITION_CHAIN = "baseSepolia"; // the `chain` string inside accessControlConditions
+const LAB_APP_URL = "https://testnet.labs.molecule.xyz"; // production: https://labs.molecule.xyz
+
+const CONSUMER_CREDENTIAL = process.env.CONSUMER_CREDENTIAL; // mol_<id>_<secret> — no "Bearer" prefix
+const WALLET_PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY;
+
+// Set once Step 1 exchanges a wallet signature for a token. Every call after
+// that automatically starts sending it; public queries (like Step 1's own
+// sign-in-message lookup) work fine without it.
+let serviceToken;
+
+async function graphql(query, variables) {
+  // Authorization is always required. X-Service-Token is added once we have
+  // one — omit it entirely rather than sending an empty header.
+  const headers = { "Content-Type": "application/json", Authorization: CONSUMER_CREDENTIAL };
+  if (serviceToken) headers["X-Service-Token"] = serviceToken;
+
+  const res = await fetch(GRAPHQL_URL, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ query, variables }),
+  });
+  const { data, errors } = await res.json();
+  // Queries report failure here: a top-level errors[] entry whose errorType is
+  // the catalogue code. Mutations report expected failures in-band instead (see
+  // assertOk); a top-level entry on a mutation means a transport/infrastructure
+  // failure or an invalid request document.
+  if (errors) throw new Error(JSON.stringify(errors));
+  return data;
+}
+
+// Mutations report failure in-band: `error` is null on success. Throw on a
+// non-null `error` so a failed step stops the workflow with the catalogue
+// `code` and the `requestId` to quote in a bug report.
+function assertOk(result, op) {
+  if (result.error) {
+    // `details` is a JSON-encoded string; JSON.parse(result.error.details ?? "{}").reason
+    // carries the specific cause when there is one.
+    const { code, message, requestId } = result.error;
+    throw new Error(`${op} failed: ${code}: ${message} (requestId ${requestId})`);
+  }
+  return result;
+}
+```
+
+***
+
 ## Ten-minute quickstart
 
-The shortest path from "I have a credential" to "there is a lab with my file in it". Four calls and one transaction. Each step is the condensed form of [Tutorial 1](../labs-api/example-workflow.md#tutorial-1-create-a-lab-and-upload-a-public-file), which shows the expected response and the failure modes for every call.
+The shortest path from "I have a credential" to "there is a lab with my file in it". Four calls and one transaction. Each step is the condensed form of [Tutorial 1](tutorial-1-public-upload.md), which shows the expected response and the failure modes for every call.
 
 ```bash
 export CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret"
@@ -116,7 +183,7 @@ export WALLET_PRIVATE_KEY="0x…"          # funded on Base Sepolia
 4. **Upload a file** — `initiateCreateOrUpdateFile` → `PUT` the bytes to the returned presigned URL → `finishCreateOrUpdateFile` with `accessLevel: "PUBLIC"`.
 5. **Verify it worked** — see below.
 
-The runnable version is the [Tutorial 1 complete script](../labs-api/example-workflow.md#tutorial-1-complete-script):
+The runnable version is the [Tutorial 1 complete script](tutorial-1-public-upload.md#complete-script):
 
 ```bash
 node tutorial-1.js ./research-data.csv
@@ -153,13 +220,54 @@ The second is visual — once `shortname` is populated, the lab has a page:
 
 | Next | Page |
 | ---- | ---- |
-| Every step with expected responses and failure handling | [Tutorial 1 — public upload](../labs-api/example-workflow.md#tutorial-1-create-a-lab-and-upload-a-public-file) |
-| Encrypt a file so only wallets with a role can read it | [Tutorial 2 — encrypted upload](../labs-api/example-workflow.md#tutorial-2-upload-an-encrypted-file) |
-| Let an agent write into a lab a human created in the app | [Tutorial 3 — agent access](../labs-api/example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app) |
-| Publish an update that attaches the dataset | [Tutorial 4 — announce](../labs-api/example-workflow.md#tutorial-4-announce-the-dataset) |
+| Every step with expected responses and failure handling | [Tutorial 1 — public upload](tutorial-1-public-upload.md) |
+| Encrypt a file so only wallets with a role can read it | [Tutorial 2 — encrypted upload](tutorial-2-encrypted-upload.md) |
+| Let an agent write into a lab a human created in the app | [Tutorial 3 — agent access](tutorial-3-agent-access.md) |
+| Publish an update that attaches the dataset | [Tutorial 4 — announce](tutorial-4-announce.md) |
 | Pay per call instead of holding a token | [x402 Gateway](../x402-gateway.md) |
 | Full operation reference | [Labs API](../labs-api/README.md) |
 | What every error code means | [Error handling](../labs-api/README.md#error-handling) |
+
+***
+
+## Running in Production
+
+All four tutorials run against staging (Base Sepolia, testnet funds). To run the same scripts against production, replace the values in the config block — nothing else changes, since every step reads from these constants:
+
+| Constant | Staging (these tutorials) | Production |
+| -------- | ------------------------- | ---------- |
+| `GRAPHQL_URL` | `https://staging.graphql.api.molecule.xyz/graphql` | `https://production.graphql.api.molecule.xyz/graphql` |
+| `CHAIN` (viem import) | `baseSepolia` from `viem/chains` | `base` from `viem/chains` |
+| `FACTORY_ADDRESS` | `0xd629FE2310b4309a212495F10A47f8436dcEfD90` | `0xECdF4f05384056507485C90aeAb0a83268760D6E` |
+| `LABNFT_ADDRESS` | `0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28` | `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92` |
+| `ACCESS_RESOLVER_ADDRESS` | `0x5493F472602C87318EA5Eff753cDD593bf9bF559` | `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B` |
+| `ACCESS_CONDITION_CHAIN` | `"baseSepolia"` | `"base"` |
+| `LAB_APP_URL` | `https://testnet.labs.molecule.xyz` | `https://labs.molecule.xyz` |
+
+```javascript
+import { base } from "viem/chains"; // instead of baseSepolia
+
+const GRAPHQL_URL = "https://production.graphql.api.molecule.xyz/graphql";
+const CHAIN = base;
+const FACTORY_ADDRESS = "0xECdF4f05384056507485C90aeAb0a83268760D6E";
+const LABNFT_ADDRESS = "0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92";
+const ACCESS_RESOLVER_ADDRESS = "0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B";
+const ACCESS_CONDITION_CHAIN = "base";
+const LAB_APP_URL = "https://labs.molecule.xyz";
+```
+
+A few things follow automatically from that swap:
+
+* **Headers and the `graphql()` helper** are identical — `Authorization` (consumer credential, no `Bearer`) and the self-issued `X-Service-Token` work the same against both endpoints. Note that credentials are **per environment**: a staging `mol_` credential does not authenticate against production.
+* **The `mintFeeWei()` read** already queries the live contract, so it picks up whatever fee production has configured with no code change. It reads `0` today on both chains.
+* **The condition ABIs** are unchanged; only `contractAddress` and `chain` differ, and both come from the config block.
+
+What doesn't follow automatically, and is on you:
+
+* **Real funds.** Minting on `base` spends real ETH. Test on staging first.
+* **Introspection is off in production** and query depth is capped at 10. Generate types against staging — see [Getting the schema](README.md#getting-the-schema).
+* **`SERVICE_NAME`** should identify the real integration; it is echoed into the sign-in message and stored against the issued token.
+* Full deployment list, including every other OCL contract on both chains: [Contracts reference](../../references/contracts/README.md).
 
 ***
 

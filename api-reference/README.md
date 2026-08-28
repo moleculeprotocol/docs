@@ -27,7 +27,7 @@ Upload files to lab datarooms for secure, decentralized research data storage, a
 * **Queries** (read operations): consumer credential only — public.
 * **Write mutations** (write operations): consumer credential plus **either** a Service Token (`X-Service-Token`) **or** a Privy user session (`Authorization` + `x-wallet-address`) — the two paths are interchangeable. Exceptions: `extendServiceToken` and `revokeServiceToken` are Service-Token-only, and `generateServiceToken` bootstraps a token from a Privy session or wallet signature.
 
-[View Labs API Documentation →](labs-api/README.md) · [Tutorials →](labs-api/example-workflow.md)
+[View Labs API Documentation →](labs-api/README.md) · [Tutorials →](getting-started/README.md)
 
 ***
 
@@ -121,8 +121,8 @@ The full quickstart — prerequisites, costs, and a ten-minute path to a lab wit
 | --------------------------------------------- | ------------------------------------------------- |
 | Get from zero to a lab with a file in it      | [Getting Started](getting-started/README.md)      |
 | Point an AI agent at this API                 | [Agent one-pager](getting-started/for-agents.md) · [Molecule Skill](../ai-tooling/molecule-skill.md) |
-| Upload files to a Lab dataroom                | [Labs API](labs-api/README.md) · [Tutorials](labs-api/example-workflow.md) |
-| Let an agent write into a lab someone else owns | [Tutorial 3](labs-api/example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app) |
+| Upload files to a Lab dataroom                | [Labs API](labs-api/README.md) · [Tutorials](getting-started/README.md) |
+| Let an agent write into a lab someone else owns | [Tutorial 3](getting-started/tutorial-3-agent-access.md) |
 | Tokenize a Lab into IP Tokens (IPTs)          | [Tokenization API](tokenization-api.md)           |
 | Pay per call without a long-lived token       | [x402 Gateway](x402-gateway.md)                   |
 | Browse IP-NFTs and IPTs (legacy)              | [IPNFT API (Deprecated)](ipnft-api-deprecated.md) |

@@ -7,7 +7,7 @@ icon: robot
 
 # 🤖 For Agents: One-Pager
 
-The complete default flow — self-issue a token, mint a lab, upload a public file, verify — with nothing else on the page. Copy it into a system prompt or a context file. For the same flow with expected responses, failure modes and the encrypted variant, use [the tutorials](../labs-api/example-workflow.md).
+The complete default flow — self-issue a token, mint a lab, upload a public file, verify — with nothing else on the page. Copy it into a system prompt or a context file. For the same flow with expected responses, failure modes and the encrypted variant, use [the tutorials](README.md).
 
 ## Constants (staging / Base Sepolia)
 
@@ -148,7 +148,7 @@ mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!,
 3. `finishCreateOrUpdateFile` with `accessLevel: "HOLDERS"` (or `"ADMIN"`) and `encryptionMetadata: { encryptionSystem, encryptedDek, iv, contentHash, accessControlConditions, encryptedBy, encryptedAt }` — echo `encryptionSystem` verbatim, never hardcode it.
 4. To read it back: `decryptDataKey(oclId:, filePath:)` → `{ plaintextDEK, iv }` after the backend re-evaluates the file's onchain access conditions against your wallet.
 
-Full recipe including `accessControlConditions`: [Tutorial 2](../labs-api/example-workflow.md#tutorial-2-upload-an-encrypted-file).
+Full recipe including `accessControlConditions`: [Tutorial 2](tutorial-2-encrypted-upload.md).
 
 ## Rules that break runs when ignored
 
@@ -158,13 +158,13 @@ Full recipe including `accessControlConditions`: [Tutorial 2](../labs-api/exampl
 4. In-band `error.details` is a JSON string; thrown `errorInfo.details` is an object. They differ.
 5. Filter mint receipt logs to the **LabNFT** address before decoding `OclIdentityCreated`.
 6. Send the presigned `PUT` with the returned headers unchanged, and the raw bytes as the body.
-7. Writing into a lab you do not own needs a **Contributor** role on it — see [Tutorial 3](../labs-api/example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
+7. Writing into a lab you do not own needs a **Contributor** role on it — see [Tutorial 3](tutorial-3-agent-access.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
 8. Production has introspection off and a depth limit of 10. Generate types against staging.
 
 ## Related
 
 * [Getting Started](README.md) — prerequisites, costs, the lane you should be in
-* [Tutorials](../labs-api/example-workflow.md) — the same flow with responses and failure handling
+* [Tutorials](README.md) — the same flow with responses and failure handling
 * [Labs API](../labs-api/README.md) — full operation reference
 * [Molecule Skill](../../ai-tooling/molecule-skill.md) — the same workflow as MCP tool calls
 * [x402 Gateway](../x402-gateway.md) — pay per call, no service token

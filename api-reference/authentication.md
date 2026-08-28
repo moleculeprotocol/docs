@@ -29,7 +29,7 @@ mol_<consumerId>_<secret>
 
 Send it as the `Authorization` header value directly — **no `Bearer` prefix**: `Authorization: mol_<consumerId>_<secret>`. This differs from the Privy path below, which does use `Bearer`; adding `Bearer` in front of a consumer credential makes the request fail authentication. Treat the entire string as a secret — it is not split into a public/private part. Credentials are per environment: a staging credential does not authenticate against production.
 
-You do **not** need to ask anyone for a Service Token. Write mutations need one, and you mint it yourself by signing a message with your wallet — see [Service Tokens](labs-api/service-tokens.md#obtaining-a-token), or [Tutorial 1 Step 1](labs-api/example-workflow.md#step-1-get-a-service-token) for the runnable version.
+You do **not** need to ask anyone for a Service Token. Write mutations need one, and you mint it yourself by signing a message with your wallet — see [Service Tokens](labs-api/service-tokens.md#obtaining-a-token), or [Tutorial 1 Step 1](getting-started/tutorial-1-public-upload.md#step-1-get-a-service-token) for the runnable version.
 
 ## Authentication Headers
 
@@ -137,7 +137,7 @@ Both are scoped to the caller's **own** tokens: the token presented must own the
 
 ### Obtaining a Service Token
 
-Self-service, two calls, no human in the loop. Full reference with parameters and failure modes: [Service Tokens](labs-api/service-tokens.md#obtaining-a-token). Runnable: [Tutorial 1 Step 1](labs-api/example-workflow.md#step-1-get-a-service-token).
+Self-service, two calls, no human in the loop. Full reference with parameters and failure modes: [Service Tokens](labs-api/service-tokens.md#obtaining-a-token). Runnable: [Tutorial 1 Step 1](getting-started/tutorial-1-public-upload.md#step-1-get-a-service-token).
 
 1. **`getServiceSignInMessage(walletAddress, serviceName)`** — a public query returning the deterministic message to sign.
 2. **Sign it verbatim** with the wallet, as a plain personal message (EIP-191 `personal_sign` — **not** typed data). Re-wording or re-formatting the string breaks verification.
@@ -164,7 +164,7 @@ On every request, the API resolves what the token's wallet may do on the lab nam
 * **A role granted after the token was issued takes effect without re-issuing it.** Likewise a revoked role stops the token on that lab immediately, while leaving it valid elsewhere.
 * **A token for a wallet with no role authenticates but cannot write.** You will see `UNAUTHENTICATED` become `UNAUTHORIZED`: the caller is known, just not permitted.
 
-This is why an agent can be handed access to a lab it does not own — the human grants the agent's wallet a role, and the agent's own token starts working on that lab. See [Tutorial 3](labs-api/example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app).
+This is why an agent can be handed access to a lab it does not own — the human grants the agent's wallet a role, and the agent's own token starts working on that lab. See [Tutorial 3](getting-started/tutorial-3-agent-access.md).
 
 > Because role state reaches the API through an event indexer, there is a short window after a role grant confirms onchain in which a write can still return `UNAUTHORIZED`. Retry with backoff; re-issuing the token does not help.
 

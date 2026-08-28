@@ -6,7 +6,7 @@ A service token is the credential that proves *which wallet* a write request act
 
 ## Obtaining a Token
 
-Two calls, no human in the loop — the path for autonomous agents, bots and CI/CD pipelines that have no browser-based Privy session. Fetch the deterministic sign-in message, sign it with the service wallet, then exchange the signature for a token. For the runnable version, see [Tutorial 1 Step 1](example-workflow.md#step-1-get-a-service-token).
+Two calls, no human in the loop — the path for autonomous agents, bots and CI/CD pipelines that have no browser-based Privy session. Fetch the deterministic sign-in message, sign it with the service wallet, then exchange the signature for a token. For the runnable version, see [Tutorial 1 Step 1](../getting-started/tutorial-1-public-upload.md#step-1-get-a-service-token).
 
 Issuance is **not** gated on holding a role on any lab: any wallet can mint a token for itself. The role is what makes the token useful.
 

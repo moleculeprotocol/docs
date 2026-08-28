@@ -26,7 +26,7 @@ The six content-write mutations — `initiateCreateOrUpdateFile`, `finishCreateO
 
 This is what unblocks the "human owns the lab, agent contributes to it" flow: the owner grants the agent's wallet Contributor, and the agent's self-issued token can write. Owner-gated surfaces are unchanged — `createLab`, `updateLabNftMetadata` and `generateLabImageUploadUrl` still require ownership.
 
-**Migration:** None — this is a widening. Note that role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after a grant confirms onchain; retry with backoff rather than re-issuing the token. Walkthrough: [Tutorial 3](labs-api/example-workflow.md#tutorial-3-give-your-agent-access-to-a-lab-you-created-in-the-app).
+**Migration:** None — this is a widening. Note that role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after a grant confirms onchain; retry with backoff rather than re-issuing the token. Walkthrough: [Tutorial 3](getting-started/tutorial-3-agent-access.md).
 
 ### Backend credential stores confined to the platform network
 
@@ -55,7 +55,7 @@ Signing the assignment agreement is **not** a precondition for `createLab`, for 
 
 The `legalAgreement*` operations remain in the schema and are unchanged, but they have been removed from every onboarding and reference flow, and [Legal Agreements](labs-api/legal-agreements.md) is out of the site navigation. Do not build a new integration around them.
 
-**Migration:** Delete any agreement-signing step from your workflow — it does nothing. If you branch on an agreement status before writing, remove the branch. Nothing in the API changed; only what is required of you did. The onboarding tutorials no longer include the step: [Tutorials](labs-api/example-workflow.md).
+**Migration:** Delete any agreement-signing step from your workflow — it does nothing. If you branch on an agreement status before writing, remove the branch. Nothing in the API changed; only what is required of you did. The onboarding tutorials no longer include the step: [Tutorials](getting-started/README.md).
 
 ### Staging introspection is the supported way to get the schema
 
