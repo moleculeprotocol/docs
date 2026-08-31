@@ -6,7 +6,7 @@ A service token is the credential that proves *which wallet* a write request act
 
 ## Obtaining a Token
 
-Two calls, no human in the loop — the path for autonomous agents, bots and CI/CD pipelines that have no browser-based Privy session. Fetch the deterministic sign-in message, sign it with the service wallet, then exchange the signature for a token. For the runnable version, see [Tutorial 1 Step 1](../getting-started/tutorial-1-public-upload.md#step-1-get-a-service-token).
+Two calls, no human in the loop — the path for autonomous agents, bots and CI/CD pipelines that have no browser-based Privy session. Fetch a fresh sign-in message, sign it with the service wallet, then exchange the signature for a token. For the runnable version, see [Tutorial 1 Step 1](../getting-started/tutorial-1-public-upload.md#step-1-get-a-service-token).
 
 Issuance is **not** gated on holding a role on any lab: any wallet can mint a token for itself. The role is what makes the token useful.
 
@@ -19,6 +19,7 @@ query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
     serviceName: $serviceName
   ) {
     message
+    expiresAt
   }
 }
 ```
@@ -30,9 +31,23 @@ query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
 
 Public query — no authentication required.
 
+| Field | Description |
+| ----- | ----------- |
+| `message` | The exact string to sign. Contains a server-issued single-use nonce and its expiry, so **it changes on every call** |
+| `expiresAt` | ISO-8601 expiry of the embedded nonce. After this, the signature is rejected and a new message must be requested |
+
+{% hint style="warning" %}
+**Single-use, and valid for 10 minutes.** The sign-in message is not deterministic — do not cache it, do not cache a signature over it, and never reconstruct the string client-side. Concretely:
+
+* The nonce is **consumed** by the first successful `generateServiceToken`. Issuing a second token means fetching a new message and signing again.
+* There is **one outstanding nonce per `(walletAddress, serviceName)`**, last-write-wins: calling this query again invalidates the message you have not yet redeemed.
+* The window is **10 minutes** from issuance (`expiresAt`). Sign and redeem promptly rather than fetching a message ahead of time.
+* Signatures over the older, nonce-free message format no longer verify.
+{% endhint %}
+
 **Step 2 — Exchange the signature for a token (`generateServiceToken`):**
 
-Sign the returned `message` **verbatim** with the service wallet, as a plain personal message (EIP-191 `personal_sign` — **not** typed data). The backend recomposes and verifies the same string server-side, so re-wording or re-formatting it fails with `UNAUTHENTICATED` / `reason: INVALID_SIGNATURE`. Then submit the signature:
+Sign the returned `message` **verbatim** with the service wallet, as a plain personal message (EIP-191 `personal_sign` — **not** typed data). The backend recomposes the same string from the stored nonce record and verifies it server-side, so re-wording or re-formatting it fails with `UNAUTHENTICATED` / `reason: INVALID_SIGNATURE`. Then submit the signature:
 
 ```graphql
 mutation GenerateServiceToken(
@@ -85,6 +100,17 @@ mutation GenerateServiceToken(
 `M` is a 30-day month and `y` is a 365-day year. Anything outside the bounds, or in another format, is rejected with `VALIDATION_FAILED`. Prefer a short lifetime matched to the caller's purpose — for an agent, match the expiry of its role grant — over the 180-day default.
 
 Success ⇔ `error == null`. On failure `error` carries the catalogue `code` (e.g. `UNAUTHENTICATED` when the signature does not verify), `message` mirrors `error.message`, and `token`, `tokenId`, `expiresAt` and `createdAt` are `null` (`serviceName` may echo the name you sent) — guard for `null`, not for empty strings, and branch on `error`, never on the token fields.
+
+**Failure modes on the signature path** — all `UNAUTHENTICATED`, distinguished by `details.reason` (`details` is a JSON-encoded string, so `JSON.parse(error.details ?? "{}").reason`):
+
+| `reason` | What happened | Fix |
+| -------- | ------------- | --- |
+| `NONCE_NOT_FOUND` | No nonce record at all — you never called `getServiceSignInMessage` for this wallet + service, or the nonce was already consumed by an earlier token | Fetch a fresh message and sign it again. Do not retry the same signature |
+| `NONCE_EXPIRED` | The message is older than its 10-minute window | Fetch a fresh message and sign it again |
+| `INVALID_SIGNATURE` | The signed bytes are not the string the backend recomposes. Either the message was altered (re-formatted, rebuilt client-side, typed-data signing, the retired nonce-free format) **or it was superseded** — a later `getServiceSignInMessage` call replaced the stored nonce, so an earlier message no longer matches | Sign the `message` from the most recent call, byte-for-byte, with `personal_sign` |
+| `WALLET_MISMATCH` | `walletAddress` is not the address that produced the signature | Pass the signing address |
+
+None of these are retryable as-is: every one of them means "get a new message and sign that". A `VALIDATION_FAILED` here refers to `walletAddress` format or `expiresIn` bounds instead.
 
 ## Extending Token Expiration
 

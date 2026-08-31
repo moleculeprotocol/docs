@@ -139,9 +139,11 @@ Both are scoped to the caller's **own** tokens: the token presented must own the
 
 Self-service, two calls, no human in the loop. Full reference with parameters and failure modes: [Service Tokens](labs-api/service-tokens.md#obtaining-a-token). Runnable: [Tutorial 1 Step 1](getting-started/tutorial-1-public-upload.md#step-1-get-a-service-token).
 
-1. **`getServiceSignInMessage(walletAddress, serviceName)`** — a public query returning the deterministic message to sign.
+1. **`getServiceSignInMessage(walletAddress, serviceName)`** — a public query returning the message to sign, plus the `expiresAt` of the nonce embedded in it.
 2. **Sign it verbatim** with the wallet, as a plain personal message (EIP-191 `personal_sign` — **not** typed data). Re-wording or re-formatting the string breaks verification.
 3. **`generateServiceToken(serviceName, walletAddress, messageSignature, expiresIn)`** — returns the JWT to send as `X-Service-Token`, plus a `tokenId` for lifecycle operations.
+
+> **The sign-in message is single-use and short-lived — fetch a fresh one before every signing.** It embeds a server-issued nonce and an expiry, so it is **not** deterministic and a signature over it cannot be replayed or cached. The nonce is valid for **10 minutes**, is consumed by the first successful `generateServiceToken`, and there is one outstanding nonce per `(walletAddress, serviceName)` pair — fetching a new message supersedes the previous one. Never reconstruct the string client-side; sign exactly what the query returned. Failure reasons: [Obtaining a Token](labs-api/service-tokens.md#obtaining-a-token).
 
 | `expiresIn` | Value |
 | ----------- | ----- |

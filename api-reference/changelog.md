@@ -10,6 +10,19 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ## Authentication
 
+### The service-token sign-in message is now single-use and expires
+
+`getServiceSignInMessage` used to return a deterministic string — a pure function of `(walletAddress, serviceName)` — which meant one captured signature could mint fresh tokens indefinitely. The message now embeds a **server-issued single-use nonce** and its expiry, and `generateServiceToken` verifies and consumes that nonce:
+
+- The message is **valid for 10 minutes** from issuance. The new `expiresAt` field on `getServiceSignInMessage` reports the deadline.
+- The nonce is **consumed on first successful redemption**. Issuing a second token requires a fresh message and a fresh signature.
+- There is **one outstanding nonce per `(walletAddress, serviceName)`**, last-write-wins — calling the query again invalidates an unredeemed message.
+- Signatures over the older nonce-free message format no longer verify.
+
+Failures come back as `UNAUTHENTICATED` with `details.reason` one of `NONCE_NOT_FOUND` (never requested, or already consumed), `NONCE_EXPIRED`, `INVALID_SIGNATURE` (altered text, or a message superseded by a later call) or `WALLET_MISMATCH`.
+
+**Migration:** Fetch the message immediately before signing, and treat every one of those reasons as "request a new message and sign it again" rather than as a retryable call — re-submitting the same signature can never succeed. Callers that already ran `getServiceSignInMessage` → sign → `generateServiceToken` back to back need no change; callers that cached the message, cached a signature, or reconstructed the string client-side must stop doing so. See [Obtaining a Token](labs-api/service-tokens.md#obtaining-a-token).
+
 ### Service tokens are self-issued, and scoped to their own lifecycle
 
 Two clarifications and one hardening, all now reflected across the API docs:
@@ -396,13 +409,15 @@ All new queries support `limit`, `skip`, `sortBy`, `sortOrder`, and `filterBy` p
 Agreements on IP-NFTs are now a fully queryable relation with sub-field selection, filtering, sorting, and pagination:
 
 ```graphql
-ipnft {
-  agreements(limit: 10, sortBy: type, sortOrder: asc) {
-    id
-    contentHash
-    mimeType
-    type
-    url
+query GetAgreements($id: ID!) {
+  ipnft(id: $id) {
+    agreements(limit: 10, sortBy: type, sortOrder: asc) {
+      id
+      contentHash
+      mimeType
+      type
+      url
+    }
   }
 }
 ```
