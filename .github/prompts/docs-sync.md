@@ -91,9 +91,11 @@ touches one of its source paths.
 `introduction/**`, `user-guides/**`, `legal-framework/**`, `security/**` (narrative and legal pages,
 not driven by a backend diff), `technical-deep-dive/onchain-lab.md` and
 `technical-deep-dive/module-registry/**` (source: the `onchainlabs` / `ocltokenizer` contracts),
-`technical-deep-dive/data/README.md` (section landing page, narrative only), and
-`api-reference/IPNFT-api.md` — an orphan duplicate of `ipnft-api-deprecated.md` that is not in
-`SUMMARY.md`; never edit it, and a human should decide whether to delete it.
+and `technical-deep-dive/data/README.md` (section landing page, narrative only).
+
+The former `api-reference/IPNFT-api.md` — an orphan duplicate of `ipnft-api-deprecated.md`, never
+in `SUMMARY.md`, still teaching the retired `x-api-key` header — was deleted under IP-3028. Do not
+recreate it: `api-reference/ipnft-api-deprecated.md` is the only IPNFT page.
 
 ## What is not source of truth
 

@@ -116,7 +116,7 @@ type ApiError {
 }
 ```
 
-On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSync `AWSJSON`), e.g. `"details": "{\"reason\":\"NOT_LAB_OWNER\"}"` — read it with `JSON.parse(error.details ?? "{}")`. On a thrown query error, `errorInfo.details` is a plain object. Ignore keys you do not recognise, and never match on `message` — its wording may change without notice.
+On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSync `AWSJSON`), e.g. `"details": "{\"reason\":\"NOT_LAB_OWNER\"}"`; on a thrown query error, `errorInfo.details` is a plain object. The in-band string is currently encoded twice, so read it with the tolerant [`parseDetails`](labs-api/README.md#error-handling) rather than a single `JSON.parse`, which returns another string and makes `.reason` silently `undefined`. Ignore keys you do not recognise, and never match on `message` — its wording may change without notice.
 
 #### Error codes
 
@@ -170,7 +170,7 @@ Codes may be added over time, and each addition is announced on this page. Treat
 -   handle(result.error?.code);
 - }
 + if (result.error) {
-+   const { reason } = JSON.parse(result.error.details ?? "{}");
++   const { reason } = parseDetails(result.error.details); // tolerant parse, see Error Handling
 +   handle(result.error.code, reason);
 + }
 ```

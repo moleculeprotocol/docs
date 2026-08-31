@@ -155,12 +155,29 @@ async function graphql(query, variables) {
 // Mutations report failure in-band: `error` is null on success. Throw on a
 // non-null `error` so a failed step stops the workflow with the catalogue
 // `code` and the `requestId` to quote in a bug report.
+// `error.details` carries the specific cause under `reason`, but it arrives in
+// more than one shape: a plain object on thrown query errors, a JSON string
+// in-band, and currently a doubly-encoded JSON string in-band. Parse until it
+// stops being a string, so one reader handles all three.
+function parseDetails(details) {
+  let value = details;
+  for (let i = 0; i < 3 && typeof value === "string"; i++) {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      break;
+    }
+  }
+  return value && typeof value === "object" ? value : {};
+}
+
 function assertOk(result, op) {
   if (result.error) {
-    // `details` is a JSON-encoded string; JSON.parse(result.error.details ?? "{}").reason
-    // carries the specific cause when there is one.
     const { code, message, requestId } = result.error;
-    throw new Error(`${op} failed: ${code}: ${message} (requestId ${requestId})`);
+    const { reason } = parseDetails(result.error.details);
+    throw new Error(
+      `${op} failed: ${code}${reason ? `/${reason}` : ""}: ${message} (requestId ${requestId})`,
+    );
   }
   return result;
 }
@@ -168,14 +185,19 @@ function assertOk(result, op) {
 // Onchain state — a mint, a role grant — reaches the API through an event
 // indexer, so a write issued immediately after one can fail on state the chain
 // already has. Retry with backoff; re-issuing the token never helps.
-async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, baseMs = 2000 } = {}) {
+async function withIndexerLagRetry(
+  fn,
+  { codes = ["NOT_FOUND"], attempts = 12, baseMs = 2000, capMs = 30000 } = {},
+) {
   const laggy = new RegExp(codes.join("|"));
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (err) {
       if (!laggy.test(String(err)) || i === attempts - 1) throw err;
-      await new Promise((r) => setTimeout(r, baseMs * 2 ** i)); // 2s, 4s, 8s, 16s
+      const delay = Math.min(baseMs * 2 ** i, capMs); // 2s, 4s, 8s, 16s, then 30s
+      console.warn(`indexer not caught up (attempt ${i + 1}/${attempts}); retrying in ${delay / 1000}s`);
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
 }
@@ -187,7 +209,7 @@ async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, ba
 * **After minting**, the lab's first write can return `NOT_FOUND` — even though `createLab` just succeeded, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file).
 * **After a role grant**, a write can return `UNAUTHORIZED` until the grant is indexed. [Tutorial 3](tutorial-3-agent-access.md#step-4-the-agent-uploads-and-announces).
 
-Both clear within seconds. Both are the retry above, with `codes` set to the one you expect.
+Usually both clear within seconds — but a mint has taken **several minutes** to index on staging under backlog, so the budget above is deliberately generous (12 attempts, backoff capped at 30s, ~4 minutes total) and logs each wait. Use the retry above with `codes` set to the one you expect, and do not treat the first failure as fatal.
 {% endhint %}
 
 ***

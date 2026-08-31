@@ -101,7 +101,7 @@ mutation GenerateServiceToken(
 
 Success ⇔ `error == null`. On failure `error` carries the catalogue `code` (e.g. `UNAUTHENTICATED` when the signature does not verify), `message` mirrors `error.message`, and `token`, `tokenId`, `expiresAt` and `createdAt` are `null` (`serviceName` may echo the name you sent) — guard for `null`, not for empty strings, and branch on `error`, never on the token fields.
 
-**Failure modes on the signature path** — all `UNAUTHENTICATED`, distinguished by `details.reason` (`details` is a JSON-encoded string, so `JSON.parse(error.details ?? "{}").reason`):
+**Failure modes on the signature path** — all `UNAUTHENTICATED`, distinguished by `details.reason`. Read it through the tolerant [`parseDetails`](README.md#error-handling), not a bare `JSON.parse` — the in-band string is currently doubly encoded:
 
 | `reason` | What happened | Fix |
 | -------- | ------------- | --- |

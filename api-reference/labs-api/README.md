@@ -104,14 +104,29 @@ mutation InitiateFileUpload($oclId: String!, $contentType: String!, $contentLeng
 }
 ```
 
-In-band `details` is a JSON-encoded string — parse it with `JSON.parse(error.details ?? "{}")` (on thrown queries, `errorInfo.details` is already an object). Documented keys are `field` (the offending input field), `reason` (a more specific cause under the code, e.g. `PROJECT_NOT_FOUND` under `NOT_FOUND`), `hint` and `docs`; ignore unknown keys. `reason` values are diagnostic refinement and may be extended at any time — branch on `code` first.
+`details` reaches you in more than one shape, so **read it through a tolerant parse rather than a single `JSON.parse`**: it is a JSON-encoded string on in-band mutation errors, a plain object on thrown query errors (`errorInfo.details`), and the in-band string is currently encoded twice — a single parse there returns another string, and `.reason` on it is silently `undefined`. Parsing until the value stops being a string reads all three correctly and needs no change when the encoding is corrected.
+
+Documented keys are `field` (the offending input field), `reason` (a more specific cause under the code, e.g. `PROJECT_NOT_FOUND` under `NOT_FOUND`), `hint` and `docs`; ignore unknown keys. `reason` values are diagnostic refinement and may be extended at any time — branch on `code` first.
 
 ```javascript
+// Handles all three shapes: object, JSON string, doubly-encoded JSON string.
+function parseDetails(details) {
+  let value = details;
+  for (let i = 0; i < 3 && typeof value === "string"; i++) {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      break;
+    }
+  }
+  return value && typeof value === "object" ? value : {};
+}
+
 const result = (await response.json()).data.initiateCreateOrUpdateFile; // `response` from your fetch()
 
 if (result.error) {
   const { code, message, requestId, retryable, details } = result.error;
-  const { reason } = JSON.parse(details ?? "{}");
+  const { reason } = parseDetails(details);
   if (retryable) return retryWithBackoff(); // RATE_LIMITED, TIMEOUT, UPSTREAM_UNAVAILABLE, INTERNAL_ERROR
   throw new Error(`${code}${reason ? `/${reason}` : ""}: ${message} (requestId ${requestId})`);
 }

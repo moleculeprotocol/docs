@@ -36,7 +36,16 @@ Public queries take `Authorization` alone. Sending `X-Service-Token` on a public
 ## Error contract
 
 * **Queries throw.** Failure lands in top-level `errors[]`. Branch on `errors[i].errorType`. `errors[i].errorInfo` is `{ requestId, retryable, details }` and `details` is already an object.
-* **Mutations return errors in-band.** Every `*Result` has `error: ApiError`. **Success ⇔ `error == null`.** Select `error { code message requestId retryable details }` on every mutation. In-band `details` is a **JSON-encoded string** — `JSON.parse(error.details ?? "{}")`.
+* **Mutations return errors in-band.** Every `*Result` has `error: ApiError`. **Success ⇔ `error == null`.** Select `error { code message requestId retryable details }` on every mutation.
+* **Parse `details` tolerantly.** It is an object on thrown query errors, a JSON string in-band, and currently a **doubly-encoded** JSON string in-band — one `JSON.parse` there returns a string, and `.reason` on it is silently `undefined`. Loop until it is not a string:
+
+```javascript
+function parseDetails(d) {
+  let v = d;
+  for (let i = 0; i < 3 && typeof v === "string"; i++) { try { v = JSON.parse(v); } catch { break } }
+  return v && typeof v === "object" ? v : {};
+}
+```
 * Branch on `code`, never on `message`. Retry only when `retryable` is `true`, with exponential backoff. Quote `requestId` in any bug report.
 * Codes: `UNAUTHENTICATED`, `UNAUTHORIZED`, `NOT_FOUND`, `VALIDATION_FAILED`, `CONFLICT`, `FAILED_PRECONDITION`, `COMPLEXITY_LIMIT_EXCEEDED`, `RATE_LIMITED`*, `TIMEOUT`*, `UPSTREAM_UNAVAILABLE`*, `INTERNAL_ERROR`* (`*` = retryable). An unrecognised code: treat as non-retryable, preserve it, surface it.
 
@@ -155,7 +164,7 @@ Full recipe including `accessControlConditions`: [Tutorial 2](tutorial-2-encrypt
 1. No `Bearer` in front of a `mol_` credential.
 2. Sign the sign-in message **verbatim**; any reformatting fails verification. It is single-use and expires after 10 minutes, so a cached message or signature returns `UNAUTHENTICATED` — `NONCE_NOT_FOUND` once redeemed, `NONCE_EXPIRED` past the window, `INVALID_SIGNATURE` if a later fetch superseded it. The fix is always a fresh `getServiceSignInMessage`, never a retry of the same signature.
 3. Success on a mutation is `error == null` — never a truthy payload field, and never a `message` string.
-4. In-band `error.details` is a JSON string; thrown `errorInfo.details` is an object. They differ.
+4. Read `error.details` with the tolerant `parseDetails` above — never a bare `JSON.parse`. In-band it is a JSON string (currently doubly encoded); on thrown query errors it is already an object.
 5. Filter mint receipt logs to the **LabNFT** address before decoding `OclIdentityCreated`.
 6. Send the presigned `PUT` with the returned headers unchanged, and the raw bytes as the body.
 7. Writing into a lab you do not own needs a **Contributor** role on it — see [Tutorial 3](tutorial-3-agent-access.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.

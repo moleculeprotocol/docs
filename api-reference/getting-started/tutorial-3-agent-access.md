@@ -131,17 +131,22 @@ From here the agent is an ordinary caller. Run [Tutorial 1 Step 4](tutorial-1-pu
 Writes by a Contributor service token are gated per mutation, matching the Privy user path: `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createAnnouncement`, `deleteDataRoomFile`, `updateFileMetadata` and `moveEntry` all accept Contributor. A few surfaces remain **Owner-only** and an agent Contributor cannot reach them: `updateLabNftMetadata`, `generateLabImageUploadUrl` and the legal-agreement mutations.
 
 {% hint style="warning" %}
-**Retry on `UNAUTHORIZED` right after the grant.** Role state reaches the API through an event indexer, so there is a short window after `grantRole` confirms onchain in which a write still returns `UNAUTHORIZED` (`reason: NOT_CONTRIBUTOR`). It is not a permissions problem and re-issuing the token will not help — wait and retry:
+**Retry on `UNAUTHORIZED` right after the grant.** Role state reaches the API through an event indexer, so for a window after `grantRole` confirms onchain a write still returns `UNAUTHORIZED` (`reason: NOT_CONTRIBUTOR`). It is not a permissions problem and re-issuing the token will not help — wait and retry. Usually seconds, but the same indexer has taken minutes on staging, so retry generously:
 
 ```javascript
-async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, baseMs = 2000 } = {}) {
+async function withIndexerLagRetry(
+  fn,
+  { codes = ["NOT_FOUND"], attempts = 12, baseMs = 2000, capMs = 30000 } = {},
+) {
   const laggy = new RegExp(codes.join("|"));
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (err) {
       if (!laggy.test(String(err)) || i === attempts - 1) throw err;
-      await new Promise((r) => setTimeout(r, baseMs * 2 ** i)); // 2s, 4s, 8s, 16s
+      const delay = Math.min(baseMs * 2 ** i, capMs); // 2s, 4s, 8s, 16s, then 30s
+      console.warn(`indexer not caught up (attempt ${i + 1}/${attempts}); retrying in ${delay / 1000}s`);
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
 }
@@ -216,10 +221,27 @@ async function graphql(query, variables) {
   return data;
 }
 
+// `details` arrives as an object (thrown queries), a JSON string (in-band), or
+// a doubly-encoded JSON string (in-band today) — parse until it is not a string.
+function parseDetails(details) {
+  let value = details;
+  for (let i = 0; i < 3 && typeof value === "string"; i++) {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      break;
+    }
+  }
+  return value && typeof value === "object" ? value : {};
+}
+
 function assertOk(result, op) {
   if (result.error) {
     const { code, message, requestId } = result.error;
-    throw new Error(`${op} failed: ${code}: ${message} (requestId ${requestId})`);
+    const { reason } = parseDetails(result.error.details);
+    throw new Error(
+      `${op} failed: ${code}${reason ? `/${reason}` : ""}: ${message} (requestId ${requestId})`,
+    );
   }
   return result;
 }
@@ -229,14 +251,19 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // Writes can return UNAUTHORIZED for a few seconds after a role grant confirms
 // onchain — the indexer trails the chain. Retry rather than re-issuing the
 // token. Same helper as Tutorial 1, which retries NOT_FOUND after a mint.
-async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, baseMs = 2000 } = {}) {
+async function withIndexerLagRetry(
+  fn,
+  { codes = ["NOT_FOUND"], attempts = 12, baseMs = 2000, capMs = 30000 } = {},
+) {
   const laggy = new RegExp(codes.join("|"));
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (err) {
       if (!laggy.test(String(err)) || i === attempts - 1) throw err;
-      await sleep(baseMs * 2 ** i); // 2s, 4s, 8s, 16s
+      const delay = Math.min(baseMs * 2 ** i, capMs); // 2s, 4s, 8s, 16s, then 30s
+      console.warn(`indexer not caught up (attempt ${i + 1}/${attempts}); retrying in ${delay / 1000}s`);
+      await sleep(delay);
     }
   }
 }

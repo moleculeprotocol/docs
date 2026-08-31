@@ -125,10 +125,27 @@ async function graphql(query, variables) {
   return data;
 }
 
+// `details` arrives as an object (thrown queries), a JSON string (in-band), or
+// a doubly-encoded JSON string (in-band today) — parse until it is not a string.
+function parseDetails(details) {
+  let value = details;
+  for (let i = 0; i < 3 && typeof value === "string"; i++) {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      break;
+    }
+  }
+  return value && typeof value === "object" ? value : {};
+}
+
 function assertOk(result, op) {
   if (result.error) {
     const { code, message, requestId } = result.error;
-    throw new Error(`${op} failed: ${code}: ${message} (requestId ${requestId})`);
+    const { reason } = parseDetails(result.error.details);
+    throw new Error(
+      `${op} failed: ${code}${reason ? `/${reason}` : ""}: ${message} (requestId ${requestId})`,
+    );
   }
   return result;
 }

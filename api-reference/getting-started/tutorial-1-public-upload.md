@@ -214,7 +214,7 @@ DID-linking for the new lab starts automatically in the background; [`getDidLink
 Three calls: get a presigned URL, `PUT` the bytes, finalise with metadata. Full reference: [Files](../labs-api/files.md).
 
 {% hint style="warning" %}
-**This is the one step that can fail on a lab you just created.** `createLab` succeeding does not yet mean the lab is writable: it falls back to an onchain ownership check when the mint has not been indexed, while the file mutations read the indexed record and return `NOT_FOUND` until it lands. Wrap the first call in [`withIndexerLagRetry`](README.md#shared-setup) — without it this step fails outright on a fresh mint often enough to matter.
+**This is the one step that can fail on a lab you just created.** `createLab` succeeding does not yet mean the lab is writable: it falls back to an onchain ownership check when the mint has not been indexed, while the file mutations read the indexed record and return `NOT_FOUND` until it lands. Wrap the first call in [`withIndexerLagRetry`](README.md#shared-setup) — without it this step fails outright on a fresh mint often enough to matter. Measured on staging: usually indexed within seconds, but one mint took **over four minutes**, which is why the helper retries for that long rather than giving up after a few seconds.
 {% endhint %}
 
 ```javascript
@@ -342,7 +342,7 @@ Keep `datasetId` — Tutorial 4 attaches it to an announcement.
 
 | Symptom | Cause | Fix |
 | ------- | ----- | --- |
-| `initiate` → `NOT_FOUND`, "Project 0x… does not exist" | The mint is not indexed yet. `createLab` can succeed before this is true, so a successful Step 3 is no guarantee | Retry with backoff — `withIndexerLagRetry` above. It clears in seconds. Do **not** re-run `createLab`, which returns `CONFLICT` once registered |
+| `initiate` → `NOT_FOUND`, "Project 0x… does not exist" | The mint is not indexed yet. `createLab` can succeed before this is true, so a successful Step 3 is no guarantee | Retry with backoff — `withIndexerLagRetry` above. Usually seconds; observed up to ~4 minutes under indexer backlog. Do **not** re-run `createLab`, which returns `CONFLICT` once registered |
 | `initiate` → `UNAUTHORIZED` | The wallet behind the token has no write role on this lab | You must be Owner or Contributor. See [Tutorial 3](tutorial-3-agent-access.md) |
 | `PUT` → `403` | URL expired (~15 min), or headers altered | Re-run `initiate`; send the returned `headers` verbatim |
 | `PUT` → `400`/`411` | Body wasn't sent as raw bytes | Send the buffer, not a JSON wrapper. In curl: `--data-binary` |
@@ -428,24 +428,46 @@ async function graphql(query, variables) {
   return data;
 }
 
+// `details` arrives as an object (thrown queries), a JSON string (in-band), or
+// a doubly-encoded JSON string (in-band today) — parse until it is not a string.
+function parseDetails(details) {
+  let value = details;
+  for (let i = 0; i < 3 && typeof value === "string"; i++) {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      break;
+    }
+  }
+  return value && typeof value === "object" ? value : {};
+}
+
 function assertOk(result, op) {
   if (result.error) {
     const { code, message, requestId } = result.error;
-    throw new Error(`${op} failed: ${code}: ${message} (requestId ${requestId})`);
+    const { reason } = parseDetails(result.error.details);
+    throw new Error(
+      `${op} failed: ${code}${reason ? `/${reason}` : ""}: ${message} (requestId ${requestId})`,
+    );
   }
   return result;
 }
 
 // The mint reaches the API through an event indexer, so the lab's first write
 // can return NOT_FOUND for a few seconds after createLab already succeeded.
-async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, baseMs = 2000 } = {}) {
+async function withIndexerLagRetry(
+  fn,
+  { codes = ["NOT_FOUND"], attempts = 12, baseMs = 2000, capMs = 30000 } = {},
+) {
   const laggy = new RegExp(codes.join("|"));
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (err) {
       if (!laggy.test(String(err)) || i === attempts - 1) throw err;
-      await new Promise((r) => setTimeout(r, baseMs * 2 ** i)); // 2s, 4s, 8s, 16s
+      const delay = Math.min(baseMs * 2 ** i, capMs); // 2s, 4s, 8s, 16s, then 30s
+      console.warn(`indexer not caught up (attempt ${i + 1}/${attempts}); retrying in ${delay / 1000}s`);
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
 }

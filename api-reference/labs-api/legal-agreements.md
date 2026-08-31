@@ -242,7 +242,7 @@ mutation SignLegalAgreement($input: SignLegalAgreementInput!) {
 }
 ```
 
-Success ⇔ `error == null`. On failure `message` mirrors `error.message`; branch on `error.code` (and `details.reason` where documented — e.g. `CONFLICT` with reason `ALREADY_SIGNED` when the current template version is already signed, or `FAILED_PRECONDITION` with reason `TEMPLATE_EXPIRED`). `details` is a JSON-encoded string: `JSON.parse(error.details ?? "{}").reason`.
+Success ⇔ `error == null`. On failure `message` mirrors `error.message`; branch on `error.code` (and `details.reason` where documented — e.g. `CONFLICT` with reason `ALREADY_SIGNED` when the current template version is already signed, or `FAILED_PRECONDITION` with reason `TEMPLATE_EXPIRED`). `details` is a JSON-encoded string, currently doubly encoded in-band: read it via the tolerant [`parseDetails`](README.md#error-handling).
 
 **`SignLegalAgreementInput` fields:**
 

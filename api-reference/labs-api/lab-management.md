@@ -216,7 +216,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 **Error Responses:**
 
-`createLab` reports failures in-band: `error` is `null` on success and a full `ApiError` on failure. Branch on `error.code` (and, where documented, the `reason` key inside `error.details`, a JSON-encoded string) — never on message text. The top-level `message` mirrors `error.message` on failure.
+`createLab` reports failures in-band: `error` is `null` on success and a full `ApiError` on failure. Branch on `error.code` (and, where documented, the `reason` key inside `error.details` — read via the tolerant [`parseDetails`](README.md#error-handling), since the in-band string is currently doubly encoded) — never on message text. The top-level `message` mirrors `error.message` on failure.
 
 **Not Authenticated (No Token):**
 
