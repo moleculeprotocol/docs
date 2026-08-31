@@ -538,7 +538,8 @@ mutation UpdateFileMetadata(
 | Parameter   | Type      | Required | Description                                                   |
 | ----------- | --------- | -------- | ------------------------------------------------------------- |
 | oclId       | String    | Yes      | Canonical 32-byte oclId of the lab                            |
-| ref         | String    | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response |
+| ref         | String    | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response — the `datasetId`, **not** the file path |
+| accessLevel | String    | Yes      | `PUBLIC`, `HOLDERS` or `ADMIN`. Required: this call replaces the metadata rather than patching it, so omitting it fails validation |
 | description | String    | No       | Updated file description                                      |
 | tags        | \[String] | No       | Updated tags for categorization                               |
 | categories  | \[String] | No       | Updated categories for organization                           |

@@ -193,7 +193,7 @@ All mutations follow a consistent error response format:
 
 | Error Code                | Description                                  | Solution                               |
 | ------------------------- | -------------------------------------------- | -------------------------------------- |
-| 401 Unauthorized          | Missing or invalid consumer credential       | Check `Authorization: Bearer` header   |
+| 401 Unauthorized          | Missing or invalid consumer credential       | Check the `Authorization` header — the `mol_` credential goes in directly, with no `Bearer` prefix |
 | 400 Bad Request           | Invalid parameters or malformed JSON         | Verify input data format               |
 | `INVALID_INPUT`           | Required fields missing or malformed         | Verify the input object shape          |
 
@@ -223,7 +223,7 @@ For complete code examples including:
 * Error handling and retry logic
 * Safe multisig integration
 
-**Contact the Molecule team** to receive the full **Technical Integration Guide**.
+Contract addresses, ABIs and interfaces are published in the [Contracts reference](../references/contracts/README.md) — [`OclTokenizer`](../references/contracts/tokenizer.md), [`IPToken`](../references/contracts/ipt.md), [`AccessResolver`](../references/contracts/accessresolver.md) — so no request is needed for those. For the remaining narrative material (Safe multisig integration, worked retry logic), ask on the [Molecule Discord](https://t.co/L0VEiy4Bjk) using the [same request template](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step), naming the Technical Integration Guide instead of a credential.
 
 ### Basic Example Structure
 
@@ -284,9 +284,10 @@ console.log('Lab tokenized!', txHash);
 
 For assistance with the Tokenization API:
 
-* **Technical Integration Guide**: Contact Molecule team to receive complete documentation
-* **Discord**: Join our [community](https://t.co/L0VEiy4Bjk) for support
-* **Smart Contracts**: See [contract addresses](../references/contracts/README.md)
+* **Smart contracts**: addresses, ABIs and interfaces are published in the [Contracts reference](../references/contracts/README.md) — no request needed
+* **Consumer credential**: the [request template](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) on Getting Started
+* **Technical Integration Guide**: ask on Discord with that same template, naming the guide instead of a credential
+* **Discord**: join our [community](https://t.co/L0VEiy4Bjk) for support
 
 ***
 

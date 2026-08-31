@@ -10,7 +10,7 @@ Query operations for listing all labs and reading their activity feeds. To read 
 
 Get all labs. This is a **public endpoint** - no authentication required.
 
-> **🔓 Public Endpoint**: The `labs` query does not require authentication. You only need a consumer credential (`Authorization: Bearer`) - no Service Token is needed.
+> **🔓 Public Endpoint**: The `labs` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 **GraphQL Query:**
 
@@ -86,7 +86,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 Get activity timeline for a specific project including file events and announcements. This is a **public endpoint** - no authentication required.
 
-> **🔓 Public Endpoint**: The `labActivity` query does not require authentication. You only need a consumer credential (`Authorization: Bearer`) - no Service Token is needed.
+> **🔓 Public Endpoint**: The `labActivity` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 > **Filtering**: By default, returns all activity types (file events and announcements). Use the optional `filter` parameter (`ANNOUNCEMENT` or `FILE`) to retrieve only a specific type.
 
@@ -210,7 +210,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 Get all activity across all projects. This is a **public endpoint** - no authentication required.
 
-> **🔓 Public Endpoint**: The `activities` query does not require authentication. You only need a consumer credential (`Authorization: Bearer`) - no Service Token is needed.
+> **🔓 Public Endpoint**: The `activities` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 > **Filtering**: By default, returns all activity types (file events and announcements). Use the optional `filter` parameter (`ANNOUNCEMENT` or `FILE`) to retrieve only a specific type.
 
