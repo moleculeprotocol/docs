@@ -164,7 +164,31 @@ function assertOk(result, op) {
   }
   return result;
 }
+
+// Onchain state — a mint, a role grant — reaches the API through an event
+// indexer, so a write issued immediately after one can fail on state the chain
+// already has. Retry with backoff; re-issuing the token never helps.
+async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, baseMs = 2000 } = {}) {
+  const laggy = new RegExp(codes.join("|"));
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (!laggy.test(String(err)) || i === attempts - 1) throw err;
+      await new Promise((r) => setTimeout(r, baseMs * 2 ** i)); // 2s, 4s, 8s, 16s
+    }
+  }
+}
 ```
+
+{% hint style="warning" %}
+**Two places the indexer trails, and both need that retry.** A successful response does not mean every downstream read is caught up yet:
+
+* **After minting**, the lab's first write can return `NOT_FOUND` — even though `createLab` just succeeded, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file).
+* **After a role grant**, a write can return `UNAUTHORIZED` until the grant is indexed. [Tutorial 3](tutorial-3-agent-access.md#step-4-the-agent-uploads-and-announces).
+
+Both clear within seconds. Both are the retry above, with `codes` set to the one you expect.
+{% endhint %}
 
 ***
 
@@ -177,7 +201,7 @@ export CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret"
 export WALLET_PRIVATE_KEY="0x…"          # funded on Base Sepolia
 ```
 
-1. **Self-issue a service token** — `getServiceSignInMessage` → sign the message with your wallet (EIP-191 `personal_sign`) → `generateServiceToken`. No human in the loop.
+1. **Self-issue a service token** — `getServiceSignInMessage` → sign the message with your wallet (EIP-191 `personal_sign`) → `generateServiceToken`. No human in the loop. Keep the three calls together: the message carries a single-use nonce valid for 10 minutes.
 2. **Mint the LabNFT** — `OnChainLabFactory.mintAndCreateAccount(yourAddress)` with `value: mintFeeWei()`. Read `oclId` off the `OclIdentityCreated` event.
 3. **Register the lab** — `createLab(input: { oclId })`.
 4. **Upload a file** — `initiateCreateOrUpdateFile` → `PUT` the bytes to the returned presigned URL → `finishCreateOrUpdateFile` with `accessLevel: "PUBLIC"`.

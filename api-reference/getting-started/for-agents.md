@@ -44,11 +44,11 @@ Public queries take `Authorization` alone. Sending `X-Service-Token` on a public
 
 ```graphql
 query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
-  getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message }
+  getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message expiresAt }
 }
 ```
 
-Sign `message` **verbatim** with the wallet as a plain personal message (EIP-191 `personal_sign`, **not** typed data). Then:
+Sign `message` **verbatim** with the wallet as a plain personal message (EIP-191 `personal_sign`, **not** typed data). `message` embeds a **single-use nonce valid for 10 minutes** — fetch it immediately before signing, never cache it or the signature, never rebuild the string yourself, and fetch a fresh one for every token. Then:
 
 ```graphql
 mutation GenerateServiceToken($serviceName: String!, $walletAddress: String!, $messageSignature: String!, $expiresIn: String) {
@@ -153,13 +153,14 @@ Full recipe including `accessControlConditions`: [Tutorial 2](tutorial-2-encrypt
 ## Rules that break runs when ignored
 
 1. No `Bearer` in front of a `mol_` credential.
-2. Sign the sign-in message **verbatim**; any reformatting fails verification.
+2. Sign the sign-in message **verbatim**; any reformatting fails verification. It is single-use and expires after 10 minutes, so a cached message or signature returns `UNAUTHENTICATED` — `NONCE_NOT_FOUND` once redeemed, `NONCE_EXPIRED` past the window, `INVALID_SIGNATURE` if a later fetch superseded it. The fix is always a fresh `getServiceSignInMessage`, never a retry of the same signature.
 3. Success on a mutation is `error == null` — never a truthy payload field, and never a `message` string.
 4. In-band `error.details` is a JSON string; thrown `errorInfo.details` is an object. They differ.
 5. Filter mint receipt logs to the **LabNFT** address before decoding `OclIdentityCreated`.
 6. Send the presigned `PUT` with the returned headers unchanged, and the raw bytes as the body.
 7. Writing into a lab you do not own needs a **Contributor** role on it — see [Tutorial 3](tutorial-3-agent-access.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
-8. Production has introspection off and a depth limit of 10. Generate types against staging.
+8. **A successful `createLab` does not mean the lab is writable yet.** Step 4's first call can return `NOT_FOUND` ("Project 0x… does not exist") for a few seconds, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. Retry `NOT_FOUND` with backoff on the first write after a mint; do not re-run `createLab`, which then returns `CONFLICT`.
+9. Production has introspection off and a depth limit of 10. Generate types against staging.
 
 ## Related
 

@@ -74,18 +74,18 @@ const grant = members.listLabMembers.members.find(
 console.log("Agent role:", grant?.role, "expiry:", grant?.expiry ?? "permanent");
 ```
 
-Expect `role: "CONTRIBUTOR"` and `isAgent: true`. `expiry` is unix seconds as a decimal string, or `null` for a permanent grant. Expired grants are excluded from this list entirely, so a missing entry after a while means the grant lapsed.
+Expect `role: "CONTRIBUTOR"`. `isAgent` simply echoes the flag the owner set — `false` there changes nothing about what the agent may do, so do not treat it as a failed grant. `expiry` is unix seconds as a decimal string, or `null` for a permanent grant. Expired grants are excluded from this list entirely, so a missing entry after a while means the grant lapsed.
 
 ## Step 3: The agent self-issues a service token
 
-Identical to Tutorial 1 Step 1, signed by the **agent's** wallet:
+Identical to Tutorial 1 Step 1, signed by the **agent's** wallet. Fetch the message and redeem it in one go — it embeds a single-use nonce valid for 10 minutes, so an agent that waits for the human's role grant between fetching and signing will hit `UNAUTHENTICATED` / `reason: NONCE_EXPIRED`. Poll for the grant first (Step 2), then sign in:
 
 ```javascript
 const AGENT_SERVICE_NAME = "research-agent-1";
 
 const signInMessage = await graphql(
   `query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
-    getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message }
+    getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message expiresAt }
   }`,
   { walletAddress: agentAccount.address, serviceName: AGENT_SERVICE_NAME },
 );
@@ -134,19 +134,20 @@ Writes by a Contributor service token are gated per mutation, matching the Privy
 **Retry on `UNAUTHORIZED` right after the grant.** Role state reaches the API through an event indexer, so there is a short window after `grantRole` confirms onchain in which a write still returns `UNAUTHORIZED` (`reason: NOT_CONTRIBUTOR`). It is not a permissions problem and re-issuing the token will not help — wait and retry:
 
 ```javascript
-async function withRoleGrantRetry(fn, { attempts = 5, baseMs = 2000 } = {}) {
+async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, baseMs = 2000 } = {}) {
+  const laggy = new RegExp(codes.join("|"));
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (err) {
-      const isAuthzLag = /UNAUTHORIZED/.test(String(err));
-      if (!isAuthzLag || i === attempts - 1) throw err;
+      if (!laggy.test(String(err)) || i === attempts - 1) throw err;
       await new Promise((r) => setTimeout(r, baseMs * 2 ** i)); // 2s, 4s, 8s, 16s
     }
   }
 }
 
-await withRoleGrantRetry(() => uploadFile(oclId, "./findings.csv"));
+// Same helper as Tutorial 1, with the code this step expects.
+await withIndexerLagRetry(() => uploadFile(oclId, "./findings.csv"), { codes: ["UNAUTHORIZED"] });
 ```
 {% endhint %}
 
@@ -226,13 +227,15 @@ function assertOk(result, op) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Writes can return UNAUTHORIZED for a few seconds after a role grant confirms
-// onchain — the indexer trails the chain. Retry rather than re-issuing the token.
-async function withRoleGrantRetry(fn, { attempts = 5, baseMs = 2000 } = {}) {
+// onchain — the indexer trails the chain. Retry rather than re-issuing the
+// token. Same helper as Tutorial 1, which retries NOT_FOUND after a mint.
+async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, baseMs = 2000 } = {}) {
+  const laggy = new RegExp(codes.join("|"));
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (err) {
-      if (!/UNAUTHORIZED/.test(String(err)) || i === attempts - 1) throw err;
+      if (!laggy.test(String(err)) || i === attempts - 1) throw err;
       await sleep(baseMs * 2 ** i); // 2s, 4s, 8s, 16s
     }
   }
@@ -275,9 +278,11 @@ async function main() {
   console.log("2/6 Role:", grant.role, "isAgent:", grant.isAgent, "expiry:", grant.expiry ?? "permanent");
 
   // ---- Step 3: the agent self-issues a token ----
+  // Only now, after the role poll above returned — the sign-in message holds a
+  // single-use nonce that expires 10 minutes after issuance.
   const signInMessage = await graphql(
     `query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
-      getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message }
+      getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message expiresAt }
     }`,
     { walletAddress: agentAccount.address, serviceName: AGENT_SERVICE_NAME },
   );
@@ -303,8 +308,10 @@ async function main() {
   console.log("3/6 Token issued, expires", tokenResult.generateServiceToken.expiresAt);
 
   // ---- Step 4: upload (public; see Tutorial 2 for the encrypted variant) ----
+  // Retried on UNAUTHORIZED: the role grant may not be indexed yet. NOT_FOUND
+  // is included for the case where the lab itself was minted moments ago.
   const bytes = readFileSync(filePath);
-  const { datasetId } = await withRoleGrantRetry(async () => {
+  const { datasetId } = await withIndexerLagRetry(async () => {
     const initiateResult = await graphql(
       `mutation Initiate($oclId: String!, $contentType: String!, $contentLength: Int!) {
         initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) {
@@ -343,7 +350,7 @@ async function main() {
     );
     assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");
     return finishResult.finishCreateOrUpdateFile;
-  });
+  }, { codes: ["UNAUTHORIZED", "NOT_FOUND"] });
   console.log("4/6 Uploaded — datasetId:", datasetId);
 
   // ---- Step 4b: announce it ----

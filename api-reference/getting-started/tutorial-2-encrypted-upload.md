@@ -238,6 +238,8 @@ assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");
 | `VALIDATION_FAILED`, `reason: INVALID_CONDITIONS` | `accessControlConditions` isn't a valid stringified condition array | It is a **JSON string**, not an object. Check `functionAbi` is complete and `returnValueTest` present |
 | `VALIDATION_FAILED`, `reason: INVALID_ACCESS_LEVEL` | `PUBLIC` on an encrypted file | Use `HOLDERS` or `ADMIN` |
 | `UNAUTHORIZED` on `generateDataEncryptionKey` | No write role on the lab | Owner or Contributor required |
+| `UPSTREAM_UNAVAILABLE`, "Path is occupied" on `finish` | A file already exists at that `path` — usually a re-run against the same lab | **Not retryable despite the code.** Pick a new `path`, or send `ref` (the previous `datasetId`) instead to add a version |
+| `NOT_FOUND` on the first call after a mint | The mint is not indexed yet, even though `createLab` succeeded | Retry with [`withIndexerLagRetry`](README.md#shared-setup) — see [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file) |
 
 ## Step 5: Verify by decrypting it
 
@@ -419,9 +421,11 @@ async function main() {
   const walletClient = createWalletClient({ account, chain: CHAIN, transport: http() });
 
   // ---- Step 1: service token ----
+  // Fetch → sign → redeem, back to back: the message holds a single-use nonce
+  // that expires 10 minutes after issuance.
   const signInMessage = await graphql(
     `query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
-      getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message }
+      getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message expiresAt }
     }`,
     { walletAddress: account.address, serviceName: SERVICE_NAME },
   );

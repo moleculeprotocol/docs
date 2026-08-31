@@ -17,7 +17,9 @@ The default path, and the one to run first. Five steps: get a token, mint the La
 
 ## Step 1: Get a service token
 
-Prove control of the wallet instead of waiting on a manually issued token — the self-service path for agents, bots and CI/CD. Fetch the deterministic sign-in message, sign it as a plain wallet message (EIP-191 `personal_sign` — **not** typed data), then exchange the signature for a token. Full reference: [Service Tokens](../labs-api/service-tokens.md#obtaining-a-token).
+Prove control of the wallet instead of waiting on a manually issued token — the self-service path for agents, bots and CI/CD. Fetch a sign-in message, sign it as a plain wallet message (EIP-191 `personal_sign` — **not** typed data), then exchange the signature for a token. Full reference: [Service Tokens](../labs-api/service-tokens.md#obtaining-a-token).
+
+The message carries a server-issued single-use nonce and is valid for **10 minutes**, so these two calls belong together: fetch, sign, redeem. Neither the message nor the signature can be cached or reused.
 
 ```javascript
 import { createPublicClient, createWalletClient, http } from "viem";
@@ -31,17 +33,22 @@ const publicClient = createPublicClient({ chain: CHAIN, transport: http() });
 // walletClient: everything that needs the private key — signing and sending.
 const walletClient = createWalletClient({ account, chain: CHAIN, transport: http() });
 
+// Fetch this immediately before signing: the message embeds a single-use
+// nonce that expires 10 minutes after issuance, and requesting a new one
+// invalidates any previous message for this wallet + service.
 const signInMessage = await graphql(
   `query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
     getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) {
       message
+      expiresAt
     }
   }`,
   { walletAddress: account.address, serviceName: SERVICE_NAME },
 );
 
-// Sign the message VERBATIM — the backend recomposes and verifies the same
-// string server-side, so re-wording or re-formatting it breaks verification.
+// Sign the message VERBATIM — the backend recomposes the same string from the
+// stored nonce and verifies it, so re-wording, re-formatting or rebuilding it
+// client-side breaks verification.
 const messageSignature = await walletClient.signMessage({
   message: signInMessage.getServiceSignInMessage.message,
 });
@@ -90,7 +97,9 @@ serviceToken = tokenResult.generateServiceToken.token;
 
 | `error.code` | What happened | Fix |
 | ------------ | ------------- | --- |
-| `UNAUTHENTICATED`, `reason: INVALID_SIGNATURE` | The signed bytes are not the message the backend recomposes | Sign the returned `message` string byte-for-byte. Use `personal_sign` / viem's `signMessage`, not `signTypedData` |
+| `UNAUTHENTICATED`, `reason: INVALID_SIGNATURE` | The signed bytes are not the message the backend recomposes — altered text, or a message superseded by a later `getServiceSignInMessage` call | Sign the most recent `message` byte-for-byte. Use `personal_sign` / viem's `signMessage`, not `signTypedData` |
+| `UNAUTHENTICATED`, `reason: NONCE_NOT_FOUND` | No nonce on file — never requested for this wallet + service, or already redeemed by an earlier token | Re-run the query and sign the new `message`. Retrying the same signature never works |
+| `UNAUTHENTICATED`, `reason: NONCE_EXPIRED` | More than 10 minutes passed between fetching the message and redeeming it | Re-run the query and sign the new `message` |
 | `UNAUTHENTICATED`, `reason: WALLET_MISMATCH` | `walletAddress` isn't the signer | Pass the same address that signed |
 | `VALIDATION_FAILED` | Bad `expiresIn` | Format is `<int><unit>`, unit one of `s m h d w M y`; between 1 hour and 2 years |
 | HTTP `401` before GraphQL runs | Consumer credential missing or malformed | Check `Authorization` — no `Bearer` prefix. See [Authentication](../authentication.md) |
@@ -204,6 +213,10 @@ DID-linking for the new lab starts automatically in the background; [`getDidLink
 
 Three calls: get a presigned URL, `PUT` the bytes, finalise with metadata. Full reference: [Files](../labs-api/files.md).
 
+{% hint style="warning" %}
+**This is the one step that can fail on a lab you just created.** `createLab` succeeding does not yet mean the lab is writable: it falls back to an onchain ownership check when the mint has not been indexed, while the file mutations read the indexed record and return `NOT_FOUND` until it lands. Wrap the first call in [`withIndexerLagRetry`](README.md#shared-setup) — without it this step fails outright on a fresh mint often enough to matter.
+{% endhint %}
+
 ```javascript
 import { readFileSync } from "node:fs";
 import { basename } from "node:path";
@@ -211,22 +224,25 @@ import { basename } from "node:path";
 const filePath = "./research-data.csv";
 const bytes = readFileSync(filePath);
 
-// 4a. Get a presigned URL
-const initiateResult = await graphql(
-  `mutation Initiate($oclId: String!, $contentType: String!, $contentLength: Int!) {
-    initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) {
-      uploadToken
-      uploadUrl
-      uploadUrlExpiry
-      method
-      headers { key value }
-      error { code message requestId retryable details }
-    }
-  }`,
-  { oclId, contentType: "text/csv", contentLength: bytes.length },
-);
-assertOk(initiateResult.initiateCreateOrUpdateFile, "initiateCreateOrUpdateFile");
-const { uploadToken, uploadUrl, method, headers } = initiateResult.initiateCreateOrUpdateFile;
+// 4a. Get a presigned URL. Retried: the mint may not be indexed yet, even
+// though createLab already returned success.
+const initiateResult = await withIndexerLagRetry(async () => {
+  const result = await graphql(
+    `mutation Initiate($oclId: String!, $contentType: String!, $contentLength: Int!) {
+      initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) {
+        uploadToken
+        uploadUrl
+        uploadUrlExpiry
+        method
+        headers { key value }
+        error { code message requestId retryable details }
+      }
+    }`,
+    { oclId, contentType: "text/csv", contentLength: bytes.length },
+  );
+  return assertOk(result.initiateCreateOrUpdateFile, "initiateCreateOrUpdateFile");
+});
+const { uploadToken, uploadUrl, method, headers } = initiateResult;
 
 // 4b. PUT the bytes with EXACTLY the returned headers
 const uploadHeaders = {};
@@ -326,12 +342,14 @@ Keep `datasetId` — Tutorial 4 attaches it to an announcement.
 
 | Symptom | Cause | Fix |
 | ------- | ----- | --- |
+| `initiate` → `NOT_FOUND`, "Project 0x… does not exist" | The mint is not indexed yet. `createLab` can succeed before this is true, so a successful Step 3 is no guarantee | Retry with backoff — `withIndexerLagRetry` above. It clears in seconds. Do **not** re-run `createLab`, which returns `CONFLICT` once registered |
 | `initiate` → `UNAUTHORIZED` | The wallet behind the token has no write role on this lab | You must be Owner or Contributor. See [Tutorial 3](tutorial-3-agent-access.md) |
 | `PUT` → `403` | URL expired (~15 min), or headers altered | Re-run `initiate`; send the returned `headers` verbatim |
 | `PUT` → `400`/`411` | Body wasn't sent as raw bytes | Send the buffer, not a JSON wrapper. In curl: `--data-binary` |
 | `finish` → `VALIDATION_FAILED`, `details.field: "path"` | `path` contains an underscore, or both `path` and `ref` were sent | Underscores are not allowed in `path`; use `path` for a new file **or** `ref` for a new version, never both |
 | `finish` → `VALIDATION_FAILED`, `reason: INVALID_TAGS_OR_CATEGORIES` | Unknown tag or category | Valid values come from the public `fileCategoriesAndTags` query |
 | `finish` → `VALIDATION_FAILED`, `reason: INVALID_ACCESS_LEVEL` | Bad `accessLevel` | One of `PUBLIC`, `HOLDERS`, `ADMIN` |
+| `finish` → `UPSTREAM_UNAVAILABLE`, "Path is occupied" | A file already lives at that `path` — the usual cause is re-running this tutorial against the same lab | **Not retryable despite the code**: retrying sends the identical request and fails identically. Either pick a new `path`, or send `ref` (the previous `datasetId`) instead of `path` to add a version to the existing file |
 
 ## Step 5: Verify it worked
 
@@ -418,6 +436,20 @@ function assertOk(result, op) {
   return result;
 }
 
+// The mint reaches the API through an event indexer, so the lab's first write
+// can return NOT_FOUND for a few seconds after createLab already succeeded.
+async function withIndexerLagRetry(fn, { codes = ["NOT_FOUND"], attempts = 5, baseMs = 2000 } = {}) {
+  const laggy = new RegExp(codes.join("|"));
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (!laggy.test(String(err)) || i === attempts - 1) throw err;
+      await new Promise((r) => setTimeout(r, baseMs * 2 ** i)); // 2s, 4s, 8s, 16s
+    }
+  }
+}
+
 async function main() {
   const filePath = process.argv[2];
   if (!filePath) throw new Error("Usage: node tutorial-1.js <file-to-upload>");
@@ -427,9 +459,11 @@ async function main() {
   const walletClient = createWalletClient({ account, chain: CHAIN, transport: http() });
 
   // ---- Step 1: service token ----
+  // Fetch → sign → redeem, back to back: the message holds a single-use nonce
+  // that expires 10 minutes after issuance.
   const signInMessage = await graphql(
     `query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
-      getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message }
+      getServiceSignInMessage(walletAddress: $walletAddress, serviceName: $serviceName) { message expiresAt }
     }`,
     { walletAddress: account.address, serviceName: SERVICE_NAME },
   );
@@ -495,17 +529,19 @@ async function main() {
 
   // ---- Step 4: upload the file ----
   const bytes = readFileSync(filePath);
-  const initiateResult = await graphql(
-    `mutation Initiate($oclId: String!, $contentType: String!, $contentLength: Int!) {
-      initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) {
-        uploadToken uploadUrl method headers { key value }
-        error { code message requestId retryable details }
-      }
-    }`,
-    { oclId, contentType: "application/octet-stream", contentLength: bytes.length },
-  );
-  assertOk(initiateResult.initiateCreateOrUpdateFile, "initiateCreateOrUpdateFile");
-  const { uploadToken, uploadUrl, method, headers } = initiateResult.initiateCreateOrUpdateFile;
+  // Retried: createLab returning success does not mean the mint is indexed yet.
+  const { uploadToken, uploadUrl, method, headers } = await withIndexerLagRetry(async () => {
+    const result = await graphql(
+      `mutation Initiate($oclId: String!, $contentType: String!, $contentLength: Int!) {
+        initiateCreateOrUpdateFile(oclId: $oclId, contentType: $contentType, contentLength: $contentLength) {
+          uploadToken uploadUrl method headers { key value }
+          error { code message requestId retryable details }
+        }
+      }`,
+      { oclId, contentType: "application/octet-stream", contentLength: bytes.length },
+    );
+    return assertOk(result.initiateCreateOrUpdateFile, "initiateCreateOrUpdateFile");
+  });
 
   const uploadHeaders = {};
   headers.forEach((h) => (uploadHeaders[h.key] = h.value));
