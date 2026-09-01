@@ -24,6 +24,8 @@ The most common real-world shape: a researcher created their Lab in the Labs app
 
 The human never hands over a private key, a token, or their session. Revoking the agent is one onchain revoke, and it does not touch anything else.
 
+Three addresses are in play here — the human's owner wallet, the agent's own wallet, and the Lab's own OCL account — and they are not interchangeable. If you are unsure which goes in which field, read [the three wallets, side by side](../authentication.md#the-three-wallets-side-by-side) first.
+
 ## Step 1: The agent reports its address
 
 With the plugin: run `wallet_address`. With viem:

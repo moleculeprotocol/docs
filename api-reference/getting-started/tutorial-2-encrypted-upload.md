@@ -159,7 +159,7 @@ const teamConditions = JSON.stringify([
 ]);
 ```
 
-`:userAddress` is substituted with the authenticated caller's wallet at evaluation time. Pass `"2"` instead of `"1"` to exclude Viewers. Evaluation walks the array left to right and short-circuits (`or` stops at the first true); **any RPC error fails closed** and the DEK is not released. The full condition grammar, including `EvmBasicCondition`, is on [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer).
+`labAccountAddress` here is the **Lab's own OCL account**, not the owner's wallet — passing the owner's address instead evaluates to false and silently locks everyone out of the file ([the three wallets](../authentication.md#the-three-wallets-side-by-side)). `:userAddress` is substituted with the authenticated caller's wallet at evaluation time. Pass `"2"` instead of `"1"` to exclude Viewers. Evaluation walks the array left to right and short-circuits (`or` stops at the first true); **any RPC error fails closed** and the DEK is not released. The full condition grammar, including `EvmBasicCondition`, is on [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md#worked-example-encrypt-for-owner-or-contributor-or-viewer).
 
 ## Step 4d: Upload the ciphertext
 

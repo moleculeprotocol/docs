@@ -7,6 +7,10 @@ icon: users-gear
 
 # Roles & Permissions
 
+{% hint style="info" %}
+Roles are held by **wallets**, and a Lab involves up to three of them — the owner's wallet, an agent's wallet, and the Lab's own OCL account. For which is which and where each address belongs in an API call, see [the three wallets, side by side](../api-reference/authentication.md#the-three-wallets-side-by-side).
+{% endhint %}
+
 ## Why Roles Exist
 
 A Lab's NFT holder is its sole ultimate controller — transferring the LabNFT transfers the entire project. In practice, most research projects need to delegate day-to-day data-room work (uploading files, posting announcements, decrypting confidential research) to collaborators and AI agents without surrendering ownership.
