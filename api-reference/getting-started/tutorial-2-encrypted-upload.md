@@ -664,6 +664,5 @@ node tutorial-2.js ./confidential-results.csv
 | | |
 | --- | --- |
 | Let an agent decrypt and contribute too | [Tutorial 3 — Give your agent access](tutorial-3-agent-access.md) |
-| Publish an update attaching the file | [Tutorial 4 — Announce the dataset](tutorial-4-announce.md) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | How conditions are evaluated, in depth | [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) |

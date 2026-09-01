@@ -3,11 +3,16 @@ description: >-
   Publish a lab update that attaches the dataset you uploaded, and read it back
   off the activity feed.
 icon: bullhorn
+hidden: true
 ---
 
-# Tutorial 4: Announce the dataset
+# Announce the dataset
 
-An announcement is the lab's public update stream: a headline, a body, and optionally the datasets it is about. Attaching the file makes the announcement the discoverable surface for it — announcements are indexed by `searchLabs` alongside files, and they appear on the lab's activity feed and public page.
+{% hint style="warning" %}
+**Not part of onboarding.** Announcements are no longer surfaced in the Molecule app, so posting one is not a step we point new integrations at. `createAnnouncement` is still in the schema and this page is retained as a reference for integrations that already use it, deliberately out of the site navigation. Do not build a new integration around it — onboarding starts at [Getting Started](README.md), and the mutation itself is documented in [Files](../labs-api/files.md#create-announcement).
+{% endhint %}
+
+An announcement is the lab's update stream: a headline, a body, and optionally the datasets it is about. Announcements are still indexed by `searchLabs` alongside files and still readable off `labActivity`.
 
 Requires Owner or Contributor (a Viewer cannot announce). Pick up with `oclId`, `serviceToken` and the `datasetId` returned by `finishCreateOrUpdateFile`.
 
@@ -57,7 +62,7 @@ assertOk(announcementResult.createAnnouncement, "createAnnouncement");
 
 | `error.code` | What happened | Fix |
 | ------------ | ------------- | --- |
-| `UNAUTHORIZED` | Caller is a Viewer, or has no role | Contributor or Owner required. Fresh grant? See the [retry note](tutorial-3-agent-access.md#step-4-the-agent-uploads-and-announces) |
+| `UNAUTHORIZED` | Caller is a Viewer, or has no role | Contributor or Owner required. Fresh grant? See the [retry note](tutorial-3-agent-access.md#step-4-the-agent-uploads) |
 | `NOT_FOUND` | An `attachments` entry isn't a dataset in this lab | Pass the exact `datasetId` strings from `finishCreateOrUpdateFile`, from this lab |
 | `VALIDATION_FAILED` | Empty `headline` or `body` | Both are required and non-empty |
 
@@ -90,7 +95,7 @@ console.log(JSON.stringify(feed.labActivity.nodes[0], null, 2));
 
 Your announcement is the newest node, with `attachments` resolved to the full file objects — not just ids — and `changeBy` set to the wallet that posted it. It is also on the lab's public page at `${LAB_APP_URL}/projects/<shortname>`.
 
-`labActivity` is a **public** query: anyone with a consumer credential can read the feed, which is the point of an announcement.
+`labActivity` is a **public** query: anyone with a consumer credential can read the feed.
 
 ## Complete script
 

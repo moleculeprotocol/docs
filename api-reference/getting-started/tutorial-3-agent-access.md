@@ -20,7 +20,7 @@ The most common real-world shape: a researcher created their Lab in the Labs app
 | 1 | Agent | Generate a wallet and report its address |
 | 2 | Human | Add that address to the lab as **Contributor**, flagged as an agent, with an expiry |
 | 3 | Agent | Self-issue a service token by signing the sign-in message |
-| 4 | Agent | Upload files and announce; the human sees the result in the app |
+| 4 | Agent | Upload files; the human sees the result in the app |
 
 The human never hands over a private key, a token, or their session. Revoking the agent is one onchain revoke, and it does not touch anything else.
 
@@ -57,7 +57,7 @@ function grantRole(bytes32 oclId, address account, uint8 role, uint64 expiry, bo
 
 Only the **Owner** may grant Contributor. Contributors can grant Viewer, but not Contributor. Full capability matrix: [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md).
 
-**Why Contributor and not Viewer:** a Viewer can decrypt and read but cannot write. Uploading files and posting announcements needs Contributor.
+**Why Contributor and not Viewer:** a Viewer can decrypt and read but cannot write. Uploading files needs Contributor.
 
 Both parties can confirm the grant landed with a public query — no authentication beyond the consumer credential:
 
@@ -126,9 +126,9 @@ serviceToken = tokenResult.generateServiceToken.token;
 
 Issuance is **not** gated on holding a role — any wallet can mint a token for itself. The role is what makes the token *useful*: authorisation is resolved per request from the token's wallet against the lab you name. So a token issued before the grant lands keeps working once it does; you do not need to re-issue it.
 
-## Step 4: The agent uploads and announces
+## Step 4: The agent uploads
 
-From here the agent is an ordinary caller. Run [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file) with `changeBy: agentAccount.address`, or [Tutorial 2](tutorial-2-encrypted-upload.md) for a confidential file — the `hasRole` branch of the team conditions is exactly what lets the agent decrypt too. Then [Tutorial 4](tutorial-4-announce.md) to surface it on the lab's feed.
+From here the agent is an ordinary caller. Run [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file) with `changeBy: agentAccount.address`, or [Tutorial 2](tutorial-2-encrypted-upload.md) for a confidential file — the `hasRole` branch of the team conditions is exactly what lets the agent decrypt too.
 
 Writes by a Contributor service token are gated per mutation, matching the Privy user path: `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createAnnouncement`, `deleteDataRoomFile`, `updateFileMetadata` and `moveEntry` all accept Contributor. A few surfaces remain **Owner-only** and an agent Contributor cannot reach them: `updateLabNftMetadata`, `generateLabImageUploadUrl` and the legal-agreement mutations.
 
@@ -168,14 +168,13 @@ const verify = await graphql(
     labWithDataRoomAndFiles(oclId: $oclId) {
       shortname
       dataRoom { files { path accessLevel version createdBy } }
-      announcements { headline changeBy }
     }
   }`,
   { oclId },
 );
 ```
 
-**The human** verifies in the app: the file appears in the lab's data room and the announcement on its activity feed, both attributed to the agent's address, which the members list shows flagged as an agent.
+**The human** verifies in the app: the file appears in the lab's data room, attributed to the agent's address, which the members list shows flagged as an agent.
 
 ## Revoking the agent
 
@@ -189,7 +188,7 @@ Or let the grant's `expiry` lapse. Independently, the agent's token can be kille
 
 ## Complete script
 
-The agent's half of the flow, standalone: report the wallet address, wait for the human's grant to appear, self-issue a token, upload, announce, verify. Steps 1 and 2 involve a human, so the script polls for the role rather than assuming it.
+The agent's half of the flow, standalone: report the wallet address, wait for the human's grant to appear, self-issue a token, upload, verify. Steps 1 and 2 involve a human, so the script polls for the role rather than assuming it.
 
 Run it with the agent's own key and the `oclId` of the human's lab — the agent never sees the owner's key.
 
@@ -282,7 +281,7 @@ async function main() {
     throw new Error("Store that key, grant it Contributor, then re-run.");
   }
   const agentAccount = privateKeyToAccount(AGENT_PRIVATE_KEY);
-  console.log("1/6 Agent wallet:", agentAccount.address);
+  console.log("1/5 Agent wallet:", agentAccount.address);
   console.log("    Ask the lab owner to add it as Contributor (isAgent = true).");
 
   // ---- Step 2: wait for the human's grant (public query, no auth needed) ----
@@ -304,7 +303,7 @@ async function main() {
   }
   if (!grant) throw new Error("No role grant found for the agent wallet — ask the owner to add it");
   if (grant.role === "VIEWER") throw new Error("Agent holds VIEWER; uploading needs CONTRIBUTOR");
-  console.log("2/6 Role:", grant.role, "isAgent:", grant.isAgent, "expiry:", grant.expiry ?? "permanent");
+  console.log("2/5 Role:", grant.role, "isAgent:", grant.isAgent, "expiry:", grant.expiry ?? "permanent");
 
   // ---- Step 3: the agent self-issues a token ----
   // Only now, after the role poll above returned — the sign-in message holds a
@@ -334,7 +333,7 @@ async function main() {
   );
   assertOk(tokenResult.generateServiceToken, "generateServiceToken");
   serviceToken = tokenResult.generateServiceToken.token;
-  console.log("3/6 Token issued, expires", tokenResult.generateServiceToken.expiresAt);
+  console.log("3/5 Token issued, expires", tokenResult.generateServiceToken.expiresAt);
 
   // ---- Step 4: upload (public; see Tutorial 2 for the encrypted variant) ----
   // Retried on UNAUTHORIZED: the role grant may not be indexed yet. NOT_FOUND
@@ -380,24 +379,7 @@ async function main() {
     assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");
     return finishResult.finishCreateOrUpdateFile;
   }, { codes: ["UNAUTHORIZED", "NOT_FOUND"] });
-  console.log("4/6 Uploaded — datasetId:", datasetId);
-
-  // ---- Step 4b: announce it ----
-  const announcement = await graphql(
-    `mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!, $attachments: [String!]) {
-      createAnnouncement(oclId: $oclId, headline: $headline, body: $body, attachments: $attachments) {
-        error { code message requestId retryable details }
-      }
-    }`,
-    {
-      oclId: OCL_ID,
-      headline: `Agent analysis: ${basename(filePath)}`,
-      body: "Written by an autonomous agent holding a Contributor role on this lab.",
-      attachments: [datasetId],
-    },
-  );
-  assertOk(announcement.createAnnouncement, "createAnnouncement");
-  console.log("5/6 Announced");
+  console.log("4/5 Uploaded — datasetId:", datasetId);
 
   // ---- Step 5: verify ----
   const verify = await graphql(
@@ -416,7 +398,7 @@ async function main() {
   const attributed =
     file.createdBy?.toLowerCase() === agentAccount.address.toLowerCase();
   console.log(
-    "6/6 Verified:", file.path, file.accessLevel,
+    "5/5 Verified:", file.path, file.accessLevel,
     attributed ? "— attributed to the agent" : `— createdBy: ${file.createdBy}`,
   );
   if (verify.labWithDataRoomAndFiles.shortname) {
@@ -448,6 +430,5 @@ node tutorial-3.js ./findings.csv
 | | |
 | --- | --- |
 | What the agent uploads | [Tutorial 1 — public file](tutorial-1-public-upload.md) · [Tutorial 2 — encrypted file](tutorial-2-encrypted-upload.md) |
-| Have the agent announce its work | [Tutorial 4 — Announce the dataset](tutorial-4-announce.md) |
 | The role model in full | [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md) |
 | Let the agent run the whole workflow as tool calls | [Molecule Skill](../../ai-tooling/molecule-skill.md) |

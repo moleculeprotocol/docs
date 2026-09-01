@@ -7,7 +7,7 @@ icon: rocket
 
 # 🚀 Getting Started
 
-This is the entry point to the Molecule API. It helps you **pick a lane**, lists the **two prerequisites** you actually need, and hands you a **ten-minute quickstart** that ends with a lab you can see. The four tutorials underneath it take the same ground step by step.
+This is the entry point to the Molecule API. It helps you **pick a lane**, lists the **two prerequisites** you actually need, and hands you a **ten-minute quickstart** that ends with a lab you can see. The three tutorials underneath it take the same ground step by step.
 
 Everything here runs against **staging** (Base Sepolia, testnet funds). Nothing spends real money. This page also holds the two things every tutorial shares: the [shared setup block](#shared-setup) and the [staging → production swap table](#running-in-production).
 
@@ -16,7 +16,6 @@ Everything here runs against **staging** (Base Sepolia, testnet funds). Nothing 
 | [**Tutorial 1**](tutorial-1-public-upload.md) | Create a lab and upload a public file — **start here** |
 | [**Tutorial 2**](tutorial-2-encrypted-upload.md) | Upload an encrypted file, verified with a decrypt round trip |
 | [**Tutorial 3**](tutorial-3-agent-access.md) | Give your agent access to a lab you created in the app |
-| [**Tutorial 4**](tutorial-4-announce.md) | Announce the dataset |
 
 ***
 
@@ -88,7 +87,7 @@ You do **not** need a pre-issued service token. Every tutorial below mints its o
 | Item | Cost | How we know |
 | ---- | ---- | ----------- |
 | **LabNFT mint** | Gas only. `mintFeeWei()` reads **0** on Base Sepolia **and** on Base mainnet (verified 2026-08-27 by `eth_call`) | Read it live yourself — the tutorials do, and send it as `value` |
-| **`createLab`, uploads, announcements** (service-token lane) | Free | Consumer credential + self-issued service token |
+| **`createLab`, uploads and other content writes** (service-token lane) | Free | Consumer credential + self-issued service token |
 | **The same mutations via x402** | Quoted per request in the `402` challenge — **$0.01 USDC** on both environments today | [Read the price off the challenge](../x402-gateway.md#reading-the-402-challenge); never hardcode it |
 | **Storage** | 5 GB per lab included | [Limits](../labs-api/files.md#storage-limits) |
 
@@ -207,7 +206,7 @@ async function withIndexerLagRetry(
 **Two places the indexer trails, and both need that retry.** A successful response does not mean every downstream read is caught up yet:
 
 * **After minting**, the lab's first write can return `NOT_FOUND` — even though `createLab` just succeeded, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file).
-* **After a role grant**, a write can return `UNAUTHORIZED` until the grant is indexed. [Tutorial 3](tutorial-3-agent-access.md#step-4-the-agent-uploads-and-announces).
+* **After a role grant**, a write can return `UNAUTHORIZED` until the grant is indexed. [Tutorial 3](tutorial-3-agent-access.md#step-4-the-agent-uploads).
 
 Usually both clear within seconds — but a mint has taken **several minutes** to index on staging under backlog, so the budget above is deliberately generous (12 attempts, backoff capped at 30s, ~4 minutes total) and logs each wait. Use the retry above with `codes` set to the one you expect, and do not treat the first failure as fatal.
 {% endhint %}
@@ -269,7 +268,6 @@ The second is visual — once `shortname` is populated, the lab has a page:
 | Every step with expected responses and failure handling | [Tutorial 1 — public upload](tutorial-1-public-upload.md) |
 | Encrypt a file so only wallets with a role can read it | [Tutorial 2 — encrypted upload](tutorial-2-encrypted-upload.md) |
 | Let an agent write into a lab a human created in the app | [Tutorial 3 — agent access](tutorial-3-agent-access.md) |
-| Publish an update that attaches the dataset | [Tutorial 4 — announce](tutorial-4-announce.md) |
 | Pay per call instead of holding a token | [x402 Gateway](../x402-gateway.md) |
 | Full operation reference | [Labs API](../labs-api/README.md) |
 | What every error code means | [Error handling](../labs-api/README.md#error-handling) |
@@ -278,7 +276,7 @@ The second is visual — once `shortname` is populated, the lab has a page:
 
 ## Running in Production
 
-All four tutorials run against staging (Base Sepolia, testnet funds). To run the same scripts against production, replace the values in the config block — nothing else changes, since every step reads from these constants:
+All three tutorials run against staging (Base Sepolia, testnet funds). To run the same scripts against production, replace the values in the config block — nothing else changes, since every step reads from these constants:
 
 | Constant | Staging (these tutorials) | Production |
 | -------- | ------------------------- | ---------- |

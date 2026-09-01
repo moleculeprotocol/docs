@@ -336,7 +336,7 @@ The `PUT` returns HTTP `200` with an empty body. Then:
 
 `message` on this result is passed through from the storage layer, so its exact wording varies and is deliberately not shown here — it is **not part of the contract**. Assert on `error == null`, never on `message`.
 
-Keep `datasetId` — Tutorial 4 attaches it to an announcement.
+Keep `datasetId` — it is the file's stable identifier for later reads and updates.
 
 **If it fails:**
 
@@ -633,6 +633,5 @@ node tutorial-1.js ./research-data.csv
 | --- | --- |
 | Make the next file confidential | [Tutorial 2 — Upload an encrypted file](tutorial-2-encrypted-upload.md) |
 | Let an agent write into this lab | [Tutorial 3 — Give your agent access](tutorial-3-agent-access.md) |
-| Publish an update attaching the file | [Tutorial 4 — Announce the dataset](tutorial-4-announce.md) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | Per-operation reference | [Files](../labs-api/files.md) · [Lab Management](../labs-api/lab-management.md) |

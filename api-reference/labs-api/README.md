@@ -21,7 +21,7 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 | | |
 | --- | --- |
 | **First time here** | [🚀 Getting Started](../getting-started/README.md) — prerequisites, costs, ten-minute quickstart |
-| **You want runnable code** | [Tutorial 1](../getting-started/tutorial-1-public-upload.md) (public upload) · [2](../getting-started/tutorial-2-encrypted-upload.md) (encrypted) · [3](../getting-started/tutorial-3-agent-access.md) (agent access) · [4](../getting-started/tutorial-4-announce.md) (announce) |
+| **You want runnable code** | [Tutorial 1](../getting-started/tutorial-1-public-upload.md) (public upload) · [2](../getting-started/tutorial-2-encrypted-upload.md) (encrypted) · [3](../getting-started/tutorial-3-agent-access.md) (agent access) |
 | **You're an AI agent** | [Agent one-pager](../getting-started/for-agents.md), or drive this API through the [Molecule Skill](../../ai-tooling/molecule-skill.md) plugin |
 | **You want to pay per call** | [x402 Gateway](../x402-gateway.md) |
 

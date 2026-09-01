@@ -37,7 +37,6 @@
   * [Tutorial 1: Create a lab and upload a public file](api-reference/getting-started/tutorial-1-public-upload.md)
   * [Tutorial 2: Upload an encrypted file](api-reference/getting-started/tutorial-2-encrypted-upload.md)
   * [Tutorial 3: Give your agent access to a lab](api-reference/getting-started/tutorial-3-agent-access.md)
-  * [Tutorial 4: Announce the dataset](api-reference/getting-started/tutorial-4-announce.md)
   * [🤖 For Agents: One-Pager](api-reference/getting-started/for-agents.md)
 * [🔐 Authentication](api-reference/authentication.md)
 * [⚙️ Labs API](api-reference/labs-api/README.md)

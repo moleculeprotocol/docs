@@ -9,7 +9,9 @@ icon: robot
 
 The complete default flow — self-issue a token, mint a lab, upload a public file, verify — with nothing else on the page. Copy it into a system prompt or a context file. For the same flow with expected responses, failure modes and the encrypted variant, use [the tutorials](README.md).
 
-## Constants (staging / Base Sepolia)
+## Constants
+
+Staging (Base Sepolia) — everything on this page runs against these:
 
 ```
 GRAPHQL_URL              https://staging.graphql.api.molecule.xyz/graphql
@@ -21,7 +23,17 @@ ACCESS_CONDITION_CHAIN   "baseSepolia"
 LAB_PAGE                 https://testnet.labs.molecule.xyz/projects/<shortname>
 ```
 
-Production: `https://production.graphql.api.molecule.xyz/graphql`, `base` (8453), factory `0xECdF4f05384056507485C90aeAb0a83268760D6E`, LabNFT `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92`, AccessResolver `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B`, condition chain `"base"`, lab page `https://labs.molecule.xyz/projects/<shortname>`.
+Production (Base) — swap these in, nothing else changes:
+
+```
+GRAPHQL_URL              https://production.graphql.api.molecule.xyz/graphql
+CHAIN                    base (8453)
+ONCHAIN_LAB_FACTORY      0xECdF4f05384056507485C90aeAb0a83268760D6E
+LABNFT                   0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92
+ACCESS_RESOLVER          0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B
+ACCESS_CONDITION_CHAIN   "base"
+LAB_PAGE                 https://labs.molecule.xyz/projects/<shortname>
+```
 
 ## Headers
 
@@ -136,19 +148,6 @@ query Verify($oclId: String!) {
 ```
 
 Public query, `Authorization` only. Your `path` is in `dataRoom.files`. A `null` result means the lab is not registered — this query is nullable and does not throw for a missing lab.
-
-## Optional — announce it
-
-```graphql
-mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!, $attachments: [String!]) {
-  createAnnouncement(oclId: $oclId, headline: $headline, body: $body, attachments: $attachments) {
-    message
-    error { code message requestId retryable details }
-  }
-}
-```
-
-`attachments` takes the `datasetId` values returned by `finishCreateOrUpdateFile`.
 
 ## Encrypted files, in four lines
 
