@@ -28,7 +28,6 @@
 
 ## Legal Framework
 
-* [Assignment Agreement](legal-framework/assignment-agreement.md)
 * [Coin-to-Company Model](legal-framework/rwa-equity.md)
 
 ## API Reference
@@ -49,7 +48,7 @@
 * [🔐 Tokenization API](api-reference/tokenization-api.md)
 * [x402 Gateway](api-reference/x402-gateway.md)
 * [📊 IPNFT API (Deprecated)](api-reference/ipnft-api-deprecated.md)
-* [🕘 API Changelog & Migration](api-reference/changelog.md)
+* [API Changelog & Migration](api-reference/changelog.md)
 
 ## Release Notes
 
