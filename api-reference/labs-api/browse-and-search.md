@@ -84,11 +84,9 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ### Project Activity Feed
 
-Get activity timeline for a specific project including file events and announcements. This is a **public endpoint** - no authentication required.
+Get the file-event timeline for a specific project. This is a **public endpoint** - no authentication required.
 
 > **🔓 Public Endpoint**: The `labActivity` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
-
-> **Filtering**: By default, returns all activity types (file events and announcements). Use the optional `filter` parameter (`ANNOUNCEMENT` or `FILE`) to retrieve only a specific type.
 
 **GraphQL Query:**
 
@@ -159,30 +157,10 @@ query GetProjectActivity(
           contentText
         }
       }
-      ... on LabEventAnnouncement {
-        announcement {
-          id
-          headline
-          body
-          attachments {
-            id
-            did
-            path
-            name
-            contentType
-            accessLevel
-          }
-          changeBy
-          systemTime
-          eventTime
-        }
-      }
     }
   }
 }
 ```
-
-> **⚠️ Breaking Change**: Announcement `attachments` changed from `[String!]!` (array of DIDs) to `[DataRoomFile!]!` (array of file objects). This enables querying file metadata directly without separate API calls.
 
 **Example Request:**
 
@@ -191,7 +169,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
-    "query": "query GetActivity($oclId: String!, $page: Int) { labActivity(oclId: $oclId, page: $page, perPage: 20) { pageInfo { hasNextPage currentPage totalPages } nodes { __typename ... on LabEventAnnouncement { announcement { headline attachments { did path contentType } } } } } }",
+    "query": "query GetActivity($oclId: String!, $page: Int) { labActivity(oclId: $oclId, page: $page, perPage: 20) { pageInfo { hasNextPage currentPage totalPages } nodes { __typename ... on LabEventFileAdded { entry { path contentType version accessLevel changeBy eventTime } } } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
       "page": 0
@@ -201,18 +179,16 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 **Use Cases:**
 
-- Announcement detail pages requiring full file metadata
-- Download links for announcement attachments
+- Project timelines showing what changed in a data room and when
+- Download links for data-room files
 - Encrypted file access (Onchain-Verified Envelope Encryption for new files)
-- Projects with many announcements (efficient pagination)
+- Projects with many file events (efficient pagination)
 
 ### Global Activity Feed
 
 Get all activity across all projects. This is a **public endpoint** - no authentication required.
 
 > **🔓 Public Endpoint**: The `activities` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
-
-> **Filtering**: By default, returns all activity types (file events and announcements). Use the optional `filter` parameter (`ANNOUNCEMENT` or `FILE`) to retrieve only a specific type.
 
 **GraphQL Query:**
 
@@ -272,24 +248,6 @@ query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
           contentText
         }
       }
-      ... on LabEventAnnouncement {
-        announcement {
-          id
-          headline
-          body
-          attachments {
-            id
-            did
-            path
-            name
-            contentType
-            accessLevel
-          }
-          changeBy
-          systemTime
-          eventTime
-        }
-      }
     }
   }
 }
@@ -301,7 +259,7 @@ query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
 
 ## Searching Labs
 
-Perform semantic search across all projects, files, and announcements in the Labs ecosystem.
+Perform semantic search across all projects and files in the Labs ecosystem.
 
 **GraphQL Query:**
 
@@ -336,26 +294,6 @@ query SearchLabs(
             categories
             downloadUrl
           }
-        }
-      }
-      ... on SearchLabsAnnouncementHit {
-        announcement {
-          id
-          headline
-          body
-          systemTime
-          attachments {
-            id
-            did
-            path
-            name
-            contentType
-            accessLevel
-          }
-        }
-        lab {
-          oclId
-          shortname
         }
       }
     }
@@ -395,7 +333,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
-    "query": "query SearchLabs($prompt: String!, $page: Int, $perPage: Int) { searchLabs(prompt: $prompt, page: $page, perPage: $perPage) { nodes { __typename ... on SearchLabsFileHit { entry { lab { oclId shortname } path file { contentType description tags } } } ... on SearchLabsAnnouncementHit { announcement { headline body } lab { shortname } } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
+    "query": "query SearchLabs($prompt: String!, $page: Int, $perPage: Int) { searchLabs(prompt: $prompt, page: $page, perPage: $perPage) { nodes { __typename ... on SearchLabsFileHit { entry { lab { oclId shortname } path file { contentType description tags } } } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
     "variables": {
       "prompt": "cancer research",
       "page": 0,
@@ -429,9 +367,6 @@ Search results are returned as a union type. Use the `__typename` field to deter
 - **SearchLabsFileHit**: File search result
   - Access via: `entry.file`
   - Contains: file metadata, tags, categories, download URL
-- **SearchLabsAnnouncementHit**: Announcement search result
-  - Access via: `announcement`
-  - Contains: headline, body, lab reference, **typed attachments** (file objects)
 
 **JavaScript Example:**
 
@@ -453,17 +388,6 @@ const searchResults = await fetch(apiUrl, {
               file { description tags }
             }
           }
-          ... on SearchLabsAnnouncementHit {
-            announcement {
-              headline
-              attachments {
-                did
-                path
-                contentType
-                accessLevel
-              }
-            }
-          }
         }
         totalCount
       }
@@ -477,13 +401,7 @@ const { nodes, totalCount } = (await searchResults.json()).data.searchLabs;
 // Handle different result types
 nodes.forEach((node) => {
   if (node.__typename === "SearchLabsFileHit") {
-    console.log("File:", node.entry.path);
-  } else if (node.__typename === "SearchLabsAnnouncementHit") {
-    console.log("Announcement:", node.announcement.headline);
-    // NEW: Attachments are now full file objects
-    node.announcement.attachments.forEach((file) => {
-      console.log("  Attachment:", file.path, file.contentType);
-    });
+    console.log("File:", node.entry.path, node.entry.file.description);
   }
 });
 ```

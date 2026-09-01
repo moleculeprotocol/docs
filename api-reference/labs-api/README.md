@@ -148,7 +148,7 @@ if (result.error) {
 | `UPSTREAM_UNAVAILABLE`      | **true**    | A dependency failed (`details.reason` `KAMU`, `CMS`, `IPFS`)                                         |
 | `INTERNAL_ERROR`            | **true**    | Unexpected failure — details are only in our logs, joined by `requestId`                             |
 
-When `retryable` is `true`, retry with exponential backoff; when `false`, the request (or the resource state) must change before retrying. Any code not listed here: preserve it for diagnostics, treat it as non-retryable and surface it to a human — new codes are announced in the [API Changelog](../changelog.md). `PAYMENT_REQUIRED` is reserved for the [x402 Gateway](../x402-gateway.md) and is not emitted by the GraphQL API.
+When `retryable` is `true`, retry with exponential backoff; when `false`, the request (or the resource state) must change before retrying. Any code not listed here: preserve it for diagnostics, treat it as non-retryable and surface it to a human — new codes are published in the [API Changelog](../changelog.md). `PAYMENT_REQUIRED` is reserved for the [x402 Gateway](../x402-gateway.md) and is not emitted by the GraphQL API.
 
 ### Troubleshooting
 

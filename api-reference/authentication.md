@@ -65,8 +65,8 @@ The Labs read surface is public — these queries need only a consumer credentia
 
 - `labs` - List all labs with pagination
 - `labWithDataRoomAndFiles` - Get lab details and files
-- `labActivity` - Get activity feed for a lab, (available filters: ANNOUNCEMENT | FILE)
-- `activities` - Get global activity feed, (available filters: ANNOUNCEMENT | FILE)
+- `labActivity` - Get the file-event activity feed for a lab
+- `activities` - Get the global file-event activity feed
 - `dataRoomFile` - Get file by path
 - `searchLabs` - Search across labs and files
 - `fileCategoriesAndTags` - List valid file categories and their tags

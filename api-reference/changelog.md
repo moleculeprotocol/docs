@@ -35,7 +35,7 @@ Two clarifications and one hardening, all now reflected across the API docs:
 
 ### Contributor role parity for service-token content writes
 
-The six content-write mutations — `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createAnnouncement`, `deleteDataRoomFile`, `updateFileMetadata`, `moveEntry` — now gate a service token on the **Contributor** role, matching the Privy user path per mutation. Previously the service path required lab ownership for these, which meant a wallet granted Contributor on a lab could act through a user session but not through its own service token.
+The five content-write mutations — `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `deleteDataRoomFile`, `updateFileMetadata`, `moveEntry` — now gate a service token on the **Contributor** role, matching the Privy user path per mutation. Previously the service path required lab ownership for these, which meant a wallet granted Contributor on a lab could act through a user session but not through its own service token.
 
 This is what unblocks the "human owns the lab, agent contributes to it" flow: the owner grants the agent's wallet Contributor, and the agent's self-issued token can write. Owner-gated surfaces are unchanged — `createLab`, `updateLabNftMetadata` and `generateLabImageUploadUrl` still require ownership.
 
@@ -134,7 +134,7 @@ On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSyn
 | `UPSTREAM_UNAVAILABLE`      | **true**    | A dependency failed — retry with backoff.                                | `KAMU`, `CMS`, `IPFS`                                                            |
 | `INTERNAL_ERROR`            | **true**    | Unexpected failure; quote `requestId` when reporting it.                 | —                                                                                |
 
-Codes may be added over time, and each addition is announced on this page. Treat a code you do not recognise as non-retryable, keep the raw value for diagnostics and surface it to a human. `PAYMENT_REQUIRED` is reserved for the x402 gateway and is not emitted by the GraphQL API. `details.reason` values are diagnostic refinement, not a contract surface — they may be extended without notice.
+Codes may be added over time, and each addition is published on this page. Treat a code you do not recognise as non-retryable, keep the raw value for diagnostics and surface it to a human. `PAYMENT_REQUIRED` is reserved for the x402 gateway and is not emitted by the GraphQL API. `details.reason` values are diagnostic refinement, not a contract surface — they may be extended without notice.
 
 #### Before / after
 
@@ -154,9 +154,9 @@ Codes may be added over time, and each addition is announced on this page. Treat
 ```
 
 ```diff
-# Mutation selection (createAnnouncement) — select `error` instead of `isSuccess`
-  mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!) {
-    createAnnouncement(oclId: $oclId, headline: $headline, body: $body) {
+# Mutation selection (finishCreateOrUpdateFile) — select `error` instead of `isSuccess`
+  mutation FinishCreateOrUpdateFile($oclId: String!, $uploadToken: String!, $path: String!) {
+    finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path) {
 -     isSuccess
       message
 -     error { message code retryable }
@@ -190,7 +190,6 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 | `dataRoomFileV2`                                   | `dataRoomFile`               | Identified by `oclId` + `path`                            |
 | `projectActivity` / `projectActivityV2`            | `labActivity`                | —                                                         |
 | `activitiesV2`                                     | `activities`                 | —                                                         |
-| `projectAnnouncementsV2` / `projectAnnouncementV2` | `labActivity` / `activities` | Removed — use the `filter: ANNOUNCEMENT` argument         |
 
 #### Renamed mutations
 
@@ -199,7 +198,6 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 | `createProject`                | `createLab`                  | Now takes `input: { oclId }` instead of `ipnftSymbol` / `ipnftTokenId` |
 | `initiateCreateOrUpdateFileV2` | `initiateCreateOrUpdateFile` | —                                                                      |
 | `finishCreateOrUpdateFileV2`   | `finishCreateOrUpdateFile`   | —                                                                      |
-| `createAnnouncementV2`         | `createAnnouncement`         | Takes `oclId`; the legacy `moleculeAccessLevel` param was removed      |
 | `updateFileMetadataV2`         | `updateFileMetadata`         | —                                                                      |
 | `deleteDataRoomFileV2`         | `deleteDataRoomFile`         | —                                                                      |
 

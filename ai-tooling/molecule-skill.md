@@ -154,14 +154,14 @@ mol-labs-plugin/
 └── mcp/server.py                       # the MCP server (Python, stdio transport)
 ```
 
-The skill itself is a standard `SKILL.md` file — frontmatter that tells the harness when to use it, followed by the phase-by-phase runbook:
+The skill itself is a standard `SKILL.md` file — frontmatter that tells the harness when to use it, followed by the phase-by-phase runbook (frontmatter abridged):
 
 ```yaml
 ---
 name: aura-orchestrator
 description: End-to-end DeSci molecule on the OCL (On-Chain Labs) surface —
   resolve-or-create an on-chain lab (LabNFT + token-bound account), register it,
-  upload files (public or private/encrypted), and announce. Driven entirely
+  upload files (public or private/encrypted). Driven entirely
   through the `molecule` MCP server.
 ---
 ```
