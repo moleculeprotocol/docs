@@ -1,7 +1,7 @@
 ---
 description: >-
-  An agent plugin that runs the full Lab workflow — create an Onchain Lab,
-  upload research data, and announce it — through AI coding agents
+  An agent plugin that runs the full Lab workflow — create an Onchain Lab and
+  upload research data — through AI coding agents
 icon: wand-magic-sparkles
 ---
 
@@ -9,11 +9,11 @@ icon: wand-magic-sparkles
 
 ### Overview
 
-The Molecule skill lets AI agents execute the complete Lab lifecycle end-to-end — create an Onchain Lab, upload research files (public or encrypted), publish announcements, and manage roles — without a browser and without hand-written API calls.
+The Molecule skill lets AI agents execute the complete Lab lifecycle end-to-end — create an Onchain Lab, upload research files (public or encrypted), and manage roles — without a browser and without hand-written API calls.
 
 It ships as a cross-harness agent plugin with two parts:
 
-* **The `aura-orchestrator` skill** (`SKILL.md`) — a step-by-step runbook the agent follows: resolve or create an Onchain Lab (LabNFT plus its token-bound account), register it, upload files to the data room, announce, and optionally grant roles or hand the Lab off to another owner.
+* **The `aura-orchestrator` skill** (`SKILL.md`) — a step-by-step runbook the agent follows: resolve or create an Onchain Lab (LabNFT plus its token-bound account), register it, upload files to the data room, and optionally grant roles or hand the Lab off to another owner.
 * **The `molecule` MCP server** — a typed [Model Context Protocol](https://modelcontextprotocol.io) server that performs every network, onchain, and cryptographic operation as a single tool call. Paid mutations are settled automatically through the [x402 Gateway](../api-reference/x402-gateway.md).
 
 The skill format (`SKILL.md`) and MCP are open standards, so the same plugin works under Claude Code, OpenAI Codex, and any other MCP-capable agent harness. To obtain and install it, jump to [Getting the Plugin](molecule-skill.md#getting-the-plugin).
@@ -32,8 +32,7 @@ The workflow is sequential — each phase consumes the previous phase's output:
 | 1     | Resolve or create the Lab      | Reuse a Lab the wallet already owns, or mint a new LabNFT with its token-bound account                    |
 | 2     | Register the Lab               | `createLab` mutation, paid via x402                                                                       |
 | 3     | Upload a file to the data room | Public (plaintext) or private (client-side encrypted, access-controlled)                                  |
-| 4     | Announce                       | `createAnnouncement` mutation attaching the uploaded dataset, paid via x402                               |
-| 5     | Grant roles / hand off         | Optionally grant a co-owner role or transfer the LabNFT to another wallet                                 |
+| 4     | Grant roles / hand off         | Optionally grant a co-owner role or transfer the LabNFT to another wallet                                 |
 
 #### Public vs. Private Uploads
 
@@ -97,7 +96,7 @@ Run **`config_doctor`** after setting these: it reports which environment profil
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
 | `ENVIRONMENT`                                                | Deployment profile: `staging` (Base Sepolia) or `production` (Base)                     |
 | `MOLECULE_LABS_URL`                                          | Labs API GraphQL endpoint for the chosen environment — see [API Overview](../api-reference/README.md) for the URLs |
-| `MOLECULE_CLIENT_URL`                                        | Labs app base URL, used to build project links in announcements                         |
+| `MOLECULE_CLIENT_URL`                                        | Labs app base URL, used to build project links                                          |
 | `X402_GATEWAY_URL`                                           | x402 Gateway base URL (endpoint paths are documented on the [x402 Gateway](../api-reference/x402-gateway.md) page) |
 | `CHAIN_ID`                                                   | `84532` (Base Sepolia) or `8453` (Base), matching `ENVIRONMENT`                         |
 | `EVM_RPC_URL`                                                | RPC endpoint for onchain reads and broadcasts (optional; falls back to a public node)   |

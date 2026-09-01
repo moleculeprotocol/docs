@@ -68,7 +68,7 @@ The Labs read surface is public — these queries need only a consumer credentia
 - `labActivity` - Get activity feed for a lab, (available filters: ANNOUNCEMENT | FILE)
 - `activities` - Get global activity feed, (available filters: ANNOUNCEMENT | FILE)
 - `dataRoomFile` - Get file by path
-- `searchLabs` - Search across labs, files, and announcements
+- `searchLabs` - Search across labs and files
 - `fileCategoriesAndTags` - List valid file categories and their tags
 - `getServiceSignInMessage` - Get the message a service signs to obtain a token
 - `getDidLinkStatus` - Get background DID-linking status for a lab
@@ -111,7 +111,6 @@ Either way, the caller still has to be authorized for the target lab, and the ch
 | `updateFileMetadata` - Update file metadata | Contributor | |
 | `deleteDataRoomFile` - Delete a file | Contributor | |
 | `moveEntry` - Move a file or folder | Contributor | |
-| `createAnnouncement` - Create an announcement | Contributor | 💳 also pay-per-call via [x402](x402-gateway.md) |
 | `updateLabNftMetadata` - Update LabNFT display metadata | **Owner only** | |
 | `generateLabImageUploadUrl` - Presigned URL for a LabNFT image | **Owner only** | |
 | `generateDataEncryptionKey` - Generate a standalone data encryption key | Authenticated, no role | Takes no `oclId`, so there is no lab to check against. 💳 also pay-per-call via [x402](x402-gateway.md) |

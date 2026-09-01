@@ -39,7 +39,7 @@ Kamu maintains a complete, append-only history of every dataset in every Lab. Wh
 
 Each version record includes the content hash, the timestamp, the author's decentralised identifier (DID) linked to their wallet address, the data room path, and a reference to the previous version. This creates a verifiable provenance chain from the current state of any dataset back to its original upload. When a collaborator, funder, or reviewer needs to verify when data was created, who created it, or how it evolved over time, the evidence is in Kamu's version graph.
 
-Kamu also records activity events — file access, metadata changes, announcements, and other Lab actions — providing a broader context for the dataset's history beyond just version changes.
+Kamu also records activity events — file access, metadata changes, and other Lab actions — providing a broader context for the dataset's history beyond just version changes.
 
 ### Permanent Persistence
 
@@ -65,4 +65,4 @@ Even if a file record is removed from a Lab's data room index, the underlying co
 | File versions              | Kamu provenance DB                          | Kamu                                 | Append-only version history and audit trail                                                                                                                                                                                                               |
 | Encryption metadata        | In the file's encryption metadata on Kamu (ODF) | Onchain-Verified Envelope Encryption | Wrapped per-file DEK + access conditions; key custody and decryption rules are covered in [Data Privacy & Access](data-privacy-and-access.md) |
 | File provenance            | Kamu provenance DB                          | Kamu                                 | DID-based authorship, timestamps, lineage                                                                                                                                                                                                                 |
-| Activity events            | Kamu provenance DB + onchain                | Kamu + Lab TBA                       | Access logs, metadata changes, announcements                                                                                                                                                                                                              |
+| Activity events            | Kamu provenance DB + onchain                | Kamu + Lab TBA                       | Access logs, metadata changes                                                                                                                                                                                                                             |

@@ -1,6 +1,6 @@
 # Files
 
-Working with files in a Lab dataroom: the three-step upload flow (initiate → upload → finish), plus announcements, metadata updates, deletion, storage limits, and client-side encryption. Creating the Lab itself is covered in [Lab Management](lab-management.md).
+Working with files in a Lab dataroom: the three-step upload flow (initiate → upload → finish), plus metadata updates, deletion, storage limits, and client-side encryption. Creating the Lab itself is covered in [Lab Management](lab-management.md).
 
 > **Looking for a runnable walkthrough?** This page is the per-operation reference. For a first upload with expected responses and failure handling at every step, use [Tutorial 1](../getting-started/tutorial-1-public-upload.md) (public file) or [Tutorial 2](../getting-started/tutorial-2-encrypted-upload.md) (encrypted, with a decrypt round trip).
 
@@ -433,66 +433,6 @@ module.exports = { uploadFileToLabs };
 ```bash
 CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret" SERVICE_TOKEN="your-service-token" WALLET_ADDRESS="0x..." node upload.js data.pdf 0x0101000000000000000000000000000000000000000000000000000000000042
 ```
----
-
-## Create Announcement
-
-Create project announcements to share updates with your community.
-
-**GraphQL Mutation:**
-
-```graphql
-mutation CreateAnnouncement(
-  $oclId: String!
-  $headline: String!
-  $body: String!
-  $attachments: [String!]
-) {
-  createAnnouncement(
-    oclId: $oclId
-    headline: $headline
-    body: $body
-    attachments: $attachments
-  ) {
-    message
-    error {
-      code
-      message
-      requestId
-      retryable
-      details
-    }
-  }
-}
-```
-
-**Parameters:**
-
-| Parameter   | Type      | Required | Description                                      |
-| ----------- | --------- | -------- | ------------------------------------------------ |
-| oclId       | String    | Yes      | Canonical 32-byte oclId of the lab               |
-| headline    | String    | Yes      | Announcement title/headline                      |
-| body        | String    | Yes      | Announcement body (supports Markdown)            |
-| attachments | \[String] | No       | Array of file DIDs to attach to the announcement |
-
-**Example Request:**
-
-```bash
-curl -X POST https://production.graphql.api.molecule.xyz/graphql \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
-  -d '{
-    "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!, $attachments: [String!]) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body, attachments: $attachments) { message error { code message requestId retryable details } } }",
-    "variables": {
-      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
-      "headline": "Research Milestone Achieved",
-      "body": "We have completed Phase 2 trials with promising results.",
-      "attachments": ["did:kamu:fed01..."]
-    }
-  }'
-```
-
 ---
 
 ## Update File Metadata

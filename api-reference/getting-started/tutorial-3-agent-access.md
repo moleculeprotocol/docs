@@ -130,7 +130,7 @@ Issuance is **not** gated on holding a role — any wallet can mint a token for 
 
 From here the agent is an ordinary caller. Run [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file) with `changeBy: agentAccount.address`, or [Tutorial 2](tutorial-2-encrypted-upload.md) for a confidential file — the `hasRole` branch of the team conditions is exactly what lets the agent decrypt too.
 
-Writes by a Contributor service token are gated per mutation, matching the Privy user path: `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createAnnouncement`, `deleteDataRoomFile`, `updateFileMetadata` and `moveEntry` all accept Contributor. A few surfaces remain **Owner-only** and an agent Contributor cannot reach them: `updateLabNftMetadata`, `generateLabImageUploadUrl` and the legal-agreement mutations.
+Writes by a Contributor service token are gated per mutation, matching the Privy user path: `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `deleteDataRoomFile`, `updateFileMetadata` and `moveEntry` all accept Contributor. A few surfaces remain **Owner-only** and an agent Contributor cannot reach them: `updateLabNftMetadata`, `generateLabImageUploadUrl` and the legal-agreement mutations.
 
 {% hint style="warning" %}
 **Retry on `UNAUTHORIZED` right after the grant.** Role state reaches the API through an event indexer, so for a window after `grantRole` confirms onchain a write still returns `UNAUTHORIZED` (`reason: NOT_CONTRIBUTOR`). It is not a permissions problem and re-issuing the token will not help — wait and retry. Usually seconds, but the same indexer has taken minutes on staging, so retry generously:

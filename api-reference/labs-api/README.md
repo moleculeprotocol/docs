@@ -162,7 +162,7 @@ A missing or malformed consumer credential is rejected before the GraphQL layer 
 
 **`UNAUTHORIZED`** — the wallet behind the service token lacks the required role on the lab:
 
-- Check the wallet's role with the public `listLabMembers(oclId)` query. Content writes (uploads, metadata, announcements, moves, deletes) need **Contributor**; `createLab` and the LabNFT-metadata mutations need **Owner**
+- Check the wallet's role with the public `listLabMembers(oclId)` query. Content writes (uploads, metadata, moves, deletes) need **Contributor**; `createLab` and the LabNFT-metadata mutations need **Owner**
 - Not the right role? The lab owner grants one onchain — see [Tutorial 3](../getting-started/tutorial-3-agent-access.md)
 - **Just granted the role?** Role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after the grant confirms onchain. Retry with backoff; re-issuing the token does not help
 

@@ -52,7 +52,6 @@ POST {base}/x402/labs/{mutation}
 | -------------------------------------------- | ------------------------------ | -------------------------------------------------------- |
 | `/x402/labs/initiateCreateOrUpdateFile`      | `initiateCreateOrUpdateFile`   | Start a file upload; returns a presigned URL             |
 | `/x402/labs/finishCreateOrUpdateFile`        | `finishCreateOrUpdateFile`     | Finalise a file upload with metadata                     |
-| `/x402/labs/createAnnouncement`              | `createAnnouncement`           | Publish a lab announcement                               |
 | `/x402/labs/createLab`                       | `createLab`                    | Create a lab (data room) for an onchain lab (OCL)       |
 | `/x402/labs/generateDataEncryptionKey`       | `generateDataEncryptionKey`    | Generate a data encryption key (DEK) for encrypted uploads |
 | `/x402/labs/decryptDataKey`                  | `decryptDataKey`               | Decrypt a file's data key for an authorized caller       |
@@ -122,11 +121,11 @@ The price is **quoted per request** — always read it from the challenge rather
 
 ```bash
 curl -i -X POST \
-  https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/prod/x402/labs/createAnnouncement \
+  https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/prod/x402/labs/createLab \
   -H 'Content-Type: application/json' \
   -d '{
-    "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body) { message error { code message requestId retryable details } } }",
-    "variables": { "oclId": "0x0101…", "headline": "Milestone 1 complete", "body": "…" }
+    "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { message error { code message requestId retryable details } } }",
+    "variables": { "oclId": "0x0101…" }
   }'
 ```
 
@@ -152,8 +151,8 @@ curl -sD - -o /dev/null -X POST "$URL" -H 'Content-Type: application/json' -d "$
   "x402Version": 2,
   "error": "Payment required",
   "resource": {
-    "url": "https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/x402/labs/createAnnouncement",
-    "description": "x402 payment for createAnnouncement",
+    "url": "https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/x402/labs/createLab",
+    "description": "x402 payment for createLab",
     "mimeType": ""
   },
   "accepts": [
@@ -215,18 +214,16 @@ The signed payload is accepted under any of `Payment-Signature`, `X-Payment`, or
 ## Request Format
 
 ```http
-POST /x402/labs/createAnnouncement HTTP/1.1
+POST /x402/labs/createLab HTTP/1.1
 content-type: application/json
 payment-signature: <base64 x402 payment payload>
 
 {
-  "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body) { message error { code message requestId retryable details } } }",
+  "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { message error { code message requestId retryable details } } }",
   "variables": {
-    "oclId": "0x0101...abcd",
-    "headline": "Milestone 1 complete",
-    "body": "..."
+    "oclId": "0x0101...abcd"
   },
-  "operationName": "CreateAnnouncement"
+  "operationName": "CreateLab"
 }
 ```
 
@@ -246,8 +243,8 @@ Constraints enforced by the gateway (`validateMutationQuery`):
 Pricing is environment-driven and resolved per-mutation. The gateway evaluates the following env vars in order and uses the first non-empty value:
 
 ```
-X402_PRICE_<SNAKE_CASE_MUTATION>     e.g. X402_PRICE_CREATE_ANNOUNCEMENT
-X402_PRICE_<UPPER_MUTATION>          e.g. X402_PRICE_CREATEANNOUNCEMENT
+X402_PRICE_<SNAKE_CASE_MUTATION>     e.g. X402_PRICE_CREATE_LAB
+X402_PRICE_<UPPER_MUTATION>          e.g. X402_PRICE_CREATELAB
 X402_PRICE_DEFAULT                   fallback when no per-mutation price is set
 ```
 
