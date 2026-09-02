@@ -14,7 +14,7 @@ Same lab, same three-call upload — but the bytes are AES-256-GCM encrypted loc
 Conceptually: the backend hands you a one-shot data encryption key (DEK) in two forms — plaintext, and wrapped by the key custodian. You encrypt with the plaintext copy, throw it away, and store the wrapped copy in the file's metadata alongside the conditions under which the custodian may unwrap it again. Full model: [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md).
 
 {% hint style="info" %}
-**Before you start:** you need the [two prerequisites](README.md#prerequisites) — a `mol_` consumer credential and a funded Base Sepolia wallet — plus the [shared setup block](README.md#shared-setup), which defines the config constants and the `graphql()` / `assertOk()` helpers every snippet below uses. The [complete script](#complete-script) at the end of this page carries all of it inline and runs standalone.
+**Before you start:** you need the [two prerequisites](README.md#prerequisites) — a `mol_` consumer credential and a funded Base Sepolia wallet — plus the [shared setup block](shared-setup.md), which defines the config constants and the `graphql()` / `assertOk()` helpers every snippet below uses. The [complete script](#complete-script) at the end of this page carries all of it inline and runs standalone.
 {% endhint %}
 
 ## Step 4a: Get a DEK
@@ -239,7 +239,7 @@ assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");
 | `VALIDATION_FAILED`, `reason: INVALID_ACCESS_LEVEL` | `PUBLIC` on an encrypted file | Use `HOLDERS` or `ADMIN` |
 | `UNAUTHORIZED` on `generateDataEncryptionKey` | No write role on the lab | Owner or Contributor required |
 | `UPSTREAM_UNAVAILABLE`, "Path is occupied" on `finish` | A file already exists at that `path` — usually a re-run against the same lab | **Not retryable despite the code.** Pick a new `path`, or send `ref` (the previous `datasetId`) instead to add a version |
-| `NOT_FOUND` on the first call after a mint | The mint is not indexed yet, even though `createLab` succeeded | Retry with [`withIndexerLagRetry`](README.md#shared-setup) — see [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file) |
+| `NOT_FOUND` on the first call after a mint | The mint is not indexed yet, even though `createLab` succeeded | Retry with [`withIndexerLagRetry`](shared-setup.md) — see [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file) |
 
 ## Step 5: Verify by decrypting it
 

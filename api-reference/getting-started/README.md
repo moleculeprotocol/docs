@@ -9,13 +9,13 @@ icon: rocket
 
 This is the entry point to the Molecule API. It helps you **pick a lane**, lists the **two prerequisites** you actually need, and hands you a **ten-minute quickstart** that ends with a lab you can see. The three tutorials underneath it take the same ground step by step.
 
-Everything here runs against **staging** (Base Sepolia, testnet funds). Nothing spends real money. This page also holds the two things every tutorial shares: the [shared setup block](#shared-setup) and the [staging → production swap table](#running-in-production).
+Everything here runs against **staging** (Base Sepolia, testnet funds). Nothing spends real money. The code every tutorial shares — config constants and helpers — is on [Shared Setup](shared-setup.md); the staging → production swap table is [further down this page](#running-in-production).
 
-| | |
-| --- | --- |
-| [**Tutorial 1**](tutorial-1-public-upload.md) | Create a lab and upload a public file — **start here** |
-| [**Tutorial 2**](tutorial-2-encrypted-upload.md) | Upload an encrypted file, verified with a decrypt round trip |
-| [**Tutorial 3**](tutorial-3-agent-access.md) | Give your agent access to a lab you created in the app |
+| |
+| --- |
+| [**Create a lab and upload a public file (start here)**](tutorial-1-public-upload.md) |
+| [**Upload an encrypted file, verified with a decrypt round trip**](tutorial-2-encrypted-upload.md) |
+| [**Add your agent as a contributor to your lab**](tutorial-3-agent-access.md) |
 
 ***
 
@@ -30,7 +30,7 @@ Four ways to write to a Lab. They are not ranked — pick by who is calling.
 | **I have no credential, or I want to pay per call** instead of holding a long-lived token | **x402 gateway** — settle USDC on Base per request, no service token to provision | [x402 Gateway](../x402-gateway.md) |
 | **I already made my lab in the app** (email sign-in, no wallet) **and now I want my agent writing into it** | **Agent-as-Contributor** — the human grants a role, the agent issues its own token | [Tutorial 3](tutorial-3-agent-access.md) |
 
-The lanes compose. A common shape is the plugin lane for the workflow plus x402 for the paid mutations, which is exactly what the plugin does by default.
+The lanes are composable, so choosing one now doesn't lock you in to that lane only.
 
 ### If you are an agent reading this
 
@@ -44,7 +44,7 @@ Two things, and only one of them involves a human.
 
 ### 1. A `mol_` consumer credential — the one manual step
 
-Every request to the API carries a consumer credential in the `Authorization` header. There is no self-service issuance yet, so this is the single "ask the team" left in the API docs.
+Every request to the API carries a consumer credential in the `Authorization` header. There is no self-service issuance yet (coming soon), so you will need to request this from the Molecule team.
 
 Request it on the [Molecule Discord](https://t.co/L0VEiy4Bjk) with this template:
 
@@ -76,7 +76,8 @@ Treat the whole string as one secret: it is not split into a public and a privat
 
 ### 2. A funded wallet on Base Sepolia
 
-You need an EOA with testnet ETH for the LabNFT mint. Fund it from a [Base Sepolia faucet](https://docs.base.org/base-chain/tools/network-faucets).
+You need an EOA with testnet ETH for the LabNFT mint, only if you want to interact with the API programmatically. If you interact with out API through our frontend, you do not require any funds, we subsidize all the transactions.
+Fund it from a [Base Sepolia faucet](https://docs.base.org/base-chain/tools/network-faucets).
 
 If — and only if — you are taking the **x402 lane**, you also need testnet **USDC** on Base Sepolia: get it from the [Circle faucet](https://faucet.circle.com/) (select Base Sepolia). The service-token lane needs no USDC at all.
 
@@ -84,12 +85,12 @@ You do **not** need a pre-issued service token. Every tutorial below mints its o
 
 ### What it costs
 
-| Item | Cost | How we know |
-| ---- | ---- | ----------- |
-| **LabNFT mint** | Gas only. `mintFeeWei()` reads **0** on Base Sepolia **and** on Base mainnet (verified 2026-08-27 by `eth_call`) | Read it live yourself — the tutorials do, and send it as `value` |
-| **`createLab`, uploads and other content writes** (service-token lane) | Free | Consumer credential + self-issued service token |
-| **The same mutations via x402** | Quoted per request in the `402` challenge — **$0.01 USDC** on both environments today | [Read the price off the challenge](../x402-gateway.md#reading-the-402-challenge); never hardcode it |
-| **Storage** | 5 GB per lab included | [Limits](../labs-api/files.md#storage-limits) |
+| Item | Cost  |
+| ---- | ----  |
+| **LabNFT mint** | Gas only. `mintFeeWei()` reads **0** on Base Sepolia **and** on Base mainnet, Read it live yourself using mintFeeWei(), and if non-zero, send it as value |
+| **`createLab`, uploads and other content writes** (service-token lane) | Free |
+| **The same mutations via x402** | Quoted per request in the `402` challenge — **$0.01 USDC** on both environments [Read the price off the challenge](../x402-gateway.md#reading-the-402-challenge); |
+| **Storage** | 5 GB per lab included [Limits](../labs-api/files.md#storage-limits) |Ô
 
 `mintFeeWei()` is a live contract read, not a constant. The tutorials call it and forward the result, so a future non-zero fee needs no code change on your side — but it will need funds.
 
@@ -109,107 +110,7 @@ claude --plugin-dir /path/to/mol-labs-plugin
 
 ## Shared setup
 
-Every environment-specific value lives in this one block; swapping to production is a matter of replacing it with the table in [Running in Production](#running-in-production).
-
-```javascript
-import { baseSepolia } from "viem/chains"; // production: `base`
-
-// ---- Staging (Base Sepolia) config — see "Running in Production" to swap ----
-const GRAPHQL_URL = "https://staging.graphql.api.molecule.xyz/graphql";
-const CHAIN = baseSepolia;
-const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90"; // OnChainLabFactory
-const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28"; // LabNFT (proxy)
-const ACCESS_RESOLVER_ADDRESS = "0x5493F472602C87318EA5Eff753cDD593bf9bF559"; // AccessResolver
-const ACCESS_CONDITION_CHAIN = "baseSepolia"; // the `chain` string inside accessControlConditions
-const LAB_APP_URL = "https://testnet.labs.molecule.xyz"; // production: https://labs.molecule.xyz
-
-const CONSUMER_CREDENTIAL = process.env.CONSUMER_CREDENTIAL; // mol_<id>_<secret> — no "Bearer" prefix
-const WALLET_PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY;
-
-// Set once Step 1 exchanges a wallet signature for a token. Every call after
-// that automatically starts sending it; public queries (like Step 1's own
-// sign-in-message lookup) work fine without it.
-let serviceToken;
-
-async function graphql(query, variables) {
-  // Authorization is always required. X-Service-Token is added once we have
-  // one — omit it entirely rather than sending an empty header.
-  const headers = { "Content-Type": "application/json", Authorization: CONSUMER_CREDENTIAL };
-  if (serviceToken) headers["X-Service-Token"] = serviceToken;
-
-  const res = await fetch(GRAPHQL_URL, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ query, variables }),
-  });
-  const { data, errors } = await res.json();
-  // Queries report failure here: a top-level errors[] entry whose errorType is
-  // the catalogue code. Mutations report expected failures in-band instead (see
-  // assertOk); a top-level entry on a mutation means a transport/infrastructure
-  // failure or an invalid request document.
-  if (errors) throw new Error(JSON.stringify(errors));
-  return data;
-}
-
-// Mutations report failure in-band: `error` is null on success. Throw on a
-// non-null `error` so a failed step stops the workflow with the catalogue
-// `code` and the `requestId` to quote in a bug report.
-// `error.details` carries the specific cause under `reason`, but it arrives in
-// more than one shape: a plain object on thrown query errors, a JSON string
-// in-band, and currently a doubly-encoded JSON string in-band. Parse until it
-// stops being a string, so one reader handles all three.
-function parseDetails(details) {
-  let value = details;
-  for (let i = 0; i < 3 && typeof value === "string"; i++) {
-    try {
-      value = JSON.parse(value);
-    } catch {
-      break;
-    }
-  }
-  return value && typeof value === "object" ? value : {};
-}
-
-function assertOk(result, op) {
-  if (result.error) {
-    const { code, message, requestId } = result.error;
-    const { reason } = parseDetails(result.error.details);
-    throw new Error(
-      `${op} failed: ${code}${reason ? `/${reason}` : ""}: ${message} (requestId ${requestId})`,
-    );
-  }
-  return result;
-}
-
-// Onchain state — a mint, a role grant — reaches the API through an event
-// indexer, so a write issued immediately after one can fail on state the chain
-// already has. Retry with backoff; re-issuing the token never helps.
-async function withIndexerLagRetry(
-  fn,
-  { codes = ["NOT_FOUND"], attempts = 12, baseMs = 2000, capMs = 30000 } = {},
-) {
-  const laggy = new RegExp(codes.join("|"));
-  for (let i = 0; i < attempts; i++) {
-    try {
-      return await fn();
-    } catch (err) {
-      if (!laggy.test(String(err)) || i === attempts - 1) throw err;
-      const delay = Math.min(baseMs * 2 ** i, capMs); // 2s, 4s, 8s, 16s, then 30s
-      console.warn(`indexer not caught up (attempt ${i + 1}/${attempts}); retrying in ${delay / 1000}s`);
-      await new Promise((r) => setTimeout(r, delay));
-    }
-  }
-}
-```
-
-{% hint style="warning" %}
-**Two places the indexer trails, and both need that retry.** A successful response does not mean every downstream read is caught up yet:
-
-* **After minting**, the lab's first write can return `NOT_FOUND` — even though `createLab` just succeeded, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file).
-* **After a role grant**, a write can return `UNAUTHORIZED` until the grant is indexed. [Tutorial 3](tutorial-3-agent-access.md#step-4-the-agent-uploads).
-
-Usually both clear within seconds — but a mint has taken **several minutes** to index on staging under backlog, so the budget above is deliberately generous (12 attempts, backoff capped at 30s, ~4 minutes total) and logs each wait. Use the retry above with `codes` set to the one you expect, and do not treat the first failure as fatal.
-{% endhint %}
+Every tutorial opens with the same config constants and the same `graphql()` / `assertOk()` / `withIndexerLagRetry()` helpers. They live on their own page — copy them once and every tutorial snippet runs against them: [**Shared Setup**](shared-setup.md).
 
 ***
 
@@ -276,7 +177,7 @@ The second is visual — once `shortname` is populated, the lab has a page:
 
 ## Running in Production
 
-All three tutorials run against staging (Base Sepolia, testnet funds). To run the same scripts against production, replace the values in the config block — nothing else changes, since every step reads from these constants:
+All three tutorials run against staging (Base Sepolia, testnet funds). To run the same scripts against production, replace the values in the [shared setup](shared-setup.md) config block — nothing else changes, since every step reads from these constants:
 
 | Constant | Staging (these tutorials) | Production |
 | -------- | ------------------------- | ---------- |

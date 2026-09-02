@@ -38,6 +38,7 @@
   * [Tutorial 2: Upload an encrypted file](api-reference/getting-started/tutorial-2-encrypted-upload.md)
   * [Tutorial 3: Give your agent access to a lab](api-reference/getting-started/tutorial-3-agent-access.md)
   * [🤖 For Agents: One-Pager](api-reference/getting-started/for-agents.md)
+  * [Shared Setup](api-reference/getting-started/shared-setup.md)
 * [🔐 Authentication](api-reference/authentication.md)
 * [⚙️ Labs API](api-reference/labs-api/README.md)
   * [Lab Management](api-reference/labs-api/lab-management.md)
