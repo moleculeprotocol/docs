@@ -5,11 +5,11 @@ description: >-
 icon: file-arrow-up
 ---
 
-# Tutorial 1: Create a lab and upload a public file
+# Create a lab and upload a public file
 
 The default path, and the one to run first. Five steps: get a token, mint the LabNFT, register the lab, upload the file, verify. A public file is stored as-is — no key management, no access conditions.
 
-> **Want the file to be confidential instead?** Steps 1–3 are identical; branch at Step 4 into [Tutorial 2](tutorial-2-encrypted-upload.md).
+> **Want the file to be confidential instead?** Steps 1–3 are identical; branch at Step 4 into [Upload an encrypted file](upload-encrypted-file.md).
 
 {% hint style="info" %}
 **Before you start:** you need the [two prerequisites](README.md#prerequisites) — a `mol_` consumer credential and a funded Base Sepolia wallet — plus the [shared setup block](shared-setup.md), which defines the config constants and the `graphql()` / `assertOk()` helpers every snippet below uses. The [complete script](#complete-script) at the end of this page carries all of it inline and runs standalone.
@@ -343,7 +343,7 @@ Keep `datasetId` — it is the file's stable identifier for later reads and upda
 | Symptom | Cause | Fix |
 | ------- | ----- | --- |
 | `initiate` → `NOT_FOUND`, "Project 0x… does not exist" | The mint is not indexed yet. `createLab` can succeed before this is true, so a successful Step 3 is no guarantee | Retry with backoff — `withIndexerLagRetry` above. Usually seconds; observed up to ~4 minutes under indexer backlog. Do **not** re-run `createLab`, which returns `CONFLICT` once registered |
-| `initiate` → `UNAUTHORIZED` | The wallet behind the token has no write role on this lab | You must be Owner or Contributor. See [Tutorial 3](tutorial-3-agent-access.md) |
+| `initiate` → `UNAUTHORIZED` | The wallet behind the token has no write role on this lab | You must be Owner or Contributor. See [Agent as a lab contributor](agent-as-a-lab-contributor.md) |
 | `PUT` → `403` | URL expired (~15 min), or headers altered | Re-run `initiate`; send the returned `headers` verbatim |
 | `PUT` → `400`/`411` | Body wasn't sent as raw bytes | Send the buffer, not a JSON wrapper. In curl: `--data-binary` |
 | `finish` → `VALIDATION_FAILED`, `details.field: "path"` | `path` contains an underscore, or both `path` and `ref` were sent | Underscores are not allowed in `path`; use `path` for a new file **or** `ref` for a new version, never both |
@@ -474,7 +474,7 @@ async function withIndexerLagRetry(
 
 async function main() {
   const filePath = process.argv[2];
-  if (!filePath) throw new Error("Usage: node tutorial-1.js <file-to-upload>");
+  if (!filePath) throw new Error("Usage: node create-lab-and-upload-file.js <file-to-upload>");
 
   const account = privateKeyToAccount(WALLET_PRIVATE_KEY);
   const publicClient = createPublicClient({ chain: CHAIN, transport: http() });
@@ -622,7 +622,7 @@ main().catch((err) => {
 ```bash
 WALLET_PRIVATE_KEY="0x..." \
 CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret" \
-node tutorial-1.js ./research-data.csv
+node create-lab-and-upload-file.js ./research-data.csv
 ```
 
 ***
@@ -631,7 +631,7 @@ node tutorial-1.js ./research-data.csv
 
 | | |
 | --- | --- |
-| Make the next file confidential | [Tutorial 2 — Upload an encrypted file](tutorial-2-encrypted-upload.md) |
-| Let an agent write into this lab | [Tutorial 3 — Give your agent access](tutorial-3-agent-access.md) |
+| Make the next file confidential | [Upload an encrypted file](upload-encrypted-file.md) |
+| Let an agent write into this lab | [Agent as a lab contributor](agent-as-a-lab-contributor.md) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | Per-operation reference | [Files](../labs-api/files.md) · [Lab Management](../labs-api/lab-management.md) |

@@ -13,9 +13,9 @@ Everything here runs against **staging** (Base Sepolia, testnet funds). Nothing 
 
 | |
 | --- |
-| [**Create a lab and upload a public file (start here)**](tutorial-1-public-upload.md) |
-| [**Upload an encrypted file, verified with a decrypt round trip**](tutorial-2-encrypted-upload.md) |
-| [**Add your agent as a contributor to your lab**](tutorial-3-agent-access.md) |
+| [**Create a lab and upload a public file (start here)**](create-lab-and-upload-file.md) |
+| [**Upload an encrypted file, verified with a decrypt round trip**](upload-encrypted-file.md) |
+| [**Add your agent as a contributor to your lab**](agent-as-a-lab-contributor.md) |
 
 ***
 
@@ -26,9 +26,9 @@ Four ways to write to a Lab. They are not ranked — pick by who is calling.
 | Your situation | Lane | Start here |
 | -------------- | ---- | ---------- |
 | **I run an AI coding agent** (Claude Code, Codex, Cursor) and want it to do the whole workflow | **Molecule Skill plugin** — a skill + MCP server that wraps every network, onchain and crypto operation as one tool call | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
-| **I'm scripting against the API** in Node/TypeScript and want to see the raw calls | **Raw GraphQL + viem** — self-issue a service token, mint, upload | [Tutorial 1](tutorial-1-public-upload.md) |
+| **I'm scripting against the API** in Node/TypeScript and want to see the raw calls | **Raw GraphQL + viem** — self-issue a service token, mint, upload | [Create a lab and upload a file](create-lab-and-upload-file.md) |
 | **I have no credential, or I want to pay per call** instead of holding a long-lived token | **x402 gateway** — settle USDC on Base per request, no service token to provision | [x402 Gateway](../x402-gateway.md) |
-| **I already made my lab in the app** (email sign-in, no wallet) **and now I want my agent writing into it** | **Agent-as-Contributor** — the human grants a role, the agent issues its own token | [Tutorial 3](tutorial-3-agent-access.md) |
+| **I already made my lab in the app** (email sign-in, no wallet) **and now I want my agent writing into it** | **Agent-as-Contributor** — the human grants a role, the agent issues its own token | [Agent as a lab contributor](agent-as-a-lab-contributor.md) |
 
 The lanes are composable, so choosing one now doesn't lock you in to that lane only.
 
@@ -116,7 +116,7 @@ Every tutorial opens with the same config constants and the same `graphql()` / `
 
 ## Ten-minute quickstart
 
-The shortest path from "I have a credential" to "there is a lab with my file in it". Four calls and one transaction. Each step is the condensed form of [Tutorial 1](tutorial-1-public-upload.md), which shows the expected response and the failure modes for every call.
+The shortest path from "I have a credential" to "there is a lab with my file in it". Four calls and one transaction. Each step is the condensed form of [Create a lab and upload a file](create-lab-and-upload-file.md), which shows the expected response and the failure modes for every call.
 
 ```bash
 export CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret"
@@ -129,10 +129,10 @@ export WALLET_PRIVATE_KEY="0x…"          # funded on Base Sepolia
 4. **Upload a file** — `initiateCreateOrUpdateFile` → `PUT` the bytes to the returned presigned URL → `finishCreateOrUpdateFile` with `accessLevel: "PUBLIC"`.
 5. **Verify it worked** — see below.
 
-The runnable version is the [Tutorial 1 complete script](tutorial-1-public-upload.md#complete-script):
+The runnable version is the [complete script](create-lab-and-upload-file.md#complete-script):
 
 ```bash
-node tutorial-1.js ./research-data.csv
+node create-lab-and-upload-file.js ./research-data.csv
 ```
 
 ### Verify it worked
@@ -166,9 +166,9 @@ The second is visual — once `shortname` is populated, the lab has a page:
 
 | Next | Page |
 | ---- | ---- |
-| Every step with expected responses and failure handling | [Tutorial 1 — public upload](tutorial-1-public-upload.md) |
-| Encrypt a file so only wallets with a role can read it | [Tutorial 2 — encrypted upload](tutorial-2-encrypted-upload.md) |
-| Let an agent write into a lab a human created in the app | [Tutorial 3 — agent access](tutorial-3-agent-access.md) |
+| Every step with expected responses and failure handling | [Create a lab and upload a file](create-lab-and-upload-file.md) |
+| Encrypt a file so only wallets with a role can read it | [Upload an encrypted file](upload-encrypted-file.md) |
+| Let an agent write into a lab a human created in the app | [Agent as a lab contributor](agent-as-a-lab-contributor.md) |
 | Pay per call instead of holding a token | [x402 Gateway](../x402-gateway.md) |
 | Full operation reference | [Labs API](../labs-api/README.md) |
 | What every error code means | [Error handling](../labs-api/README.md#error-handling) |

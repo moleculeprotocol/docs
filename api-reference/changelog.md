@@ -39,7 +39,7 @@ The five content-write mutations — `initiateCreateOrUpdateFile`, `finishCreate
 
 This is what unblocks the "human owns the lab, agent contributes to it" flow: the owner grants the agent's wallet Contributor, and the agent's self-issued token can write. Owner-gated surfaces are unchanged — `createLab`, `updateLabNftMetadata` and `generateLabImageUploadUrl` still require ownership.
 
-**Migration:** None — this is a widening. Note that role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after a grant confirms onchain; retry with backoff rather than re-issuing the token. Walkthrough: [Tutorial 3](getting-started/tutorial-3-agent-access.md).
+**Migration:** None — this is a widening. Note that role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after a grant confirms onchain; retry with backoff rather than re-issuing the token. Walkthrough: [Agent as a lab contributor](getting-started/agent-as-a-lab-contributor.md).
 
 ### Backend credential stores confined to the platform network
 

@@ -6,7 +6,7 @@ Operations for creating and administering a Lab: creating the dataroom, managing
 
 ## Mint the LabNFT
 
-Before `createLab` can attach a dataroom, an onchain lab (OCL) has to exist: a LabNFT minted to your wallet with its ERC-6551 account (Token Bound Account) deployed. This step is **onchain only** — there is no Labs API mutation for it. See [Lab Creation](../../technical-deep-dive/architecture.md#lab-creation) for the contract-level flow and [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is. If you'd rather not touch contracts directly, the Molecule app does this for you — see [Creating a Lab](../../user-guides/scientists-researchers.md#creating-a-lab). For a runnable end-to-end version of the mint, see [Tutorial 1 Step 2](../getting-started/tutorial-1-public-upload.md#step-2-mint-the-labnft).
+Before `createLab` can attach a dataroom, an onchain lab (OCL) has to exist: a LabNFT minted to your wallet with its ERC-6551 account (Token Bound Account) deployed. This step is **onchain only** — there is no Labs API mutation for it. See [Lab Creation](../../technical-deep-dive/architecture.md#lab-creation) for the contract-level flow and [Molecule Labs](../../technical-deep-dive/onchain-lab.md) for what a Lab is. If you'd rather not touch contracts directly, the Molecule app does this for you — see [Creating a Lab](../../user-guides/scientists-researchers.md#creating-a-lab). For a runnable end-to-end version of the mint, see [Step 2 of Create a lab and upload a file](../getting-started/create-lab-and-upload-file.md#step-2-mint-the-labnft).
 
 ### Contract Addresses
 
@@ -302,7 +302,7 @@ Issue it yourself — no request, no waiting. Two calls with the owner wallet:
 1. `getServiceSignInMessage(walletAddress, serviceName)` — public query, returns the message to sign.
 2. Sign it verbatim (EIP-191 `personal_sign`), then `generateServiceToken(serviceName, walletAddress, messageSignature)` — returns the JWT for `X-Service-Token`.
 
-Full parameters and bounds: [Service Tokens](service-tokens.md#obtaining-a-token). Runnable: [Tutorial 1 Step 1](../getting-started/tutorial-1-public-upload.md#step-1-get-a-service-token).
+Full parameters and bounds: [Service Tokens](service-tokens.md#obtaining-a-token). Runnable: [Step 1 of Create a lab and upload a file](../getting-started/create-lab-and-upload-file.md#step-1-get-a-service-token).
 
 The only credential you have to request is the **consumer credential** — see [Getting Started](../getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) for the request template.
 

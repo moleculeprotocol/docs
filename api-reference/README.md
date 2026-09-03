@@ -122,7 +122,7 @@ The full quickstart — prerequisites, costs, and a ten-minute path to a lab wit
 | Get from zero to a lab with a file in it      | [Getting Started](getting-started/README.md)      |
 | Point an AI agent at this API                 | [Agent one-pager](getting-started/for-agents.md) · [Molecule Skill](../ai-tooling/molecule-skill.md) |
 | Upload files to a Lab dataroom                | [Labs API](labs-api/README.md) · [Tutorials](getting-started/README.md) |
-| Let an agent write into a lab someone else owns | [Tutorial 3](getting-started/tutorial-3-agent-access.md) |
+| Let an agent write into a lab someone else owns | [Agent as a lab contributor](getting-started/agent-as-a-lab-contributor.md) |
 | Tokenize a Lab into IP Tokens (IPTs)          | [Tokenization API](tokenization-api.md)           |
 | Pay per call without a long-lived token       | [x402 Gateway](x402-gateway.md)                   |
 | Browse IP-NFTs and IPTs (legacy)              | [IPNFT API (Deprecated)](ipnft-api-deprecated.md) |

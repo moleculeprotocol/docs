@@ -21,7 +21,7 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 | | |
 | --- | --- |
 | **First time here** | [🚀 Getting Started](../getting-started/README.md) — prerequisites, costs, ten-minute quickstart |
-| **You want runnable code** | [Tutorial 1](../getting-started/tutorial-1-public-upload.md) (public upload) · [2](../getting-started/tutorial-2-encrypted-upload.md) (encrypted) · [3](../getting-started/tutorial-3-agent-access.md) (agent access) |
+| **You want runnable code** | [Create a lab and upload a file](../getting-started/create-lab-and-upload-file.md) · [Upload an encrypted file](../getting-started/upload-encrypted-file.md) · [Agent as a lab contributor](../getting-started/agent-as-a-lab-contributor.md) |
 | **You're an AI agent** | [Agent one-pager](../getting-started/for-agents.md), or drive this API through the [Molecule Skill](../../ai-tooling/molecule-skill.md) plugin |
 | **You want to pay per call** | [x402 Gateway](../x402-gateway.md) |
 
@@ -163,7 +163,7 @@ A missing or malformed consumer credential is rejected before the GraphQL layer 
 **`UNAUTHORIZED`** — the wallet behind the service token lacks the required role on the lab:
 
 - Check the wallet's role with the public `listLabMembers(oclId)` query. Content writes (uploads, metadata, moves, deletes) need **Contributor**; `createLab` and the LabNFT-metadata mutations need **Owner**
-- Not the right role? The lab owner grants one onchain — see [Tutorial 3](../getting-started/tutorial-3-agent-access.md)
+- Not the right role? The lab owner grants one onchain — see [Agent as a lab contributor](../getting-started/agent-as-a-lab-contributor.md)
 - **Just granted the role?** Role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after the grant confirms onchain. Retry with backoff; re-issuing the token does not help
 
 **Upload to presigned URL fails:**

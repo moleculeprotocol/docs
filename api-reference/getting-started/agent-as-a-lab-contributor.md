@@ -5,7 +5,7 @@ description: >-
 icon: robot
 ---
 
-# Tutorial 3: Give your agent access to a lab you created in the app
+# Agent as a lab contributor
 
 The most common real-world shape: a researcher created their Lab in the Labs app with an email address — no wallet, no code — and now wants an agent contributing to it. The agent gets its **own** identity rather than borrowing the human's; the human grants it a role; the agent authenticates itself from then on.
 
@@ -80,7 +80,7 @@ Expect `role: "CONTRIBUTOR"`. `isAgent` simply echoes the flag the owner set —
 
 ## Step 3: The agent self-issues a service token
 
-Identical to Tutorial 1 Step 1, signed by the **agent's** wallet. Fetch the message and redeem it in one go — it embeds a single-use nonce valid for 10 minutes, so an agent that waits for the human's role grant between fetching and signing will hit `UNAUTHENTICATED` / `reason: NONCE_EXPIRED`. Poll for the grant first (Step 2), then sign in:
+Identical to [Step 1 of Create a lab and upload a file](create-lab-and-upload-file.md#step-1-get-a-service-token), signed by the **agent's** wallet. Fetch the message and redeem it in one go — it embeds a single-use nonce valid for 10 minutes, so an agent that waits for the human's role grant between fetching and signing will hit `UNAUTHENTICATED` / `reason: NONCE_EXPIRED`. Poll for the grant first (Step 2), then sign in:
 
 ```javascript
 const AGENT_SERVICE_NAME = "research-agent-1";
@@ -128,7 +128,7 @@ Issuance is **not** gated on holding a role — any wallet can mint a token for 
 
 ## Step 4: The agent uploads
 
-From here the agent is an ordinary caller. Run [Tutorial 1 Step 4](tutorial-1-public-upload.md#step-4-upload-the-file) with `changeBy: agentAccount.address`, or [Tutorial 2](tutorial-2-encrypted-upload.md) for a confidential file — the `hasRole` branch of the team conditions is exactly what lets the agent decrypt too.
+From here the agent is an ordinary caller. Run [Step 4 of Create a lab and upload a file](create-lab-and-upload-file.md#step-4-upload-the-file) with `changeBy: agentAccount.address`, or [Upload an encrypted file](upload-encrypted-file.md) for a confidential file — the `hasRole` branch of the team conditions is exactly what lets the agent decrypt too.
 
 Writes by a Contributor service token are gated per mutation, matching the Privy user path: `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `deleteDataRoomFile`, `updateFileMetadata` and `moveEntry` all accept Contributor. A few surfaces remain **Owner-only** and an agent Contributor cannot reach them: `updateLabNftMetadata`, `generateLabImageUploadUrl` and the legal-agreement mutations.
 
@@ -153,14 +153,14 @@ async function withIndexerLagRetry(
   }
 }
 
-// Same helper as Tutorial 1, with the code this step expects.
+// Same helper as in Shared Setup, with the code this step expects.
 await withIndexerLagRetry(() => uploadFile(oclId, "./findings.csv"), { codes: ["UNAUTHORIZED"] });
 ```
 {% endhint %}
 
 ## Step 5: Verify from both sides
 
-**The agent** verifies as in Tutorial 1 Step 5 — the file is in `dataRoom.files` with `createdBy` set to the agent's address:
+**The agent** verifies as in [Step 5 of Create a lab and upload a file](create-lab-and-upload-file.md#step-5-verify-it-worked) — the file is in `dataRoom.files` with `createdBy` set to the agent's address:
 
 ```javascript
 const verify = await graphql(
@@ -251,7 +251,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Writes can return UNAUTHORIZED for a few seconds after a role grant confirms
 // onchain — the indexer trails the chain. Retry rather than re-issuing the
-// token. Same helper as Tutorial 1, which retries NOT_FOUND after a mint.
+// token. Same helper as in Shared Setup, which retries NOT_FOUND after a mint.
 async function withIndexerLagRetry(
   fn,
   { codes = ["NOT_FOUND"], attempts = 12, baseMs = 2000, capMs = 30000 } = {},
@@ -271,7 +271,7 @@ async function withIndexerLagRetry(
 
 async function main() {
   const filePath = process.argv[2];
-  if (!filePath) throw new Error("Usage: node tutorial-3.js <file-to-upload>");
+  if (!filePath) throw new Error("Usage: node agent-as-a-lab-contributor.js <file-to-upload>");
   if (!OCL_ID) throw new Error("Set OCL_ID to the lab the human owns");
 
   // ---- Step 1: the agent's identity ----
@@ -335,7 +335,7 @@ async function main() {
   serviceToken = tokenResult.generateServiceToken.token;
   console.log("3/5 Token issued, expires", tokenResult.generateServiceToken.expiresAt);
 
-  // ---- Step 4: upload (public; see Tutorial 2 for the encrypted variant) ----
+  // ---- Step 4: upload (public; see Upload an encrypted file for the encrypted variant) ----
   // Retried on UNAUTHORIZED: the role grant may not be indexed yet. NOT_FOUND
   // is included for the case where the lab itself was minted moments ago.
   const bytes = readFileSync(filePath);
@@ -416,11 +416,11 @@ main().catch((err) => {
 
 ```bash
 # First run — prints a generated agent key, then stops so the owner can grant the role
-CONSUMER_CREDENTIAL="mol_…" OCL_ID="0x0101…" node tutorial-3.js ./findings.csv
+CONSUMER_CREDENTIAL="mol_…" OCL_ID="0x0101…" node agent-as-a-lab-contributor.js ./findings.csv
 
 # Subsequent runs, once the owner has granted Contributor to that address
 AGENT_PRIVATE_KEY="0x..." CONSUMER_CREDENTIAL="mol_…" OCL_ID="0x0101…" \
-node tutorial-3.js ./findings.csv
+node agent-as-a-lab-contributor.js ./findings.csv
 ```
 
 ***
@@ -429,6 +429,6 @@ node tutorial-3.js ./findings.csv
 
 | | |
 | --- | --- |
-| What the agent uploads | [Tutorial 1 — public file](tutorial-1-public-upload.md) · [Tutorial 2 — encrypted file](tutorial-2-encrypted-upload.md) |
+| What the agent uploads | [Create a lab and upload a file](create-lab-and-upload-file.md) · [Upload an encrypted file](upload-encrypted-file.md) |
 | The role model in full | [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md) |
 | Let the agent run the whole workflow as tool calls | [Molecule Skill](../../ai-tooling/molecule-skill.md) |

@@ -156,7 +156,7 @@ Public query, `Authorization` only. Your `path` is in `dataRoom.files`. A `null`
 3. `finishCreateOrUpdateFile` with `accessLevel: "HOLDERS"` (or `"ADMIN"`) and `encryptionMetadata: { encryptionSystem, encryptedDek, iv, contentHash, accessControlConditions, encryptedBy, encryptedAt }` — echo `encryptionSystem` verbatim, never hardcode it.
 4. To read it back: `decryptDataKey(oclId:, filePath:)` → `{ plaintextDEK, iv }` after the backend re-evaluates the file's onchain access conditions against your wallet.
 
-Full recipe including `accessControlConditions`: [Tutorial 2](tutorial-2-encrypted-upload.md).
+Full recipe including `accessControlConditions`: [Upload an encrypted file](upload-encrypted-file.md).
 
 ## Rules that break runs when ignored
 
@@ -166,7 +166,7 @@ Full recipe including `accessControlConditions`: [Tutorial 2](tutorial-2-encrypt
 4. Read `error.details` with the tolerant `parseDetails` above — never a bare `JSON.parse`. In-band it is a JSON string (currently doubly encoded); on thrown query errors it is already an object.
 5. Filter mint receipt logs to the **LabNFT** address before decoding `OclIdentityCreated`.
 6. Send the presigned `PUT` with the returned headers unchanged, and the raw bytes as the body.
-7. Writing into a lab you do not own needs a **Contributor** role on it — see [Tutorial 3](tutorial-3-agent-access.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
+7. Writing into a lab you do not own needs a **Contributor** role on it — see [Agent as a lab contributor](agent-as-a-lab-contributor.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
 8. **A successful `createLab` does not mean the lab is writable yet.** Step 4's first call can return `NOT_FOUND` ("Project 0x… does not exist") for a few seconds, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. Retry `NOT_FOUND` with backoff on the first write after a mint; do not re-run `createLab`, which then returns `CONFLICT`.
 9. **Three addresses, not interchangeable**: your own wallet (`walletAddress`, `changeBy`), the human owner's (`x-wallet-address`, their path only), and the Lab's OCL account (`labAccountAddress`, and the `account` argument in access conditions). Putting an owner's address where `labAccountAddress` belongs uploads fine and then locks everyone out of the file, with no error saying why. `oclId` is none of them — it is a lab id whose trailing 40 hex chars happen to be the OCL account address. See [the three wallets](../authentication.md#the-three-wallets-side-by-side).
 10. Production has introspection off and a depth limit of 10. Generate types against staging.
