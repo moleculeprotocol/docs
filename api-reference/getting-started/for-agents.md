@@ -174,7 +174,7 @@ Full recipe including `accessControlConditions`: [Upload an encrypted file](uplo
 ## Related
 
 * [The three wallets](../authentication.md#the-three-wallets-side-by-side) — owner vs agent vs OCL account, and which field each address goes in
-* [Getting Started](README.md) — prerequisites, costs, the lane you should be in
+* [Getting Started](README.md) — how to interact with our products, prerequisites, costs
 * [Tutorials](README.md) — the same flow with responses and failure handling
 * [Labs API](../labs-api/README.md) — full operation reference
 * [Molecule Skill](../../ai-tooling/molecule-skill.md) — the same workflow as MCP tool calls

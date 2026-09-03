@@ -14,7 +14,7 @@ Same lab, same three-call upload — but the bytes are AES-256-GCM encrypted loc
 Conceptually: the backend hands you a one-shot data encryption key (DEK) in two forms — plaintext, and wrapped by the key custodian. You encrypt with the plaintext copy, throw it away, and store the wrapped copy in the file's metadata alongside the conditions under which the custodian may unwrap it again. Full model: [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md).
 
 {% hint style="info" %}
-**Before you start:** you need the [two prerequisites](README.md#prerequisites) — a `mol_` consumer credential and a funded Base Sepolia wallet — plus the [shared setup block](shared-setup.md), which defines the config constants and the `graphql()` / `assertOk()` helpers every snippet below uses. The [complete script](#complete-script) at the end of this page carries all of it inline and runs standalone.
+**Before you start:** you need the [two prerequisites](README.md#prerequisites) — a `mol_` consumer credential and a funded Base Sepolia wallet — plus the [shared setup block](shared-setup.md), which defines the config constants and the `graphql()` / `assertOk()` helpers every snippet below uses. The [complete script](#complete-script) at the end of this page carries all of it inline and runs standalone. Unfamiliar with a term used here? See the [Glossary](../../references/glossary.md).
 {% endhint %}
 
 ## Step 4a: Get a DEK

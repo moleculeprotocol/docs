@@ -12,7 +12,7 @@ The default path, and the one to run first. Five steps: get a token, mint the La
 > **Want the file to be confidential instead?** Steps 1–3 are identical; branch at Step 4 into [Upload an encrypted file](upload-encrypted-file.md).
 
 {% hint style="info" %}
-**Before you start:** you need the [two prerequisites](README.md#prerequisites) — a `mol_` consumer credential and a funded Base Sepolia wallet — plus the [shared setup block](shared-setup.md), which defines the config constants and the `graphql()` / `assertOk()` helpers every snippet below uses. The [complete script](#complete-script) at the end of this page carries all of it inline and runs standalone.
+**Before you start:** you need the [two prerequisites](README.md#prerequisites) — a `mol_` consumer credential and a funded Base Sepolia wallet — plus the [shared setup block](shared-setup.md), which defines the config constants and the `graphql()` / `assertOk()` helpers every snippet below uses. The [complete script](#complete-script) at the end of this page carries all of it inline and runs standalone. Unfamiliar with a term used here? See the [Glossary](../../references/glossary.md).
 {% endhint %}
 
 ## Step 1: Get a service token
@@ -214,7 +214,13 @@ DID-linking for the new lab starts automatically in the background; [`getDidLink
 Three calls: get a presigned URL, `PUT` the bytes, finalise with metadata. Full reference: [Files](../labs-api/files.md).
 
 {% hint style="warning" %}
-**This is the one step that can fail on a lab you just created.** `createLab` succeeding does not yet mean the lab is writable: it falls back to an onchain ownership check when the mint has not been indexed, while the file mutations read the indexed record and return `NOT_FOUND` until it lands. Wrap the first call in [`withIndexerLagRetry`](shared-setup.md) — without it this step fails outright on a fresh mint often enough to matter. Measured on staging: usually indexed within seconds, but one mint took **over four minutes**, which is why the helper retries for that long rather than giving up after a few seconds.
+**This is the step that most often fails on a lab you have just created.**
+
+Molecule runs onchain and offchain systems side by side, and the offchain side learns about onchain events through an indexer. Keeping the two in step takes a moment, so a call that succeeded does not mean every read has caught up yet.
+
+That is exactly what happens here. `createLab` can succeed before your mint has been indexed, because it falls back to checking ownership onchain. The file mutations have no such fallback — they read the indexed record, and return `NOT_FOUND` until it arrives.
+
+So wrap the first call in [`withIndexerLagRetry`](shared-setup.md). On staging the record usually appears within seconds, but one mint took **over four minutes**, which is why the helper keeps retrying that long instead of giving up after a few seconds.
 {% endhint %}
 
 ```javascript

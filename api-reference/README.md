@@ -4,7 +4,7 @@
 
 The Molecule Protocol provides programmatic APIs for building applications, integrations, and automated workflows on top of decentralized science infrastructure. These APIs enable developers to query project data, tokenize research, and manage research datarooms.
 
-> **New here? Start at [🚀 Getting Started](getting-started/README.md).** It picks your lane, lists the two prerequisites, and walks a ten-minute quickstart that ends in a lab with a file in it. Agents: the [one-pager](getting-started/for-agents.md) is the whole default flow on one page.
+> **New here? Start at [🚀 Getting Started](getting-started/README.md).** It explains what a Lab is, lists the two prerequisites, and walks a ten-minute quickstart that ends in a lab with a file in it. Agents: the [one-pager](getting-started/for-agents.md) is the whole default flow on one page.
 
 ## API Areas
 

@@ -7,7 +7,7 @@ icon: robot
 
 # Developers/AI Agents
 
-> **Want to start writing code now?** Go to [🚀 Getting Started](../api-reference/getting-started/README.md) — it picks your lane and gets you to a lab with a file in it in about ten minutes. This page is the narrative map of every integration surface, for when you need to decide *what* to build rather than *how* to make the first call.
+> **Want to start writing code now?** Go to [🚀 Getting Started](../api-reference/getting-started/README.md) — it helps you pick a way in and gets you to a lab with a file in it in about ten minutes. This page is the narrative map of every integration surface, for when you need to decide *what* to build rather than *how* to make the first call.
 
 ### Who This Guide Is For
 
