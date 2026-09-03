@@ -2,7 +2,7 @@
 
 Working with files in a Lab dataroom: the three-step upload flow (initiate → upload → finish), plus metadata updates, deletion, storage limits, and client-side encryption. Creating the Lab itself is covered in [Lab Management](lab-management.md).
 
-> **Looking for a runnable walkthrough?** This page is the per-operation reference. For a first upload with expected responses and failure handling at every step, use [Create a lab and upload a file](../getting-started/create-lab-and-upload-file.md) or [Upload an encrypted file](../getting-started/upload-encrypted-file.md) (encrypted, with a decrypt round trip).
+> **Looking for a runnable walkthrough?** This page is the per-operation reference. For a first upload with expected responses and failure handling at every step, use [Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md) or [Upload an encrypted file](../getting-started/upload-encrypted-file.md) (encrypted, with a decrypt round trip).
 
 > **Note**: Every mutation on this page returns its failure in-band: the result carries `error: ApiError`, and success means `error` is `null`. Branch on `error.code` — never on `message` text — and quote `requestId` when reporting a problem. See [Error Handling](README.md#error-handling) for the `ApiError` shape, how to read `details`, and the list of error codes.
 

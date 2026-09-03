@@ -250,6 +250,7 @@ This lists every tool and exercises the pure-compute ones (encryption round-trip
 ### Related Pages
 
 * [Getting Started](../api-reference/getting-started/README.md) — the ways in, prerequisites and costs; this plugin is the one for AI coding agents
+* [Glossary](../references/glossary.md) — every Molecule term these docs use, defined in a sentence
 * [Tutorials](../api-reference/getting-started/README.md) — the same workflow as raw GraphQL, if you want to see the calls underneath
 * [Molecule Labs](../technical-deep-dive/onchain-lab.md) — what an Onchain Lab is
 * [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md) — the role model used by access conditions

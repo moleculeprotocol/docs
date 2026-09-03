@@ -296,6 +296,7 @@ If you would rather not implement the handshake at all, the [Molecule Skill](../
 ## Related
 
 - [Getting Started](getting-started/README.md) — how to interact with our products, prerequisites, costs
+- [Glossary](../references/glossary.md) — every Molecule term used in these docs, defined in a sentence
 - [Molecule Skill](../ai-tooling/molecule-skill.md) — `x402_pay` does this handshake in one tool call
 - [Labs API](labs-api/README.md) — full mutation signatures and variable types
 - [Developers / AI Agents](../user-guides/developers-ai-agents.md) — agent integration guide

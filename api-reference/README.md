@@ -122,7 +122,7 @@ The full quickstart — prerequisites, costs, and a ten-minute path to a lab wit
 | Get from zero to a lab with a file in it      | [Getting Started](getting-started/README.md)      |
 | Point an AI agent at this API                 | [Agent one-pager](getting-started/for-agents.md) · [Molecule Skill](../ai-tooling/molecule-skill.md) |
 | Upload files to a Lab dataroom                | [Labs API](labs-api/README.md) · [Tutorials](getting-started/README.md) |
-| Let an agent write into a lab someone else owns | [Agent as a lab contributor](getting-started/agent-as-a-lab-contributor.md) |
+| Let an agent write into a lab someone else owns | [Agent access](getting-started/agent-as-a-lab-contributor.md) |
 | Tokenize a Lab into IP Tokens (IPTs)          | [Tokenization API](tokenization-api.md)           |
 | Pay per call without a long-lived token       | [x402 Gateway](x402-gateway.md)                   |
 | Browse IP-NFTs and IPTs (legacy)              | [IPNFT API (Deprecated)](ipnft-api-deprecated.md) |
@@ -155,6 +155,7 @@ If you encounter any issues or have questions about the APIs:
 
 ## Additional Resources
 
+* [Glossary](../references/glossary.md) — every Molecule term used in these docs, defined in a sentence
 * [Getting Started](getting-started/README.md) — prerequisites, costs, ten-minute quickstart
 * [Agent one-pager](getting-started/for-agents.md) — the default flow, paste-ready
 * [Getting the schema](getting-started/README.md#getting-the-schema) — staging introspection is enabled; production's is not

@@ -120,7 +120,7 @@ async function withIndexerLagRetry(
 | `graphql(query, variables)` | POSTs to the API with `Authorization` always set and `X-Service-Token` added once Step 1 has issued one | Every GraphQL call |
 | `parseDetails(details)` | Reads `error.details` tolerantly — it arrives as an object, a JSON string, or a doubly-encoded JSON string | Inside `assertOk`; also useful when you branch on `details.reason` yourself |
 | `assertOk(result, op)` | Turns an in-band mutation `error` into a thrown error carrying the catalogue `code` and the `requestId` | After every mutation |
-| `withIndexerLagRetry(fn)` | Retries a call that failed only because onchain state has not been indexed yet | [Step 4 of Create a lab and upload a file](create-lab-and-upload-file.md#step-4-upload-the-file) (after a mint) and [Step 4 of Agent as a lab contributor](agent-as-a-lab-contributor.md#step-4-the-agent-uploads) (after a role grant) |
+| `withIndexerLagRetry(fn)` | Retries a call that failed only because onchain state has not been indexed yet | [Step 4 of Create a lab and upload a public file](create-lab-and-upload-file.md#step-4-upload-the-file) (after a mint) and [Step 4 of Agent access](agent-as-a-lab-contributor.md#step-4-the-agent-uploads) (after a role grant) |
 
 ***
 
@@ -129,7 +129,8 @@ async function withIndexerLagRetry(
 | Next | Page |
 | ---- | ---- |
 | Prerequisites, costs and the ten-minute quickstart | [Getting Started](README.md) |
-| Create a lab and upload a public file | [Create a lab and upload a file](create-lab-and-upload-file.md) |
+| What every term used here means | [Glossary](../../references/glossary.md) |
+| Create a lab and upload a public file | [Create a lab and upload a public file](create-lab-and-upload-file.md) |
 | Upload an encrypted file | [Upload an encrypted file](upload-encrypted-file.md) |
-| Give your agent access to a lab | [Agent as a lab contributor](agent-as-a-lab-contributor.md) |
+| Give your agent access to a lab | [Agent access](agent-as-a-lab-contributor.md) |
 | Run the same code against mainnet | [Running in Production](README.md#running-in-production) |

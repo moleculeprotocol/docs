@@ -9,7 +9,7 @@ icon: lock
 
 Same lab, same three-call upload — but the bytes are AES-256-GCM encrypted locally before they leave your machine, and decryption is gated on live onchain state. Encryption is a first-class flow, not an appendix: reach for it whenever the file is confidential and access should follow the lab's roles.
 
-**Steps 1–3 are identical to [Create a lab and upload a file](create-lab-and-upload-file.md)** — get a service token, mint, register. Pick up here with `oclId`, `labAccountAddress`, `account` and `serviceToken` already in hand (or with any lab you already hold a role on).
+**Steps 1–3 are identical to [Create a lab and upload a public file](create-lab-and-upload-file.md)** — get a service token, mint, register. Pick up here with `oclId`, `labAccountAddress`, `account` and `serviceToken` already in hand (or with any lab you already hold a role on).
 
 Conceptually: the backend hands you a one-shot data encryption key (DEK) in two forms — plaintext, and wrapped by the key custodian. You encrypt with the plaintext copy, throw it away, and store the wrapped copy in the file's metadata alongside the conditions under which the custodian may unwrap it again. Full model: [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md).
 
@@ -109,7 +109,7 @@ const ownerOnlyConditions = JSON.stringify([
 ]);
 ```
 
-**Owner or Contributor or Viewer** — the recipe to use when the lab has a team, and the one the contributor agent in [Agent as a lab contributor](agent-as-a-lab-contributor.md) needs. `hasRole` is hierarchical (`ROLE_VIEWER = 1`; a Contributor and the Owner both pass a Viewer check), and the explicit `isAuthorizedSignerForTba` branch keeps the Owner covered even if conditions are ever evaluated against a non-canonical chain:
+**Owner or Contributor or Viewer** — the recipe to use when the lab has a team, and the one the contributor agent in [Agent access](agent-as-a-lab-contributor.md) needs. `hasRole` is hierarchical (`ROLE_VIEWER = 1`; a Contributor and the Owner both pass a Viewer check), and the explicit `isAuthorizedSignerForTba` branch keeps the Owner covered even if conditions are ever evaluated against a non-canonical chain:
 
 ```javascript
 const accessResolverAbi = {
@@ -239,7 +239,7 @@ assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");
 | `VALIDATION_FAILED`, `reason: INVALID_ACCESS_LEVEL` | `PUBLIC` on an encrypted file | Use `HOLDERS` or `ADMIN` |
 | `UNAUTHORIZED` on `generateDataEncryptionKey` | No write role on the lab | Owner or Contributor required |
 | `UPSTREAM_UNAVAILABLE`, "Path is occupied" on `finish` | A file already exists at that `path` — usually a re-run against the same lab | **Not retryable despite the code.** Pick a new `path`, or send `ref` (the previous `datasetId`) instead to add a version |
-| `NOT_FOUND` on the first call after a mint | The mint is not indexed yet, even though `createLab` succeeded | Retry with [`withIndexerLagRetry`](shared-setup.md) — see [Step 4 of Create a lab and upload a file](create-lab-and-upload-file.md#step-4-upload-the-file) |
+| `NOT_FOUND` on the first call after a mint | The mint is not indexed yet, even though `createLab` succeeded | Retry with [`withIndexerLagRetry`](shared-setup.md) — see [Step 4 of Create a lab and upload a public file](create-lab-and-upload-file.md#step-4-upload-the-file) |
 
 ## Step 5: Verify by decrypting it
 
@@ -311,7 +311,7 @@ console.log("Round trip verified —", recovered.length, "bytes recovered");
 
 ## Complete script
 
-Steps 1–3 are verbatim from [Create a lab and upload a file](create-lab-and-upload-file.md); this script carries them so it runs standalone.
+Steps 1–3 are verbatim from [Create a lab and upload a public file](create-lab-and-upload-file.md); this script carries them so it runs standalone.
 
 ```javascript
 #!/usr/bin/env node
@@ -663,6 +663,6 @@ node upload-encrypted-file.js ./confidential-results.csv
 
 | | |
 | --- | --- |
-| Let an agent decrypt and contribute too | [Agent as a lab contributor](agent-as-a-lab-contributor.md) |
+| Let an agent decrypt and contribute too | [Agent access](agent-as-a-lab-contributor.md) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | How conditions are evaluated, in depth | [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) |

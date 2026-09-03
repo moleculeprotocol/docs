@@ -43,9 +43,9 @@ Each one is runnable end to end against staging, and shows the expected response
 
 | Tutorial | What you have when you finish |
 | -------- | ----------------------------- |
-| [**Create a lab and upload a file**](create-lab-and-upload-file.md) — start here | A Lab of your own, with a public file in it |
+| [**Create a lab and upload a public file**](create-lab-and-upload-file.md) — start here | A Lab of your own, with a public file in it |
 | [**Upload an encrypted file**](upload-encrypted-file.md) | A confidential file that only certain people that you specify can decrypt |
-| [**Agent as a lab contributor**](agent-as-a-lab-contributor.md) | An agent writing into a Lab that a human owns |
+| [**Agent access**](agent-as-a-lab-contributor.md) | An agent writing into a Lab that a human owns |
 
 All three open with the same configuration constants and helper functions, which live on one page: [**Shared Setup**](shared-setup.md). Copy that block once and every snippet in the tutorials runs against it.
 
@@ -122,7 +122,7 @@ claude --plugin-dir /path/to/mol-labs-plugin
 
 ## Ten-minute quickstart
 
-The shortest path from "I have a credential" to "there is a lab with my file in it". Four API calls and one transaction. Each step below is the condensed form of [Create a lab and upload a file](create-lab-and-upload-file.md), which shows the expected response and the failure modes for every call.
+The shortest path from "I have a credential" to "there is a lab with my file in it". Four API calls and one transaction. Each step below is the condensed form of [Create a lab and upload a public file](create-lab-and-upload-file.md), which shows the expected response and the failure modes for every call.
 
 ```bash
 export CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret"

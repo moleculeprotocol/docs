@@ -166,7 +166,7 @@ Full recipe including `accessControlConditions`: [Upload an encrypted file](uplo
 4. Read `error.details` with the tolerant `parseDetails` above — never a bare `JSON.parse`. In-band it is a JSON string (currently doubly encoded); on thrown query errors it is already an object.
 5. Filter mint receipt logs to the **LabNFT** address before decoding `OclIdentityCreated`.
 6. Send the presigned `PUT` with the returned headers unchanged, and the raw bytes as the body.
-7. Writing into a lab you do not own needs a **Contributor** role on it — see [Agent as a lab contributor](agent-as-a-lab-contributor.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
+7. Writing into a lab you do not own needs a **Contributor** role on it — see [Agent access](agent-as-a-lab-contributor.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
 8. **A successful `createLab` does not mean the lab is writable yet.** Step 4's first call can return `NOT_FOUND` ("Project 0x… does not exist") for a few seconds, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. Retry `NOT_FOUND` with backoff on the first write after a mint; do not re-run `createLab`, which then returns `CONFLICT`.
 9. **Three addresses, not interchangeable**: your own wallet (`walletAddress`, `changeBy`), the human owner's (`x-wallet-address`, their path only), and the Lab's OCL account (`labAccountAddress`, and the `account` argument in access conditions). Putting an owner's address where `labAccountAddress` belongs uploads fine and then locks everyone out of the file, with no error saying why. `oclId` is none of them — it is a lab id whose trailing 40 hex chars happen to be the OCL account address. See [the three wallets](../authentication.md#the-three-wallets-side-by-side).
 10. Production has introspection off and a depth limit of 10. Generate types against staging.
@@ -175,6 +175,7 @@ Full recipe including `accessControlConditions`: [Upload an encrypted file](uplo
 
 * [The three wallets](../authentication.md#the-three-wallets-side-by-side) — owner vs agent vs OCL account, and which field each address goes in
 * [Getting Started](README.md) — how to interact with our products, prerequisites, costs
+* [Glossary](../../references/glossary.md) — every term used here, defined in a sentence
 * [Tutorials](README.md) — the same flow with responses and failure handling
 * [Labs API](../labs-api/README.md) — full operation reference
 * [Molecule Skill](../../ai-tooling/molecule-skill.md) — the same workflow as MCP tool calls
