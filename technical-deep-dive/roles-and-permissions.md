@@ -7,9 +7,13 @@ icon: users-gear
 
 # Roles & Permissions
 
+{% hint style="info" %}
+Roles are held by **wallets**, and a Lab involves up to three of them — the owner's wallet, an agent's wallet, and the Lab's own OCL account. For which is which and where each address belongs in an API call, see [the three wallets, side by side](../api-reference/authentication.md#the-three-wallets-side-by-side).
+{% endhint %}
+
 ## Why Roles Exist
 
-A Lab's NFT holder is its sole ultimate controller — transferring the LabNFT transfers the entire project. In practice, most research projects need to delegate day-to-day data-room work (uploading files, posting announcements, decrypting confidential research) to collaborators and AI agents without surrendering ownership.
+A Lab's NFT holder is its sole ultimate controller — transferring the LabNFT transfers the entire project. In practice, most research projects need to delegate day-to-day data-room work (uploading files, decrypting confidential research) to collaborators and AI agents without surrendering ownership.
 
 The role system lets a Lab owner grant scoped, expiring access to specific wallets — human or agent — while keeping ownership, treasury control, and the ability to revoke access at any time. Invites via email are possible, meaning team members do not have to be web3-native to participate.&#x20;
 
@@ -31,7 +35,6 @@ The `hasRole` check is hierarchical: a Contributor automatically passes Viewer c
 | View public data-room files              |   ✓   |      ✓      |    ✓   |
 | Decrypt confidential data-room files     |   ✓   |      ✓      |    ✓   |
 | Upload / update / delete data-room files |   ✓   |      ✓      |        |
-| Create announcements                     |   ✓   |      ✓      |        |
 | Grant / revoke Viewer role               |   ✓   |      ✓      |        |
 | Grant / revoke Contributor role          |   ✓   |             |        |
 | Transfer the LabNFT                      |   ✓   |             |        |
@@ -56,7 +59,7 @@ struct RoleGrant {
 * **Expiry** — A non-zero `expiry` makes the grant auto-expire. Expired grants still exist in storage (so `getRole` returns them for UI purposes) but are inactive: `hasRole` returns `false` once `block.timestamp >= expiry`. Expired grantees must be re-granted to regain access.
 * **`isAgent`** — Purely informational metadata. It does **not** change onchain authorization, but downstream systems (the members list, the data-room UI, the agent-auth flow) surface it to clearly distinguish AI-agent session keys from human team members.
 
-A Lab owner granting access to an agent should set `isAgent = true` and a short `expiry` — typically the agent's session-key lifetime. When the session expires, the agent must request a new grant before it can continue to decrypt files or post announcements.
+A Lab owner granting access to an agent should set `isAgent = true` and a short `expiry` — typically the agent's session-key lifetime. When the session expires, the agent must request a new grant before it can continue to decrypt files or write to the data room.
 
 ## How Invites Work in the App
 

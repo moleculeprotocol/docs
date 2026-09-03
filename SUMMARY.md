@@ -33,14 +33,18 @@
 ## API Reference
 
 * [📡 API Overview](api-reference/README.md)
+* [🚀 Getting Started](api-reference/getting-started/README.md)
+  * [Shared Setup](api-reference/getting-started/shared-setup.md)
+  * [Create a lab and upload a public file](api-reference/getting-started/create-lab-and-upload-file.md)
+  * [Upload an encrypted file](api-reference/getting-started/upload-encrypted-file.md)
+  * [Agent access](api-reference/getting-started/agent-as-a-lab-contributor.md)
+  * [🤖 For Agents: One-Pager](api-reference/getting-started/for-agents.md)
 * [🔐 Authentication](api-reference/authentication.md)
 * [⚙️ Labs API](api-reference/labs-api/README.md)
   * [Lab Management](api-reference/labs-api/lab-management.md)
   * [Files](api-reference/labs-api/files.md)
   * [Browse & Search](api-reference/labs-api/browse-and-search.md)
-  * [Legal Agreements](api-reference/labs-api/legal-agreements.md)
   * [Service Tokens](api-reference/labs-api/service-tokens.md)
-  * [Example Workflow: Mint → Upload](api-reference/labs-api/example-workflow.md)
 * [🔐 Tokenization API](api-reference/tokenization-api.md)
 * [x402 Gateway](api-reference/x402-gateway.md)
 * [📊 IPNFT API (Deprecated)](api-reference/ipnft-api-deprecated.md)
@@ -60,6 +64,7 @@
 
 ## REFERENCES
 
+* [Glossary](references/glossary.md)
 * [Contracts](references/contracts/README.md)
   * [IPT](references/contracts/ipt.md)
   * [Tokenizer](references/contracts/tokenizer.md)

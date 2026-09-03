@@ -21,12 +21,7 @@ All IPNFT API requests require a consumer credential (see [Authentication](authe
 
 ### Obtaining a Consumer Credential
 
-To request one:
-
-1. Join our [Discord community](https://t.co/L0VEiy4Bjk)
-2. Contact the Molecule team
-3. Provide your intended use case
-4. You'll receive a consumer credential (`mol_<consumerId>_<secret>`)
+One credential covers every Molecule API, this one included. Request it on the [Molecule Discord](https://t.co/L0VEiy4Bjk) with the [request template](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) on Getting Started; what comes back is a single `mol_<consumerId>_<secret>` string per environment.
 
 ### Using Your Consumer Credential
 

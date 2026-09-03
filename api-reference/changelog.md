@@ -10,6 +10,37 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ## Authentication
 
+### The service-token sign-in message is now single-use and expires
+
+`getServiceSignInMessage` used to return a deterministic string — a pure function of `(walletAddress, serviceName)` — which meant one captured signature could mint fresh tokens indefinitely. The message now embeds a **server-issued single-use nonce** and its expiry, and `generateServiceToken` verifies and consumes that nonce:
+
+- The message is **valid for 10 minutes** from issuance. The new `expiresAt` field on `getServiceSignInMessage` reports the deadline.
+- The nonce is **consumed on first successful redemption**. Issuing a second token requires a fresh message and a fresh signature.
+- There is **one outstanding nonce per `(walletAddress, serviceName)`**, last-write-wins — calling the query again invalidates an unredeemed message.
+- Signatures over the older nonce-free message format no longer verify.
+
+Failures come back as `UNAUTHENTICATED` with `details.reason` one of `NONCE_NOT_FOUND` (never requested, or already consumed), `NONCE_EXPIRED`, or `INVALID_SIGNATURE` (altered text, a message superseded by a later call, or a `walletAddress` that is not the signer).
+
+**Migration:** Fetch the message immediately before signing, and treat every one of those reasons as "request a new message and sign it again" rather than as a retryable call — re-submitting the same signature can never succeed. Callers that already ran `getServiceSignInMessage` → sign → `generateServiceToken` back to back need no change; callers that cached the message, cached a signature, or reconstructed the string client-side must stop doing so. See [Obtaining a Token](labs-api/service-tokens.md#obtaining-a-token).
+
+### Service tokens are self-issued, and scoped to their own lifecycle
+
+Two clarifications and one hardening, all now reflected across the API docs:
+
+- **Nobody provisions a service token for you.** `generateServiceToken` accepts a wallet signature, so any caller mints its own: `getServiceSignInMessage` → sign the message verbatim (EIP-191 `personal_sign`) → `generateServiceToken`. The only credential that still comes from the Molecule team is the `mol_` consumer credential. Earlier pages described service tokens as team-issued; that was never the only path and is no longer the documented one.
+- **A service token is bound to a wallet, not to a lab.** Docs that described it as identifying "which lab you have write access to" were wrong. It carries a wallet identity; what it may do on a given lab is resolved per request from that wallet's live onchain role. One token therefore works across every lab the wallet has a role on, and a role granted *after* issuance takes effect without re-issuing.
+- **`extendServiceToken` and `revokeServiceToken` are scoped to the caller's own tokens.** The presented token must own the `tokenId` it names; a `tokenId` belonging to another wallet returns the byte-identical `NOT_FOUND` of one that does not exist, so token existence cannot be enumerated.
+
+**Migration:** None required if you already self-issue. If you hold a team-provisioned token, it keeps working — but you can mint and rotate your own. If you built per-lab token issuance, you can collapse it to one token per wallet. If any code called `extendServiceToken` / `revokeServiceToken` for a `tokenId` issued to a different wallet, it now receives `NOT_FOUND`. See [Authentication](authentication.md#obtaining-a-service-token) and [Service Tokens](labs-api/service-tokens.md#obtaining-a-token).
+
+### Contributor role parity for service-token content writes
+
+The six content-write mutations — `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `deleteDataRoomFile`, `updateFileMetadata`, `moveEntry` and `createAnnouncement` (announcements have [since been deprecated](#announcements-are-deprecated)) — now gate a service token on the **Contributor** role, matching the Privy user path per mutation. Previously the service path required lab ownership for these, which meant a wallet granted Contributor on a lab could act through a user session but not through its own service token.
+
+This is what unblocks the "human owns the lab, agent contributes to it" flow: the owner grants the agent's wallet Contributor, and the agent's self-issued token can write. Owner-gated surfaces are unchanged — `createLab`, `updateLabNftMetadata` and `generateLabImageUploadUrl` still require ownership.
+
+**Migration:** None — this is a widening. Note that role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after a grant confirms onchain; retry with backoff rather than re-issuing the token. Walkthrough: [Agent access](getting-started/agent-as-a-lab-contributor.md).
+
 ### Backend credential stores confined to the platform network
 
 The data stores behind API authentication — the consumer credential registry, machine service tokens, and the access whitelist — are now network-confined to Molecule's private cloud network. They are unreachable from outside it, even with valid cloud-account credentials; only the API's own backend can read or write them. This is a hardening change with **no effect on any API, header, token format, or SDK** — consumer credentials, `X-Service-Token`, and Privy user tokens all work exactly as before.
@@ -25,17 +56,49 @@ All Molecule APIs (Labs, Tokenization, and IPNFT (Deprecated) — they share one
 + Authorization: mol_<consumerId>_<secret>
 ```
 
-**Migration:** Contact the Molecule team for a consumer credential and send it as `Authorization: mol_<consumerId>_<secret>` instead of `x-api-key` — do not prefix it with `Bearer`, which is reserved for Privy user tokens and will fail authentication. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before. See [Authentication](authentication.md) for the full header reference.
+**Migration:** Request a consumer credential from the Molecule team ([template](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step)) and send it as `Authorization: mol_<consumerId>_<secret>` instead of `x-api-key` — do not prefix it with `Bearer`, which is reserved for Privy user tokens and will fail authentication. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before. See [Authentication](authentication.md) for the full header reference.
 
 ---
 
 ## Labs API
 
+### Announcements are deprecated
+
+Announcements are no longer surfaced in the Molecule app, and they are out of every tutorial, how-to and feature-description page. **The API surface is unchanged and still works** — nothing has been removed from the schema and no call has started failing. This is a "stop building on it" notice, not a breaking change.
+
+Still live, and still returned to callers who ask for it:
+
+| Surface | Status |
+| ------- | ------ |
+| `createAnnouncement` mutation | Live. Gated on **Contributor**, like the file writes |
+| `/x402/labs/createAnnouncement` gateway endpoint | Live, still in `X402_WRITE_MUTATIONS`, still priced |
+| `LabEventAnnouncement` in the `LabActivityNode` union | Live — returned by unfiltered `labActivity` / `activities` |
+| `SearchLabsAnnouncementHit` in the `SearchLabsHit` union | Live — returned by `searchLabs` |
+| `LabActivityFilter.ANNOUNCEMENT` | Live |
+
+**Migration:** None required; existing integrations keep working. Do not add new dependencies on announcements. If you consume `labActivity` or `activities` and want a file-only feed, pass `filter: FILE` rather than assuming one — the unfiltered feed still contains announcement nodes for labs that have them. If you switch on `__typename` across `LabActivityNode` or `SearchLabsHit`, keep the announcement arms handled. See [Browse & Search](labs-api/browse-and-search.md).
+
+### Assignment Agreement is no longer a gate, and is out of the API docs
+
+Signing the assignment agreement is **not** a precondition for `createLab`, for uploading files, or for any other Labs API operation. It was previously presented as a required onboarding step, and the `<AGREEMENT_TYPE>_NOT_SIGNED` / `AGREEMENT_CHECK_UNAVAILABLE` failure causes are now dormant — reserved in the catalogue, but not emitted.
+
+The `legalAgreement*` operations remain in the schema and are unchanged, but they have been removed from every onboarding and reference flow, and [Legal Agreements](labs-api/legal-agreements.md) is out of the site navigation. Do not build a new integration around them.
+
+**Migration:** Delete any agreement-signing step from your workflow — it does nothing. If you branch on an agreement status before writing, remove the branch. Nothing in the API changed; only what is required of you did. The onboarding tutorials no longer include the step: [Tutorials](getting-started/README.md).
+
+### Staging introspection is the supported way to get the schema
+
+Production has introspection disabled (below), but **staging has it enabled** — point codegen, a playground or an SDK generator at `https://staging.graphql.api.molecule.xyz/graphql` with your consumer credential and generate normally. Both environments serve the same schema, so generate against staging and point the generated client at production.
+
+This supersedes the earlier guidance to request a copy of the schema from the Molecule team.
+
+**Migration:** If your codegen currently fails against production, repoint it at staging. See [Getting the schema](getting-started/README.md#getting-the-schema).
+
 ### GraphQL introspection disabled and query depth capped in production
 
 The production endpoint (shared by all Molecule APIs — see [API Overview](README.md)) no longer serves `__schema` / `__type` introspection queries: they now return a validation error. `__typename` still resolves. Selection-set depth is also capped at 10 in production, with scalar leaves counted as a level (`{ root { child { name } } }` is depth 3). A query beyond that limit fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data — a plain GraphQL error, not the catalogued error shape used elsewhere, so handle both.
 
-**Migration:** If your codegen or tooling discovers the schema by introspecting the production endpoint, that now fails — request a current copy of the schema from the Molecule team (see [Getting Support](README.md)) rather than introspecting production. If you see `QueryDepthLimitReached`, flatten the query to 10 levels of nesting or fewer; this limit was not previously enforced.
+**Migration:** If your codegen or tooling discovers the schema by introspecting the production endpoint, that now fails — introspect **staging** instead, where it is enabled, and point the generated client at production (see [Getting the schema](getting-started/README.md#getting-the-schema)). If you see `QueryDepthLimitReached`, flatten the query to 10 levels of nesting or fewer; this limit was not previously enforced.
 
 ### `isSuccess` removed (unified error contract)
 
@@ -69,25 +132,25 @@ type ApiError {
 }
 ```
 
-On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSync `AWSJSON`), e.g. `"details": "{\"reason\":\"NOT_LAB_OWNER\"}"` — read it with `JSON.parse(error.details ?? "{}")`. On a thrown query error, `errorInfo.details` is a plain object. Ignore keys you do not recognise, and never match on `message` — its wording may change without notice.
+On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSync `AWSJSON`), e.g. `"details": "{\"reason\":\"NOT_LAB_OWNER\"}"`; on a thrown query error, `errorInfo.details` is a plain object. The in-band string is currently encoded twice, so read it with the tolerant [`parseDetails`](labs-api/README.md#error-handling) rather than a single `JSON.parse`, which returns another string and makes `.reason` silently `undefined`. Ignore keys you do not recognise, and never match on `message` — its wording may change without notice.
 
 #### Error codes
 
 | Code                        | `retryable` | Meaning                                                                  | Typical `details.reason`                                                         |
 | --------------------------- | ----------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `UNAUTHENTICATED`           | false       | Missing, invalid or expired credentials.                                 | `TOKEN_EXPIRED`, `INVALID_SIGNATURE`, `WALLET_MISMATCH`                          |
-| `UNAUTHORIZED`              | false       | Authenticated but not allowed (role or membership).                      | `NOT_LAB_OWNER`, `NOT_CONTRIBUTOR`, `SERVICE_NOT_WHITELISTED`                    |
-| `NOT_FOUND`                 | false       | The referenced resource does not exist.                                  | `LAB_NOT_FOUND`, `PROJECT_NOT_FOUND`, …                                          |
-| `VALIDATION_FAILED`         | false       | Input failed validation; `details.field` names the offending field.      | `INVALID_OCL_ID`, …                                                              |
-| `CONFLICT`                  | false       | A valid request conflicts with current state.                            | `SHORTNAME_TAKEN`, `ALREADY_SIGNED`, `PROJECT_CONFLICT`, `ACCOUNT_NAME_CONFLICT` |
-| `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until that state changes.  | `TEMPLATE_EXPIRED`, `LEGACY_ENCRYPTION`, `NOT_ENCRYPTED`                         |
-| `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size is over the limit.                            | `FILTER_COMPLEXITY_LIMIT`, `RESULT_CARDINALITY_LIMIT`                            |
+| `UNAUTHENTICATED`           | false       | Missing, invalid or expired credentials.                                 | `AUTH_FAILED`, `SERVICE_AUTH_FAILED`, `INVALID_SIGNATURE`, `NONCE_NOT_FOUND`, `NONCE_EXPIRED`, `WALLET_MISMATCH`, `CONSUMER_CREDENTIAL_REQUIRED` |
+| `UNAUTHORIZED`              | false       | Authenticated but not allowed (role or membership).                      | `UNAUTHORIZED` (role/membership denial), `NOT_LAB_OWNER`, `MUTATION_NOT_ALLOWED` |
+| `NOT_FOUND`                 | false       | The referenced resource does not exist.                                  | `LAB_NOT_FOUND`, `OCL_NOT_FOUND`, `TOKEN_NOT_FOUND`, `PROJECT_NOT_FOUND`, …      |
+| `VALIDATION_FAILED`         | false       | Input failed validation; `details.field` names the offending field.      | `INVALID_OCL_ID`, `INVALID_INPUT`, `MISSING_INPUT`, …                            |
+| `CONFLICT`                  | false       | A valid request conflicts with current state.                            | `SHORTNAME_TAKEN`, `PROJECT_CONFLICT`, `ACCOUNT_NAME_CONFLICT`, `ALREADY_REVOKED` |
+| `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until that state changes.  | `TOKEN_REVOKED`, `LEGACY_ENCRYPTION`, `NOT_ENCRYPTED`, `MISSING_DEK`             |
+| `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size is over the limit.                            | `COMPLEXITY_LIMIT_EXCEEDED`                                                      |
 | `RATE_LIMITED`              | **true**    | Throttled — retry with backoff.                                          | —                                                                                |
 | `TIMEOUT`                   | **true**    | Execution exceeded the request budget.                                   | —                                                                                |
 | `UPSTREAM_UNAVAILABLE`      | **true**    | A dependency failed — retry with backoff.                                | `KAMU`, `CMS`, `IPFS`                                                            |
-| `INTERNAL_ERROR`            | **true**    | Unexpected failure; quote `requestId` when reporting it.                 | —                                                                                |
+| `INTERNAL_ERROR`            | **true**    | Unexpected failure; quote `requestId` when reporting it.                 | `TOKEN_GENERATION_FAILED`, `CREATE_LAB_FAILED`, `UPLOAD_INIT_ERROR`, `KMS_ERROR`, … |
 
-Codes may be added over time, and each addition is announced on this page. Treat a code you do not recognise as non-retryable, keep the raw value for diagnostics and surface it to a human. `PAYMENT_REQUIRED` is reserved for the x402 gateway and is not emitted by the GraphQL API. `details.reason` values are diagnostic refinement, not a contract surface — they may be extended without notice.
+Codes may be added over time, and each addition is published on this page. Treat a code you do not recognise as non-retryable, keep the raw value for diagnostics and surface it to a human. `PAYMENT_REQUIRED` is reserved for the x402 gateway and is not emitted by the GraphQL API. `details.reason` values are diagnostic refinement, not a contract surface — they may be extended without notice.
 
 #### Before / after
 
@@ -107,9 +170,9 @@ Codes may be added over time, and each addition is announced on this page. Treat
 ```
 
 ```diff
-# Mutation selection (createAnnouncement) — select `error` instead of `isSuccess`
-  mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!) {
-    createAnnouncement(oclId: $oclId, headline: $headline, body: $body) {
+# Mutation selection (finishCreateOrUpdateFile) — select `error` instead of `isSuccess`
+  mutation FinishCreateOrUpdateFile($oclId: String!, $uploadToken: String!, $path: String!) {
+    finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path) {
 -     isSuccess
       message
 -     error { message code retryable }
@@ -123,7 +186,7 @@ Codes may be added over time, and each addition is announced on this page. Treat
 -   handle(result.error?.code);
 - }
 + if (result.error) {
-+   const { reason } = JSON.parse(result.error.details ?? "{}");
++   const { reason } = parseDetails(result.error.details); // tolerant parse, see Error Handling
 +   handle(result.error.code, reason);
 + }
 ```
@@ -142,17 +205,17 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 | `projectWithDataRoomAndFiles` / `…V2`              | `labWithDataRoomAndFiles`    | Look up by `oclId` (or `shortname`) instead of `ipnftUid` |
 | `dataRoomFileV2`                                   | `dataRoomFile`               | Identified by `oclId` + `path`                            |
 | `projectActivity` / `projectActivityV2`            | `labActivity`                | —                                                         |
+| `projectAnnouncementsV2` / `projectAnnouncementV2` | `labActivity` / `activities` | Use the `filter: ANNOUNCEMENT` argument (announcements [since deprecated](#announcements-are-deprecated)) |
 | `activitiesV2`                                     | `activities`                 | —                                                         |
-| `projectAnnouncementsV2` / `projectAnnouncementV2` | `labActivity` / `activities` | Removed — use the `filter: ANNOUNCEMENT` argument         |
 
 #### Renamed mutations
 
 | Legacy (removed)               | Current                      | Notes                                                                  |
 | ------------------------------ | ---------------------------- | ---------------------------------------------------------------------- |
 | `createProject`                | `createLab`                  | Now takes `input: { oclId }` instead of `ipnftSymbol` / `ipnftTokenId` |
+| `createAnnouncementV2`         | `createAnnouncement`         | Takes `oclId`; the legacy `moleculeAccessLevel` param was removed. Announcements [since deprecated](#announcements-are-deprecated) |
 | `initiateCreateOrUpdateFileV2` | `initiateCreateOrUpdateFile` | —                                                                      |
 | `finishCreateOrUpdateFileV2`   | `finishCreateOrUpdateFile`   | —                                                                      |
-| `createAnnouncementV2`         | `createAnnouncement`         | Takes `oclId`; the legacy `moleculeAccessLevel` param was removed      |
 | `updateFileMetadataV2`         | `updateFileMetadata`         | —                                                                      |
 | `deleteDataRoomFileV2`         | `deleteDataRoomFile`         | —                                                                      |
 
@@ -168,6 +231,20 @@ Top-level identifiers on `Lab` / `LabRef` were renamed away from the legacy IP-N
 | `ipnftTokenId` | `labNftTokenId`     | LabNFT tokenId (decimal string)                             |
 
 > The linked legacy IP-NFT (for labs migrated from one) is still available as the nested `ipnft` object on `Lab` / `LabRef`; `LabRef` additionally exposes a scalar `ipnftId` field.
+
+---
+
+## x402 Gateway
+
+### Gateway base URLs published, and the 402 challenge is a header
+
+The staging and production gateway base URLs are now published on the [x402 Gateway](x402-gateway.md#gateway-base-urls) page — they no longer have to be requested.
+
+Along with them, one correction that matters for anyone implementing the handshake: the payment requirements arrive as **base64-encoded JSON in the `payment-required` response header**, not in the `402` response body. The body is only `{"isSuccess":false,"message":"Payment required"}`. Client code that parsed the body for `accepts` never saw a price.
+
+**Migration:** Read the challenge from the `payment-required` header and base64-decode it; take `amount`, `asset`, `network` and `payTo` from `accepts[0]`. `amount` is in the asset's smallest unit (USDC has 6 decimals, so `"10000"` is $0.01). Worked example: [Reading the 402 challenge](x402-gateway.md#reading-the-402-challenge).
+
+Also worth knowing: payment buys a short-lived service token for the payer wallet, **not** a role. A mutation the payer is not authorized for returns `200` with `error.code: "UNAUTHORIZED"` and is still settled — check the target lab and your role on it (both free, public queries) before signing.
 
 ---
 
@@ -348,13 +425,15 @@ All new queries support `limit`, `skip`, `sortBy`, `sortOrder`, and `filterBy` p
 Agreements on IP-NFTs are now a fully queryable relation with sub-field selection, filtering, sorting, and pagination:
 
 ```graphql
-ipnft {
-  agreements(limit: 10, sortBy: type, sortOrder: asc) {
-    id
-    contentHash
-    mimeType
-    type
-    url
+query GetAgreements($id: ID!) {
+  ipnft(id: $id) {
+    agreements(limit: 10, sortBy: type, sortOrder: asc) {
+      id
+      contentHash
+      mimeType
+      type
+      url
+    }
   }
 }
 ```

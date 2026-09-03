@@ -1,4 +1,12 @@
+---
+hidden: true
+---
+
 # Legal Agreements
+
+{% hint style="warning" %}
+**Not part of onboarding, and not a gate on anything.** Signing a legal agreement is no longer a precondition for creating a lab, uploading files, or any other Labs API operation. This page is retained as a reference for the existing `legalAgreement*` operations while they remain in the schema, and it is deliberately out of the site navigation. Do not build a new integration around it. Onboarding starts at [Getting Started](../getting-started/README.md).
+{% endhint %}
 
 The legal-agreement flow is three operations: fetch the populated template + `contentHash`, sign it as an EIP-712 typed-data payload, then submit the signature. The backend regenerates and verifies the document server-side and stores the signed artifact in the lab's data room.
 
@@ -234,7 +242,7 @@ mutation SignLegalAgreement($input: SignLegalAgreementInput!) {
 }
 ```
 
-Success ⇔ `error == null`. On failure `message` mirrors `error.message`; branch on `error.code` (and `details.reason` where documented — e.g. `CONFLICT` with reason `ALREADY_SIGNED` when the current template version is already signed, or `FAILED_PRECONDITION` with reason `TEMPLATE_EXPIRED`). `details` is a JSON-encoded string: `JSON.parse(error.details ?? "{}").reason`.
+Success ⇔ `error == null`. On failure `message` mirrors `error.message`; branch on `error.code` (and `details.reason` where documented — e.g. `CONFLICT` with reason `ALREADY_SIGNED` when the current template version is already signed, or `FAILED_PRECONDITION` with reason `TEMPLATE_EXPIRED`). `details` is a JSON-encoded string, currently doubly encoded in-band: read it via the tolerant [`parseDetails`](README.md#error-handling).
 
 **`SignLegalAgreementInput` fields:**
 

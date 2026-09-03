@@ -2,11 +2,12 @@
 description: >-
   Build on Molecule: Integrate Labs, extend the protocol, and deploy autonomous
   research agents
-hidden: true
 icon: robot
 ---
 
 # Developers/AI Agents
+
+> **Want to start writing code now?** Go to [🚀 Getting Started](../api-reference/getting-started/README.md) — it helps you pick a way in and gets you to a lab with a file in it in about ten minutes. This page is the narrative map of every integration surface, for when you need to decide *what* to build rather than *how* to make the first call. New to the ecosystem? The [Glossary](../references/glossary.md) defines every Molecule term these docs use.
 
 ### Who This Guide Is For
 
@@ -18,7 +19,7 @@ The reference pages (Contracts, Labs API, MCP Tools) contain the full API specif
 
 Molecule exposes four primary integration layers, each serving different developer needs.
 
-The Labs API is a GraphQL endpoint for reading and writing to Lab data rooms — the offchain encrypted storage where research files, announcements, and metadata live. This is the primary interface for applications that need to manage scientific data: uploading files, querying project activity, searching across Labs, and managing announcements. Authentication uses consumer credentials for reads and service tokens for writes. The full specification, including every query and mutation, is documented in the Labs API reference.
+The Labs API is a GraphQL endpoint for reading and writing to Lab data rooms — the offchain encrypted storage where research files and metadata live. This is the primary interface for applications that need to manage scientific data: uploading files, querying project activity, and searching across Labs. Authentication uses consumer credentials for reads and service tokens for writes. The full specification, including every query and mutation, is documented in the Labs API reference.
 
 The Smart Contracts are the onchain layer. The V2 contracts (IPNFT, CrowdSale, SchmackoSwap) on Ethereum mainnet underpin the existing IP-NFT assets, token sales, and trading. The V3 contracts (OnChainLab, OnChainLabFactory, ERC7484Registry, OclTokenizer, and associated modules) are deployed on Base mainnet and Base Sepolia and introduce the modular account architecture plus Lab tokenization. Contract addresses, ABIs, and upgrade patterns are documented in the Contracts reference. The Architecture page provides the full implementation-level breakdown of how these contracts compose.
 
@@ -56,8 +57,8 @@ The simplest agent integration is read-only: query a Lab's data room for files, 
 
 A write-enabled agent goes further: it reads data, performs analysis, and writes results back as new files in the Lab's data room. This requires both a consumer credential and a service token. Two paths to a service token:
 
-* **Long-lived service token** — mint one via the `generateServiceToken` mutation (wallet signature or Privy session), or contact the Molecule team. The token is a JWT tied to your wallet; write authorization is resolved from that wallet's onchain role on the target Lab.
-* **Pay-per-call via the** [**x402 Gateway**](../api-reference/x402-gateway.md) — for agents that serve external users, charge per request, or don't have pre-provisioned credentials. The gateway settles a USDC payment on Base per call and mints a short-lived (default 5-minute) service token scoped to one mutation. Available for `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createAnnouncement`, `createLab`, `generateDataEncryptionKey`, and `decryptDataKey`.
+* **Long-lived service token** — the agent mints its own via the `generateServiceToken` mutation, by signing a message with its wallet (a Privy session works too). No provisioning request. The token is a JWT tied to that wallet; write authorization is resolved per request from the wallet's onchain role on the target Lab. Content writes need **Contributor**. The end-to-end version — agent wallet, human grants the role, agent self-issues and uploads — is [Agent access](../api-reference/getting-started/agent-as-a-lab-contributor.md).
+* **Pay-per-call via the** [**x402 Gateway**](../api-reference/x402-gateway.md) — for agents that serve external users, charge per request, or don't have pre-provisioned credentials. The gateway settles a USDC payment on Base per call and mints a short-lived (default 5-minute) service token scoped to one mutation. Available for `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createLab`, `generateDataEncryptionKey`, and `decryptDataKey`.
 
 The three-step upload flow (initiate, PUT, finalize) lets you write any file type with metadata including descriptions, tags, categories, and searchable content text. If the file should be confidential, first request a key via `generateDataEncryptionKey` — the backend returns a one-shot plaintext DEK (plus its encrypted form) you use to encrypt locally before upload, attaching the encryption metadata on finish. Every file the agent writes becomes a permanent, versioned record in the Lab's history.
 
@@ -99,4 +100,6 @@ If you're building an AI research agent, start with BioAgents. Fork the reposito
 
 If you just want to give an AI assistant Molecule context, add the MCP server URL to your client's config and you're done in sixty seconds.
 
-For consumer credentials, service tokens, attestation requests, or any integration support, reach out on the Molecule Discord.
+If you want an AI coding agent to run the whole Lab workflow for you, install the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin — the skill plus MCP server that wraps every network, onchain and cryptographic step as one typed tool call.
+
+Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a consumer credential, a module attestation request, or any integration support — for a credential, post in [the API channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**.

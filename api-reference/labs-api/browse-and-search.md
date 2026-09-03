@@ -1,6 +1,6 @@
 # Browse & Search
 
-Cross-cutting read operations that aren't scoped to a single lab you administer: browsing and reading labs and their files, full-text search, and activity feeds. Reads tied to a specific resource live with that resource — e.g. members and DID-link status in [Lab Management](lab-management.md), and legal-agreement status in [Legal Agreements](legal-agreements.md).
+Cross-cutting read operations that aren't scoped to a single lab you administer: browsing and reading labs and their files, full-text search, and activity feeds. Reads tied to a specific resource live with that resource — e.g. members and DID-link status in [Lab Management](lab-management.md).
 
 ## Listing Labs & Activity
 
@@ -10,7 +10,7 @@ Query operations for listing all labs and reading their activity feeds. To read 
 
 Get all labs. This is a **public endpoint** - no authentication required.
 
-> **🔓 Public Endpoint**: The `labs` query does not require authentication. You only need a consumer credential (`Authorization: Bearer`) - no Service Token is needed.
+> **🔓 Public Endpoint**: The `labs` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 **GraphQL Query:**
 
@@ -84,11 +84,11 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ### Project Activity Feed
 
-Get activity timeline for a specific project including file events and announcements. This is a **public endpoint** - no authentication required.
+Get the activity timeline for a specific project. This is a **public endpoint** - no authentication required.
 
-> **🔓 Public Endpoint**: The `labActivity` query does not require authentication. You only need a consumer credential (`Authorization: Bearer`) - no Service Token is needed.
+Unfiltered, `nodes` is a `LabActivityNode` union that also includes `LabEventAnnouncement` entries. [Announcements are deprecated](../changelog.md#announcements-are-deprecated), but labs created before the deprecation still carry them, so **pass `filter: FILE` if you want a file-only feed** and handle `__typename` defensively if you do not. `LabActivityFilter` accepts `FILE` and `ANNOUNCEMENT`.
 
-> **Filtering**: By default, returns all activity types (file events and announcements). Use the optional `filter` parameter (`ANNOUNCEMENT` or `FILE`) to retrieve only a specific type.
+> **🔓 Public Endpoint**: The `labActivity` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 **GraphQL Query:**
 
@@ -159,30 +159,10 @@ query GetProjectActivity(
           contentText
         }
       }
-      ... on LabEventAnnouncement {
-        announcement {
-          id
-          headline
-          body
-          attachments {
-            id
-            did
-            path
-            name
-            contentType
-            accessLevel
-          }
-          changeBy
-          systemTime
-          eventTime
-        }
-      }
     }
   }
 }
 ```
-
-> **⚠️ Breaking Change**: Announcement `attachments` changed from `[String!]!` (array of DIDs) to `[DataRoomFile!]!` (array of file objects). This enables querying file metadata directly without separate API calls.
 
 **Example Request:**
 
@@ -191,7 +171,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
-    "query": "query GetActivity($oclId: String!, $page: Int) { labActivity(oclId: $oclId, page: $page, perPage: 20) { pageInfo { hasNextPage currentPage totalPages } nodes { __typename ... on LabEventAnnouncement { announcement { headline attachments { did path contentType } } } } } }",
+    "query": "query GetActivity($oclId: String!, $page: Int) { labActivity(oclId: $oclId, page: $page, perPage: 20) { pageInfo { hasNextPage currentPage totalPages } nodes { __typename ... on LabEventFileAdded { entry { path contentType version accessLevel changeBy eventTime } } } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
       "page": 0
@@ -201,18 +181,16 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 **Use Cases:**
 
-- Announcement detail pages requiring full file metadata
-- Download links for announcement attachments
+- Project timelines showing what changed in a data room and when
+- Download links for data-room files
 - Encrypted file access (Onchain-Verified Envelope Encryption for new files)
-- Projects with many announcements (efficient pagination)
+- Projects with many file events (efficient pagination)
 
 ### Global Activity Feed
 
 Get all activity across all projects. This is a **public endpoint** - no authentication required.
 
-> **🔓 Public Endpoint**: The `activities` query does not require authentication. You only need a consumer credential (`Authorization: Bearer`) - no Service Token is needed.
-
-> **Filtering**: By default, returns all activity types (file events and announcements). Use the optional `filter` parameter (`ANNOUNCEMENT` or `FILE`) to retrieve only a specific type.
+> **🔓 Public Endpoint**: The `activities` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 **GraphQL Query:**
 
@@ -272,24 +250,6 @@ query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
           contentText
         }
       }
-      ... on LabEventAnnouncement {
-        announcement {
-          id
-          headline
-          body
-          attachments {
-            id
-            did
-            path
-            name
-            contentType
-            accessLevel
-          }
-          changeBy
-          systemTime
-          eventTime
-        }
-      }
     }
   }
 }
@@ -301,7 +261,7 @@ query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
 
 ## Searching Labs
 
-Perform semantic search across all projects, files, and announcements in the Labs ecosystem.
+Perform semantic search across all projects and files in the Labs ecosystem.
 
 **GraphQL Query:**
 
@@ -338,26 +298,6 @@ query SearchLabs(
           }
         }
       }
-      ... on SearchLabsAnnouncementHit {
-        announcement {
-          id
-          headline
-          body
-          systemTime
-          attachments {
-            id
-            did
-            path
-            name
-            contentType
-            accessLevel
-          }
-        }
-        lab {
-          oclId
-          shortname
-        }
-      }
     }
     totalCount
     pageInfo {
@@ -379,6 +319,8 @@ query SearchLabs(
 | page      | Int               | No       | Page number (default: 0)       |
 | perPage   | Int               | No       | Results per page (default: 10) |
 
+`SearchLabsHit` is a union of `SearchLabsFileHit` **and** `SearchLabsAnnouncementHit`. The examples below match only the file arm; if you handle the union exhaustively, expect the announcement `__typename` too — [announcements are deprecated](../changelog.md#announcements-are-deprecated) but pre-existing ones are still indexed and still returned.
+
 **Available Filters:**
 
 | Filter         | Type       | Description                                           |
@@ -394,9 +336,8 @@ query SearchLabs(
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "query SearchLabs($prompt: String!, $page: Int, $perPage: Int) { searchLabs(prompt: $prompt, page: $page, perPage: $perPage) { nodes { __typename ... on SearchLabsFileHit { entry { lab { oclId shortname } path file { contentType description tags } } } ... on SearchLabsAnnouncementHit { announcement { headline body } lab { shortname } } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
+    "query": "query SearchLabs($prompt: String!, $page: Int, $perPage: Int) { searchLabs(prompt: $prompt, page: $page, perPage: $perPage) { nodes { __typename ... on SearchLabsFileHit { entry { lab { oclId shortname } path file { contentType description tags } } } } totalCount pageInfo { hasNextPage currentPage totalPages } } }",
     "variables": {
       "prompt": "cancer research",
       "page": 0,
@@ -411,7 +352,6 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query SearchLabs($prompt: String!, $filters: SearchLabsFilters) { searchLabs(prompt: $prompt, filters: $filters) { nodes { __typename ... on SearchLabsFileHit { entry { path file { tags accessLevel } } } } totalCount } }",
     "variables": {
@@ -431,9 +371,6 @@ Search results are returned as a union type. Use the `__typename` field to deter
 - **SearchLabsFileHit**: File search result
   - Access via: `entry.file`
   - Contains: file metadata, tags, categories, download URL
-- **SearchLabsAnnouncementHit**: Announcement search result
-  - Access via: `announcement`
-  - Contains: headline, body, lab reference, **typed attachments** (file objects)
 
 **JavaScript Example:**
 
@@ -443,7 +380,6 @@ const searchResults = await fetch(apiUrl, {
   headers: {
     "Content-Type": "application/json",
     "Authorization": process.env.CONSUMER_CREDENTIAL,
-    "X-Service-Token": process.env.SERVICE_TOKEN,
   },
   body: JSON.stringify({
     query: `query SearchLabs($prompt: String!) {
@@ -454,17 +390,6 @@ const searchResults = await fetch(apiUrl, {
             entry {
               path
               file { description tags }
-            }
-          }
-          ... on SearchLabsAnnouncementHit {
-            announcement {
-              headline
-              attachments {
-                did
-                path
-                contentType
-                accessLevel
-              }
             }
           }
         }
@@ -480,13 +405,7 @@ const { nodes, totalCount } = (await searchResults.json()).data.searchLabs;
 // Handle different result types
 nodes.forEach((node) => {
   if (node.__typename === "SearchLabsFileHit") {
-    console.log("File:", node.entry.path);
-  } else if (node.__typename === "SearchLabsAnnouncementHit") {
-    console.log("Announcement:", node.announcement.headline);
-    // NEW: Attachments are now full file objects
-    node.announcement.attachments.forEach((file) => {
-      console.log("  Attachment:", file.path, file.contentType);
-    });
+    console.log("File:", node.entry.path, node.entry.file.description);
   }
 });
 ```
@@ -497,7 +416,9 @@ nodes.forEach((node) => {
 
 ### Onchain Activity Feed
 
-Return the onchain event feed for an OCL or a wallet. Exactly one of `oclId` / `wallet` must be supplied. Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last row's `id` to fetch the next page.
+Return the onchain event feed for an OCL or a wallet. At least one of `oclId` / `wallet` must be supplied (they are AND-ed when both are). Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last entry's `id` to fetch the next page.
+
+`onChainActivity` returns **one entry per transaction**: the decoded events of a transaction are classified into a single timeline entry, so an OCL creation renders as one "New Onchain Lab created" row rather than a burst of raw events. The constituent events stay available under `events`. For the flat, one-row-per-event stream, use `rawOnChainActivity` (same filters and cursor semantics).
 
 ```graphql
 query OnChainActivity(
@@ -514,14 +435,20 @@ query OnChainActivity(
   ) {
     id
     chainId
-    contractAddress
-    contractName
-    eventName
+    txHash
     blockNumber
     blockTimestamp
-    txHash
-    logIndex
+    type
+    title
     args
+    events {
+      id
+      contractAddress
+      contractName
+      eventName
+      logIndex
+      args
+    }
   }
 }
 ```
@@ -532,8 +459,19 @@ query OnChainActivity(
 | --------- | ------ | -------- | ------------------------------------------------------------------ |
 | oclId     | String | No\*     | Canonical 32-byte oclId of the lab                                 |
 | wallet    | String | No\*     | Wallet address to filter events by                                 |
-| limit     | Int    | No       | Max rows to return (default: 50)                                   |
-| cursor    | String | No       | Pagination cursor `"<block_number>:<log_index>"` (last row's `id`) |
+| limit     | Int    | No       | Max transaction groups to return (default: 50, max 200)            |
+| cursor    | String | No       | Pagination cursor `"<block_number>:<log_index>"` (last entry's `id`) |
 
-\* Provide exactly one of `oclId` or `wallet`. `contractName` is one of `accessresolver`, `ocl`, `ipnft` or `ipt`. `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
+\* Provide at least one of `oclId` or `wallet`.
+
+**Entry fields:**
+
+| Field | Description |
+| ----- | ----------- |
+| `type` | Machine-readable classification: `OCL_CREATED`, `OCL_TOKENIZED`, `OCL_TRANSFERRED`, `OCL_DID_LINKED`, `ROLE_GRANTED`, `ROLE_REVOKED`, `ROLE_CHANGED`, `IPT_TOKENIZED`, `IPNFT_MINTED`, `IPNFT_TRANSFERRED`, `IPNFT_METADATA_UPDATED`, `OTHER` |
+| `title` | Human-readable summary, e.g. `"Contributor role granted to 0x1234…cdef"` |
+| `args` | Structured facts of the classified action (JSON; addresses lowercased) |
+| `events` | The transaction's raw events in ascending log order — including events that did not match the filter, for full transaction context |
+
+On a raw event, `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt` or `bio-agent`, and `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
 
