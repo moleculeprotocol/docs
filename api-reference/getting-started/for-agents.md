@@ -20,7 +20,7 @@ ONCHAIN_LAB_FACTORY      0xd629FE2310b4309a212495F10A47f8436dcEfD90
 LABNFT                   0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28
 ACCESS_RESOLVER          0x5493F472602C87318EA5Eff753cDD593bf9bF559
 ACCESS_CONDITION_CHAIN   "baseSepolia"
-LAB_PAGE                 https://testnet.labs.molecule.xyz/projects/<shortname>
+LAB_PAGE                 https://testnet.labs.molecule.xyz/projects/<slug>
 ```
 
 Production (Base) — swap these in, nothing else changes:
@@ -32,7 +32,7 @@ ONCHAIN_LAB_FACTORY      0xECdF4f05384056507485C90aeAb0a83268760D6E
 LABNFT                   0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92
 ACCESS_RESOLVER          0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B
 ACCESS_CONDITION_CHAIN   "base"
-LAB_PAGE                 https://labs.molecule.xyz/projects/<shortname>
+LAB_PAGE                 https://labs.molecule.xyz/projects/<slug>
 ```
 
 ## Headers
@@ -59,6 +59,7 @@ function parseDetails(d) {
 }
 ```
 * Branch on `code`, never on `message`. Retry only when `retryable` is `true`, with exponential backoff. Quote `requestId` in any bug report.
+* One exception to "retry when retryable": a malformed or out-of-bounds `expiresIn` on `generateServiceToken` is not pre-validated and comes back as `INTERNAL_ERROR` / `details.reason: TOKEN_GENERATION_FAILED`, which is flagged retryable but never will be. Validate `expiresIn` client-side (`<int><unit>`, unit in `s m h d w M y`, 1 hour to 2 years) and cap retries on that reason.
 * Codes: `UNAUTHENTICATED`, `UNAUTHORIZED`, `NOT_FOUND`, `VALIDATION_FAILED`, `CONFLICT`, `FAILED_PRECONDITION`, `COMPLEXITY_LIMIT_EXCEEDED`, `RATE_LIMITED`*, `TIMEOUT`*, `UPSTREAM_UNAVAILABLE`*, `INTERNAL_ERROR`* (`*` = retryable). An unrecognised code: treat as non-retryable, preserve it, surface it.
 
 ## Step 1 — Self-issue a service token
@@ -148,6 +149,8 @@ query Verify($oclId: String!) {
 ```
 
 Public query, `Authorization` only. Your `path` is in `dataRoom.files`. A `null` result means the lab is not registered — this query is nullable and does not throw for a missing lab.
+
+The lab page slug is `lab-<labNftTokenId>` until the lab is renamed, then the `shortname` derived from its new name; the `lab-<tokenId>` form stops resolving at that point. Never use `oclId` as a slug — it does not resolve.
 
 ## Encrypted files, in four lines
 

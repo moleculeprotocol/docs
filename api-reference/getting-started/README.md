@@ -59,7 +59,7 @@ Two things, and only one of them involves a human.
 
 Every request to the API carries a consumer credential in the `Authorization` header. There is no self-service issuance yet (coming soon), so you will need to request this from the Molecule team.
 
-Request it on the [Molecule Discord](https://t.co/L0VEiy4Bjk) with this template:
+Request it on the [Molecule Discord](https://t.co/L0VEiy4Bjk): post in [the API channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**, using this template (the channel link needs you to be in the server — join with the invite first):
 
 ```
 Consumer credential request
@@ -157,14 +157,16 @@ curl -s -X POST https://staging.graphql.api.molecule.xyz/graphql \
 
 Your file appears in `dataRoom.files` with the `path` you sent and `accessLevel: "PUBLIC"`. If `labWithDataRoomAndFiles` comes back `null`, `createLab` did not complete — a missing lab nulls the field rather than throwing an error.
 
-The second check is visual — once `shortname` is populated, the lab has a page of its own:
+The second check is visual — the lab has a page of its own, at `/projects/<slug>`:
 
 | Environment | Lab page |
 | ----------- | -------- |
-| Staging | `https://testnet.labs.molecule.xyz/projects/<shortname>` |
-| Production | `https://labs.molecule.xyz/projects/<shortname>` |
+| Staging | `https://testnet.labs.molecule.xyz/projects/<slug>` |
+| Production | `https://labs.molecule.xyz/projects/<slug>` |
 
-`shortname` is derived server-side from the lab's name and is `null` until that has happened, so a freshly minted lab is reachable by `oclId` before it is reachable by slug.
+Until the lab is renamed, that slug is **`lab-<tokenId>`**, built from the `labNftTokenId` that `createLab` returns — so a lab you have just created is at `.../projects/lab-1274`. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name, and the `lab-<tokenId>` form stops resolving.
+
+Do not build this URL from `oclId`. It identifies the lab in API calls, it is not a page slug, and it does not resolve here.
 
 ***
 

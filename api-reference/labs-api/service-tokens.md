@@ -97,7 +97,7 @@ mutation GenerateServiceToken(
 | Minimum | 1 hour |
 | Maximum | 2 years |
 
-`M` is a 30-day month and `y` is a 365-day year. Anything outside the bounds, or in another format, is rejected with `VALIDATION_FAILED`. Prefer a short lifetime matched to the caller's purpose — for an agent, match the expiry of its role grant — over the 180-day default.
+`M` is a 30-day month and `y` is a 365-day year. **Validate this client-side.** `expiresIn` is not checked before use: anything outside the bounds, or in another format, fails deep in token generation and surfaces as `INTERNAL_ERROR` with `details.reason: TOKEN_GENERATION_FAILED` and a masked message — not as `VALIDATION_FAILED`. `INTERNAL_ERROR` carries `retryable: true`, but this particular one is permanent: retrying the same `expiresIn` will never succeed. Prefer a short lifetime matched to the caller's purpose — for an agent, match the expiry of its role grant — over the 180-day default.
 
 Success ⇔ `error == null`. On failure `error` carries the catalogue `code` (e.g. `UNAUTHENTICATED` when the signature does not verify), `message` mirrors `error.message`, and `token`, `tokenId`, `expiresAt` and `createdAt` are `null` (`serviceName` may echo the name you sent) — guard for `null`, not for empty strings, and branch on `error`, never on the token fields.
 
@@ -107,10 +107,9 @@ Success ⇔ `error == null`. On failure `error` carries the catalogue `code` (e.
 | -------- | ------------- | --- |
 | `NONCE_NOT_FOUND` | No nonce record at all — you never called `getServiceSignInMessage` for this wallet + service, or the nonce was already consumed by an earlier token | Fetch a fresh message and sign it again. Do not retry the same signature |
 | `NONCE_EXPIRED` | The message is older than its 10-minute window | Fetch a fresh message and sign it again |
-| `INVALID_SIGNATURE` | The signed bytes are not the string the backend recomposes. Either the message was altered (re-formatted, rebuilt client-side, typed-data signing, the retired nonce-free format) **or it was superseded** — a later `getServiceSignInMessage` call replaced the stored nonce, so an earlier message no longer matches | Sign the `message` from the most recent call, byte-for-byte, with `personal_sign` |
-| `WALLET_MISMATCH` | `walletAddress` is not the address that produced the signature | Pass the signing address |
+| `INVALID_SIGNATURE` | The signed bytes are not the string the backend recomposes. Either the message was altered (re-formatted, rebuilt client-side, typed-data signing, the retired nonce-free format), **it was superseded** — a later `getServiceSignInMessage` call replaced the stored nonce, so an earlier message no longer matches — **or the `walletAddress` you sent is not the address that produced the signature**: verification runs against the address you claim, so a wrong one simply fails to verify | Sign the `message` from the most recent call, byte-for-byte, with `personal_sign`, and send the signing address as `walletAddress` |
 
-None of these are retryable as-is: every one of them means "get a new message and sign that". A `VALIDATION_FAILED` here refers to `walletAddress` format or `expiresIn` bounds instead.
+None of these are retryable as-is: every one of them means "get a new message and sign that". Note there is no distinct wallet-mismatch reason on this path — the nonce is looked up under the `walletAddress` you send and the signature is verified against it, so a wrong address returns `NONCE_NOT_FOUND` (no message was ever issued for that address) or `INVALID_SIGNATURE` (one was, but a different key signed). A `VALIDATION_FAILED` here refers to `walletAddress` format, or to sending only one of `walletAddress` / `messageSignature` — both must be present together.
 
 ## Extending Token Expiration
 

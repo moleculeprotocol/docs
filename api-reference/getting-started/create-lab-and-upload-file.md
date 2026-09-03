@@ -97,11 +97,11 @@ serviceToken = tokenResult.generateServiceToken.token;
 
 | `error.code` | What happened | Fix |
 | ------------ | ------------- | --- |
-| `UNAUTHENTICATED`, `reason: INVALID_SIGNATURE` | The signed bytes are not the message the backend recomposes — altered text, or a message superseded by a later `getServiceSignInMessage` call | Sign the most recent `message` byte-for-byte. Use `personal_sign` / viem's `signMessage`, not `signTypedData` |
+| `UNAUTHENTICATED`, `reason: INVALID_SIGNATURE` | The signed bytes are not the message the backend recomposes — altered text, a message superseded by a later `getServiceSignInMessage` call, or a `walletAddress` that is not the address that produced the signature | Sign the most recent `message` byte-for-byte, and send the signing address as `walletAddress`. Use `personal_sign` / viem's `signMessage`, not `signTypedData` |
 | `UNAUTHENTICATED`, `reason: NONCE_NOT_FOUND` | No nonce on file — never requested for this wallet + service, or already redeemed by an earlier token | Re-run the query and sign the new `message`. Retrying the same signature never works |
 | `UNAUTHENTICATED`, `reason: NONCE_EXPIRED` | More than 10 minutes passed between fetching the message and redeeming it | Re-run the query and sign the new `message` |
-| `UNAUTHENTICATED`, `reason: WALLET_MISMATCH` | `walletAddress` isn't the signer | Pass the same address that signed |
-| `VALIDATION_FAILED` | Bad `expiresIn` | Format is `<int><unit>`, unit one of `s m h d w M y`; between 1 hour and 2 years |
+| `VALIDATION_FAILED` | Malformed `walletAddress` | Send a checksummed or lowercase `0x`-prefixed 20-byte address |
+| `INTERNAL_ERROR`, `reason: TOKEN_GENERATION_FAILED` | Bad `expiresIn` — the value is not validated before use, so a malformed or out-of-bounds one surfaces as a masked server error | Validate before sending: format is `<int><unit>`, unit one of `s m h d w M y`, between 1 hour and 2 years. Despite `retryable: true` on `INTERNAL_ERROR`, retrying will not fix it |
 | HTTP `401` before GraphQL runs | Consumer credential missing or malformed | Check `Authorization` — no `Bearer` prefix. See [Authentication](../authentication.md) |
 
 `expiresIn` defaults to **`180d`** when omitted. The returned token is **wallet-bound, not lab-bound**: it carries this wallet's identity, and authorisation is resolved per request from that wallet's onchain role on whichever lab you name.
@@ -196,7 +196,7 @@ assertOk(createLabResult.createLab, "createLab");
 }
 ```
 
-`shortname` is derived server-side from the lab's name and is `null` until it has been derived — that is expected on a lab that has just been minted and not yet named.
+`shortname` is `null` here, which is expected on a lab that has just been minted and not yet named — it is derived server-side once the lab is given one. Note `labNftTokenId` in the response: until the lab is renamed, that is what its page URL is built from (see [Step 5](#step-5-verify-it-worked)).
 
 **If it fails:**
 
@@ -220,7 +220,7 @@ Molecule runs onchain and offchain systems side by side, and the offchain side l
 
 That is exactly what happens here. `createLab` can succeed before your mint has been indexed, because it falls back to checking ownership onchain. The file mutations have no such fallback — they read the indexed record, and return `NOT_FOUND` until it arrives.
 
-So wrap the first call in [`withIndexerLagRetry`](shared-setup.md). On staging the record usually appears within seconds, but one mint took **over four minutes**, which is why the helper keeps retrying that long instead of giving up after a few seconds.
+So wrap the first call in [`withIndexerLagRetry`](shared-setup.md) so the helper will retry until the record arrives.
 {% endhint %}
 
 ```javascript
@@ -388,7 +388,7 @@ Your file is in `dataRoom.files` with `accessLevel: "PUBLIC"` and `version: 1`. 
 
 If `labWithDataRoomAndFiles` comes back `null`, the lab is not registered: Step 3 didn't complete. This is one of only two nullable queries on the Labs API, so a missing lab nulls the field instead of throwing.
 
-The second check is visual. Once `shortname` is populated, the lab has a page at `${LAB_APP_URL}/projects/<shortname>` — `https://testnet.labs.molecule.xyz/projects/<shortname>` on staging.
+The second check is visual. The lab has a page at `${LAB_APP_URL}/projects/<slug>`. Until the lab is renamed, that slug is `lab-<labNftTokenId>` — the token id `createLab` returned in Step 3 — so a lab you have just created is at `https://testnet.labs.molecule.xyz/projects/lab-1274` on staging. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name and the `lab-<tokenId>` form stops resolving. `oclId` does not work here.
 
 ## Complete script
 
@@ -553,6 +553,7 @@ async function main() {
     { oclId },
   );
   assertOk(createLabResult.createLab, "createLab");
+  const { labNftTokenId } = createLabResult.createLab.lab;
   console.log("3/5 Lab registered — TBA:", createLabResult.createLab.lab.labAccountAddress);
 
   // ---- Step 4: upload the file ----
@@ -614,7 +615,10 @@ async function main() {
   const file = lab.dataRoom.files.find((f) => f.path.endsWith(basename(filePath)));
   if (!file) throw new Error("File not found in the data room");
   console.log("5/5 Verified:", file.path, file.accessLevel, "v" + file.version);
-  if (lab.shortname) console.log("Lab page:", `${LAB_APP_URL}/projects/${lab.shortname}`);
+  // Until the lab is renamed its page slug is `lab-<tokenId>`; after a rename it is
+  // the derived shortname, and the lab-<tokenId> form stops resolving.
+  const slug = lab.shortname ?? `lab-${labNftTokenId}`;
+  console.log("Lab page:", `${LAB_APP_URL}/projects/${slug}`);
 }
 
 main().catch((err) => {

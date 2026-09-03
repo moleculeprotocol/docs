@@ -11,7 +11,7 @@ There are two credentials, and they do different jobs. If any term on this page 
 
 ## Obtaining API Access
 
-Every request carries a **consumer credential** in the `Authorization` header. Request one on the [Molecule Discord](https://t.co/L0VEiy4Bjk) with this template:
+Every request carries a **consumer credential** in the `Authorization` header. Request one on the [Molecule Discord](https://t.co/L0VEiy4Bjk): post in [the API channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**, using this template (the channel link needs you to be in the server — join with the invite first):
 
 ```
 Consumer credential request
@@ -151,7 +151,7 @@ Self-service, two calls, no human in the loop. Full reference with parameters an
 | Minimum | 1 hour |
 | Maximum | 2 years |
 
-A value outside those bounds, or in another format, is rejected with `VALIDATION_FAILED`.
+**Validate this before you send it.** `expiresIn` is not checked by the resolver: a value outside those bounds, or in another format, fails inside token generation and comes back as `INTERNAL_ERROR` with `details.reason: TOKEN_GENERATION_FAILED` and a masked message, not as `VALIDATION_FAILED`. `INTERNAL_ERROR` is flagged `retryable: true`, but this one is permanent — fix the value rather than retrying.
 
 Issuance is **not** gated on holding a role on any lab — any wallet can mint a token for itself. The role is what makes the token useful.
 
@@ -192,9 +192,9 @@ Two failure modes this prevents:
 `oclId` identifies a lab and looks like an address, but it is a 32-byte value that **packs the OCL account address inside it**, together with the LabNFT `tokenId`:
 
 ```
-oclId  0x 01     01        000000000005f6      f923ca46329c8fcb2fcf8a03512f1483c52c63c5
-          ^^     ^^        ^^^^^^^^^^^^^^      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-          version namespace tokenId (1526)     the OCL account address, verbatim
+oclId  0x 01     01        000000000000000005f6      f923ca46329c8fcb2fcf8a03512f1483c52c63c5
+          ^^     ^^        ^^^^^^^^^^^^^^^^^^^^      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          version namespace tokenId (1526)           the OCL account address, verbatim
 ```
 
 So the trailing 40 hex characters of an `oclId` are the lab's `labAccountAddress` — which is why a zeroed one is rejected with `VALIDATION_FAILED` / `"embedded address is zero"` rather than a not-found. Pass `oclId` wherever a lab is named; never pass it as a wallet address, and never truncate it to one.

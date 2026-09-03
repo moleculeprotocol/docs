@@ -102,4 +102,4 @@ If you just want to give an AI assistant Molecule context, add the MCP server UR
 
 If you want an AI coding agent to run the whole Lab workflow for you, install the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin — the skill plus MCP server that wraps every network, onchain and cryptographic step as one typed tool call.
 
-Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). Reach out on the Molecule Discord for a consumer credential, a module attestation request, or any integration support.
+Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a consumer credential, a module attestation request, or any integration support — for a credential, post in [the API channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**.

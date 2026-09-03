@@ -19,7 +19,7 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 - There is **one outstanding nonce per `(walletAddress, serviceName)`**, last-write-wins — calling the query again invalidates an unredeemed message.
 - Signatures over the older nonce-free message format no longer verify.
 
-Failures come back as `UNAUTHENTICATED` with `details.reason` one of `NONCE_NOT_FOUND` (never requested, or already consumed), `NONCE_EXPIRED`, `INVALID_SIGNATURE` (altered text, or a message superseded by a later call) or `WALLET_MISMATCH`.
+Failures come back as `UNAUTHENTICATED` with `details.reason` one of `NONCE_NOT_FOUND` (never requested, or already consumed), `NONCE_EXPIRED`, or `INVALID_SIGNATURE` (altered text, a message superseded by a later call, or a `walletAddress` that is not the signer).
 
 **Migration:** Fetch the message immediately before signing, and treat every one of those reasons as "request a new message and sign it again" rather than as a retryable call — re-submitting the same signature can never succeed. Callers that already ran `getServiceSignInMessage` → sign → `generateServiceToken` back to back need no change; callers that cached the message, cached a signature, or reconstructed the string client-side must stop doing so. See [Obtaining a Token](labs-api/service-tokens.md#obtaining-a-token).
 
@@ -35,7 +35,7 @@ Two clarifications and one hardening, all now reflected across the API docs:
 
 ### Contributor role parity for service-token content writes
 
-The five content-write mutations — `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `deleteDataRoomFile`, `updateFileMetadata`, `moveEntry` — now gate a service token on the **Contributor** role, matching the Privy user path per mutation. Previously the service path required lab ownership for these, which meant a wallet granted Contributor on a lab could act through a user session but not through its own service token.
+The six content-write mutations — `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `deleteDataRoomFile`, `updateFileMetadata`, `moveEntry` and `createAnnouncement` (announcements have [since been deprecated](#announcements-are-deprecated)) — now gate a service token on the **Contributor** role, matching the Privy user path per mutation. Previously the service path required lab ownership for these, which meant a wallet granted Contributor on a lab could act through a user session but not through its own service token.
 
 This is what unblocks the "human owns the lab, agent contributes to it" flow: the owner grants the agent's wallet Contributor, and the agent's self-issued token can write. Owner-gated surfaces are unchanged — `createLab`, `updateLabNftMetadata` and `generateLabImageUploadUrl` still require ownership.
 
@@ -61,6 +61,22 @@ All Molecule APIs (Labs, Tokenization, and IPNFT (Deprecated) — they share one
 ---
 
 ## Labs API
+
+### Announcements are deprecated
+
+Announcements are no longer surfaced in the Molecule app, and they are out of every tutorial, how-to and feature-description page. **The API surface is unchanged and still works** — nothing has been removed from the schema and no call has started failing. This is a "stop building on it" notice, not a breaking change.
+
+Still live, and still returned to callers who ask for it:
+
+| Surface | Status |
+| ------- | ------ |
+| `createAnnouncement` mutation | Live. Gated on **Contributor**, like the file writes |
+| `/x402/labs/createAnnouncement` gateway endpoint | Live, still in `X402_WRITE_MUTATIONS`, still priced |
+| `LabEventAnnouncement` in the `LabActivityNode` union | Live — returned by unfiltered `labActivity` / `activities` |
+| `SearchLabsAnnouncementHit` in the `SearchLabsHit` union | Live — returned by `searchLabs` |
+| `LabActivityFilter.ANNOUNCEMENT` | Live |
+
+**Migration:** None required; existing integrations keep working. Do not add new dependencies on announcements. If you consume `labActivity` or `activities` and want a file-only feed, pass `filter: FILE` rather than assuming one — the unfiltered feed still contains announcement nodes for labs that have them. If you switch on `__typename` across `LabActivityNode` or `SearchLabsHit`, keep the announcement arms handled. See [Browse & Search](labs-api/browse-and-search.md).
 
 ### Assignment Agreement is no longer a gate, and is out of the API docs
 
@@ -122,17 +138,17 @@ On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSyn
 
 | Code                        | `retryable` | Meaning                                                                  | Typical `details.reason`                                                         |
 | --------------------------- | ----------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `UNAUTHENTICATED`           | false       | Missing, invalid or expired credentials.                                 | `TOKEN_EXPIRED`, `INVALID_SIGNATURE`, `WALLET_MISMATCH`                          |
-| `UNAUTHORIZED`              | false       | Authenticated but not allowed (role or membership).                      | `NOT_LAB_OWNER`, `NOT_CONTRIBUTOR`, `SERVICE_NOT_WHITELISTED`                    |
-| `NOT_FOUND`                 | false       | The referenced resource does not exist.                                  | `LAB_NOT_FOUND`, `PROJECT_NOT_FOUND`, …                                          |
-| `VALIDATION_FAILED`         | false       | Input failed validation; `details.field` names the offending field.      | `INVALID_OCL_ID`, …                                                              |
-| `CONFLICT`                  | false       | A valid request conflicts with current state.                            | `SHORTNAME_TAKEN`, `ALREADY_SIGNED`, `PROJECT_CONFLICT`, `ACCOUNT_NAME_CONFLICT` |
-| `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until that state changes.  | `TEMPLATE_EXPIRED`, `LEGACY_ENCRYPTION`, `NOT_ENCRYPTED`                         |
-| `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size is over the limit.                            | `FILTER_COMPLEXITY_LIMIT`, `RESULT_CARDINALITY_LIMIT`                            |
+| `UNAUTHENTICATED`           | false       | Missing, invalid or expired credentials.                                 | `AUTH_FAILED`, `SERVICE_AUTH_FAILED`, `INVALID_SIGNATURE`, `NONCE_NOT_FOUND`, `NONCE_EXPIRED`, `WALLET_MISMATCH`, `CONSUMER_CREDENTIAL_REQUIRED` |
+| `UNAUTHORIZED`              | false       | Authenticated but not allowed (role or membership).                      | `UNAUTHORIZED` (role/membership denial), `NOT_LAB_OWNER`, `MUTATION_NOT_ALLOWED` |
+| `NOT_FOUND`                 | false       | The referenced resource does not exist.                                  | `LAB_NOT_FOUND`, `OCL_NOT_FOUND`, `TOKEN_NOT_FOUND`, `PROJECT_NOT_FOUND`, …      |
+| `VALIDATION_FAILED`         | false       | Input failed validation; `details.field` names the offending field.      | `INVALID_OCL_ID`, `INVALID_INPUT`, `MISSING_INPUT`, …                            |
+| `CONFLICT`                  | false       | A valid request conflicts with current state.                            | `SHORTNAME_TAKEN`, `PROJECT_CONFLICT`, `ACCOUNT_NAME_CONFLICT`, `ALREADY_REVOKED` |
+| `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until that state changes.  | `TOKEN_REVOKED`, `LEGACY_ENCRYPTION`, `NOT_ENCRYPTED`, `MISSING_DEK`             |
+| `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size is over the limit.                            | `COMPLEXITY_LIMIT_EXCEEDED`                                                      |
 | `RATE_LIMITED`              | **true**    | Throttled — retry with backoff.                                          | —                                                                                |
 | `TIMEOUT`                   | **true**    | Execution exceeded the request budget.                                   | —                                                                                |
 | `UPSTREAM_UNAVAILABLE`      | **true**    | A dependency failed — retry with backoff.                                | `KAMU`, `CMS`, `IPFS`                                                            |
-| `INTERNAL_ERROR`            | **true**    | Unexpected failure; quote `requestId` when reporting it.                 | —                                                                                |
+| `INTERNAL_ERROR`            | **true**    | Unexpected failure; quote `requestId` when reporting it.                 | `TOKEN_GENERATION_FAILED`, `CREATE_LAB_FAILED`, `UPLOAD_INIT_ERROR`, `KMS_ERROR`, … |
 
 Codes may be added over time, and each addition is published on this page. Treat a code you do not recognise as non-retryable, keep the raw value for diagnostics and surface it to a human. `PAYMENT_REQUIRED` is reserved for the x402 gateway and is not emitted by the GraphQL API. `details.reason` values are diagnostic refinement, not a contract surface — they may be extended without notice.
 
@@ -189,6 +205,7 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 | `projectWithDataRoomAndFiles` / `…V2`              | `labWithDataRoomAndFiles`    | Look up by `oclId` (or `shortname`) instead of `ipnftUid` |
 | `dataRoomFileV2`                                   | `dataRoomFile`               | Identified by `oclId` + `path`                            |
 | `projectActivity` / `projectActivityV2`            | `labActivity`                | —                                                         |
+| `projectAnnouncementsV2` / `projectAnnouncementV2` | `labActivity` / `activities` | Use the `filter: ANNOUNCEMENT` argument (announcements [since deprecated](#announcements-are-deprecated)) |
 | `activitiesV2`                                     | `activities`                 | —                                                         |
 
 #### Renamed mutations
@@ -196,6 +213,7 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 | Legacy (removed)               | Current                      | Notes                                                                  |
 | ------------------------------ | ---------------------------- | ---------------------------------------------------------------------- |
 | `createProject`                | `createLab`                  | Now takes `input: { oclId }` instead of `ipnftSymbol` / `ipnftTokenId` |
+| `createAnnouncementV2`         | `createAnnouncement`         | Takes `oclId`; the legacy `moleculeAccessLevel` param was removed. Announcements [since deprecated](#announcements-are-deprecated) |
 | `initiateCreateOrUpdateFileV2` | `initiateCreateOrUpdateFile` | —                                                                      |
 | `finishCreateOrUpdateFileV2`   | `finishCreateOrUpdateFile`   | —                                                                      |
 | `updateFileMetadataV2`         | `updateFileMetadata`         | —                                                                      |

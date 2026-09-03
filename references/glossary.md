@@ -21,7 +21,7 @@ If a term in the tutorials is unfamiliar, it is defined here. Each entry is shor
 
 **OCL / `oclId`** — "onchain lab". `oclId` is the Lab's canonical identifier: a 32-byte hex string (`0x…`) emitted in the `OclIdentityCreated` event when the LabNFT is minted. Every Labs API call that targets a Lab takes this value. How it is derived: [Lab Management](../api-reference/labs-api/lab-management.md#how-oclid-is-derived).
 
-**`shortname`** — a URL slug derived server-side from the Lab's name, used in the Lab's public page address. It is `null` until the server has derived it, so a freshly minted Lab is reachable by `oclId` before it is reachable by slug.
+**`shortname`** — the slug in a Lab's public page address, `/projects/<slug>`. Until the Lab is renamed, the slug is `lab-<tokenId>`, built from the LabNFT's token id. Once it is renamed, `shortname` is derived server-side from the new name and the `lab-<tokenId>` form stops resolving. `oclId` is not a page slug and never resolves in this URL.
 
 ***
 

@@ -55,6 +55,7 @@ POST {base}/x402/labs/{mutation}
 | `/x402/labs/createLab`                       | `createLab`                    | Create a lab (data room) for an onchain lab (OCL)       |
 | `/x402/labs/generateDataEncryptionKey`       | `generateDataEncryptionKey`    | Generate a data encryption key (DEK) for encrypted uploads |
 | `/x402/labs/decryptDataKey`                  | `decryptDataKey`               | Decrypt a file's data key for an authorized caller       |
+| `/x402/labs/createAnnouncement`              | `createAnnouncement`           | **Deprecated** — announcements are no longer surfaced in the Molecule app. Still allow-listed and still charged; do not build on it |
 
 The path mutation must match the top-level GraphQL mutation field in the request body, otherwise the gateway returns `400`. The allow-list above is the single source of truth in `lambda/x402-gateway-lambda/mutations.ts` (`X402_WRITE_MUTATIONS`).
 

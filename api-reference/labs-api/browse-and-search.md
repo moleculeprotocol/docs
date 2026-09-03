@@ -84,7 +84,9 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ### Project Activity Feed
 
-Get the file-event timeline for a specific project. This is a **public endpoint** - no authentication required.
+Get the activity timeline for a specific project. This is a **public endpoint** - no authentication required.
+
+Unfiltered, `nodes` is a `LabActivityNode` union that also includes `LabEventAnnouncement` entries. [Announcements are deprecated](../changelog.md#announcements-are-deprecated), but labs created before the deprecation still carry them, so **pass `filter: FILE` if you want a file-only feed** and handle `__typename` defensively if you do not. `LabActivityFilter` accepts `FILE` and `ANNOUNCEMENT`.
 
 > **🔓 Public Endpoint**: The `labActivity` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
@@ -316,6 +318,8 @@ query SearchLabs(
 | filters   | SearchLabsFilters | No       | Filter criteria                |
 | page      | Int               | No       | Page number (default: 0)       |
 | perPage   | Int               | No       | Results per page (default: 10) |
+
+`SearchLabsHit` is a union of `SearchLabsFileHit` **and** `SearchLabsAnnouncementHit`. The examples below match only the file arm; if you handle the union exhaustively, expect the announcement `__typename` too — [announcements are deprecated](../changelog.md#announcements-are-deprecated) but pre-existing ones are still indexed and still returned.
 
 **Available Filters:**
 

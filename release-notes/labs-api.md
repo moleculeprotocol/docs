@@ -17,7 +17,7 @@ _Released 2026-08-25_
 #### Assignment Agreement no longer required before data-room writes
 
 Data-room write mutations — `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`,
-`deleteDataRoomFile`, `updateFileMetadata`, and `moveEntry` (see
+`deleteDataRoomFile`, `updateFileMetadata`, `moveEntry`, and `createAnnouncement` (see
 [Files](../api-reference/labs-api/files.md)) — used to fail with `ASSIGNMENT_AGREEMENT_NOT_SIGNED`
 (`FAILED_PRECONDITION`) until a lab's Assignment Agreement was signed via `signLegalAgreement`. That
 gate is now disabled: these mutations succeed regardless of the agreement's sign state.

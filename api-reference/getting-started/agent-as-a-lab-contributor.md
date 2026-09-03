@@ -133,7 +133,7 @@ From here the agent is an ordinary caller. Run [Step 4 of Create a lab and uploa
 Writes by a Contributor service token are gated per mutation, matching the Privy user path: `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `deleteDataRoomFile`, `updateFileMetadata` and `moveEntry` all accept Contributor. A few surfaces remain **Owner-only** and an agent Contributor cannot reach them: `updateLabNftMetadata`, `generateLabImageUploadUrl` and the legal-agreement mutations.
 
 {% hint style="warning" %}
-**Retry on `UNAUTHORIZED` right after the grant.** Role state reaches the API through an event indexer, so for a window after `grantRole` confirms onchain a write still returns `UNAUTHORIZED` (`reason: NOT_CONTRIBUTOR`). It is not a permissions problem and re-issuing the token will not help — wait and retry. Usually seconds, but the same indexer has taken minutes on staging, so retry generously:
+**Retry on `UNAUTHORIZED` right after the grant.** Role state reaches the API through an event indexer, so for a window after `grantRole` confirms onchain a write still returns `UNAUTHORIZED` (`details.reason` is also `UNAUTHORIZED` — there is no separate `NOT_CONTRIBUTOR` reason; match on `error.code`). It is not a permissions problem and re-issuing the token will not help — wait and retry. Usually seconds, but the same indexer has taken minutes on staging, so retry generously:
 
 ```javascript
 async function withIndexerLagRetry(
