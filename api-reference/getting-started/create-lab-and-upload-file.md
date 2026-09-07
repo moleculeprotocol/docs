@@ -187,7 +187,7 @@ assertOk(createLabResult.createLab, "createLab");
       "error": null,
       "lab": {
         "oclId": "0x0101000000000000000000000000abc…",
-        "shortname": null,
+        "shortname": "lab-1274",
         "labAccountAddress": "0x…",
         "labNftTokenId": "1274"
       }
@@ -196,7 +196,7 @@ assertOk(createLabResult.createLab, "createLab");
 }
 ```
 
-`shortname` is `null` here, which is expected on a lab that has just been minted and not yet named — it is derived server-side once the lab is given one. Note `labNftTokenId` in the response: until the lab is renamed, that is what its page URL is built from (see [Step 5](#step-5-verify-it-worked)).
+When a lab is minted `shortname` is `lab-<token-id>` by default. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name and the `lab-<tokenId>` form stops resolving (see [Step 5](#step-5-verify-it-worked)).
 
 **If it fails:**
 
@@ -210,6 +210,8 @@ assertOk(createLabResult.createLab, "createLab");
 DID-linking for the new lab starts automatically in the background; [`getDidLinkStatus`](../labs-api/lab-management.md#get-did-link-status) reports its progress. You do not need to wait for it.
 
 ## Step 4: Upload the file
+
+This section is for uploading public files, if you are interested in uploading an encrypted file, please jump to this tutorial instead [uploading an encrypted file](./upload-encrypted-file.md).
 
 Three calls: get a presigned URL, `PUT` the bytes, finalise with metadata. Full reference: [Files](../labs-api/files.md).
 

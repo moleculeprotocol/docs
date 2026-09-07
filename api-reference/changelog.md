@@ -49,7 +49,7 @@ The data stores behind API authentication — the consumer credential registry, 
 
 ### `x-api-key` replaced by consumer credentials
 
-All Molecule APIs (Labs, Tokenization, and IPNFT (Deprecated) — they share one GraphQL endpoint) now authenticate with a consumer credential instead of an `x-api-key` header. A consumer credential has the shape `mol_<consumerId>_<secret>` and is sent directly as the `Authorization` header value, with **no `Bearer` prefix**.
+All Molecule APIs (Labs, Tokenization — they share one GraphQL endpoint) now authenticate with a consumer credential instead of an `x-api-key` header. A consumer credential has the shape `mol_<consumerId>_<secret>` and is sent directly as the `Authorization` header value, with **no `Bearer` prefix**.
 
 ```diff
 - x-api-key: YOUR_API_KEY
@@ -247,10 +247,6 @@ Along with them, one correction that matters for anyone implementing the handsha
 Also worth knowing: payment buys a short-lived service token for the payer wallet, **not** a role. A mutation the payer is not authorized for returns `200` with `error.code: "UNAUTHORIZED"` and is still settled — check the target lab and your role on it (both free, public queries) before signing.
 
 ---
-
-## IPNFT API (Deprecated)
-
-> The IPNFT API is deprecated. The changes below are preserved for integrations that have not yet migrated. See the [IPNFT API reference](ipnft-api-deprecated.md).
 
 ### February 2026
 

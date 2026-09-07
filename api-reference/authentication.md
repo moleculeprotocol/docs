@@ -11,7 +11,7 @@ There are two credentials, and they do different jobs. If any term on this page 
 
 ## Obtaining API Access
 
-Every request carries a **consumer credential** in the `Authorization` header. Request one on the [Molecule Discord](https://t.co/L0VEiy4Bjk): post in [the API channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**, using this template (the channel link needs you to be in the server — join with the invite first):
+Every request carries a **consumer credential** in the `Authorization` header. Request one on the [Molecule Discord](https://t.co/L0VEiy4Bjk): post in [the general-chat channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**, using this template (the channel link needs you to be in the server — join with the invite first):
 
 ```
 Consumer credential request
@@ -39,7 +39,6 @@ You do **not** need to ask anyone for a Service Token. Write mutations need one,
 | **Labs API (mutations, service token)**   | <p><code>Authorization</code><br><code>X-Service-Token</code></p>                                                 | <p><code>Authorization: mol_&lt;consumerId&gt;_&lt;secret&gt;</code><br><code>X-Service-Token: YOUR_SERVICE_TOKEN</code></p>        |
 | **Labs API (mutations, Privy user)**      | <p><code>Authorization</code><br><code>x-wallet-address</code></p>                                                | <p><code>Authorization: Bearer PRIVY_TOKEN</code><br><code>x-wallet-address: 0x…</code></p>                                  |
 | **Tokenization API**                      | `Authorization`                                                                                                   | `Authorization: mol_<consumerId>_<secret>`                                                                                   |
-| **IPNFT API (Deprecated)**                | `Authorization`                                                                                                   | `Authorization: mol_<consumerId>_<secret>`                                                                                   |
 
 > **No `Bearer` prefix on consumer credentials.** `mol_<consumerId>_<secret>` goes directly in the `Authorization` header. Only a Privy user token uses `Authorization: Bearer <token>`.
 

@@ -68,7 +68,6 @@ touches one of its source paths.
 | `api-reference/labs-api/service-tokens.md` | `generateServiceToken`, `extendServiceToken`, `revokeServiceToken` resolvers in `lambda/appsync-resolver-labs-lambda/**` (`services/token-manager-service.ts`); `utils/service-auth-message.ts` and the sign-in nonce constants (`SIGNIN_NONCE_VALIDITY_MS` — the documented 10-minute window) in `services/token-manager-service.ts`; `lambda/appsync-authorizer-lambda/**`. **The documented `details.reason` values (`NONCE_NOT_FOUND`, `NONCE_EXPIRED`, `INVALID_SIGNATURE`) are the complete set the `generateServiceToken` signature path emits** — `WALLET_MISMATCH` is *not* one of them (it belongs to the legal-agreement resolvers' Privy path), and `expiresIn` is not validated in this resolver, so a bad value surfaces as `INTERNAL_ERROR` / `TOKEN_GENERATION_FAILED` — keep the table and the validity window in step with it |
 | `api-reference/tokenization-api.md` | `graphql/schemas/evm-tokenization.graphql`, `lambda/appsync-resolver-evm-tokenization/**`, `lib/evm-tokenization-service-stack.ts` |
 | `api-reference/x402-gateway.md` | `lambda/x402-gateway-lambda/**` |
-| `api-reference/ipnft-api-deprecated.md` | `lambda/desci-api-lambda/**` (legacy IPNFT resolvers), `lambda/desci-ipnfts-processor/**`, `lambda/ipnft-events-lambda/**` — **deprecated: correct errors, never expand** |
 | `api-reference/changelog.md` | `graphql/schemas/**`, `prisma/schema.prisma` — breaking changes and migrations only. **The "Typical `details.reason`" column lists only values the backend actually emits today**, verified against `lambda/common/errors/legacy-mapping.ts` (`LEGACY_CODE_MAP`) and the `details: { reason: … }` literals in `lambda/**`. Do **not** copy aspirational reasons out of desci-infra's `docs/api-standards.md` or `docs/error-codes.md` — those spec pages list planned values (`FILTER_COMPLEXITY_LIMIT`, `RESULT_CARDINALITY_LIMIT`, `TOKEN_EXPIRED`, `NOT_CONTRIBUTOR`, `SERVICE_NOT_WHITELISTED`) that no code path emits. A reason belongs in this table only if you can point at the line that returns it |
 | `release-notes/*.md` | any consumer-visible change (see the release-notes step) |
 | `technical-deep-dive/data/data-api-and-integration.md` | `lambda/kamu-client-lambda/**`, `lambda/did-linking-worker/**` |
@@ -80,7 +79,6 @@ touches one of its source paths.
 
 > **Triggering vs ride-along paths.** The relevance gate in
 > `.github/workflows/docs-sync.md` starts a run for a *subset* of the paths above. The deprecated
-> IPNFT lambdas (`desci-api-lambda`, `desci-ipnfts-processor`, `ipnft-events-lambda`)
 > and `lib/*.ts` files beyond `shared-api-stack` / `evm-tokenization-service-stack` /
 > `encryption-stack` never start a run on their own — their pages update only when a triggering
 > path changed in the same release. That is deliberate; keep the gate small.
@@ -92,10 +90,6 @@ touches one of its source paths.
 not driven by a backend diff), `technical-deep-dive/onchain-lab.md` and
 `technical-deep-dive/module-registry/**` (source: the `onchainlabs` / `ocltokenizer` contracts),
 and `technical-deep-dive/data/README.md` (section landing page, narrative only).
-
-The former `api-reference/IPNFT-api.md` — an orphan duplicate of `ipnft-api-deprecated.md`, never
-in `SUMMARY.md`, still teaching the retired `x-api-key` header — was deleted under IP-3028. Do not
-recreate it: `api-reference/ipnft-api-deprecated.md` is the only IPNFT page.
 
 ## What is not source of truth
 
@@ -149,8 +143,6 @@ These exist because of the July 2026 docs audit. They are not optional.
    — do not create it. The one exception is a new file under `release-notes/`, which is expected.
 5. **Do not restate internal work.** Refactors, test changes, dependency bumps, infrastructure and
    CI changes are invisible to consumers and must not reach a page.
-6. **Deprecated surfaces are frozen.** On `api-reference/ipnft-api-deprecated.md`, correct outright
-   errors only. Never document new capability there.
 7. **Scope discipline.** Only edit pages the map connects to paths in this diff. A tempting unrelated
    improvement belongs in the PR body as a suggestion, not in the diff.
 

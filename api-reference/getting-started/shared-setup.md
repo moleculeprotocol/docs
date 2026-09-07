@@ -124,7 +124,7 @@ async function withIndexerLagRetry(
 
 ***
 
-## Then what
+## Next
 
 | Next | Page |
 | ---- | ---- |
