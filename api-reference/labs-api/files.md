@@ -1,6 +1,8 @@
 # Files
 
-Working with files in a Lab dataroom: the three-step upload flow (initiate → upload → finish), plus announcements, metadata updates, deletion, storage limits, and client-side encryption. Creating the Lab itself is covered in [Lab Management](lab-management.md).
+Working with files in a Lab dataroom: the three-step upload flow (initiate → upload → finish), plus metadata updates, deletion, storage limits, and client-side encryption. Creating the Lab itself is covered in [Lab Management](lab-management.md).
+
+> **Looking for a runnable walkthrough?** This page is the per-operation reference. For a first upload with expected responses and failure handling at every step, use [Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md) or [Upload an encrypted file](../getting-started/upload-encrypted-file.md) (encrypted, with a decrypt round trip).
 
 > **Note**: Every mutation on this page returns its failure in-band: the result carries `error: ApiError`, and success means `error` is `null`. Branch on `error.code` — never on `message` text — and quote `requestId` when reporting a problem. See [Error Handling](README.md#error-handling) for the `ApiError` shape, how to read `details`, and the list of error codes.
 
@@ -433,66 +435,6 @@ CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret" SERVICE_TOKEN="your-servi
 ```
 ---
 
-## Create Announcement
-
-Create project announcements to share updates with your community.
-
-**GraphQL Mutation:**
-
-```graphql
-mutation CreateAnnouncement(
-  $oclId: String!
-  $headline: String!
-  $body: String!
-  $attachments: [String!]
-) {
-  createAnnouncement(
-    oclId: $oclId
-    headline: $headline
-    body: $body
-    attachments: $attachments
-  ) {
-    message
-    error {
-      code
-      message
-      requestId
-      retryable
-      details
-    }
-  }
-}
-```
-
-**Parameters:**
-
-| Parameter   | Type      | Required | Description                                      |
-| ----------- | --------- | -------- | ------------------------------------------------ |
-| oclId       | String    | Yes      | Canonical 32-byte oclId of the lab               |
-| headline    | String    | Yes      | Announcement title/headline                      |
-| body        | String    | Yes      | Announcement body (supports Markdown)            |
-| attachments | \[String] | No       | Array of file DIDs to attach to the announcement |
-
-**Example Request:**
-
-```bash
-curl -X POST https://production.graphql.api.molecule.xyz/graphql \
-  -H 'Content-Type: application/json' \
-  -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
-  -d '{
-    "query": "mutation CreateAnnouncement($oclId: String!, $headline: String!, $body: String!, $attachments: [String!]) { createAnnouncement(oclId: $oclId, headline: $headline, body: $body, attachments: $attachments) { message error { code message requestId retryable details } } }",
-    "variables": {
-      "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
-      "headline": "Research Milestone Achieved",
-      "body": "We have completed Phase 2 trials with promising results.",
-      "attachments": ["did:kamu:fed01..."]
-    }
-  }'
-```
-
----
-
 ## Update File Metadata
 
 Update file metadata (description, tags, categories, access level) without creating a new version.
@@ -536,7 +478,8 @@ mutation UpdateFileMetadata(
 | Parameter   | Type      | Required | Description                                                   |
 | ----------- | --------- | -------- | ------------------------------------------------------------- |
 | oclId       | String    | Yes      | Canonical 32-byte oclId of the lab                            |
-| ref         | String    | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response |
+| ref         | String    | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response — the `datasetId`, **not** the file path |
+| accessLevel | String    | Yes      | `PUBLIC`, `HOLDERS` or `ADMIN`. Required: this call replaces the metadata rather than patching it, so omitting it fails validation |
 | description | String    | No       | Updated file description                                      |
 | tags        | \[String] | No       | Updated tags for categorization                               |
 | categories  | \[String] | No       | Updated categories for organization                           |
@@ -648,7 +591,6 @@ query GetFile($oclId: String!, $path: String!) {
 curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
-  -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
     "query": "query GetFile($oclId: String!, $path: String!) { dataRoomFile(oclId: $oclId, path: $path) { did path contentType accessLevel downloadUrl } }",
     "variables": {
@@ -706,6 +648,8 @@ Enhance file discoverability with optional metadata:
 ---
 
 ## Advanced: Encrypted File Upload
+
+> **Step-by-step version:** [Upload an encrypted file](../getting-started/upload-encrypted-file.md), including both access-condition recipes (owner-only, and owner/contributor/viewer) and a decrypt round trip that verifies the gate actually works.
 
 For files requiring client-side encryption, obtain a data encryption key via the `generateDataEncryptionKey` mutation, encrypt locally, upload as normal, and include an `encryptionMetadata` object on `finishCreateOrUpdateFile`. The full end-to-end model — key wrapping, onchain access conditions, and condition-gated decryption — is documented on the [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) page.
 

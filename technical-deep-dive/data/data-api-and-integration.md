@@ -11,7 +11,7 @@ icon: computer-classic
 
 The Data Storage and Data Privacy & Access pages describe how research files enter a Lab — how they are encrypted, stored, versioned, and access-controlled. This page describes the other side of the pipeline: how onchain events are indexed into a queryable database, how that data is aggregated with research metadata and editorial content into a unified API layer, and how every consumer in the ecosystem — the frontend, MIRA, external developers, and AI agents — accesses it.
 
-Every interaction a user has with Lab data on the Molecule platform — browsing project listings, viewing token prices, reading announcements, querying MIRA, or building an integration against the Labs API — is mediated by the Molecule API. The API is the central data hub that sits between the raw data sources and the consumers that need them.
+Every interaction a user has with Lab data on the Molecule platform — browsing project listings, viewing token prices, querying MIRA, or building an integration against the Labs API — is mediated by the Molecule API. The API is the central data hub that sits between the raw data sources and the consumers that need them.
 
 ### Data Sources
 
@@ -44,9 +44,9 @@ The Molecule API is a GraphQL API that sits on top of the Aurora database and se
 
 The API serves two broad categories of data. Market and token data — representing approximately 85% of current API traffic — includes IPT prices, market caps, liquidity depths, holder distributions, trading volumes, IP-NFT metadata, crowdsale states, treasury balances, project listings, and transaction histories. This data originates from onchain events, indexed through the pipeline described above into Aurora.
 
-Research and Lab data — representing the remaining 15% — includes data room file listings, file versions, announcements, project activity feeds, and semantic search results. This data is served through the Labs API, which reads from Kamu for file metadata and provenance, and generates presigned S3 URLs through Filebase for file uploads and downloads.
+Research and Lab data — representing the remaining 15% — includes data room file listings, file versions, project activity feeds, and semantic search results. This data is served through the Labs API, which reads from Kamu for file metadata and provenance, and generates presigned S3 URLs through Filebase for file uploads and downloads.
 
-The API uses a two-tier authentication model. Read operations (queries) require a consumer credential, issued by the Molecule team upon request. Write operations (mutations) — file uploads, metadata updates, announcements — require both a consumer credential and a service token, which is scoped to a specific wallet address and Lab. Service tokens have configurable expiration and can be extended or revoked through the API. For detailed authentication setup, credential management, and rate limits, see the Labs API reference page.
+The API uses a two-tier authentication model. Read operations (queries) require a consumer credential, issued by the Molecule team upon request. Write operations (mutations) — file uploads, metadata updates — require both a consumer credential and a service token, which is scoped to a specific wallet address and Lab. Service tokens have configurable expiration and can be extended or revoked through the API. For detailed authentication setup, credential management, and rate limits, see the Labs API reference page.
 
 ### How Consumers Access Data
 
@@ -56,7 +56,7 @@ Different consumers interact with the data layer through different interfaces, d
 
 **MIRA** accesses data through MCP (Model Context Protocol) tools — structured function calls that the AI model invokes during conversations. MIRA's knowledge base — a curated corpus about Molecule, Molecule's architecture, and the broader ecosystem — is maintained separately and updated through an automated crawl pipeline.
 
-**External developers and AI agents** access Lab data through the Labs API, which provides full GraphQL access to data room operations: listing projects, querying files, uploading and versioning research data, creating announcements, and performing semantic search across Labs. For market and token data, they query the Molecule API directly. All these are documented in the References section.
+**External developers and AI agents** access Lab data through the Labs API, which provides full GraphQL access to data room operations: listing projects, querying files, uploading and versioning research data, and performing semantic search across Labs. For market and token data, they query the Molecule API directly. All these are documented in the References section.
 
 
 ### The Integration Pipeline
@@ -65,13 +65,11 @@ When a researcher uploads a file to a Lab, the data flows through the full pipel
 
 Market data flows through a different path. When a token event occurs onchain — an IPT trade on a DEX, a crowdsale contribution, a treasury deployment — the indexer picks up the event, computes the relevant metrics (new price, updated volume, changed holder count), and writes the results to Aurora. The Molecule API serves the updated data on the next query. MIRA's MCP tools access this data in real time during conversations, supplemented by GeckoTerminal for historical OHLCV charts.
 
-Announcements follow the Labs API path. A Lab owner creates an announcement through the Labs API (or the platform UI), optionally attaching data room files. The announcement is stored via Kamu with its timestamp, author, and content, and immediately appears in the project's activity feed, the global activity feed, and MIRA's context when users ask about the project.
-
 ### Semantic Search
 
-The API exposes a semantic search endpoint that queries across all Labs, files, and announcements in the ecosystem. Queries are processed as natural language — searching for "gene therapy for rare diseases" returns Labs whose data room contents, announcements, and metadata are semantically relevant, not just keyword matches.
+The API exposes a semantic search endpoint that queries across all Labs and files in the ecosystem. Queries are processed as natural language — searching for "gene therapy for rare diseases" returns Labs whose data room contents and metadata are semantically relevant, not just keyword matches.
 
-Search results can be filtered by tags, categories, access levels, and content kinds (files or announcements). Each result includes the matching entity, its parent Lab, and a relevance score. This powers both the platform's search interface and MIRA's ability to discover related projects during conversations.
+Search results can be filtered by tags, categories, and access levels. Each result includes the matching entity, its parent Lab, and a relevance score. This powers both the platform's search interface and MIRA's ability to discover related projects during conversations.
 
 ### Access Levels and Gating
 
@@ -83,7 +81,7 @@ This means the API can serve file metadata (path, version, content type, access 
 
 The current API and MCP tool suite is weighted toward market and token data. Several research-oriented capabilities are not yet exposed through the API or MCP tools. These include structured scientific data queries (querying dataset contents by schema or field values), dataset version diffs (comparing what changed between two versions of a file), cross-Lab provenance queries (tracing how a dataset or methodology was shared or derived across multiple Labs), and research file metadata queries for MIRA (the MCP tools currently cannot access data room contents, search across file metadata, or retrieve dataset version histories on behalf of the AI).
 
-These gaps mean that MIRA can tell you a project's token price, market cap, and recent announcements, but cannot yet directly inspect the contents of a Lab's data room or compare the scientific substance of two projects' research outputs. Developers building integrations should be aware that the Labs API provides richer data room access than the MCP tools currently expose.
+These gaps mean that MIRA can tell you a project's token price and market cap, but cannot yet directly inspect the contents of a Lab's data room or compare the scientific substance of two projects' research outputs. Developers building integrations should be aware that the Labs API provides richer data room access than the MCP tools currently expose.
 
 The Sanity CMS integration is also in transition. The frontend currently calls Sanity's API directly for editorial content, bypassing the Molecule API. The planned architecture consolidates Sanity content into the Molecule API so the frontend has a single data source. This migration is actively in progress.
 

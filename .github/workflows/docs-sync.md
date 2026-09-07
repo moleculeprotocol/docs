@@ -105,7 +105,7 @@ on:
 
         # One compare call, no clone. Paths are the TRIGGERING SUBSET of the
         # source-of-truth map in .github/prompts/docs-sync.md: the map also
-        # lists ride-along surfaces (the deprecated IPNFT lambdas, lib/ stacks
+        # lists ride-along surfaces (lib/ stacks
         # beyond the three named) that get documentation updates only when a
         # triggering path changed in the same release. Broaden here
         # deliberately — every addition buys agent runs.
