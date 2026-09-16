@@ -149,9 +149,7 @@ mutation CreateLab($oclId: String!) {
 
 The mutation takes a single `CreateLabInput` object:
 
-| Field | Type   | Required | Description                                                   |
-| ----- | ------ | -------- | ------------------------------------------------------------- |
-| oclId | String | Yes      | Canonical 32-byte oclId (lowercase 0x-hex) of the onchain lab |
+{% include "../../.gitbook/includes/api/mutation-createlab.md" %}
 
 **Prerequisites:**
 
