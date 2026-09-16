@@ -24,17 +24,9 @@ query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
 }
 ```
 
-| Parameter     | Type   | Required | Description                                         |
-| ------------- | ------ | -------- | --------------------------------------------------- |
-| walletAddress | String | Yes      | Wallet address of the service (e.g. an agent's EOA) |
-| serviceName   | String | Yes      | Name of the service requesting a token              |
+{% include "../../.gitbook/includes/api/query-getservicesigninmessage.md" %}
 
 Public query — no authentication required.
-
-| Field | Description |
-| ----- | ----------- |
-| `message` | The exact string to sign. Contains a server-issued single-use nonce and its expiry, so **it changes on every call** |
-| `expiresAt` | ISO-8601 expiry of the embedded nonce. After this, the signature is rejected and a new message must be requested |
 
 {% hint style="warning" %}
 **Single-use, and valid for 10 minutes.** The sign-in message is not deterministic — do not cache it, do not cache a signature over it, and never reconstruct the string client-side. Concretely:
@@ -79,12 +71,7 @@ mutation GenerateServiceToken(
 }
 ```
 
-| Parameter        | Type   | Required | Description                                                                  |
-| ---------------- | ------ | -------- | ---------------------------------------------------------------------------- |
-| serviceName      | String | Yes      | Name of the service the token is issued for                                  |
-| walletAddress    | String | No\*     | Service wallet address (required together with `messageSignature`)           |
-| messageSignature | String | No\*     | Hex-encoded signature of the sign-in message (required with `walletAddress`) |
-| expiresIn        | String | No       | Token lifetime — defaults to `180d`. See the bounds below                     |
+{% include "../../.gitbook/includes/api/mutation-generateservicetoken.md" %}
 
 \* `walletAddress` and `messageSignature` must be provided together for signature-based issuance. The returned `token` is the JWT to pass as `X-Service-Token` on subsequent requests.
 
@@ -133,12 +120,7 @@ mutation ExtendServiceToken($tokenId: String!, $expiresIn: String!) {
 }
 ```
 
-**Parameters:**
-
-| Parameter | Type   | Description                                     |
-| --------- | ------ | ----------------------------------------------- |
-| tokenId   | String | Token ID provided when token was generated      |
-| expiresIn | String | New duration (e.g., `"30d"`, `"720h"`, `"90d"`) |
+{% include "../../.gitbook/includes/api/mutation-extendservicetoken.md" %}
 
 **Example:**
 

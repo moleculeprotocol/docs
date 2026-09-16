@@ -8,7 +8,7 @@ Working with files in a Lab dataroom: the three-step upload flow (initiate → u
 
 ## Step 1: Initiate File Upload
 
-Initiates the upload process and returns a presigned URL for direct file upload.
+{% include "../../.gitbook/includes/api/mutation-initiatecreateorupdatefile.md" %}
 
 **GraphQL Mutation:**
 
@@ -41,14 +41,6 @@ mutation InitiateFileUpload(
   }
 }
 ```
-
-**Parameters:**
-
-| Parameter     | Type   | Required | Description                                                               |
-| ------------- | ------ | -------- | ------------------------------------------------------------------------- |
-| oclId         | String | Yes      | Canonical 32-byte oclId of the lab (lowercase 0x-hex, e.g. `0x0101…0042`) |
-| contentType   | String | Yes      | MIME type of the file (e.g., `application/pdf`, `image/png`)              |
-| contentLength | Int    | Yes      | File size in bytes                                                        |
 
 **Example Request (curl):**
 
@@ -124,7 +116,7 @@ if (!uploadResponse.ok) {
 
 ## Step 3: Finish File Upload
 
-Completes the upload process and registers the file in the dataroom.
+{% include "../../.gitbook/includes/api/mutation-finishcreateorupdatefile.md" %}
 
 **GraphQL Mutation:**
 
@@ -167,20 +159,6 @@ mutation FinishFileUpload(
   }
 }
 ```
-
-**Parameters:**
-
-| Parameter   | Type      | Required | Description                                                 |
-| ----------- | --------- | -------- | ----------------------------------------------------------- |
-| oclId       | String    | Yes      | Same oclId used in Step 1                                   |
-| uploadToken | String    | Yes      | Token received from Step 1                                  |
-| path        | String    | No\*     | File name for NEW files (e.g., `research-data.pdf`)         |
-| ref         | String    | No\*     | Dataset ID for NEW VERSIONS of existing files               |
-| changeBy    | String    | Yes      | Wallet address of user making the change                    |
-| description | String    | No       | Optional file description                                   |
-| tags        | \[String] | No       | Optional tags for categorization                            |
-| categories  | \[String] | No       | Optional categories for organization                        |
-| contentText | String    | No       | Optional searchable text content (used for semantic search) |
 
 _\*Use `path` for new files OR `ref` for versions - not both_
 
@@ -437,7 +415,7 @@ CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret" SERVICE_TOKEN="your-servi
 
 ## Update File Metadata
 
-Update file metadata (description, tags, categories, access level) without creating a new version.
+{% include "../../.gitbook/includes/api/mutation-updatefilemetadata.md" %}
 
 **GraphQL Mutation:**
 
@@ -473,18 +451,6 @@ mutation UpdateFileMetadata(
 }
 ```
 
-**Parameters:**
-
-| Parameter   | Type      | Required | Description                                                   |
-| ----------- | --------- | -------- | ------------------------------------------------------------- |
-| oclId       | String    | Yes      | Canonical 32-byte oclId of the lab                            |
-| ref         | String    | Yes      | File reference (DID) from `finishCreateOrUpdateFile` response — the `datasetId`, **not** the file path |
-| accessLevel | String    | Yes      | `PUBLIC`, `HOLDERS` or `ADMIN`. Required: this call replaces the metadata rather than patching it, so omitting it fails validation |
-| description | String    | No       | Updated file description                                      |
-| tags        | \[String] | No       | Updated tags for categorization                               |
-| categories  | \[String] | No       | Updated categories for organization                           |
-| contentText | String    | No       | Updated searchable text content                               |
-
 > **Note**: The `changeBy` field (wallet address) is automatically derived from your authentication and does not need to be provided as a parameter.
 
 **Example Request:**
@@ -512,7 +478,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ## Delete File
 
-Remove a file from the dataroom permanently.
+{% include "../../.gitbook/includes/api/mutation-deletedataroomfile.md" %}
 
 **GraphQL Mutation:**
 
@@ -531,14 +497,6 @@ mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) {
   }
 }
 ```
-
-**Parameters:**
-
-| Parameter | Type   | Required | Description                        |
-| --------- | ------ | -------- | ---------------------------------- |
-| oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
-| path      | String | Yes      | File path to delete                |
-| changeBy  | String | Yes      | Wallet address making the deletion |
 
 > **Warning**: This is a destructive operation. The file will be permanently deleted from the dataroom and cannot be recovered.
 
@@ -701,7 +659,9 @@ Role grants are **onchain transactions on the `AccessResolver` contract**, not L
 
 ### Generate a Data Encryption Key
 
-Generate a standalone data encryption key (DEK) for client-side encryption outside the file-upload flow. Returns both the plaintext DEK (used to encrypt data locally, then wiped) and the KMS-encrypted DEK (stored alongside the ciphertext). Requires authentication (Privy user or service token). See [Advanced: Encrypted File Upload](#advanced-encrypted-file-upload) for the file-upload encryption path.
+{% include "../../.gitbook/includes/api/mutation-generatedataencryptionkey.md" %}
+
+The plaintext DEK encrypts data locally and is then wiped; the encrypted DEK is stored alongside the ciphertext. See [Advanced: Encrypted File Upload](#advanced-encrypted-file-upload) for the file-upload encryption path.
 
 ```graphql
 mutation GenerateDataEncryptionKey {
@@ -719,13 +679,6 @@ mutation GenerateDataEncryptionKey {
   }
 }
 ```
-
-| Field            | Type     | Description                                                |
-| ---------------- | -------- | ---------------------------------------------------------- |
-| plaintextDEK     | String   | Base64-encoded plaintext DEK (only present on success)     |
-| encryptedDek     | String   | Base64-encoded KMS-encrypted DEK (only present on success) |
-| encryptionSystem | String   | Encryption system used (always `"kms"`)                    |
-| error            | ApiError | `null` on success; non-null means the mutation failed      |
 
 ---
 

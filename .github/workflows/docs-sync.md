@@ -145,6 +145,7 @@ on:
           -e '^lambda/(appsync-resolver-labs-lambda|appsync-resolver-evm-tokenization|appsync-authorizer-lambda|x402-gateway-lambda|kamu-client-lambda|did-linking-worker|labnft-metadata-lambda|ocl-processor)/' \
           -e '^lambda/common/services/kms-service\.ts$' \
           -e '^lib/(shared-api-stack|evm-tokenization-service-stack|encryption-stack)\.ts$' \
+          -e '^bin/generate-reference-docs\.ts$' \
           | grep -v -e '^graphql/schemas/merged-schema\.graphql$' || true)
 
         COUNT=$(printf '%s' "$RELEVANT" | grep -c . || true)
@@ -262,6 +263,40 @@ pre-agent-steps:
         rm -f "$RUNNER_TEMP/release_body_raw.md"
       fi
       echo "release body: $(wc -c < source/RELEASE_NOTES.md) bytes (internal sections stripped)"
+  # DOCS-11 (IP-3118). Deterministic, and BEFORE the agent job: the parameter
+  # and field tables under api-reference/ are `{% include %}`s of these
+  # fragments, rendered from the released schema by a script. The agent never
+  # writes a table, and a description change reaches the public site with no
+  # model in the loop.
+  #
+  # No continue-on-error, deliberately. The generator fails when a page
+  # references an element the schema no longer has — a wrong include path, or a
+  # deprecation that reached its removal date with the page left behind. That
+  # has to be a red docs run, not a broken page on the live site.
+  - name: Generate the public API reference fragments
+    env:
+      # Pinned to the `graphql` version desci-infra itself uses: the generator
+      # runs its parser over the merged SDL, and a different major could read
+      # the schema differently. Bump both together.
+      GRAPHQL_VERSION: "16.11.0"
+    run: |
+      set -euo pipefail
+      cd source
+      # Not `npm ci` — desci-infra's tree is the AWS CDK, Prisma and the AWS
+      # SDK, minutes of install for a script that imports one library.
+      npm install --no-save --no-audit --no-fund --loglevel=error \
+        "graphql@${GRAPHQL_VERSION}" ts-node@10.9.2 typescript@5.9.3
+      # --referenced-from is the docs working tree: only fragments a page
+      # actually includes are written, and this checkout is skipped as a nested
+      # git repository.
+      # --types-page is NOT subject to --referenced-from: the fragments link
+      # into its sections, so every type has to be on it or a link lands
+      # nowhere. It is a real page (listed in SUMMARY.md) because GitBook
+      # strips headings out of included content, leaving nothing to anchor.
+      npx ts-node bin/generate-reference-docs.ts \
+        --out ../.gitbook/includes/api \
+        --referenced-from .. \
+        --types-page ../api-reference/types.md
 
 tools:
   edit:
