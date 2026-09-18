@@ -65,11 +65,7 @@ Generate the membership agreement for an onchain lab (OCL) — the terms documen
 }
 ```
 
-| Field  | Type   | Required | Description                                          |
-| ------ | ------ | -------- | ---------------------------------------------------- |
-| oclId  | String | Yes      | Canonical 32-byte oclId of the lab (0x + 64 hex)     |
-| symbol | String | Yes      | Lab symbol                                           |
-| title  | String | No       | Optional agreement title                             |
+{% include "../../.gitbook/includes/api/mutation-generateoclmembershipagreement.md" %}
 
 **Response:**
 

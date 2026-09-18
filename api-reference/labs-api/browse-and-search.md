@@ -8,7 +8,7 @@ Query operations for listing all labs and reading their activity feeds. To read 
 
 ### List All Projects
 
-Get all labs. This is a **public endpoint** - no authentication required.
+{% include "../../.gitbook/includes/api/query-labs.md" %}
 
 > **🔓 Public Endpoint**: The `labs` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
@@ -41,15 +41,6 @@ query ListProjects($walletAddress: String, $page: Int, $perPage: Int) {
 ```
 
 > The `labs` list returns lightweight `LabRef` objects. Data-room contents and account details are not part of `LabRef` — fetch them per lab via [`labWithDataRoomAndFiles`](lab-management.md#get-single-project-with-files).
-
-**Parameters:**
-
-| Parameter     | Type          | Required | Description                                                                                                                          |
-| ------------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| walletAddress | String        | No       | Filter to labs where this wallet holds any active role (owner/contributor/viewer). Omit to return all labs.                          |
-| role          | LabMemberRole | No       | Only meaningful with `walletAddress`: restrict to labs where the wallet holds this specific role (`OWNER`, `CONTRIBUTOR`, `VIEWER`). |
-| page          | Int           | No       | Page number (0-indexed, default: 0)                                                                                                  |
-| perPage       | Int           | No       | Results per page (default: 20, max: 100)                                                                                             |
 
 **CMS-enriched fields (optional):**
 
@@ -261,7 +252,7 @@ query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
 
 ## Searching Labs
 
-Perform semantic search across all projects and files in the Labs ecosystem.
+{% include "../../.gitbook/includes/api/query-searchlabs.md" %}
 
 **GraphQL Query:**
 
@@ -310,25 +301,11 @@ query SearchLabs(
 }
 ```
 
-**Parameters:**
-
-| Parameter | Type              | Required | Description                    |
-| --------- | ----------------- | -------- | ------------------------------ |
-| prompt    | String            | Yes      | Search query text              |
-| filters   | SearchLabsFilters | No       | Filter criteria                |
-| page      | Int               | No       | Page number (default: 0)       |
-| perPage   | Int               | No       | Results per page (default: 10) |
-
 `SearchLabsHit` is a union of `SearchLabsFileHit` **and** `SearchLabsAnnouncementHit`. The examples below match only the file arm; if you handle the union exhaustively, expect the announcement `__typename` too — [announcements are deprecated](../changelog.md#announcements-are-deprecated) but pre-existing ones are still indexed and still returned.
 
-**Available Filters:**
+**Available filters:**
 
-| Filter         | Type       | Description                                           |
-| -------------- | ---------- | ----------------------------------------------------- |
-| byOclIds       | \[String!] | Filter by specific lab oclIds                         |
-| byTags         | \[String!] | Filter files by tags                                  |
-| byCategories   | \[String!] | Filter files by categories                            |
-| byKinds        | \[String!] | Filter by result type                                 |
+{% include "../../.gitbook/includes/api/input-searchlabsfilters.md" %}
 
 **Example - Basic Search:**
 
@@ -416,9 +393,9 @@ nodes.forEach((node) => {
 
 ### Onchain Activity Feed
 
-Return the onchain event feed for an OCL or a wallet. At least one of `oclId` / `wallet` must be supplied (they are AND-ed when both are). Paginate with a cursor of the form `"<block_number>:<log_index>"` — pass the last entry's `id` to fetch the next page.
+{% include "../../.gitbook/includes/api/query-onchainactivity.md" %}
 
-`onChainActivity` returns **one entry per transaction**: the decoded events of a transaction are classified into a single timeline entry, so an OCL creation renders as one "New Onchain Lab created" row rather than a burst of raw events. The constituent events stay available under `events`. For the flat, one-row-per-event stream, use `rawOnChainActivity` (same filters and cursor semantics).
+For the flat, one-row-per-event stream, use `rawOnChainActivity` (same filters and cursor semantics).
 
 ```graphql
 query OnChainActivity(
@@ -453,25 +430,11 @@ query OnChainActivity(
 }
 ```
 
-**Parameters:**
-
-| Parameter | Type   | Required | Description                                                        |
-| --------- | ------ | -------- | ------------------------------------------------------------------ |
-| oclId     | String | No\*     | Canonical 32-byte oclId of the lab                                 |
-| wallet    | String | No\*     | Wallet address to filter events by                                 |
-| limit     | Int    | No       | Max transaction groups to return (default: 50, max 200)            |
-| cursor    | String | No       | Pagination cursor `"<block_number>:<log_index>"` (last entry's `id`) |
-
 \* Provide at least one of `oclId` or `wallet`.
 
 **Entry fields:**
 
-| Field | Description |
-| ----- | ----------- |
-| `type` | Machine-readable classification: `OCL_CREATED`, `OCL_TOKENIZED`, `OCL_TRANSFERRED`, `OCL_DID_LINKED`, `ROLE_GRANTED`, `ROLE_REVOKED`, `ROLE_CHANGED`, `IPT_TOKENIZED`, `IPNFT_MINTED`, `IPNFT_TRANSFERRED`, `IPNFT_METADATA_UPDATED`, `OTHER` |
-| `title` | Human-readable summary, e.g. `"Contributor role granted to 0x1234…cdef"` |
-| `args` | Structured facts of the classified action (JSON; addresses lowercased) |
-| `events` | The transaction's raw events in ascending log order — including events that did not match the filter, for full transaction context |
+{% include "../../.gitbook/includes/api/type-onchainevent.md" %}
 
 On a raw event, `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt` or `bio-agent`, and `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
 

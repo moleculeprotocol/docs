@@ -116,7 +116,7 @@ Once you have `oclId`, continue to [Create Lab](#create-lab) below.
 
 ## Create Lab
 
-Register a Kamu-backed lab (data room) for an onchain lab (OCL) that already exists onchain. The lab is identified by its canonical `oclId` (a 32-byte hex string, 0x-prefixed).
+{% include "../../.gitbook/includes/api/mutation-createlab.md" %}
 
 > **Prerequisite — the LabNFT must be minted first.** `createLab` does not mint anything; it attaches a dataroom to an OCL that already exists onchain. See [Mint the LabNFT](#mint-the-labnft) above for the contract call and how to derive `oclId` from the result. If you'd rather not touch the contracts directly, the Molecule app does this for you — see [Creating a Lab](../../user-guides/scientists-researchers.md#creating-a-lab).
 
@@ -145,11 +145,9 @@ mutation CreateLab($oclId: String!) {
 }
 ```
 
-**Parameters:**
+**Input fields:**
 
-The mutation takes a single `CreateLabInput` object:
-
-{% include "../../.gitbook/includes/api/mutation-createlab.md" %}
+{% include "../../.gitbook/includes/api/input-createlabinput.md" %}
 
 **Prerequisites:**
 
@@ -363,7 +361,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ### Update LabNFT Metadata
 
-Partial update of the LabNFT display metadata (`name`, `description`, `image`, `externalUrl`). Omitted fields are left unchanged; an explicit `null` clears a field.
+{% include "../../.gitbook/includes/api/mutation-updatelabnftmetadata.md" %}
 
 > **Authorization**: Restricted to the OCL admin (LabNFT owner + multisig signers).
 
@@ -386,18 +384,15 @@ mutation UpdateLabNftMetadata(
 }
 ```
 
-**Parameters:**
+**Input fields:**
 
-| Parameter | Type                      | Required | Description                        |
-| --------- | ------------------------- | -------- | ---------------------------------- |
-| oclId     | String                    | Yes      | Canonical 32-byte oclId of the lab |
-| input     | UpdateLabNftMetadataInput | Yes      | Patch object (all fields optional) |
-
-`UpdateLabNftMetadataInput` fields (all optional): `name`, `description`, `image`, `externalUrl`.
+{% include "../../.gitbook/includes/api/input-updatelabnftmetadatainput.md" %}
 
 ### Generate LabNFT Image Upload URL
 
-Generate a single-use presigned PUT URL to which the OCL admin uploads a LabNFT display image. `contentType` must be one of `image/jpeg`, `image/png`, `image/webp`, `image/gif`, or `image/svg+xml`. The public URL is patched onto the lab asynchronously by the image processor once the object lands in S3.
+{% include "../../.gitbook/includes/api/mutation-generatelabimageuploadurl.md" %}
+
+The public URL is patched onto the lab asynchronously by the image processor once the uploaded object lands in storage.
 
 > **Authorization**: Restricted to the OCL admin (LabNFT owner + multisig signers).
 
@@ -418,13 +413,6 @@ mutation GenerateLabImageUploadUrl($oclId: String!, $contentType: String!) {
 }
 ```
 
-**Parameters:**
-
-| Parameter   | Type   | Required | Description                                                                             |
-| ----------- | ------ | -------- | --------------------------------------------------------------------------------------- |
-| oclId       | String | Yes      | Canonical 32-byte oclId of the lab                                                      |
-| contentType | String | Yes      | Image MIME type (`image/jpeg`, `image/png`, `image/webp`, `image/gif`, `image/svg+xml`) |
-
 ***
 
 ***
@@ -433,7 +421,7 @@ mutation GenerateLabImageUploadUrl($oclId: String!, $contentType: String!) {
 
 ### List Lab Members
 
-Return the active members of a lab (owner, contributors, viewers), sourced from the indexed `ocl_user` table. Expired grants are excluded.
+{% include "../../.gitbook/includes/api/query-listlabmembers.md" %}
 
 > **Public query** — only a consumer credential is required. The same data is also exposed on the public `Lab` / `LabRef.members` field.
 
@@ -455,22 +443,9 @@ query ListLabMembers($oclId: String!) {
 
 Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code (an unknown `oclId` throws `NOT_FOUND`). The response carries `"data": null` (the field is non-nullable, so the error propagates to the root) and `errors[0].path` names `listLabMembers`.
 
-**Parameters:**
-
-| Parameter | Type   | Required | Description                        |
-| --------- | ------ | -------- | ---------------------------------- |
-| oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
-
 **Member fields:**
 
-| Field         | Type            | Description                                                                                                            |
-| ------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| walletAddress | String          | Lowercased wallet address of the member                                                                                |
-| role          | LabMemberRole   | Effective role: `OWNER`, `CONTRIBUTOR`, or `VIEWER`                                                                    |
-| source        | LabMemberSource | Row that defines the membership: `ONCHAIN_EVENT`, `MULTISIG_RESOLUTION`, `ACCESS_CONTRACT`, or `ACCESS_RESOLVER_EVENT` |
-| expiry        | String          | Unix-seconds expiry as a decimal string; `null` means the grant is permanent                                           |
-| isAgent       | Boolean         | True if the member is an agent identity (surfaced for UI; not used for authorization)                                  |
-| grantedAt     | String          | ISO-8601 timestamp the row was first persisted                                                                         |
+{% include "../../.gitbook/includes/api/type-labmember.md" %}
 
 ***
 
@@ -480,7 +455,7 @@ Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorT
 
 ### Get DID Link Status
 
-Public read-only snapshot of DID-linking state for an OCL. DID-linking runs automatically in the background after `createLab`; this query is for diagnostic and support visibility. No authentication required.
+{% include "../../.gitbook/includes/api/query-getdidlinkstatus.md" %}
 
 ```graphql
 query GetDidLinkStatus($oclId: String!) {
@@ -503,12 +478,10 @@ query GetDidLinkStatus($oclId: String!) {
 
 Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code. The response carries `"data": null` (the field is non-nullable, so the error propagates to the root) and `errors[0].path` names `getDidLinkStatus`.
 
-**Parameters:**
+**`status` values:**
 
-| Parameter | Type   | Required | Description                        |
-| --------- | ------ | -------- | ---------------------------------- |
-| oclId     | String | Yes      | Canonical 32-byte oclId of the lab |
+{% include "../../.gitbook/includes/api/enum-didlinkingstatus.md" %}
 
-`status` is a `DidLinkingStatus`: `PENDING`, `SUBMITTED`, `LINKED`, or `FAILED` (`null` before the first linking attempt). `linkedDidCount` reflects the number of active onchain DID links observed by the event indexer.
+`status` is `null` before the first linking attempt. `linkedDidCount` reflects the number of active onchain DID links observed by the event indexer.
 
 ***
