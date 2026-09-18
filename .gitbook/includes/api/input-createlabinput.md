@@ -1,3 +1,5 @@
+#### CreateLabInput
+
 Input for creating a new lab. The onchain LabNft (oclId) must already exist; this mutation registers the lab and creates its data room.
 
 | Name | Type | Description |

@@ -1,3 +1,5 @@
+#### CreateLabResult
+
 Result of creating a lab.
 
 | Name | Type | Description |

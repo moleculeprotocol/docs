@@ -145,11 +145,7 @@ mutation CreateLab($oclId: String!) {
 }
 ```
 
-**Input fields:**
-
 {% include "../../.gitbook/includes/api/input-createlabinput.md" %}
-
-**Result fields:**
 
 {% include "../../.gitbook/includes/api/type-createlabresult.md" %}
 
