@@ -102,6 +102,9 @@ and `technical-deep-dive/data/README.md` (section landing page, narrative only).
   supporting material — especially the cutover playbooks — but it is written for the team, not for
   API consumers. Translate; never copy across verbatim.
 - Test files, CDK plumbing, CI config and lockfiles never justify a docs change on their own.
+- `bin/generate-reference-docs.ts` is the reference generator. A change to it changes what the
+  included tables look like, but that happens deterministically before you run — there is nothing
+  for you to do about it, and it is not a reason to edit a page.
 
 ## House style
 
@@ -119,6 +122,18 @@ Match the page you are editing. Across the site:
 - Sentence case in prose, and use the API's exact identifier casing (`oclId`, `labNftTokenId`) in
   code and tables.
 - British/American spelling: match the surrounding page, do not normalise.
+
+**Never edit anything under `.gitbook/includes/api/`.** Those files are rendered from the GraphQL
+schema by a script that runs before you, in the same workflow. They are the parameter and field
+tables the pages `{% include %}`. Editing one is overwritten on the next release and puts a
+hand-written table back on the public site, which is the exact problem they exist to remove. If a
+table is wrong, the docstring in `desci-infra`'s `graphql/schemas/*.graphql` is wrong — say so in the
+PR body and change nothing.
+
+For the same reason, **do not describe individual fields or arguments in prose** on a page that
+includes a fragment. Semantics, defaults, units and failure modes for a field belong in its
+docstring, and the fragment publishes them. Prose is for what the schema cannot say: why a reader
+would use the operation, how it sits in a flow, worked examples.
 
 **Never edit `SUMMARY.md`.** It is the GitBook navigation and is protected. If a page needs to be
 added to the nav, say so in the PR body and let a human do it.

@@ -1,1 +1,2 @@
 .github/workflows/*.lock.yml linguist-generated=true
+.gitbook/includes/api/** linguist-generated=true
