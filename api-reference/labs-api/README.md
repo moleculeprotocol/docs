@@ -45,10 +45,6 @@ The Labs API is a GraphQL API: once a request is accepted, the response is HTTP 
 
 Branch on the code — never on `message` text, which may change without notice. Include `requestId` whenever you report a problem.
 
-**`ApiError` fields:**
-
-{% include "../../.gitbook/includes/api/type-apierror.md" %}
-
 ### Failed Query
 
 ```json

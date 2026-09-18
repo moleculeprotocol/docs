@@ -123,12 +123,12 @@ Match the page you are editing. Across the site:
   code and tables.
 - British/American spelling: match the surrounding page, do not normalise.
 
-**Never edit anything under `.gitbook/includes/api/`.** Those files are rendered from the GraphQL
+**Never edit `api-reference/types.md` or anything under `.gitbook/includes/api/`.** Those files are rendered from the GraphQL
 schema by a script that runs before you, in the same workflow. They are the parameter and field
 tables the pages `{% include %}`. Editing one is overwritten on the next release and puts a
-hand-written table back on the public site, which is the exact problem they exist to remove. If a
-table is wrong, the docstring in `desci-infra`'s `graphql/schemas/*.graphql` is wrong — say so in the
-PR body and change nothing.
+hand-written table back on the public site, which is the exact problem they exist to remove. `api-reference/types.md` is generated the same way: one section per type, assembled whole on every
+run. If a table is wrong, the docstring in `desci-infra`'s `graphql/schemas/*.graphql` is wrong — say
+so in the PR body and change nothing.
 
 For the same reason, **do not describe individual fields or arguments in prose** on a page that
 includes a fragment. Semantics, defaults, units and failure modes for a field belong in its

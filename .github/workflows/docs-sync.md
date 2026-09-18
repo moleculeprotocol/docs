@@ -289,9 +289,14 @@ pre-agent-steps:
       # --referenced-from is the docs working tree: only fragments a page
       # actually includes are written, and this checkout is skipped as a nested
       # git repository.
+      # --types-page is NOT subject to --referenced-from: the fragments link
+      # into its sections, so every type has to be on it or a link lands
+      # nowhere. It is a real page (listed in SUMMARY.md) because GitBook
+      # strips headings out of included content, leaving nothing to anchor.
       npx ts-node bin/generate-reference-docs.ts \
         --out ../.gitbook/includes/api \
-        --referenced-from ..
+        --referenced-from .. \
+        --types-page ../api-reference/types.md
 
 tools:
   edit:

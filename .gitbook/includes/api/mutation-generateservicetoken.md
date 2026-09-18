@@ -1,6 +1,6 @@
 Issues a service token (JWT) for non-browser automation such as agents, bots and pipelines. Supply both `walletAddress` and `messageSignature` to authenticate by wallet signature over the message from `getServiceSignInMessage`, whose nonce is single-use and valid for 10 minutes, or supply neither to authenticate with the caller's session. Fails with `UNAUTHENTICATED` when the nonce is missing, expired or the signature does not match, and `VALIDATION_FAILED` when only one of the two is supplied.
 
-Returns `ServiceTokenResult!`.
+Returns [`ServiceTokenResult!`](/api-reference/types.md#servicetokenresult).
 
 | Name | Type | Description |
 | --- | --- | --- |

@@ -1,6 +1,6 @@
 Deletes a file from the lab data room.
 
-Returns `DeleteDataRoomFileResult`.
+Returns [`DeleteDataRoomFileResult`](/api-reference/types.md#deletedataroomfileresult).
 
 | Name | Type | Description |
 | --- | --- | --- |

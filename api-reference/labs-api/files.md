@@ -10,14 +10,6 @@ Working with files in a Lab dataroom: the three-step upload flow (initiate → u
 
 {% include "../../.gitbook/includes/api/mutation-initiatecreateorupdatefile.md" %}
 
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-initiatefileuploadresult.md" %}
-
-**`Header` fields:**
-
-{% include "../../.gitbook/includes/api/type-header.md" %}
-
 **GraphQL Mutation:**
 
 ```graphql
@@ -125,14 +117,6 @@ if (!uploadResponse.ok) {
 ## Step 3: Finish File Upload
 
 {% include "../../.gitbook/includes/api/mutation-finishcreateorupdatefile.md" %}
-
-**`encryptionMetadata` fields:**
-
-{% include "../../.gitbook/includes/api/input-encryptionmetadatainput.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-finishfileuploadresult.md" %}
 
 **GraphQL Mutation:**
 
@@ -433,10 +417,6 @@ CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret" SERVICE_TOKEN="your-servi
 
 {% include "../../.gitbook/includes/api/mutation-updatefilemetadata.md" %}
 
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-updatefilemetadataresult.md" %}
-
 **GraphQL Mutation:**
 
 ```graphql
@@ -499,10 +479,6 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 ## Delete File
 
 {% include "../../.gitbook/includes/api/mutation-deletedataroomfile.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-deletedataroomfileresult.md" %}
 
 **GraphQL Mutation:**
 
@@ -703,10 +679,6 @@ mutation GenerateDataEncryptionKey {
   }
 }
 ```
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-generatedataencryptionkeyresult.md" %}
 
 ---
 

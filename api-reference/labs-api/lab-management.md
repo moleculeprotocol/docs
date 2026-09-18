@@ -145,18 +145,6 @@ mutation CreateLab($oclId: String!) {
 }
 ```
 
-**Input fields:**
-
-{% include "../../.gitbook/includes/api/input-createlabinput.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-createlabresult.md" %}
-
-**`LabRef` fields:**
-
-{% include "../../.gitbook/includes/api/type-labref.md" %}
-
 **Prerequisites:**
 
 1. **LabNFT Ownership**: You must own the LabNFT for the `oclId` or be an authorized signer for it
@@ -392,21 +380,9 @@ mutation UpdateLabNftMetadata(
 }
 ```
 
-**Input fields:**
-
-{% include "../../.gitbook/includes/api/input-updatelabnftmetadatainput.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-updatelabnftmetadataresult.md" %}
-
 ### Generate LabNFT Image Upload URL
 
 {% include "../../.gitbook/includes/api/mutation-generatelabimageuploadurl.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-generatelabimageuploadurlresult.md" %}
 
 The public URL is patched onto the lab asynchronously by the image processor once the uploaded object lands in storage.
 
@@ -459,22 +435,6 @@ query ListLabMembers($oclId: String!) {
 
 Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code (an unknown `oclId` throws `NOT_FOUND`). The response carries `"data": null` (the field is non-nullable, so the error propagates to the root) and `errors[0].path` names `listLabMembers`.
 
-**Member fields:**
-
-{% include "../../.gitbook/includes/api/type-labmember.md" %}
-
-**`role` values:**
-
-{% include "../../.gitbook/includes/api/enum-labmemberrole.md" %}
-
-**`source` values:**
-
-{% include "../../.gitbook/includes/api/enum-labmembersource.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-listlabmembersresult.md" %}
-
 ***
 
 ***
@@ -484,14 +444,6 @@ Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorT
 ### Get DID Link Status
 
 {% include "../../.gitbook/includes/api/query-getdidlinkstatus.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-didlinkstatusresult.md" %}
-
-**`DidLinkStatus` fields:**
-
-{% include "../../.gitbook/includes/api/type-didlinkstatus.md" %}
 
 ```graphql
 query GetDidLinkStatus($oclId: String!) {
@@ -513,10 +465,6 @@ query GetDidLinkStatus($oclId: String!) {
 ```
 
 Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code. The response carries `"data": null` (the field is non-nullable, so the error propagates to the root) and `errors[0].path` names `getDidLinkStatus`.
-
-**`status` values:**
-
-{% include "../../.gitbook/includes/api/enum-didlinkingstatus.md" %}
 
 `status` is `null` before the first linking attempt. `linkedDidCount` reflects the number of active onchain DID links observed by the event indexer.
 

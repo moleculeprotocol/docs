@@ -10,18 +10,6 @@ Query operations for listing all labs and reading their activity feeds. To read 
 
 {% include "../../.gitbook/includes/api/query-labs.md" %}
 
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-labsresult.md" %}
-
-**`PageInfo` fields:**
-
-{% include "../../.gitbook/includes/api/type-pageinfo.md" %}
-
-**`LabRef` fields:**
-
-{% include "../../.gitbook/includes/api/type-labref.md" %}
-
 > **🔓 Public Endpoint**: The `labs` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 **GraphQL Query:**
@@ -315,26 +303,6 @@ query SearchLabs(
 
 `SearchLabsHit` is a union of `SearchLabsFileHit` **and** `SearchLabsAnnouncementHit`. The examples below match only the file arm; if you handle the union exhaustively, expect the announcement `__typename` too — [announcements are deprecated](../changelog.md#announcements-are-deprecated) but pre-existing ones are still indexed and still returned.
 
-**Available filters:**
-
-{% include "../../.gitbook/includes/api/input-searchlabsfilters.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-searchlabsresult.md" %}
-
-**`SearchLabsHit` arms:**
-
-{% include "../../.gitbook/includes/api/union-searchlabshit.md" %}
-
-**`SearchLabsFileHit` fields:**
-
-{% include "../../.gitbook/includes/api/type-searchlabsfilehit.md" %}
-
-**`SearchLabsAnnouncementHit` fields:**
-
-{% include "../../.gitbook/includes/api/type-searchlabsannouncementhit.md" %}
-
 **Example - Basic Search:**
 
 ```bash
@@ -459,14 +427,6 @@ query OnChainActivity(
 ```
 
 \* Provide at least one of `oclId` or `wallet`.
-
-**Entry fields:**
-
-{% include "../../.gitbook/includes/api/type-onchainevent.md" %}
-
-**Raw event fields:**
-
-{% include "../../.gitbook/includes/api/type-rawonchainevent.md" %}
 
 On a raw event, `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt` or `bio-agent`, and `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
 

@@ -28,8 +28,6 @@ query GetServiceSignInMessage($walletAddress: String!, $serviceName: String!) {
 
 Public query — no authentication required.
 
-{% include "../../.gitbook/includes/api/type-servicesigninmessageresult.md" %}
-
 {% hint style="warning" %}
 **Single-use, and valid for 10 minutes.** The sign-in message is not deterministic — do not cache it, do not cache a signature over it, and never reconstruct the string client-side. Concretely:
 
@@ -74,10 +72,6 @@ mutation GenerateServiceToken(
 ```
 
 {% include "../../.gitbook/includes/api/mutation-generateservicetoken.md" %}
-
-**Result fields:**
-
-{% include "../../.gitbook/includes/api/type-servicetokenresult.md" %}
 
 \* `walletAddress` and `messageSignature` must be provided together for signature-based issuance. The returned `token` is the JWT to pass as `X-Service-Token` on subsequent requests.
 

@@ -1,6 +1,6 @@
 Completes an upload once the bytes have been PUT to the `uploadUrl` from `initiateCreateOrUpdateFile`. Provide `path` for a new file or `ref` for a new version of an existing one, never both.
 
-Returns `FinishFileUploadResult!`.
+Returns [`FinishFileUploadResult!`](/api-reference/types.md#finishfileuploadresult).
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -14,4 +14,4 @@ Returns `FinishFileUploadResult!`.
 | `tags` | `[String!]` | Tags for the file or version. |
 | `contentText` | `String` | Text content for searchability. |
 | `categories` | `[String!]` | Categories for the file or version. |
-| `encryptionMetadata` | `EncryptionMetadataInput` | Encryption metadata for encrypted files (KMS, BLS, or legacy). |
+| `encryptionMetadata` | [`EncryptionMetadataInput`](/api-reference/types.md#encryptionmetadatainput) | Encryption metadata for encrypted files (KMS, BLS, or legacy). |

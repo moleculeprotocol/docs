@@ -1,6 +1,6 @@
 Starts a file or file-version upload to a lab's data room, returning a pre-signed `uploadUrl` and the `uploadToken` for the finish step. PUT the bytes to that URL, then call `finishCreateOrUpdateFile` with the token.
 
-Returns `InitiateFileUploadResult!`.
+Returns [`InitiateFileUploadResult!`](/api-reference/types.md#initiatefileuploadresult).
 
 | Name | Type | Description |
 | --- | --- | --- |

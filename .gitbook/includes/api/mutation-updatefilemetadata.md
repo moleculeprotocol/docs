@@ -1,6 +1,6 @@
 Updates metadata for an existing file without creating a new version. Note: The wallet address for audit trail is automatically derived from authentication.
 
-Returns `UpdateFileMetadataResult!`.
+Returns [`UpdateFileMetadataResult!`](/api-reference/types.md#updatefilemetadataresult).
 
 | Name | Type | Description |
 | --- | --- | --- |
