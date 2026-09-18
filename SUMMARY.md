@@ -47,6 +47,7 @@
   - [Browse & Search](api-reference/labs-api/browse-and-search.md)
 - [🔐 Tokenization API](api-reference/tokenization-api.md)
 - [x402 Gateway](api-reference/x402-gateway.md)
+- [API Types](api-reference/types.md)
 - [API Changelog & Migration](api-reference/changelog.md)
 
 ## Release Notes
