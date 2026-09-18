@@ -14,6 +14,10 @@ Working with files in a Lab dataroom: the three-step upload flow (initiate → u
 
 {% include "../../.gitbook/includes/api/type-initiatefileuploadresult.md" %}
 
+**`Header` fields:**
+
+{% include "../../.gitbook/includes/api/type-header.md" %}
+
 **GraphQL Mutation:**
 
 ```graphql

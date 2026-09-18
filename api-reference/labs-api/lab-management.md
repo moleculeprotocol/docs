@@ -145,9 +145,17 @@ mutation CreateLab($oclId: String!) {
 }
 ```
 
+**Input fields:**
+
 {% include "../../.gitbook/includes/api/input-createlabinput.md" %}
 
+**Result fields:**
+
 {% include "../../.gitbook/includes/api/type-createlabresult.md" %}
+
+**`LabRef` fields:**
+
+{% include "../../.gitbook/includes/api/type-labref.md" %}
 
 **Prerequisites:**
 
@@ -480,6 +488,10 @@ Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorT
 **Result fields:**
 
 {% include "../../.gitbook/includes/api/type-didlinkstatusresult.md" %}
+
+**`DidLinkStatus` fields:**
+
+{% include "../../.gitbook/includes/api/type-didlinkstatus.md" %}
 
 ```graphql
 query GetDidLinkStatus($oclId: String!) {

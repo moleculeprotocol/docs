@@ -14,6 +14,14 @@ Query operations for listing all labs and reading their activity feeds. To read 
 
 {% include "../../.gitbook/includes/api/type-labsresult.md" %}
 
+**`PageInfo` fields:**
+
+{% include "../../.gitbook/includes/api/type-pageinfo.md" %}
+
+**`LabRef` fields:**
+
+{% include "../../.gitbook/includes/api/type-labref.md" %}
+
 > **🔓 Public Endpoint**: The `labs` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 **GraphQL Query:**
@@ -314,6 +322,18 @@ query SearchLabs(
 **Result fields:**
 
 {% include "../../.gitbook/includes/api/type-searchlabsresult.md" %}
+
+**`SearchLabsHit` arms:**
+
+{% include "../../.gitbook/includes/api/union-searchlabshit.md" %}
+
+**`SearchLabsFileHit` fields:**
+
+{% include "../../.gitbook/includes/api/type-searchlabsfilehit.md" %}
+
+**`SearchLabsAnnouncementHit` fields:**
+
+{% include "../../.gitbook/includes/api/type-searchlabsannouncementhit.md" %}
 
 **Example - Basic Search:**
 
