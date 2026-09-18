@@ -1,6 +1,6 @@
 Per-transaction onchain activity for a lab or wallet, newest first; distinct from labActivity, the data room feed. Requires at least one of `oclId` or `wallet`, AND-ed when both are given, and fails with VALIDATION_FAILED when both are missing or `oclId` is malformed.
 
-Returns [`[OnChainEvent!]!`](type-onchainevent.md).
+Returns `[OnChainEvent!]!`.
 
 | Name | Type | Description |
 | --- | --- | --- |

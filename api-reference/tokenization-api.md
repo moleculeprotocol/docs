@@ -65,7 +65,11 @@ Generate the membership agreement for an onchain lab (OCL) — the terms documen
 }
 ```
 
-{% include "../../.gitbook/includes/api/mutation-generateoclmembershipagreement.md" %}
+{% include "../.gitbook/includes/api/mutation-generateoclmembershipagreement.md" %}
+
+**Result fields:**
+
+{% include "../.gitbook/includes/api/type-generateoclmembershipagreementresult.md" %}
 
 **Response:**
 

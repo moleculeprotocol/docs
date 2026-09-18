@@ -10,6 +10,10 @@ Query operations for listing all labs and reading their activity feeds. To read 
 
 {% include "../../.gitbook/includes/api/query-labs.md" %}
 
+**Result fields:**
+
+{% include "../../.gitbook/includes/api/type-labsresult.md" %}
+
 > **🔓 Public Endpoint**: The `labs` query does not require authentication. You only need a consumer credential — `Authorization: mol_<consumerId>_<secret>`, with **no `Bearer` prefix** — and no Service Token.
 
 **GraphQL Query:**
@@ -307,6 +311,10 @@ query SearchLabs(
 
 {% include "../../.gitbook/includes/api/input-searchlabsfilters.md" %}
 
+**Result fields:**
+
+{% include "../../.gitbook/includes/api/type-searchlabsresult.md" %}
+
 **Example - Basic Search:**
 
 ```bash
@@ -435,6 +443,10 @@ query OnChainActivity(
 **Entry fields:**
 
 {% include "../../.gitbook/includes/api/type-onchainevent.md" %}
+
+**Raw event fields:**
+
+{% include "../../.gitbook/includes/api/type-rawonchainevent.md" %}
 
 On a raw event, `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt` or `bio-agent`, and `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
 

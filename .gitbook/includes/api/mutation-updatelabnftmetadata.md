@@ -5,4 +5,4 @@ Returns `UpdateLabNftMetadataResult!`.
 | Name | Type | Description |
 | --- | --- | --- |
 | `oclId` | `String!` | 32-byte OCL id of the lab, `0x` plus 64 hex, case-insensitive. |
-| `input` | [`UpdateLabNftMetadataInput!`](input-updatelabnftmetadatainput.md) | Fields to change; omitted fields are left as they are. |
+| `input` | `UpdateLabNftMetadataInput!` | Fields to change; omitted fields are left as they are. |

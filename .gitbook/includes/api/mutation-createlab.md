@@ -4,4 +4,4 @@ Returns `CreateLabResult!`.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `input` | [`CreateLabInput!`](input-createlabinput.md) | Onchain lab to register. |
+| `input` | `CreateLabInput!` | Onchain lab to register. |
