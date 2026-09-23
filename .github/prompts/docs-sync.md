@@ -84,7 +84,7 @@ touches one of its source paths.
 > path changed in the same release. That is deliberate; keep the gate small.
 
 **Out of scope for the `desci-infra` pilot** — never edit these from a `desci-infra` diff:
-`references/contracts/**` (source: `onchainlabs`, `ocltokenizer`), `references/mcp-tools.md`
+`references/contracts/**` (source: `onchainlabs`, `ocltokenizer`), `ai-tooling/mcp-tools.md`
 (source: `molecule-plugin`), `ai-tooling/mira.md` (no `desci-infra` footprint), `README.md`,
 `introduction/**`, `user-guides/**`, `legal-framework/**`, `security/**` (narrative and legal pages,
 not driven by a backend diff), `technical-deep-dive/onchain-lab.md` and

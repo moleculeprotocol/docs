@@ -3,3 +3,6 @@ root: ./
 structure:
   readme: home.md
   summary: SUMMARY.md
+
+redirects:
+  references/mcp-tools: ai-tooling/mcp-tools.md

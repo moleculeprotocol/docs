@@ -63,6 +63,7 @@
 
 - [MIRA](ai-tooling/mira.md)
 - [Molecule Skill](ai-tooling/molecule-skill.md)
+- [MCP Tools](ai-tooling/mcp-tools.md)
 
 ## REFERENCES
 
@@ -71,7 +72,6 @@
   - [IPT](references/contracts/ipt.md)
   - [Tokenizer](references/contracts/tokenizer.md)
   - [AccessResolver](references/contracts/accessresolver.md)
-- [MCP Tools](references/mcp-tools.md)
 
 ## Security
 
