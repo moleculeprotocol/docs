@@ -1,5 +1,7 @@
 # Table of contents
 
+- [Home](home.md)
+
 ## INTRODUCTION
 
 - [Why Molecule?](README.md)
