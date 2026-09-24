@@ -39,4 +39,4 @@ More posts on the [Molecule blog](https://molecule.xyz/blog).
 
 ## How to interact with Molecule Labs
 
-{% embed url="https://www.youtube.com/watch?v=Lv4R-xtF8G4" %}
+{% embed url="https://www.youtube.com/watch?v=94t9iURpa6g" %}
