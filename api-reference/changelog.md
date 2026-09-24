@@ -64,9 +64,9 @@ All Molecule APIs (Labs, Tokenization — they share one GraphQL endpoint) now a
 
 ### Lists without paging arguments now fail above a size limit
 
-Nine list fields return every item and take no `first` / `limit` argument: `Lab.members`, `LabRef.members`, `ListLabMembersResult.members`, `DataRoom.files`, `Announcement.attachments`, `SearchLabsAnnouncement.attachments`, `OnChainEvent.events`, `FileCategoriesAndTagsResult.data` and `FileCategory.tags`. Each now has a limit of 1000 items, stated in its field description. At or under the limit nothing changes. Above it, the query fails with `COMPLEXITY_LIMIT_EXCEEDED`, `details.reason: "RESULT_CARDINALITY_LIMIT"`, plus `details.field` (for example `DataRoom.files`) and `details.limit`. A shortened list is never returned as if it were complete.
+Nine list fields return every item and take no `first` / `limit` argument: `Lab.members`, `LabRef.members`, `ListLabMembersResult.members`, `DataRoom.files`, `Announcement.attachments`, `SearchLabsAnnouncement.attachments`, `OnChainEvent.events`, `FileCategoriesAndTagsResult.data` and `FileCategory.tags`. Each now has a limit of 1000 items, stated in its field description. At or under the limit nothing changes. Above it, a query that selects the list fails with `COMPLEXITY_LIMIT_EXCEEDED`, `details.reason: "RESULT_CARDINALITY_LIMIT"`, plus `details.field` (for example `DataRoom.files`) and `details.limit`. A shortened list is never returned as if it were complete.
 
-The whole root field fails, not just the list: a `labs` page containing one lab over the `members` limit returns `labs: null`. Limits sit well above anything production serves today. `Token.relations` and `Token.markets` have worked this way, with a limit of 50, since they were introduced.
+What fails depends on the list. `Lab.members` and `LabRef.members` fail on their own: that lab's `members` is `null` with the error at its path, and the rest of the response loads. Every other list fails the root field that returned it: one `onChainActivity` transaction over the `events` limit fails the page. A query that does not select the list is not affected. Limits sit well above anything production serves today. `Token.relations` and `Token.markets` have worked this way, with a limit of 50, since they were introduced.
 
 ```json
 {
@@ -79,7 +79,7 @@ The whole root field fails, not just the list: a `labs` page containing one lab 
 }
 ```
 
-**Migration:** No action required for current data. Treat the error as non-retryable: drop the list from the selection, or narrow the query (a smaller page, a single lab). If you expect to exceed a limit, contact the Molecule team to raise it.
+**Migration:** No action required for current data. Treat the error as non-retryable: drop the list from the selection (an `onChainActivity` page without `events` always loads, and its last `id` is the cursor past the transaction), or narrow the query (a smaller page, a single lab). If you expect to exceed a limit, contact the Molecule team to raise it.
 
 ### Announcements are deprecated
 
