@@ -5,5 +5,5 @@ Ask the team on Discord. Reporting an API error? Include the `requestId` from th
 
 <a href="https://t.co/L0VEiy4Bjk" class="button primary" data-icon="discord">Ask on Discord</a>
 
-_Page wrong, unclear or missing something? Rate it below and tell us what you were looking for._
+_Page wrong, unclear or missing something? Let us know with **Was this helpful?** on this page._
 {% endhint %}
