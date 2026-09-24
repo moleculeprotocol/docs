@@ -62,6 +62,25 @@ All Molecule APIs (Labs, Tokenization — they share one GraphQL endpoint) now a
 
 ## Labs API
 
+### Lists without paging arguments now fail above a size limit
+
+Nine list fields return every item and take no `first` / `limit` argument: `Lab.members`, `LabRef.members`, `ListLabMembersResult.members`, `DataRoom.files`, `Announcement.attachments`, `SearchLabsAnnouncement.attachments`, `OnChainEvent.events`, `FileCategoriesAndTagsResult.data` and `FileCategory.tags`. Each now has a limit of 1000 items, stated in its field description. At or under the limit nothing changes. Above it, a query that selects the list fails with `COMPLEXITY_LIMIT_EXCEEDED`, `details.reason: "RESULT_CARDINALITY_LIMIT"`, plus `details.field` (for example `DataRoom.files`) and `details.limit`. A shortened list is never returned as if it were complete.
+
+What fails depends on the list. `Lab.members` and `LabRef.members` fail on their own: that lab's `members` is `null` with the error at its path, and the rest of the response loads. Every other list fails the root field that returned it: one `onChainActivity` transaction over the `events` limit fails the page. A query that does not select the list is not affected. Limits sit well above anything production serves today. `Token.relations` and `Token.markets` have worked this way, with a limit of 50, since they were introduced.
+
+```json
+{
+  "errorType": "COMPLEXITY_LIMIT_EXCEEDED",
+  "message": "Result for `DataRoom.files` would exceed 1000 items. Narrow the query.",
+  "errorInfo": {
+    "retryable": false,
+    "details": { "reason": "RESULT_CARDINALITY_LIMIT", "field": "DataRoom.files", "limit": 1000 }
+  }
+}
+```
+
+**Migration:** No action required for current data. Treat the error as non-retryable: drop the list from the selection (an `onChainActivity` page without `events` always loads, and its last `id` is the cursor past the transaction), or narrow the query (a smaller page, a single lab). If you expect to exceed a limit, contact the Molecule team to raise it.
+
 ### Announcements are deprecated
 
 Announcements are no longer surfaced in the Molecule app, and they are out of every tutorial, how-to and feature-description page. **The API surface is unchanged and still works** — nothing has been removed from the schema and no call has started failing. This is a "stop building on it" notice, not a breaking change.
@@ -144,7 +163,7 @@ On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSyn
 | `VALIDATION_FAILED`         | false       | Input failed validation; `details.field` names the offending field.      | `INVALID_OCL_ID`, `INVALID_INPUT`, `MISSING_INPUT`, …                            |
 | `CONFLICT`                  | false       | A valid request conflicts with current state.                            | `SHORTNAME_TAKEN`, `PROJECT_CONFLICT`, `ACCOUNT_NAME_CONFLICT`, `ALREADY_REVOKED` |
 | `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until that state changes.  | `TOKEN_REVOKED`, `LEGACY_ENCRYPTION`, `NOT_ENCRYPTED`, `MISSING_DEK`             |
-| `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size is over the limit.                            | `COMPLEXITY_LIMIT_EXCEEDED`                                                      |
+| `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size is over the limit.                            | `COMPLEXITY_LIMIT_EXCEEDED`, `RESULT_CARDINALITY_LIMIT` ([list limits](#lists-without-paging-arguments-now-fail-above-a-size-limit)) |
 | `RATE_LIMITED`              | **true**    | Throttled — retry with backoff.                                          | —                                                                                |
 | `TIMEOUT`                   | **true**    | Execution exceeded the request budget.                                   | —                                                                                |
 | `UPSTREAM_UNAVAILABLE`      | **true**    | A dependency failed — retry with backoff.                                | `KAMU`, `CMS`, `IPFS`                                                            |
