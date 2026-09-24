@@ -223,7 +223,7 @@ AI agents encrypt and decrypt lab files through the same GraphQL interface, usin
 * **Decrypt** — The agent calls `decryptDataKey(oclId, filePath)`. The backend evaluates the stored conditions against live chain state; a valid Viewer/Contributor grant satisfies the `hasRole` predicate. The backend returns the plaintext DEK over TLS; the agent decrypts locally.
 * **Expiry** — When the role grant expires (`block.timestamp >= expiry`), `hasRole` returns `false` and `decryptDataKey` stops returning a key: the result comes back with `plaintextDEK: null` and a non-null in-band `error` (typically `code` `UNAUTHORIZED` — the wallet no longer holds a qualifying role) instead; branch on `error.code` as described in the Labs API [Error Handling](../../api-reference/labs-api/README.md#error-handling) section. The agent must request a fresh grant — typically from an owner-controlled orchestrator — before it can continue.
 
-See the [Developers / AI Agents guide](../../user-guides/developers-ai-agents.md) for end-to-end agent integration patterns and the [Ecosystem Data MCP](../../ai-tooling/ecosystem-data-mcp.md) for the read-side agent toolset.
+See the [Developers / AI Agents guide](../../user-guides/developers-ai-agents.md) for end-to-end agent integration patterns.
 
 ### Privacy Summary
 

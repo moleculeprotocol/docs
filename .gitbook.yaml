@@ -5,4 +5,4 @@ structure:
   summary: SUMMARY.md
 
 redirects:
-  references/mcp-tools: ai-tooling/ecosystem-data-mcp.md
+  references/mcp-tools: ai-tooling/README.md

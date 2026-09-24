@@ -18,10 +18,6 @@ It ships as a cross-harness agent plugin with two parts:
 
 The skill format (`SKILL.md`) and MCP are open standards, so the same plugin works under Claude Code, OpenAI Codex, Cursor, VS Code, Gemini CLI, Windsurf, Claude Desktop and any other agent harness that can run a local MCP server. To obtain and install it, jump to [Getting the Plugin](molecule-skill.md#getting-the-plugin).
 
-{% hint style="info" %}
-This is a different component from the read-only [Ecosystem Data MCP](ecosystem-data-mcp.md) server, which answers ecosystem data questions (research projects and their activity). The Molecule skill's MCP server runs locally, holds your credentials, signs transactions, and writes to Labs.
-{% endhint %}
-
 ### What the Skill Does
 
 The workflow is sequential — each phase consumes the previous phase's output:
@@ -320,7 +316,7 @@ The MCP server runs on your machine, so this works in the Claude Desktop app onl
 
 #### ChatGPT
 
-Not supported. ChatGPT only connects to **remote** MCP servers, and the `molecule` server is local by design: it holds your wallet credentials and encryption keys on your machine. Use one of the clients above. (The read-only [Ecosystem Data MCP](ecosystem-data-mcp.md) server is remote and does work in ChatGPT.)
+Not supported. ChatGPT only connects to **remote** MCP servers, and the `molecule` server is local by design: it holds your wallet credentials and encryption keys on your machine. Use one of the clients above.
 
 #### Other MCP hosts
 

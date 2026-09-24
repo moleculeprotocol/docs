@@ -64,7 +64,6 @@
 - [Which Tool Do I Need?](ai-tooling/README.md)
 - [MIRA](ai-tooling/mira.md)
 - [Molecule Skill](ai-tooling/molecule-skill.md)
-- [Ecosystem Data MCP](ai-tooling/ecosystem-data-mcp.md)
 
 ## REFERENCES
 

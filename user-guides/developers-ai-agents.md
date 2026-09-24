@@ -13,17 +13,15 @@ icon: robot
 
 You're a developer building on the Molecule ecosystem. You might be integrating Lab data into a front-end, writing a smart contract module that adds new capabilities to Labs, deploying an AI agent that operates on research data, or building a tool that queries ecosystem state for analytics or trading. This guide maps out the integration surfaces, explains what's available today versus what's on the roadmap, and shows you the fastest path to a working integration for each use case.
 
-The reference pages (Contracts, Labs API, Ecosystem Data MCP) contain the full API specifications, type definitions, and code examples. This guide is the narrative layer that explains when to use which tool, how the pieces connect, and what the architecture expects from you.
+The reference pages (Contracts, Labs API) contain the full API specifications, type definitions, and code examples. This guide is the narrative layer that explains when to use which tool, how the pieces connect, and what the architecture expects from you.
 
 ### The Integration Surface
 
-Molecule exposes four primary integration layers, each serving different developer needs.
+Molecule exposes two primary integration layers, each serving different developer needs.
 
 The Labs API is a GraphQL endpoint for reading and writing to Lab data rooms — the offchain encrypted storage where research files and metadata live. This is the primary interface for applications that need to manage scientific data: uploading files, querying project activity, and searching across Labs. Authentication uses consumer credentials for reads and service tokens for writes. The full specification, including every query and mutation, is documented in the Labs API reference.
 
 The Smart Contracts are the onchain layer. The V2 contracts (IPNFT, CrowdSale, SchmackoSwap) on Ethereum mainnet underpin the existing IP-NFT assets, token sales, and trading. The V3 contracts (OnChainLab, OnChainLabFactory, ERC7484Registry, OclTokenizer, and associated modules) are deployed on Base mainnet and Base Sepolia and introduce the modular account architecture plus Lab tokenization. Contract addresses, ABIs, and upgrade patterns are documented in the Contracts reference. The Architecture page provides the full implementation-level breakdown of how these contracts compose.
-
-The MCP Server is a Model Context Protocol endpoint that lets AI assistants query Molecule ecosystem data — research projects, their activity, and summaries. It's the fastest way to give an LLM context about the Molecule ecosystem without building a custom integration. Setup takes one config file. The Ecosystem Data MCP page covers setup per client and programmatic integration against the MCP endpoint.
 
 ### Building a Front-End or Dashboard
 
@@ -80,14 +78,6 @@ BioAgents also includes a customizable knowledge base backed by a vector databas
 
 The full setup guide, architecture diagrams, and agent implementation details are in the BioAgents repository at github.com/bio-xyz/BioAgents.
 
-### Giving AI Assistants Molecule Context via MCP
-
-If you want existing AI assistants (Claude, GPT, or any MCP-compatible client) to have real-time access to Molecule ecosystem data, the MCP server is the lowest-friction path. No custom code required — just a configuration entry pointing at the public endpoint.
-
-The MCP server exposes tools for fetching research projects, their recent activity, and project summaries. These cover the most common questions an AI assistant needs to answer about the ecosystem.
-
-For programmatic integration — embedding Molecule tools into your own AI application — connect an MCP client to the endpoint and pass its tools to your LLM call, so the model can query Molecule data as part of its reasoning process. Any MCP-compatible client works, including the Vercel AI SDK's MCP client. The Ecosystem Data MCP page includes the full setup and caching behavior.
-
 ### Where to Start
 
 Your starting point depends on what you're building.
@@ -97,8 +87,6 @@ If you're building a front-end or dashboard, start with the Molecule API. Follow
 If you're building a smart contract module, start with the poc-protocol-modular-onchain-labs repository. Clone it, run the Foundry tests to understand the execution model, then write your module against the test fixtures. Deploy to Sepolia for testing and contact the Molecule team for attestation when you're ready for production.
 
 If you're building an AI research agent, start with BioAgents. Fork the repository, configure your LLM providers, and connect it to a Lab's data room via the Labs API. The /api/deep-research route gives you a working multi-agent research pipeline out of the box.
-
-If you just want to give an AI assistant Molecule context, add the MCP server URL to your client's config and you're done in sixty seconds.
 
 If you want an AI coding agent to run the whole Lab workflow for you, install the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin — the skill plus MCP server that wraps every network, onchain and cryptographic step as one typed tool call.
 
