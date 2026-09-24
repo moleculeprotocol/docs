@@ -13,7 +13,7 @@ icon: robot
 
 You're a developer building on the Molecule ecosystem. You might be integrating Lab data into a front-end, writing a smart contract module that adds new capabilities to Labs, deploying an AI agent that operates on research data, or building a tool that queries ecosystem state for analytics or trading. This guide maps out the integration surfaces, explains what's available today versus what's on the roadmap, and shows you the fastest path to a working integration for each use case.
 
-The reference pages (Contracts, Labs API, MCP Tools) contain the full API specifications, type definitions, and code examples. This guide is the narrative layer that explains when to use which tool, how the pieces connect, and what the architecture expects from you.
+The reference pages (Contracts, Labs API, Ecosystem Data MCP) contain the full API specifications, type definitions, and code examples. This guide is the narrative layer that explains when to use which tool, how the pieces connect, and what the architecture expects from you.
 
 ### The Integration Surface
 
@@ -23,7 +23,7 @@ The Labs API is a GraphQL endpoint for reading and writing to Lab data rooms —
 
 The Smart Contracts are the onchain layer. The V2 contracts (IPNFT, CrowdSale, SchmackoSwap) on Ethereum mainnet underpin the existing IP-NFT assets, token sales, and trading. The V3 contracts (OnChainLab, OnChainLabFactory, ERC7484Registry, OclTokenizer, and associated modules) are deployed on Base mainnet and Base Sepolia and introduce the modular account architecture plus Lab tokenization. Contract addresses, ABIs, and upgrade patterns are documented in the Contracts reference. The Architecture page provides the full implementation-level breakdown of how these contracts compose.
 
-The MCP Server is a Model Context Protocol endpoint that lets AI assistants query Molecule ecosystem data in real time — IPT prices, project activity, categories, and summaries. It's the fastest way to give an LLM context about the Molecule ecosystem without building a custom integration. Setup takes one config file. The MCP Tools reference covers available tools, self-hosting, and programmatic integration against the MCP endpoint.
+The MCP Server is a Model Context Protocol endpoint that lets AI assistants query Molecule ecosystem data — research projects, their activity, and summaries. It's the fastest way to give an LLM context about the Molecule ecosystem without building a custom integration. Setup takes one config file. The Ecosystem Data MCP page covers setup per client and programmatic integration against the MCP endpoint.
 
 ### Building a Front-End or Dashboard
 
@@ -84,9 +84,9 @@ The full setup guide, architecture diagrams, and agent implementation details ar
 
 If you want existing AI assistants (Claude, GPT, or any MCP-compatible client) to have real-time access to Molecule ecosystem data, the MCP server is the lowest-friction path. No custom code required — just a configuration entry pointing at the public endpoint.
 
-The MCP server exposes five tools: querying available IPTs with market data, fetching project activity for a specific token, listing IPT categories, getting comprehensive project summaries, and retrieving historical OHLCV price data. These cover the most common questions an AI assistant needs to answer about the ecosystem.
+The MCP server exposes tools for fetching research projects, their recent activity, and project summaries. These cover the most common questions an AI assistant needs to answer about the ecosystem.
 
-For programmatic integration — embedding Molecule tools into your own AI application — connect an MCP client to the endpoint and pass its tools to your LLM call, so the model can query Molecule data as part of its reasoning process. Any MCP-compatible client works, including the Vercel AI SDK's MCP client. The MCP Tools reference includes the full setup, self-hosting instructions for private deployments, and caching configuration.
+For programmatic integration — embedding Molecule tools into your own AI application — connect an MCP client to the endpoint and pass its tools to your LLM call, so the model can query Molecule data as part of its reasoning process. Any MCP-compatible client works, including the Vercel AI SDK's MCP client. The Ecosystem Data MCP page includes the full setup and caching behavior.
 
 ### Where to Start
 

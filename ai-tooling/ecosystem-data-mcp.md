@@ -1,14 +1,15 @@
 ---
+description: >-
+  A hosted, read-only MCP server that lets any AI assistant answer questions
+  about Molecule research projects and their activity
 icon: toolbox
 ---
 
-# MCP Tools
-
-## Molecule MCP Server Documentation
+# Ecosystem Data MCP
 
 ### Overview
 
-The Molecule MCP (Model Context Protocol) server enables AI assistants to access DeSci ecosystem data through natural language. Users can ask AI assistants like Claude questions such as "What research projects are on Molecule?" and get answers from live data.
+The Ecosystem Data MCP (Model Context Protocol) server enables AI assistants to access DeSci ecosystem data through natural language. Users can ask AI assistants like Claude questions such as "What research projects are on Molecule?" and get answers from live data.
 
 #### What is MCP?
 
@@ -194,47 +195,13 @@ See [Programmatic Integration](#programmatic-integration) for a full example wit
 * **Project Deep Dive**: "Summarize a longevity research project on Molecule and what it's working on."
 * **Recent Activity**: "Which research projects have posted updates this month?"
 
-### Self-Hosting
-
-For private deployments or custom configurations:
-
-#### Requirements
-
-* Node.js 18 or higher
-* Vercel account or any Node.js platform
-* Molecule API key
-
-#### Deploy Steps
-
-1. Request access to the MCP server source from the Molecule team (the repository is not publicly listed).
-2.  Install dependencies:
-
-    ```shell
-    pnpm install
-    ```
-3.  Deploy to Vercel:
-
-    ```shell
-    vercel --prod
-    ```
-
-Add environment variables in Vercel under Settings.
-
-#### Local Development
-
-*   Start with:
-
-    ```shell
-    vercel dev
-    ```
-
 ### Caching
 
 The server caches upstream responses in Redis for a few minutes, enhancing performance and abiding by upstream limits — expect data freshness in the minutes range rather than real-time.
 
 ### Rate Limits
 
-The public endpoint is rate-limited. Deploy your own instance for heavy or latency-sensitive workloads.
+The public endpoint is rate-limited. If you hit rate limits on a heavy or latency-sensitive workload, contact the Molecule team.
 
 ### Programmatic Integration
 
@@ -262,11 +229,10 @@ const result = await generateText({
 ### Troubleshooting
 
 * Ensure configuration file syntax is valid.
-* First request may be slower; consider using Redis for caching.
-* Deploy your own instance if facing rate limit errors.
+* The first request may be slower while the cache warms up.
+* If you hit rate limit errors, back off and retry, or contact the Molecule team.
 
 ### Resources
 
 * **Public Endpoint**: [https://molecule-mcp.vercel.app/mcp](https://molecule-mcp.vercel.app/mcp)
 * **MCP Specification**: [https://modelcontextprotocol.io](https://modelcontextprotocol.io)
-* **Source Code & API Key Request**: Contact the Molecule team.
