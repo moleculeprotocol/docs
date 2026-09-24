@@ -65,3 +65,11 @@ IP Tokens (IPTs) are deployed using the **EIP-1167 Minimal Proxy** pattern:
 * The Molecule Labs core (OnChainLab account stack) was audited by Cyfrin in 2026 — see [Audits](../../security/audits.md)
 * Admin functions are protected by `onlyOwner` access control
 * See individual contract pages for specific security notes
+
+### Related
+
+* [Architecture](../../technical-deep-dive/architecture.md) — how the Lab contracts fit together
+* [Audits](../../security/audits.md) — audit reports
+* [Tokenization API](../../api-reference/tokenization-api.md) — tokenizing a Lab through the API
+
+{% include "../../.gitbook/includes/support.md" %}

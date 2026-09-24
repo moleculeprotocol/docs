@@ -66,3 +66,11 @@ Even if a file record is removed from a Lab's data room index, the underlying co
 | Encryption metadata        | In the file's encryption metadata on Kamu (ODF) | Onchain-Verified Envelope Encryption | Wrapped per-file DEK + access conditions; key custody and decryption rules are covered in [Data Privacy & Access](data-privacy-and-access.md) |
 | File provenance            | Kamu provenance DB                          | Kamu                                 | DID-based authorship, timestamps, lineage                                                                                                                                                                                                                 |
 | Activity events            | Kamu provenance DB + onchain                | Kamu + Lab TBA                       | Access logs, metadata changes                                                                                                                                                                                                                             |
+
+### Related
+
+* [Data Privacy & Access](data-privacy-and-access.md) — how stored files are encrypted
+* [Data Anchoring (DID Linking)](data-module.md) — how the data room is anchored onchain
+* [Files](../../api-reference/labs-api/files.md) — the upload flow as API calls
+
+{% include "../../.gitbook/includes/support.md" %}

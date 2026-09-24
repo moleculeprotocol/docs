@@ -62,3 +62,12 @@ This record exists independently of any institution, journal, or platform. It is
 **Permanent availability.** Research data is persisted to Arweave, ensuring it remains retrievable regardless of whether any individual service continues operating.
 
 **Provenance from origin.** Every dataset is versioned and tracked from the moment of upload. Kamu records the full lineage: when data was created, how it was transformed, and what it produced.
+
+### Related
+
+* [Data Storage](data-storage.md) — how files are stored and versioned
+* [Data Privacy & Access](data-privacy-and-access.md) — encryption and access control
+* [Data Anchoring (DID Linking)](data-module.md) — how the data room is anchored onchain
+* [Files](../../api-reference/labs-api/files.md) — the upload and read operations
+
+{% include "../../.gitbook/includes/support.md" %}

@@ -647,3 +647,5 @@ node create-lab-and-upload-file.js ./research-data.csv
 | Let an agent write into this lab | [Agent access](agent-as-a-lab-contributor.md) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | Per-operation reference | [Files](../labs-api/files.md) · [Lab Management](../labs-api/lab-management.md) |
+
+{% include "../../.gitbook/includes/support.md" %}

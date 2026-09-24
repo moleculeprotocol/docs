@@ -258,3 +258,5 @@ This lists every tool and exercises the pure-compute ones (encryption round-trip
 * [Labs API](../api-reference/labs-api/README.md) — the GraphQL surface the skill drives
 * [x402 Gateway](../api-reference/x402-gateway.md) — pay-per-call settlement for protected mutations
 * [MCP Tools](../references/mcp-tools.md) — the read-only ecosystem-data MCP server
+
+{% include "../.gitbook/includes/support.md" %}

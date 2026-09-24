@@ -432,3 +432,5 @@ node agent-as-a-lab-contributor.js ./findings.csv
 | What the agent uploads | [Create a lab and upload a public file](create-lab-and-upload-file.md) · [Upload an encrypted file](upload-encrypted-file.md) |
 | The role model in full | [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md) |
 | Let the agent run the whole workflow as tool calls | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
+
+{% include "../../.gitbook/includes/support.md" %}

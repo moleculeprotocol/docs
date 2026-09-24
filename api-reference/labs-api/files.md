@@ -682,3 +682,11 @@ mutation GenerateDataEncryptionKey {
 
 ---
 
+## Related
+
+* [Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md) — a first upload, step by step
+* [Upload an encrypted file](../getting-started/upload-encrypted-file.md) — encrypted upload with a decrypt round trip
+* [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) — how access conditions are evaluated
+* [Browse & Search](browse-and-search.md) — read and search files across labs
+
+{% include "../../.gitbook/includes/support.md" %}

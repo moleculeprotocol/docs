@@ -259,3 +259,4 @@ Success ⇔ `error == null`. On failure `message` mirrors `error.message`; branc
 
 ---
 
+{% include "../../.gitbook/includes/support.md" %}

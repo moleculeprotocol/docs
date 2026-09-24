@@ -666,3 +666,5 @@ node upload-encrypted-file.js ./confidential-results.csv
 | Let an agent decrypt and contribute too | [Agent access](agent-as-a-lab-contributor.md) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | How conditions are evaluated, in depth | [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) |
+
+{% include "../../.gitbook/includes/support.md" %}

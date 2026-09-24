@@ -430,3 +430,10 @@ query OnChainActivity(
 
 On a raw event, `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt` or `bio-agent`, and `args` is a JSON object of the decoded event arguments (BigInts as decimal strings, addresses lowercased).
 
+## Related
+
+* [Lab Management](lab-management.md) — reads scoped to one lab
+* [Files](files.md) — reading a single file
+* [MCP Tools](../../references/mcp-tools.md) — ecosystem data for AI assistants
+
+{% include "../../.gitbook/includes/support.md" %}

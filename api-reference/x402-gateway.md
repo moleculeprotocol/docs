@@ -302,3 +302,5 @@ If you would rather not implement the handshake at all, the [Molecule Skill](../
 - [Labs API](labs-api/README.md) — full mutation signatures and variable types
 - [Developers / AI Agents](../user-guides/developers-ai-agents.md) — agent integration guide
 - [x402 specification](https://www.x402.org/)
+
+{% include "../.gitbook/includes/support.md" %}

@@ -234,3 +234,12 @@ The net result of this architecture is that no single party has unilateral acces
 ### Roadmap
 
 Key custody evolves from a single protocol-operated custodian to a **BLS threshold operator network**. In the target design the DEK is split across the operator set using threshold cryptography, so no single party — including Molecule — can unwrap it alone. Clients, stored metadata shape, and the onchain interface stay the same; the `encryptionSystem` value on new files rolls forward to indicate threshold custody, and the `decryptDataKey` flow continues to work transparently.
+
+### Related
+
+* [Upload an encrypted file](../../api-reference/getting-started/upload-encrypted-file.md) — the same flow as a runnable tutorial
+* [Roles & Permissions](../roles-and-permissions.md) — the roles access conditions check
+* [AccessResolver](../../references/contracts/accessresolver.md) — the contract that evaluates them
+* [Data Storage](data-storage.md) — where the ciphertext lives
+
+{% include "../../.gitbook/includes/support.md" %}

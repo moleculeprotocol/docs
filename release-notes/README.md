@@ -52,3 +52,5 @@ Conventions:
   prefix** — the tag for 1.0.14 is `1.0.14`.
 - Every breaking change carries either a migration note or an explicit "No action required."
 - Link out to the reference page rather than restating it.
+
+{% include "../.gitbook/includes/support.md" %}

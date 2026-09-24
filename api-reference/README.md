@@ -146,3 +146,5 @@ If you encounter any issues or have questions about the APIs:
 ---
 
 _Last updated: July 2026_
+
+{% include "../.gitbook/includes/support.md" %}

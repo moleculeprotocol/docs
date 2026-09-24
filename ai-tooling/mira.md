@@ -50,3 +50,11 @@ MIRA serves three core user groups:
 * **v1 — Real-Time Integration:** Introduced MCP tool integration for live market data and was embedded directly into the Molecule Screener. Added context awareness to understand which token users are viewing, enabling natural conversational flows with quick actions for common queries.
 * **v2 — Project Scoring (Current):** Expanded to analyze Data Room contents and generate standardized project assessments. Scores flow through a review pipeline—from AI generation through human validation to publication via Sanity CMS—ensuring appropriate oversight.
 * **v3 — Knowledge Graphs (Planned):** Future iterations will introduce relationship mapping across the ecosystem, connecting projects, researchers, and institutions through interactive visualizations. This phase also addresses confidential data handling and explores token-gated access models.
+
+### Related
+
+* [MCP Tools](../references/mcp-tools.md) — the tools MIRA calls
+* [Funders](../user-guides/investors.md) — how funders use MIRA's assessments
+* [Scientists](../user-guides/scientists-researchers.md) — MIRA from the researcher's side
+
+{% include "../.gitbook/includes/support.md" %}

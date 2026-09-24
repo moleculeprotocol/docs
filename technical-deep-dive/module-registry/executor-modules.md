@@ -97,3 +97,11 @@ Lab owners can revoke an executor's access at any time via `uninstallModule`, wh
 | `OnChainLab.sol` | Contains `executeFromExecutor` and `installModule` for executor type        | `src/OnChainLab.sol`   |
 | `ExecLib.sol`            | Provides `execute` helper that decodes execution mode and performs the call | `src/utils/ExecLib.sol`        |
 | `IERC7579Modules.sol`    | Defines the `IExecutor` interface (extends `IModule`)                       |                                |
+
+## Related
+
+* [Module Registry](README.md) — the attestation registry
+* [Fallback Modules](fallback-modules.md) — the other installable module type
+* [Developers / AI Agents](../../user-guides/developers-ai-agents.md) — building agents that act inside a Lab
+
+{% include "../../.gitbook/includes/support.md" %}

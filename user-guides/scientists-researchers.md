@@ -47,3 +47,12 @@ Rather than waiting on a grant cycle or a venture fit that may not exist, a rese
 {% embed url="https://desci-codes.gitbook.io/desci.codes/templates/model-agreements" %}
 
 Refer to DeSci codes for more Legal and governance templates.
+
+### Related
+
+* [Molecule Labs](../technical-deep-dive/onchain-lab.md) — what a Lab is and what it holds
+* [Data Privacy & Access](../technical-deep-dive/data/data-privacy-and-access.md) — how confidential files stay confidential
+* [MIRA](../ai-tooling/mira.md) — the research assistant that rates the project
+* [Coin-to-Company Model](../legal-framework/rwa-equity.md) — the route from token to equity
+
+{% include "../.gitbook/includes/support.md" %}

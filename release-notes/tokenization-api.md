@@ -10,3 +10,5 @@ Versions not listed shipped nothing consumer-visible.
 
 _No entries yet._ Entries are added per release by the docs-sync pipeline; see
 [Overview](README.md) for the format.
+
+{% include "../.gitbook/includes/support.md" %}

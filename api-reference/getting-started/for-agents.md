@@ -183,3 +183,5 @@ Full recipe including `accessControlConditions`: [Upload an encrypted file](uplo
 * [Labs API](../labs-api/README.md) — full operation reference
 * [Molecule Skill](../../ai-tooling/molecule-skill.md) — the same workflow as MCP tool calls
 * [x402 Gateway](../x402-gateway.md) — pay per call, no service token
+
+{% include "../../.gitbook/includes/support.md" %}

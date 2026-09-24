@@ -91,3 +91,11 @@ The Root Validator implements the `IValidator` interface from ERC-7579. Any cust
 * `onUninstall(bytes calldata data)` — Called when the module is removed. Used to clean up storage.
 * `isModuleType(uint256 typeId)` — Returns `true` for `MODULE_TYPE_VALIDATOR` (`1`).
 * `isInitialized(address smartAccount)` — Returns whether the module has been initialised for a given account.
+
+### Related
+
+* [Module Registry](README.md) — the attestation registry
+* [Executor Modules](executor-modules.md) — the other side of execution
+* [Architecture](../architecture.md) — signature verification at the account level
+
+{% include "../../.gitbook/includes/support.md" %}

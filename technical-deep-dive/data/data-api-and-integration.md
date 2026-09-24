@@ -98,3 +98,5 @@ For encryption and access control (how data is protected): see **Data Privacy & 
 For the GraphQL API reference (data room endpoints, queries, mutations): see **Labs API**.
 
 For MIRA's tool capabilities (what the AI can query): see **MCP Tools**.
+
+{% include "../../.gitbook/includes/support.md" %}

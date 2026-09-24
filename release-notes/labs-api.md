@@ -52,3 +52,5 @@ Every Labs API result type lost its `isSuccess` flag, and mutation results now c
 
 For migrations off the removed `isSuccess` envelope, the pre-OCL naming and the `*V2`
 operations, see [API Changelog & Migration](../api-reference/changelog.md).
+
+{% include "../.gitbook/includes/support.md" %}

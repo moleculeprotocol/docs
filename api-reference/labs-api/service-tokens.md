@@ -180,3 +180,10 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 
 ---
 
+## Related
+
+* [Authentication](../authentication.md) — what a token authorizes and which headers it goes in
+* [Agent access](../getting-started/agent-as-a-lab-contributor.md) — an agent issuing its own token
+* [x402 Gateway](../x402-gateway.md) — pay per call without a token
+
+{% include "../../.gitbook/includes/support.md" %}
