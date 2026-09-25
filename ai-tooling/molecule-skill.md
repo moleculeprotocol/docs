@@ -16,11 +16,7 @@ It ships as a cross-harness agent plugin with two parts:
 * **The `aura-orchestrator` skill** (`SKILL.md`) — a step-by-step runbook the agent follows: resolve or create an Onchain Lab (LabNFT plus its token-bound account), register it, upload files to the data room, and optionally grant roles or hand the Lab off to another owner.
 * **The `molecule` MCP server** — a typed [Model Context Protocol](https://modelcontextprotocol.io) server that performs every network, onchain, and cryptographic operation as a single tool call. Paid mutations are settled automatically through the [x402 Gateway](../api-reference/x402-gateway.md).
 
-The skill format (`SKILL.md`) and MCP are open standards, so the same plugin works under Claude Code, OpenAI Codex, and any other MCP-capable agent harness. To obtain and install it, jump to [Getting the Plugin](molecule-skill.md#getting-the-plugin).
-
-{% hint style="info" %}
-This is a different component from the read-only [MCP Tools](../references/mcp-tools.md) server, which answers ecosystem data questions (IPT prices, project activity). The Molecule skill's MCP server runs locally, holds your credentials, signs transactions, and writes to Labs.
-{% endhint %}
+The skill format (`SKILL.md`) and MCP are open standards, so the same plugin works under Claude Code, OpenAI Codex, Cursor, VS Code, Gemini CLI, Windsurf, Claude Desktop and any other agent harness that can run a local MCP server. To obtain and install it, jump to [Getting the Plugin](molecule-skill.md#getting-the-plugin).
 
 ### What the Skill Does
 
@@ -221,11 +217,110 @@ WALLET_BACKEND = "privy"
 # ...plus the gateway URL and contract addresses from the Configuration table, and your secrets
 ```
 
-Then copy `skills/aura-orchestrator/SKILL.md` into the skills directory your Codex version scans (check `/skills`), or surface it through `AGENTS.md`.
+Or register it from the command line, repeating `--env` for each value you need (the command writes to `~/.codex/config.toml`):
+
+```bash
+codex mcp add molecule --env ENVIRONMENT=staging --env CHAIN_ID=84532 -- uv run /path/to/mol-labs-plugin/mcp/server.py
+```
+
+Then copy the skill folder into `.agents/skills/` at your repo root (or `~/.agents/skills/` for every project):
+
+```bash
+cp -r /path/to/mol-labs-plugin/skills/aura-orchestrator .agents/skills/
+```
+
+#### Cursor
+
+Register the MCP server in `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (this project):
+
+```json
+{
+  "mcpServers": {
+    "molecule": {
+      "command": "uv",
+      "args": ["run", "/path/to/mol-labs-plugin/mcp/server.py"],
+      "env": {
+        "ENVIRONMENT": "staging",
+        "MOLECULE_LABS_URL": "https://staging.graphql.api.molecule.xyz/graphql",
+        "CHAIN_ID": "84532",
+        "WALLET_BACKEND": "privy"
+      }
+    }
+  }
+}
+```
+
+Add the gateway URL, contract addresses and your secrets from the [Configuration](molecule-skill.md#configuration) table to `env`. Then copy the skill folder into `.cursor/skills/` (or `~/.cursor/skills/` for every project):
+
+```bash
+cp -r /path/to/mol-labs-plugin/skills/aura-orchestrator .cursor/skills/
+```
+
+#### VS Code (GitHub Copilot)
+
+Register the MCP server in `.vscode/mcp.json` — note the top-level key is `servers`, and each entry needs a `type`:
+
+```json
+{
+  "servers": {
+    "molecule": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "/path/to/mol-labs-plugin/mcp/server.py"],
+      "env": {
+        "ENVIRONMENT": "staging",
+        "MOLECULE_LABS_URL": "https://staging.graphql.api.molecule.xyz/graphql",
+        "CHAIN_ID": "84532",
+        "WALLET_BACKEND": "privy"
+      }
+    }
+  }
+}
+```
+
+To keep secrets out of a committed file, point `envFile` at a git-ignored `.env` instead of listing them under `env`. Then copy the skill folder into `.github/skills/` (or `~/.copilot/skills/` for every workspace) and use it from Copilot agent mode.
+
+#### Gemini CLI
+
+```bash
+gemini mcp add -s user \
+  -e ENVIRONMENT=staging \
+  -e MOLECULE_LABS_URL=https://staging.graphql.api.molecule.xyz/graphql \
+  -e CHAIN_ID=84532 \
+  -e WALLET_BACKEND=privy \
+  molecule uv run /path/to/mol-labs-plugin/mcp/server.py
+```
+
+Repeat `-e` for the remaining values in the [Configuration](molecule-skill.md#configuration) table, or edit the `env` block the command writes to `~/.gemini/settings.json`. Then install the skill from the repository:
+
+```bash
+gemini skills install https://github.com/moleculeprotocol/mol-labs-plugin.git --path skills/aura-orchestrator --scope user
+```
+
+Check it's picked up with `/skills list`.
+
+#### Windsurf
+
+Windsurf (now Devin Desktop) has no one-click install. In the Cascade panel, open the **…** menu → **Open MCP config file** and add the server in the same `mcpServers` shape shown under [Cursor](molecule-skill.md#cursor). Then copy the skill folder into `.windsurf/skills/` in your workspace (or `~/.codeium/windsurf/skills/` for all workspaces).
+
+#### Claude Desktop
+
+Claude Desktop runs local MCP servers from its config file. Open **Settings → Developer → Edit Config** and add the server in the same `mcpServers` shape shown under [Cursor](molecule-skill.md#cursor), then restart the app. The file lives at:
+
+* **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+* **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+To add the skill, zip the `skills/aura-orchestrator` folder and upload it under **Customize → Skills → + → Upload a skill**. Skills need code execution enabled; on Team and Enterprise an admin turns on Skills for the organization first.
+
+The MCP server runs on your machine, so this works in the Claude Desktop app only — not in claude.ai in the browser.
+
+#### ChatGPT
+
+Not supported. ChatGPT only connects to **remote** MCP servers, and the `molecule` server is local by design: it holds your wallet credentials and encryption keys on your machine. Use one of the clients above.
 
 #### Other MCP hosts
 
-Any harness that can spawn a stdio MCP server works — register it with the equivalent of:
+Any harness that can spawn a stdio MCP server works — register it with the equivalent of the snippet below, and put the skill folder wherever the harness looks for skills. Many harnesses read `.agents/skills/`.
 
 ```json
 {
@@ -257,6 +352,4 @@ This lists every tool and exercises the pure-compute ones (encryption round-trip
 * [Data Privacy & Access](../technical-deep-dive/data/data-privacy-and-access.md) — encryption and access evaluation in depth
 * [Labs API](../api-reference/labs-api/README.md) — the GraphQL surface the skill drives
 * [x402 Gateway](../api-reference/x402-gateway.md) — pay-per-call settlement for protected mutations
-* [MCP Tools](../references/mcp-tools.md) — the read-only ecosystem-data MCP server
-
 {% include "../.gitbook/includes/support.md" %}

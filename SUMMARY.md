@@ -1,5 +1,7 @@
 # Table of contents
 
+- [Home](home.md)
+
 ## INTRODUCTION
 
 - [Why Molecule?](README.md)
@@ -59,6 +61,7 @@
 
 ## AI Tooling
 
+- [Which Tool Do I Need?](ai-tooling/README.md)
 - [MIRA](ai-tooling/mira.md)
 - [Molecule Skill](ai-tooling/molecule-skill.md)
 
@@ -69,7 +72,6 @@
   - [IPT](references/contracts/ipt.md)
   - [Tokenizer](references/contracts/tokenizer.md)
   - [AccessResolver](references/contracts/accessresolver.md)
-- [MCP Tools](references/mcp-tools.md)
 
 ## Security
 

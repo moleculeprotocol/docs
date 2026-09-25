@@ -6,10 +6,14 @@ There are two credentials, and they do different jobs. If any term on this page 
 
 | Credential | Answers | How you get it |
 | ---------- | ------- | -------------- |
-| **Consumer credential** (`mol_<consumerId>_<secret>`) | *Which API consumer is calling?* | Requested once from the Molecule team — the one manual step |
+| **Consumer credential** (`mol_<consumerId>_<secret>`) | *Which API consumer is calling?* | Requested once from the Molecule team — the one manual step (Developer Portal coming soon) |
 | **Service Token** (JWT) | *Which wallet is calling, so what may it do?* | **Self-issued**: sign a message with your wallet. No human in the loop |
 
 ## Obtaining API Access
+
+{% hint style="info" %}
+**The Developer Portal is coming soon.** You'll be able to issue and manage your `mol_` consumer credentials there. Until it ships, request one from the Molecule team on Discord using the template below.
+{% endhint %}
 
 Every request carries a **consumer credential** in the `Authorization` header. Request one on the [Molecule Discord](https://t.co/L0VEiy4Bjk): post in [the general-chat channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**, using this template (the channel link needs you to be in the server — join with the invite first):
 
