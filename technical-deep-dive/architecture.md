@@ -82,3 +82,12 @@ The account currently supports two module types: executors (which can call `exec
 ### Signature Verification
 
 The account implements a two-tier signature validation strategy via `isValidSignature` (ERC-1271). It first attempts ERC-7739 validation, which uses nested EIP-712 typed data with chain-specific context for cross-chain replay protection. If ERC-7739 does not recognize the signature format, the account falls back to standard ECDSA recovery against the current NFT owner. This dual approach provides strong cross-chain security while maintaining backward compatibility with contracts that use simple signatures.
+
+### Related
+
+* [Molecule Labs](onchain-lab.md) — the Lab primitive these contracts implement
+* [Module Registry](module-registry/README.md) — how modules are attested and installed
+* [Validator Module](module-registry/validator-module.md) — how operations are authorised
+* [Audits](../security/audits.md) — audit reports for these contracts
+
+{% include "../.gitbook/includes/support.md" %}

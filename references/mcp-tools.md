@@ -172,3 +172,11 @@ const result = await generateText({
 * **Public Endpoint**: [https://molecule-mcp.vercel.app/mcp](https://molecule-mcp.vercel.app/mcp)
 * **MCP Specification**: [https://modelcontextprotocol.io](https://modelcontextprotocol.io)
 * **Source Code & API Key Request**: Contact the Molecule team.
+
+## Related
+
+* [Molecule Skill](../ai-tooling/molecule-skill.md) — the MCP server that writes to Labs
+* [MIRA](../ai-tooling/mira.md) — the assistant built on these tools
+* [Developers / AI Agents](../user-guides/developers-ai-agents.md) — other ways to build on Molecule
+
+{% include "../.gitbook/includes/support.md" %}

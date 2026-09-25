@@ -30,3 +30,12 @@ Most research hypotheses do not pan out, and a promising result at one stage doe
 ### &#x20;Getting Started&#x20;
 
 A funder can browse Labs, read their public reporting surfaces, and check MIRA's assessment before committing anything. Joining a token sale happens directly from the project page when one is active, and larger commitments or partnership discussions can be directed to the Molecule team.
+
+### Related
+
+* [MIRA](../ai-tooling/mira.md) — how project assessments are produced
+* [Coin-to-Company Model](../legal-framework/rwa-equity.md) — the route from token to equity
+* [IPT](../references/contracts/ipt.md) — the IP Token contract
+* [Scientists](scientists-researchers.md) — the same Lab from the researcher's side
+
+{% include "../.gitbook/includes/support.md" %}

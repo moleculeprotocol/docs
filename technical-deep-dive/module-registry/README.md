@@ -94,3 +94,12 @@ Provides a system-wide upgrade mechanism. All Lab accounts share a single implem
 The module architecture is designed to support a growing ecosystem of capabilities. Examples of module categories include automated royalty distribution, milestone-based fund release, IP licensing and rental logic, governance and voting mechanisms, data storage and retrieval, oracle integrations for external data, cross-lab collaboration protocols, and AI agent execution boundaries.
 
 Each of these would be deployed as an independent contract, attested in the ERC-7484 Registry, and installable by any Lab owner who needs that capability.
+
+### Related
+
+* [Validator Module](validator-module.md) — authorising operations
+* [Executor Modules](executor-modules.md) — triggering transactions from a Lab
+* [Fallback Modules](fallback-modules.md) — adding functions to a Lab's account
+* [Architecture](../architecture.md) — where modules sit in the contract stack
+
+{% include "../../.gitbook/includes/support.md" %}

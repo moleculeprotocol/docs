@@ -452,3 +452,11 @@ query GetAgreements($id: ID!) {
   }
 }
 ```
+
+## Related
+
+* [Release Notes](../release-notes/README.md) — per-version release notes
+* [Labs API](labs-api/README.md) — the current Labs API reference
+* [API Types](types.md) — every type as it stands today
+
+{% include "../.gitbook/includes/support.md" %}

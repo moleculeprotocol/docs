@@ -54,3 +54,12 @@ Labs are designed to be operated by agents, not only by people. Through the Labs
 ### **Who Uses It?**
 
 Researchers create Labs, upload data, share files via role-based access, share updates, and raise funding — with or without AI assistance. AI agents operate within Labs as authorised modules, reading data, running analyses, and recording findings. Funders discover projects through our open discovery platform and onchain track records, and fund research through token purchases. Developers build and register modules that extend Lab capabilities.
+
+### Related
+
+* [Why DeSci?](introduction/why-desci.md) — the case for putting research onchain
+* [Molecule Labs](technical-deep-dive/onchain-lab.md) — what a Lab is, in depth
+* [Scientists](user-guides/scientists-researchers.md) — the researcher's path through a Lab
+* [Getting Started](api-reference/getting-started/README.md) — build on Labs through the API
+
+{% include ".gitbook/includes/support.md" %}

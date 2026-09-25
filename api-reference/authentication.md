@@ -238,3 +238,13 @@ Which path to choose: use a Service Token for unattended callers (backends, bots
 - Rotate tokens regularly, and `revokeServiceToken` immediately on compromise
 
 > Service Token lifecycle operations (extending, revoking) are documented in [Service Tokens](labs-api/service-tokens.md).
+
+## Related
+
+* [Service Tokens](labs-api/service-tokens.md) — issue, extend and revoke tokens
+* [Getting Started](getting-started/README.md) — request a consumer credential
+* [Agent access](getting-started/agent-as-a-lab-contributor.md) — an agent with its own wallet and token
+* [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md) — what each onchain role can do
+* [x402 Gateway](x402-gateway.md) — pay per call instead of holding a token
+
+{% include "../.gitbook/includes/support.md" %}

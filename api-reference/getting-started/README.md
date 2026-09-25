@@ -226,3 +226,5 @@ Production also enforces a query-depth limit of 10, which fails at execution tim
 | What each error code means and how to read it | [Error handling](../labs-api/README.md#error-handling) |
 | Paying per call, and the gateway base URLs | [x402 Gateway](../x402-gateway.md) |
 | What a Lab actually is, onchain | [Molecule Labs](../../technical-deep-dive/onchain-lab.md) |
+
+{% include "../../.gitbook/includes/support.md" %}

@@ -12,3 +12,5 @@ _No entries yet._
 
 Note that the gateway forwards to Labs API mutations, so a Labs API contract change can reach x402
 callers even when the gateway itself is unchanged. Check [Labs API](labs-api.md) as well.
+
+{% include "../.gitbook/includes/support.md" %}

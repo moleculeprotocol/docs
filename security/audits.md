@@ -26,3 +26,10 @@ icon: stamp
 * **Scope:** IP-NFTs & Fundraises (CrowdSale, TimelockedToken)
 
 {% embed url="https://github.com/pashov/audits/blob/master/solo/pdf/IPNFT-security-review.pdf" %}
+
+### Related
+
+* [Contracts](../references/contracts/README.md) — deployed contract addresses
+* [Architecture](../technical-deep-dive/architecture.md) — what the audited contracts do
+
+{% include "../.gitbook/includes/support.md" %}

@@ -92,3 +92,11 @@ Events: `DidLinked`, `DidDeactivated`, `VerifierSet`, `RelayerUpdated`, `Derivat
 DID linking is **live on Base mainnet** — Labs created through the app are linked automatically, and co-attested `DidLinked` records are accumulating on the registry since the v0.1.0 go-live. On the roadmap: the `ONCHAIN_VERIFIED` tier (direct onchain proof verification), additional verifier policies (attested, community, stake- or ZK-backed), and additional providers and subjects beyond the initial ODF account + data-room pair.
 
 For the offchain half of the story — how files are stored, versioned, and encrypted inside the data room this anchor points at — see [Data Storage](../data/data-storage.md) and [Data Privacy & Access](../data/data-privacy-and-access.md).
+
+## Related
+
+* [Lab Management](../../api-reference/labs-api/lab-management.md) — `getDidLinkStatus` and the rest of lab administration
+* [Molecule Labs](../onchain-lab.md) — how `oclId` is derived
+* [Data](README.md) — the data stack as a whole
+
+{% include "../../.gitbook/includes/support.md" %}

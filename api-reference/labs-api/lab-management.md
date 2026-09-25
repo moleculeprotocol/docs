@@ -469,3 +469,12 @@ Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorT
 `status` is `null` before the first linking attempt. `linkedDidCount` reflects the number of active onchain DID links observed by the event indexer.
 
 ***
+
+## Related
+
+* [Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md) — mint and register a lab end to end
+* [Files](files.md) — upload into the lab's data room
+* [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md) — how members are granted roles
+* [Data Anchoring (DID Linking)](../../technical-deep-dive/data/data-module.md) — what DID linking anchors
+
+{% include "../../.gitbook/includes/support.md" %}

@@ -74,3 +74,12 @@ This creates a verifiable chain of custody for the entire research lifecycle. Re
 ### Lab Tokenization
 
 Labs will be able to affiliate with or mint a Lab Token to create an economic layer around the Lab's assets. The planned model allows Lab owners to select or mint an ERC-20 token, attach a fee router to direct revenue from the Lab's assets (IP licensing royalties, dataset access payments, trading fees, DeFi yield), enable staking for token holders to receive a share of fee flows, and optionally configure automatic token buybacks from revenue.
+
+### Related
+
+* [Architecture](architecture.md) — how the contracts are structured and deployed
+* [Roles & Permissions](roles-and-permissions.md) — the capability matrix and grant semantics
+* [Module Registry](module-registry/README.md) — extending a Lab with modules
+* [Data](data/README.md) — how a Lab stores and protects its data
+
+{% include "../.gitbook/includes/support.md" %}

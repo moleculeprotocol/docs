@@ -131,3 +131,5 @@ function cap(LabToken labToken) external
 
 * **Tokenization flow & API**: [Tokenization API](../../api-reference/tokenization-api.md)
 * **ABI**: Available from the verified contract on [BaseScan](https://basescan.org/address/0x62F532C3f563D974deEc103AAb8cC597f4f9c84E)
+
+{% include "../../.gitbook/includes/support.md" %}

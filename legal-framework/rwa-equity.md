@@ -47,3 +47,10 @@ Holding locked tokens is a prerequisite for pursuing equity through separate leg
 \
 You can find the [full legal whitepaper](https://molecule.xyz/blog/the-coin-to-company-model) on the Molecule website, as well as the [legal templates on DeSci.Codes](https://desci-codes.gitbook.io/desci.codes/templates/v2-coin-to-company/governance-agreements).&#x20;
 
+## Related
+
+* [Funders](../user-guides/investors.md) — the funder's path to equity
+* [IPT](../references/contracts/ipt.md) — the token being locked
+* [Module Registry](../technical-deep-dive/module-registry/README.md) — how the equity module is installed
+
+{% include "../.gitbook/includes/support.md" %}

@@ -33,3 +33,11 @@ _**Collaboration:**_ Scientific collaboration is frequently constrained by insti
 _**AI doing Science 24/7:**_ In traditional research environments, integrating AI-driven discovery with automated experimentation is difficult due to fragmented systems, manual procurement, slow contracting, and the lack of a standardized way for software agents to trigger and pay for experiments.
 
 Crypto provides a programmable coordination layer that allows AI agents to autonomously fund, trigger, and pay for experiments via onchain execution and APIs, while results are transparently recorded and attributed. This enables closed-loop discovery workflows in which hypothesis generation, experimentation, and data ingestion can operate continuously across systems.
+
+### Related
+
+* [Why Molecule?](../README.md) — what Molecule builds on top of this
+* [Scientists](../user-guides/scientists-researchers.md) — how a researcher uses a Lab
+* [Funders](../user-guides/investors.md) — how a funder discovers and backs research
+
+{% include "../.gitbook/includes/support.md" %}

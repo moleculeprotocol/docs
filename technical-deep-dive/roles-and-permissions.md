@@ -133,3 +133,5 @@ Use these events to reconstruct the team-members list for a lab offchain; the on
 * [AccessResolver contract reference](../references/contracts/accessresolver.md) — full ABI, deployments, signer-authorization predicates (`isAuthorizedSignerForIpnft`, `isAuthorizedSignerForTba`).
 * [Data Privacy & Access](data/data-privacy-and-access.md) — how role checks feed into file encryption / decryption.
 * [Molecule Labs](onchain-lab.md) — how `oclId` is derived and why ownership resolves through the TBA.
+
+{% include "../.gitbook/includes/support.md" %}

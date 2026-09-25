@@ -228,3 +228,5 @@ Use any of the predicates below as the `functionName` of an `EvmContractConditio
 ### Resources
 
 - **ABI**: Available from the verified contract on [BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B) (source lives in the Molecule Labs contracts repository — contact the team for access)
+
+{% include "../../.gitbook/includes/support.md" %}

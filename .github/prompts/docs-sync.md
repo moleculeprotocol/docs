@@ -122,6 +122,9 @@ Match the page you are editing. Across the site:
 - Sentence case in prose, and use the API's exact identifier casing (`oclId`, `labNftTokenId`) in
   code and tables.
 - British/American spelling: match the surrounding page, do not normalise.
+- Every page ends with a list of related pages (headed `Related`, `Next` or `See Also`) and then, as its last line, an
+  `{% include %}` of `.gitbook/includes/support.md`, the shared support block. Keep that include
+  last and add new content above it. A new page gets both.
 
 **Never edit `api-reference/types.md` or anything under `.gitbook/includes/api/`.** Those files are rendered from the GraphQL
 schema by a script that runs before you, in the same workflow. They are the parameter and field

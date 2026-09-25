@@ -134,3 +134,5 @@ async function withIndexerLagRetry(
 | Upload an encrypted file | [Upload an encrypted file](upload-encrypted-file.md) |
 | Give your agent access to a lab | [Agent access](agent-as-a-lab-contributor.md) |
 | Run the same code against mainnet | [Running in Production](README.md#running-in-production) |
+
+{% include "../../.gitbook/includes/support.md" %}

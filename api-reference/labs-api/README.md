@@ -229,6 +229,14 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 
 ---
 
+## Related
+
+* [Getting Started](../getting-started/README.md) — prerequisites and the ten-minute quickstart
+* [Authentication](../authentication.md) — credentials and headers
+* [API Types](../types.md) — every result and input type
+* [API Changelog & Migration](../changelog.md) — breaking changes and migrations
+* [Release Notes](../../release-notes/README.md) — what changed in each release
+
 ## Getting Support
 
 If you encounter any issues or have questions about the Labs API:
@@ -240,3 +248,5 @@ If you encounter any issues or have questions about the Labs API:
 ---
 
 _Last updated: July 2026_
+
+{% include "../../.gitbook/includes/support.md" %}

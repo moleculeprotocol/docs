@@ -68,3 +68,11 @@ Role checks are hierarchical: a Contributor passes Viewer checks, and the Owner 
 **Indexer / indexer lag** — onchain events reach the API through an indexing service, which takes a moment to catch up. A transaction that has confirmed onchain is therefore not immediately visible to the API, which is why a write straight after a mint or a role grant can fail and should be retried rather than treated as a real error.
 
 **Staging vs production** — staging runs on Base Sepolia with testnet funds and nothing costs real money; production runs on Base mainnet. Credentials are per environment and are not interchangeable.
+
+## Related
+
+* [Getting Started](../api-reference/getting-started/README.md) — put the terms to work
+* [Molecule Labs](../technical-deep-dive/onchain-lab.md) — the Lab in depth
+* [Authentication](../api-reference/authentication.md) — the credentials in depth
+
+{% include "../.gitbook/includes/support.md" %}

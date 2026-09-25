@@ -276,6 +276,13 @@ console.log('Lab tokenized!', txHash);
 
 ***
 
+## Related
+
+* [Tokenizer](../references/contracts/tokenizer.md) — the contract that tokenizes a Lab
+* [IPT](../references/contracts/ipt.md) — the IP Token it deploys
+* [Coin-to-Company Model](../legal-framework/rwa-equity.md) — the legal framework behind the token
+* [Tokenization API release notes](../release-notes/tokenization-api.md) — what changed in each release
+
 ## Getting Support
 
 For assistance with the Tokenization API:
@@ -288,3 +295,5 @@ For assistance with the Tokenization API:
 ***
 
 _Last updated: July 2026_
+
+{% include "../.gitbook/includes/support.md" %}

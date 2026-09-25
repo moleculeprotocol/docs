@@ -84,3 +84,11 @@ The state counter increment on every fallback invocation provides an additional 
 | `OnChainLab.sol`      | Contains the `fallback()` handler and `installModule` logic | `src/OnChainLab.sol`           |
 | `ExecLib.sol`         | Provides the `doFallback2771Call` dispatch helper           | `src/utils/ExecLib.sol`        |
 | `Constants.sol`       | Defines module types, call types, and storage slots         | `src/types/Constants.sol`      |
+
+## Related
+
+* [Module Registry](README.md) — the attestation registry
+* [Executor Modules](executor-modules.md) — the other installable module type
+* [Architecture](../architecture.md) — where fallback dispatch sits in the account
+
+{% include "../../.gitbook/includes/support.md" %}

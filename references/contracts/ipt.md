@@ -87,3 +87,5 @@ A Lab can attach a pre-existing ERC-20 as its IPT instead of minting a new one. 
 ### Resources
 
 * **Tokenization flow & API**: [Tokenization API](../../api-reference/tokenization-api.md)
+
+{% include "../../.gitbook/includes/support.md" %}
