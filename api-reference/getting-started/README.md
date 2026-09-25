@@ -57,7 +57,7 @@ Two things, and only one of them involves a human.
 
 ### 1. A `mol_` consumer credential — the one manual step
 
-Every request to the API carries a consumer credential in the `Authorization` header. There is no self-service issuance yet (coming soon), so you will need to request this from the Molecule team.
+Every request to the API carries a consumer credential in the `Authorization` header. Until the Developer Portal ships (coming soon), you will need to request this from the Molecule team.
 
 Request it on the [Molecule Discord](https://t.co/L0VEiy4Bjk): post in [the general-chat channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**, using this template (the channel link needs you to be in the server — join with the invite first):
 

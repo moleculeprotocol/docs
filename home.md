@@ -25,7 +25,7 @@ Molecule is the infrastructure for recording, tokenizing and funding scientific 
 
 ## Guides by role
 
-<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>Scientists</strong></td><td>Create a Lab, store research data securely and raise funding.</td><td><a href="user-guides/scientists-researchers.md">scientists-researchers.md</a></td></tr><tr><td><strong>Funders</strong></td><td>Discover research projects and back them transparently.</td><td><a href="user-guides/investors.md">investors.md</a></td></tr><tr><td><strong>Developers / AI Agents</strong></td><td>Integrate with Labs programmatically and build modules.</td><td><a href="user-guides/developers-ai-agents.md">developers-ai-agents.md</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><i class="fa-user-magnifying-glass">:user-magnifying-glass:</i></td><td><strong>Scientists</strong></td><td>Create a Lab, store research data securely and raise funding.</td><td><a href="user-guides/scientists-researchers.md">scientists-researchers.md</a></td></tr><tr><td><i class="fa-user-tie">:user-tie:</i></td><td><strong>Funders</strong></td><td>Discover research projects and back them transparently.</td><td><a href="user-guides/investors.md">investors.md</a></td></tr><tr><td><i class="fa-robot">:robot:</i></td><td><strong>Developers / AI Agents</strong></td><td>Integrate with Labs programmatically and build modules.</td><td><a href="user-guides/developers-ai-agents.md">developers-ai-agents.md</a></td></tr></tbody></table>
 
 ## Interact with our API
 
