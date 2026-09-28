@@ -246,7 +246,7 @@ query GetActivities($page: Int, $perPage: Int, $filter: LabActivityFilter) {
 }
 ```
 
-> **Errors**: a failed `activities` query returns `data: null` with a top-level GraphQL `errors[]` entry whose `errorType` is the error code — see [Error Handling](README.md#error-handling).
+> **Errors**: a failed `activities` query returns `data: null` with a top-level GraphQL `errors[]` entry whose `errorType` is the error code — see [Errors](../errors.md#failed-query).
 
 ---
 

@@ -47,6 +47,8 @@ Public queries take `Authorization` alone. Sending `X-Service-Token` on a public
 
 ## Error contract
 
+This is the Labs API contract. The Tokenization API and the x402 Gateway report errors differently; all three are on [Errors](../errors.md).
+
 * **Queries throw.** Failure lands in top-level `errors[]`. Branch on `errors[i].errorType`. `errors[i].errorInfo` is `{ requestId, retryable, details }` and `details` is already an object.
 * **Mutations return errors in-band.** Every `*Result` has `error: ApiError`. **Success ⇔ `error == null`.** Select `error { code message requestId retryable details }` on every mutation.
 * **Parse `details` tolerantly.** It is an object on thrown query errors, a JSON string in-band, and currently a **doubly-encoded** JSON string in-band — one `JSON.parse` there returns a string, and `.reason` on it is silently `undefined`. Loop until it is not a string:
