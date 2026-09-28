@@ -228,7 +228,7 @@ payment-signature: <base64 x402 payment payload>
 }
 ```
 
-The `200` body is the mutation's GraphQL response verbatim, so read it exactly as on the Labs API: the mutation succeeded when `error` is `null`; otherwise branch on `error.code` — see [Errors](errors.md#forwarded-mutation). Note that settlement is triggered by the upstream `2xx`, not by mutation success — a `200` whose body carries a non-null `error` (e.g. `VALIDATION_FAILED`, `UNAUTHORIZED`) is still settled, so you pay for a mutation that failed in-band; only an upstream `4xx`/`5xx` skips settlement. Validate inputs (ids, categories/tags, role) before paying.
+The `200` body is the mutation's GraphQL response verbatim, so read it exactly as on the Labs API: the mutation succeeded when `error` is `null`; otherwise branch on `error.code` — see [Errors](errors.md#forwarded-mutation). Note that settlement is triggered by the upstream `2xx`, not by mutation success — a `200` whose body carries a non-null `error` (e.g. `VALIDATION_FAILED`, `UNAUTHORIZED`) is still settled, so you pay for a mutation that failed in-band; only an upstream `4xx`/`5xx` skips settlement. Validate inputs (ids, categories/tags, role) before paying. The one `200` that didn't run is a top-level `RATE_LIMITED` error: it's still settled, and you resend with a fresh payment once `retryAfterSeconds` has passed (see [Errors › Forwarded mutation](errors.md#forwarded-mutation)).
 
 Constraints enforced by the gateway (`validateMutationQuery`):
 
@@ -271,7 +271,7 @@ Facilitator authentication uses Coinbase CDP API keys (`CDP_API_KEY_ID_SECRET_AR
 | ------ | ---------------------------------------------------------------------------------------- |
 | `200`  | Payment verified, upstream AppSync returned `2xx`. Body is the AppSync response verbatim; settlement headers are merged in. |
 | `402`  | Payment required (`message: "Payment required"`) or payment verification failed (`message: "Payment verification failed"`). The requirements are in the `payment-required` header. |
-| `400`  | Missing path mutation, a mutation not on the allow-list, missing body or `query`, or unresolvable payer address. |
+| `400`  | Missing path mutation, a mutation not on the allow-list, missing body or `query`, unresolvable payer address, or a gateway misconfiguration (`Route configuration error`). |
 | `500`  | Body isn't valid JSON, the `query` isn't exactly one mutation matching the path, or an unexpected gateway failure. An unexpected `500` can happen after the mutation ran. |
 | `4xx/5xx` | Upstream AppSync error — settlement is skipped and the upstream response is returned as-is. |
 

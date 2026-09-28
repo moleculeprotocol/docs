@@ -19,10 +19,10 @@ Errors that only one operation produces stay on that operation's page, for examp
 | --- | --- | --- | --- | --- |
 | A Labs API **query** | top-level `errors[]`; the field (often `data` itself) is `null` | `errors[i].errorType` | `errors[i].errorInfo.retryable` | `errors[i].errorInfo.requestId` |
 | A Labs API **mutation** | the result's `error` field (`ApiError`), HTTP `200` | `error.code` | `error.retryable` | `error.requestId` |
-| A Tokenization API query or mutation | the result's `isSuccess: false` and `error` field (`EvmTokenizationError`), HTTP `200` | `error.code` | `error.retryable` | none |
+| A Tokenization API query or mutation | the result's `isSuccess: false` and `error` field (`EvmTokenizationError`), HTTP `200` | `error.code` | `error.retryable` | none in-band; `errorInfo.requestId` on the [few thrown errors](#tokenization-api-errors) |
 | A mutation through the x402 Gateway | the HTTP status first; on `200`, the Labs mutation contract above | HTTP status, then `error.code` | see [x402 Gateway errors](#x402-gateway-errors) | none; on settlement, the transaction hash |
 
-In all three, the message is for humans and may change without notice. Branch on the code or status, never on the message text.
+Whichever API you call, the message is for humans and may change without notice. Branch on the code or status, never on the message text.
 
 ---
 
@@ -32,7 +32,9 @@ Some requests fail before any resolver sees them. They look the same whichever A
 
 **Missing or malformed consumer credential: HTTP `401`.** The `Authorization` header is checked before the GraphQL layer runs, so there's no `errorType` and no `ApiError`. The `mol_…` credential goes in directly, with no `Bearer` prefix. See [Authentication](authentication.md).
 
-**Malformed request body: HTTP `400`.** A body that isn't valid JSON is rejected before it's parsed as GraphQL.
+**Malformed request body: HTTP `400`.** A body that isn't valid JSON is rejected before it's parsed as GraphQL, and before the credential is checked. The body has one `errors[]` entry with `errorType: "MalformedHttpRequestException"` and no `errorInfo`.
+
+**Blocked at the edge: HTTP `403`.** The API sits behind a web application firewall with request-count rules. A request it blocks gets a raw `403` with a non-GraphQL body: no `errors[]`, no `errorType`, no `errorInfo`. These rules only count requests today and block nothing. If they start blocking, slow down before retrying. This is not the [`RATE_LIMITED`](#rate-limited-requests) error, which is a catalogued GraphQL error.
 
 **Invalid GraphQL document: a plain GraphQL error with no code.** A query that selects a field that doesn't exist, or passes a variable of the wrong type, returns a top-level `errors[]` entry. It has a `message` but no catalogued `errorType` and no `errorInfo`. Fix the document; retrying it unchanged won't help. On a mutation, an `errors[]` entry like this means the document failed validation and the mutation didn't run.
 
@@ -42,12 +44,52 @@ Your client has to handle both shapes: catalogued errors with `errorInfo`, and p
 
 ---
 
+## Rate-limited requests
+
+A credential that has spent its rate-limit budget for the current window gets `RATE_LIMITED` until the window ends. Rate limits aren't enforced yet; budgets are measured, but nothing is refused.
+
+A denied request is refused before any resolver runs, so nothing was read or changed. It's raised the same way on every API and operation class, **mutations and Tokenization API calls included**: HTTP `200`, a top-level `errors[]` entry and a `null` field, never an in-band `error`:
+
+```json
+{
+  "data": null,
+  "errors": [
+    {
+      "path": ["createLab"],
+      "errorType": "RATE_LIMITED",
+      "message": "Too many requests. Retry with exponential backoff.",
+      "errorInfo": {
+        "requestId": "8f1e4c9a-2b7d-4e10-9c3a-5d6f7a8b9c0d",
+        "retryable": true,
+        "details": {
+          "reason": "COST_BUDGET_EXHAUSTED",
+          "retryAfterSeconds": 37,
+          "remainingBudget": 0,
+          "budgetWindowSeconds": 300
+        }
+      }
+    }
+  ]
+}
+```
+
+| `details` key | Type | Meaning |
+| --- | --- | --- |
+| `reason` | string | `COST_BUDGET_EXHAUSTED` |
+| `retryAfterSeconds` | integer ≥ 0 | Seconds until the current window ends. `0` means retry once now, then back off |
+| `remainingBudget` | integer ≥ 0 | Cost units left in the window. Currently always `0` on a denial |
+| `budgetWindowSeconds` | integer > 0 | Length of the window |
+
+Wait `retryAfterSeconds`, plus a little jitter, then retry the same request once. If it's denied again, back off exponentially, capped at `budgetWindowSeconds`. Never tight-loop: every retry is charged too.
+
+---
+
 ## Labs API errors
 
 The Labs API is a GraphQL API: once a request is accepted, the response is HTTP `200` whether or not the operation succeeded. Success and failure are signalled inside the JSON body, not by the status code. Errors surface through one of two channels, depending on the operation class:
 
 - **Queries throw.** A failed query adds an entry to the top-level GraphQL `errors[]` array and returns `null` for that field. Most Labs query result types are non-null, so the null propagates and `data` itself comes back `null` (as in the example below); only `labWithDataRoomAndFiles` and `dataRoomFile` are nullable and null just their own field. `errorType` carries the error code (the only value to branch on) and `errorInfo` carries `{ requestId, retryable, details }`.
-- **Mutations return errors in-band.** Every mutation result type carries an `error: ApiError` field. **Success ⇔ `error == null`.** Where the result type also has a top-level `message`, it mirrors `error.message` on failure and is never empty. A top-level `errors[]` entry on a mutation means a transport or infrastructure failure, or that the request document itself failed validation.
+- **Mutations return errors in-band.** Every mutation result type carries an `error: ApiError` field. **Success ⇔ `error == null`.** Where the result type also has a top-level `message`, it mirrors `error.message` on failure and is never empty. A top-level `errors[]` entry on a mutation means a transport or infrastructure failure, that the request document itself failed validation, or a [`RATE_LIMITED`](#rate-limited-requests) denial. In all three cases the mutation didn't run.
 
 Include `requestId` whenever you report a problem.
 
@@ -117,6 +159,16 @@ mutation InitiateFileUpload($oclId: String!, $contentType: String!, $contentLeng
 
 Documented keys are `field` (the offending input field), `reason` (a more specific cause under the code, e.g. `PROJECT_NOT_FOUND` under `NOT_FOUND`), `hint` and `docs`; ignore unknown keys. `reason` values are diagnostic refinement and may be extended at any time — branch on `code` first.
 
+A few codes carry extra keys that are part of the contract:
+
+| Code and `reason` | Extra keys |
+| --- | --- |
+| `RATE_LIMITED` / `COST_BUDGET_EXHAUSTED` | `retryAfterSeconds`, `remainingBudget`, `budgetWindowSeconds`. See [Rate-limited requests](#rate-limited-requests) |
+| `COMPLEXITY_LIMIT_EXCEEDED` / `RESULT_CARDINALITY_LIMIT` | `field` (the list, as `Type.field`) and `limit` (the largest list it serves). See [list limits](changelog.md#lists-without-paging-arguments-now-fail-above-a-size-limit) |
+| `UNAUTHORIZED` / `INTERNAL_FIELD` | `fields`: the fields, as `Type.field`, that aren't part of the public API. See [Labs troubleshooting](#labs-troubleshooting) |
+
+Keys that only one operation emits are documented on that operation's page.
+
 ```javascript
 // Handles all three shapes: object, JSON string, doubly-encoded JSON string.
 function parseDetails(details) {
@@ -175,6 +227,7 @@ An HTTP `401` instead of `UNAUTHENTICATED` means the consumer credential was rej
 - Check the wallet's role with the public `listLabMembers(oclId)` query. Content writes (uploads, metadata, moves, deletes) need **Contributor**; `createLab` and the LabNFT-metadata mutations need **Owner**
 - Not the right role? The lab owner grants one onchain — see [Agent access](getting-started/agent-as-a-lab-contributor.md)
 - **Just granted the role?** Role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after the grant confirms onchain. Retry with backoff; re-issuing the token does not help
+- **`details.reason` is `INTERNAL_FIELD`?** The request selects, filters or sorts by a field that isn't part of the public API, and `details.fields` lists them. Nothing was read. Remove those fields from the query; if your integration needs one, ask Molecule for access. This check only logs today and refuses nothing; enforcement will be announced in the [API Changelog](changelog.md)
 
 **`NOT_FOUND`** — lab, dataroom or file not found:
 
@@ -235,9 +288,11 @@ How it differs from the Labs API:
 
 Select `error { code message retryable }` on every tokenization operation, not just `error { message }`.
 
-Two failures bypass the envelope and arrive as catalogued, thrown GraphQL errors (top-level `errors[]`, `errorType`). Handle them the same way as a [Labs query error](#failed-query):
+Four failures bypass the envelope and arrive as catalogued, thrown GraphQL errors (top-level `errors[]`, `errorType`, with `errorInfo.requestId`). Handle them the same way as a [Labs query error](#failed-query):
 
 - `COMPLEXITY_LIMIT_EXCEEDED`: the selection set on a tokenization field is too deep or selects too many fields. Trim it. Not retryable.
+- `RATE_LIMITED`: the credential's cost budget is spent. The operation didn't run. See [Rate-limited requests](#rate-limited-requests). Retryable.
+- `TIMEOUT`: the resolver ran out of time and was stopped. Retryable. On a mutation, the work may have partly happened, so check the state before resending.
 - `INTERNAL_ERROR`: an unhandled failure inside the resolver, masked before it reaches you. Retryable.
 
 ### Tokenization error codes
@@ -257,7 +312,7 @@ Two failures bypass the envelope and arrive as catalogued, thrown GraphQL errors
 
 The OCL flow documented on the [Tokenization API](tokenization-api.md) page (`generateOclMembershipAgreement`, `getOclTermsMessage`) emits `INVALID_INPUT`, `INVALID_METADATA` and `INTERNAL_ERROR`. The rest come from the IP-NFT and IPT operations on the same service.
 
-There's no `requestId` to quote. When reporting a tokenization failure, include the operation name, the time of the request and the `error.message`.
+The in-band `error` has no `requestId` to quote. When reporting a tokenization failure, include the operation name, the time of the request and the `error.message`.
 
 Contract reverts (`AlreadyTokenized()`, `MustControlLab()`) are a separate channel: they come from the onchain transaction, not from the API. See [Tokenization API › Error Handling](tokenization-api.md#error-handling).
 
@@ -269,25 +324,28 @@ A call through the [x402 Gateway](x402-gateway.md) can fail in two places: in th
 
 ### Gateway responses
 
-Every error body the gateway builds itself has the same shape: `{"isSuccess": false, "message": "…"}`. There's no `code` field.
+Every error body the gateway builds itself has the same shape: `{"isSuccess": false, "message": "…"}`. There's no `code` field. One `500` also carries an `error` string with internal detail; ignore it and read `message`.
 
 | Status | `message` | What happened | What to do |
 | --- | --- | --- | --- |
 | `402` | `Payment required` | No payment header (`Payment-Signature`, `X-Payment` or `Payment`) was sent. The payment requirements are in the base64-encoded `payment-required` **header**, not the body | Normal first step of the handshake. [Read the challenge](x402-gateway.md#reading-the-402-challenge), sign, resend |
 | `402` | `Payment verification failed` | A payment was sent, but the facilitator rejected it, for example because the amount, asset, network or `payTo` doesn't match the challenge, the authorization expired, or the payload was already used | Re-read the challenge, build and sign a fresh payment, resend. Nothing was charged and the mutation didn't run |
 | `400` | `Missing path parameter: mutation`, `Mutation '<name>' is not enabled for x402 gateway`, `Request body is required`, `Body must include GraphQL mutation in 'query'` | The request is malformed or targets a mutation that isn't on the [allow-list](x402-gateway.md#endpoints) | Fix the request. Nothing was charged |
+| `400` | `Route configuration error: payment should be required` | The gateway is misconfigured for this mutation. Not something your request caused | Report it. Nothing was charged and the mutation didn't run |
 | `400` | `Unable to determine payer address from verified payment payload` | The payment verified, but no valid payer address could be resolved from it | Check that the signed authorization carries a valid `from` address (see [Payer address resolution](x402-gateway.md#payer-address-resolution)). Nothing was charged and the mutation didn't run |
 | `500` | The parse or validation reason, e.g. `Path mutation '<path>' does not match GraphQL field '<field>'`, `Only GraphQL mutation operations are accepted`, `Mutation must contain exactly one top-level field` | The body isn't valid JSON, or the `query` isn't exactly one mutation whose single top-level field matches the path | Fix the document. Rejected before payment is verified, so nothing was charged |
 | `500` | Any other message | An unexpected gateway failure. It can happen **after** the mutation ran, for example while contacting the facilitator to settle | Don't resend blindly. Read back the state the mutation would have changed first (see [Retrying](#retrying)) |
 | Upstream `4xx`/`5xx` | The upstream body, as-is | The Labs API rejected the forwarded request at the HTTP level | Settlement is skipped, so nothing was charged. Handle it as the upstream error |
 
-`PAYMENT_REQUIRED` is not a code any Molecule response carries. A missing or rejected payment is HTTP `402`. If your client maps errors into a single code space, map `402` to your own `PAYMENT_REQUIRED` value, and keep the two `402` messages apart: one is the normal handshake, the other is a rejected payment.
+`PAYMENT_REQUIRED` is not a code any Molecule response carries. A missing or rejected payment is HTTP `402`. If your client maps errors into a single code space, map `402` to your own `PAYMENT_REQUIRED` value, and keep the two `402` cases apart: if you sent no payment header, it's the normal handshake; if you sent one, the payment was rejected.
 
 ### Forwarded mutation
 
 A `200` body is the Labs API response verbatim. Read it with the [Labs mutation contract](#failed-mutation): success is `error == null`; otherwise branch on `error.code`.
 
 **A `200` is settled even when the mutation failed.** Settlement is triggered by the upstream `2xx`, not by mutation success, so a `200` with `error.code: "UNAUTHORIZED"` or `"VALIDATION_FAILED"` has been paid for. Payment buys a short-lived service token for the payer wallet; it doesn't grant a role. Validate the target lab, your role on it (`listLabMembers`) and your inputs **before** signing.
+
+**One exception: a `200` with a `RATE_LIMITED` error didn't run.** The gateway calls the Labs API with its own credential, which has a [rate limit](#rate-limited-requests) like any other. A denial comes back as HTTP `200` with a top-level `errors[]` entry whose `errorType` is `RATE_LIMITED`. The mutation didn't run, but the request was still settled, because settlement follows the HTTP status. Wait `errorInfo.details.retryAfterSeconds`, then resend with a freshly signed payment. Rate limits aren't enforced yet, so you won't see this today.
 
 ### Settlement result
 
@@ -311,11 +369,13 @@ if (settlement && !settlement.success) {
 | Situation | Retry? |
 | --- | --- |
 | Labs or Tokenization error with `retryable: true` | Yes, with exponential backoff and jitter, and a cap on attempts |
+| `RATE_LIMITED` | Yes, after `details.retryAfterSeconds`, then with backoff capped at `budgetWindowSeconds`. See [Rate-limited requests](#rate-limited-requests) |
 | `retryable: false` | No. Change the request, or wait for the resource state to change |
 | Labs `UNAUTHORIZED` just after an onchain role grant | Yes, with backoff for a few seconds; [indexer lag](#labs-troubleshooting), not a real denial |
 | `INTERNAL_ERROR` / `TOKEN_GENERATION_FAILED` on `generateServiceToken` | No. Flagged retryable but permanent; fix `expiresIn` |
 | x402 `402 Payment verification failed` | Yes, with a **freshly signed** payment. Never replay the same payload |
-| x402 `200`, whatever the body says | No automatic resend. The mutation ran and the request was settled (or failed to settle, which still means it ran) |
+| x402 `200` with a top-level `RATE_LIMITED` error | Yes, after `retryAfterSeconds`, with a freshly signed payment. The mutation didn't run, but the first payment was settled |
+| x402 `200`, any other body | No automatic resend. The mutation ran and the request was settled (or failed to settle, which still means it ran) |
 | x402 `500` with an unexpected message | Only after reading back that the mutation didn't take effect |
 
 Retrying a mutation is only safe when you know it didn't take effect. On the Labs API, a retryable in-band error means the mutation failed. Through x402, a `200` or a late `500` can mean it succeeded.

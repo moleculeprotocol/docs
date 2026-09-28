@@ -205,7 +205,7 @@ Codes may be added over time, and each addition is published on this page. Treat
 -   handle(result.error?.code);
 - }
 + if (result.error) {
-+   const { reason } = parseDetails(result.error.details); // tolerant parse, see Error Handling
++   const { reason } = parseDetails(result.error.details); // tolerant parse, see Errors
 +   handle(result.error.code, reason);
 + }
 ```
