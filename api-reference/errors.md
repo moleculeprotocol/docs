@@ -46,7 +46,7 @@ Your client has to handle both shapes: catalogued errors with `errorInfo`, and p
 
 ## Rate-limited requests
 
-A credential that has spent its rate-limit budget for the current window gets `RATE_LIMITED` until the window ends. Rate limits aren't enforced yet; budgets are measured, but nothing is refused.
+A credential that has spent its rate-limit budget for the current window gets `RATE_LIMITED` until the window ends. Rate limits aren't enforced yet; budgets are measured, but nothing is refused. How requests are priced, the budgets per credential, and the other limits are on [Rate & Query Limits](rate-limits.md).
 
 A denied request is refused before any resolver runs, so nothing was read or changed. It's raised the same way on every API and operation class, **mutations and Tokenization API calls included**: HTTP `200`, a top-level `errors[]` entry and a `null` field, never an in-band `error`:
 
@@ -405,6 +405,7 @@ Codes may be added over time, and each addition is published in the [API Changel
 ## Related
 
 - [Authentication](authentication.md) — credentials, headers, and which role each operation needs
+- [Rate & Query Limits](rate-limits.md) — the budgets and query limits behind `RATE_LIMITED`, `COMPLEXITY_LIMIT_EXCEEDED` and `QueryDepthLimitReached`
 - [API Types](types.md) — the full `ApiError` and `EvmTokenizationError` definitions
 - [API Changelog & Migration](changelog.md) — new codes, and the `details.reason` values under each
 - [Agent one-pager](getting-started/for-agents.md) — the error contract condensed for agents

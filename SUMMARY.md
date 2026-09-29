@@ -43,6 +43,7 @@
   - [🤖 For Agents: One-Pager](api-reference/getting-started/for-agents.md)
 - [🔐 Authentication](api-reference/authentication.md)
 - [🚨 Errors](api-reference/errors.md)
+- [⏱️ Rate & Query Limits](api-reference/rate-limits.md)
 - [⚙️ Labs API](api-reference/labs-api/README.md)
   - [Service Tokens](api-reference/labs-api/service-tokens.md)
   - [Lab Management](api-reference/labs-api/lab-management.md)
