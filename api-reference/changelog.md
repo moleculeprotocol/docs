@@ -151,7 +151,7 @@ type ApiError {
 }
 ```
 
-On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSync `AWSJSON`), e.g. `"details": "{\"reason\":\"NOT_LAB_OWNER\"}"`; on a thrown query error, `errorInfo.details` is a plain object. The in-band string is currently encoded twice, so read it with the tolerant [`parseDetails`](labs-api/README.md#error-handling) rather than a single `JSON.parse`, which returns another string and makes `.reason` silently `undefined`. Ignore keys you do not recognise, and never match on `message` — its wording may change without notice.
+On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSync `AWSJSON`), e.g. `"details": "{\"reason\":\"NOT_LAB_OWNER\"}"`; on a thrown query error, `errorInfo.details` is a plain object. The in-band string is currently encoded twice, so read it with the tolerant [`parseDetails`](errors.md#reading-details) rather than a single `JSON.parse`, which returns another string and makes `.reason` silently `undefined`. Ignore keys you do not recognise, and never match on `message` — its wording may change without notice.
 
 #### Error codes
 
@@ -169,7 +169,7 @@ On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSyn
 | `UPSTREAM_UNAVAILABLE`      | **true**    | A dependency failed — retry with backoff.                                | `KAMU`, `CMS`, `IPFS`                                                            |
 | `INTERNAL_ERROR`            | **true**    | Unexpected failure; quote `requestId` when reporting it.                 | `TOKEN_GENERATION_FAILED`, `CREATE_LAB_FAILED`, `UPLOAD_INIT_ERROR`, `KMS_ERROR`, … |
 
-Codes may be added over time, and each addition is published on this page. Treat a code you do not recognise as non-retryable, keep the raw value for diagnostics and surface it to a human. `PAYMENT_REQUIRED` is reserved for the x402 gateway and is not emitted by the GraphQL API. `details.reason` values are diagnostic refinement, not a contract surface — they may be extended without notice.
+Codes may be added over time, and each addition is published on this page. Treat a code you do not recognise as non-retryable, keep the raw value for diagnostics and surface it to a human. `details.reason` values are diagnostic refinement, not a contract surface — they may be extended without notice. For errors outside the GraphQL API, such as x402 Gateway responses, see [Errors](errors.md).
 
 #### Before / after
 
@@ -205,12 +205,12 @@ Codes may be added over time, and each addition is published on this page. Treat
 -   handle(result.error?.code);
 - }
 + if (result.error) {
-+   const { reason } = parseDetails(result.error.details); // tolerant parse, see Error Handling
++   const { reason } = parseDetails(result.error.details); // tolerant parse, see Errors
 +   handle(result.error.code, reason);
 + }
 ```
 
-**Migration:** Remove `isSuccess` (and, except on `legalAgreementStatus`, any `error { … }` selection) from every Labs query document — a document that still selects it fails validation and the query never runs — and handle failures from the top-level `errors[]` array, keyed on `errorType`. On mutations, replace `isSuccess` with `error { code message requestId retryable details }`, treat `error == null` as success, and branch on `error.code` (plus `details.reason` where documented), never on `message` text. Replace any check on the former `AUTH_FAILED` catch-all with the split codes listed above, and any `token === ""` / `tokenId === ""` checks on service-token results with `null` checks. If you read `legalAgreementStatus` off a lab object, select `error { code message }` and check it before trusting `signed`. Leave your Tokenization API handling as it is. See [Labs API › Error Handling](labs-api/README.md#error-handling) for the full reference.
+**Migration:** Remove `isSuccess` (and, except on `legalAgreementStatus`, any `error { … }` selection) from every Labs query document — a document that still selects it fails validation and the query never runs — and handle failures from the top-level `errors[]` array, keyed on `errorType`. On mutations, replace `isSuccess` with `error { code message requestId retryable details }`, treat `error == null` as success, and branch on `error.code` (plus `details.reason` where documented), never on `message` text. Replace any check on the former `AUTH_FAILED` catch-all with the split codes listed above, and any `token === ""` / `tokenId === ""` checks on service-token results with `null` checks. If you read `legalAgreementStatus` off a lab object, select `error { code message }` and check it before trusting `signed`. Leave your Tokenization API handling as it is. See [Errors](errors.md#labs-api-errors) for the full reference.
 
 ### `*V2` operations and pre-OCL naming removed
 

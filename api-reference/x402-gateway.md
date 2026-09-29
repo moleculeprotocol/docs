@@ -57,7 +57,7 @@ POST {base}/x402/labs/{mutation}
 | `/x402/labs/decryptDataKey`                  | `decryptDataKey`               | Decrypt a file's data key for an authorized caller       |
 | `/x402/labs/createAnnouncement`              | `createAnnouncement`           | **Deprecated** — announcements are no longer surfaced in the Molecule app. Still allow-listed and still charged; do not build on it |
 
-The path mutation must match the top-level GraphQL mutation field in the request body, otherwise the gateway returns `400`. The allow-list above is the single source of truth in `lambda/x402-gateway-lambda/mutations.ts` (`X402_WRITE_MUTATIONS`).
+The path mutation must match the top-level GraphQL mutation field in the request body, otherwise the gateway returns `500` with a message naming both (see [Errors › x402 Gateway errors](errors.md#gateway-responses)). A path that isn't on the allow-list returns `400`. The allow-list above is the single source of truth in `lambda/x402-gateway-lambda/mutations.ts` (`X402_WRITE_MUTATIONS`).
 
 ---
 
@@ -228,7 +228,7 @@ payment-signature: <base64 x402 payment payload>
 }
 ```
 
-The `200` body is the mutation's GraphQL response verbatim, so read it exactly as on the Labs API: the mutation succeeded when `error` is `null`; otherwise branch on `error.code` — see [Error Handling](labs-api/README.md#error-handling). Note that settlement is triggered by the upstream `2xx`, not by mutation success — a `200` whose body carries a non-null `error` (e.g. `VALIDATION_FAILED`, `UNAUTHORIZED`) is still settled, so you pay for a mutation that failed in-band; only an upstream `4xx`/`5xx` skips settlement. Validate inputs (ids, categories/tags, role) before paying.
+The `200` body is the mutation's GraphQL response verbatim, so read it exactly as on the Labs API: the mutation succeeded when `error` is `null`; otherwise branch on `error.code` — see [Errors](errors.md#forwarded-mutation). Note that settlement is triggered by the upstream `2xx`, not by mutation success — a `200` whose body carries a non-null `error` (e.g. `VALIDATION_FAILED`, `UNAUTHORIZED`) is still settled, so you pay for a mutation that failed in-band; only an upstream `4xx`/`5xx` skips settlement. Validate inputs (ids, categories/tags, role) before paying. The one `200` that didn't run is a top-level `RATE_LIMITED` error: it's still settled, and you resend with a fresh payment once `retryAfterSeconds` has passed (see [Errors › Forwarded mutation](errors.md#forwarded-mutation)).
 
 Constraints enforced by the gateway (`validateMutationQuery`):
 
@@ -270,13 +270,18 @@ Facilitator authentication uses Coinbase CDP API keys (`CDP_API_KEY_ID_SECRET_AR
 | Status | Meaning                                                                                  |
 | ------ | ---------------------------------------------------------------------------------------- |
 | `200`  | Payment verified, upstream AppSync returned `2xx`. Body is the AppSync response verbatim; settlement headers are merged in. |
-| `402`  | Payment required or payment verification failed. Body includes facilitator hints in headers. |
-| `400`  | Path mutation mismatch, missing `query`, invalid GraphQL, or unresolvable payer address. |
+| `402`  | Payment required (`message: "Payment required"`) or payment verification failed (`message: "Payment verification failed"`). The requirements are in the `payment-required` header. |
+| `400`  | Missing path mutation, a mutation not on the allow-list, missing body or `query`, unresolvable payer address, or a gateway misconfiguration (`Route configuration error`). |
+| `500`  | Body isn't valid JSON, the `query` isn't exactly one mutation matching the path, or an unexpected gateway failure. An unexpected `500` can happen after the mutation ran. |
 | `4xx/5xx` | Upstream AppSync error — settlement is skipped and the upstream response is returned as-is. |
+
+Every error body the gateway builds itself is `{"isSuccess": false, "message": "…"}`, with no `code`. The full table, with what to do for each, is on [Errors › x402 Gateway errors](errors.md#x402-gateway-errors).
 
 ### Idempotency
 
-Each minted service token has a unique `jti` claim, so requests are not idempotent by default — replaying the same signed payment may be rejected by the facilitator's replay protection, and the downstream AppSync call may succeed twice if you retry after a settlement failure. Agents should treat settlement failures as "payment not charged yet" and re-sign.
+Each minted service token has a unique `jti` claim, so requests are not idempotent — replaying the same signed payment may be rejected by the facilitator's replay protection, and resending a mutation runs it again.
+
+**A settlement failure is not a failed mutation.** Settlement runs after the mutation, so when it fails the gateway still returns `200` with the mutation's result, and the `payment-response` header decodes to `success: false` with an `errorReason`. The mutation already ran and you were not charged. **Don't re-sign and resend**: that runs the mutation a second time. See [Errors › Settlement result](errors.md#settlement-result).
 
 ---
 
@@ -288,7 +293,7 @@ Beyond that, three habits:
 
 * **Read the price every time.** It is quoted per request and per mutation; nothing guarantees it stays at $0.01.
 * **Check authorization before paying.** Confirm the lab exists and the payer wallet holds the role the mutation needs (`labWithDataRoomAndFiles`, `listLabMembers` — both public and free) before signing anything. Payment does not grant a role.
-* **Treat a settlement failure as "not charged yet."** Re-sign rather than assuming the transfer went through — see [Idempotency](#idempotency).
+* **Check `payment-response` on every `200`.** A failed settlement means you weren't charged, but the mutation still ran — don't resend it. See [Idempotency](#idempotency).
 
 If you would rather not implement the handshake at all, the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin's `x402_pay` tool does the whole flow in one call. See the [Developers / AI Agents guide](../user-guides/developers-ai-agents.md) for broader integration patterns, and the [Labs API reference](labs-api/README.md) for the full GraphQL signatures of each gated mutation.
 
@@ -300,6 +305,7 @@ If you would rather not implement the handshake at all, the [Molecule Skill](../
 - [Glossary](../references/glossary.md) — every Molecule term used in these docs, defined in a sentence
 - [Molecule Skill](../ai-tooling/molecule-skill.md) — `x402_pay` does this handshake in one tool call
 - [Labs API](labs-api/README.md) — full mutation signatures and variable types
+- [Errors](errors.md) — every gateway status and message, and when a retry is safe
 - [Developers / AI Agents](../user-guides/developers-ai-agents.md) — agent integration guide
 - [x402 specification](https://www.x402.org/)
 

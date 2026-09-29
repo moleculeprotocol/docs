@@ -112,6 +112,7 @@ The full quickstart — prerequisites, costs, and a ten-minute path to a lab wit
 | Let an agent write into a lab someone else owns | [Agent access](getting-started/agent-as-a-lab-contributor.md)                                        |
 | Tokenize a Lab into IP Tokens (IPTs)            | [Tokenization API](tokenization-api.md)                                                              |
 | Pay per call without a long-lived token         | [x402 Gateway](x402-gateway.md)                                                                      |
+| Handle errors and retries across every API      | [Errors](errors.md)                                                                                  |
 
 ### Make your first request
 

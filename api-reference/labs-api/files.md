@@ -4,7 +4,7 @@ Working with files in a Lab dataroom: the three-step upload flow (initiate → u
 
 > **Looking for a runnable walkthrough?** This page is the per-operation reference. For a first upload with expected responses and failure handling at every step, use [Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md) or [Upload an encrypted file](../getting-started/upload-encrypted-file.md) (encrypted, with a decrypt round trip).
 
-> **Note**: Every mutation on this page returns its failure in-band: the result carries `error: ApiError`, and success means `error` is `null`. Branch on `error.code` — never on `message` text — and quote `requestId` when reporting a problem. See [Error Handling](README.md#error-handling) for the `ApiError` shape, how to read `details`, and the list of error codes.
+> **Note**: Every mutation on this page returns its failure in-band: the result carries `error: ApiError`, and success means `error` is `null`. Branch on `error.code` — never on `message` text — and quote `requestId` when reporting a problem. See [Errors](../errors.md#labs-api-errors) for the `ApiError` shape, how to read `details`, and the list of error codes.
 
 ## Step 1: Initiate File Upload
 
@@ -113,6 +113,12 @@ if (!uploadResponse.ok) {
   throw new Error(`Upload failed: ${uploadResponse.statusText}`);
 }
 ```
+
+This `PUT` goes to storage, not to the API, so a failure here is a plain HTTP error with no `ApiError`. If it fails:
+
+- Send the body as binary (`--data-binary` in curl)
+- Send exactly the headers returned in Step 1
+- Check that the presigned URL hasn't expired (it expires after \~15 minutes); if it has, start again from Step 1
 
 ## Step 3: Finish File Upload
 

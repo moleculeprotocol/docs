@@ -87,7 +87,7 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -d '{
-    "query": "mutation GenerateOclMembershipAgreement($agreementData: AWSJSON!) { generateOclMembershipAgreement(agreementData: $agreementData) { agreementKey agreementUrl agreementContentHash agreementType generatedAt isSuccess error { message } } }",
+    "query": "mutation GenerateOclMembershipAgreement($agreementData: AWSJSON!) { generateOclMembershipAgreement(agreementData: $agreementData) { agreementKey agreementUrl agreementContentHash agreementType generatedAt isSuccess error { code message retryable } } }",
     "variables": {
       "agreementData": "{\"oclId\":\"0x0101000000000000000000000000000000000000000000000000000000000042\",\"symbol\":\"LAB-SYM\",\"title\":\"Lab Membership Agreement\"}"
     }
@@ -172,7 +172,7 @@ The terms message is reconstructed onchain by `OclTermsPermissioner.specificTerm
 
 ## Error Handling
 
-All mutations follow a consistent error response format:
+The Tokenization API keeps its own envelope, separate from the Labs API's `ApiError`. Every result, queries included, returns HTTP `200` with `isSuccess` and an `error` object:
 
 ```json
 {
@@ -180,18 +180,24 @@ All mutations follow a consistent error response format:
   "error": {
     "message": "Error description",
     "code": "ERROR_CODE",
-    "retryable": true
+    "retryable": false,
+    "details": null
   }
 }
 ```
 
-### Common Errors
+Select `error { code message retryable }` on every operation, branch on `error.code`, and retry only when `retryable` is `true`. There's no `requestId`. The full code list, how this envelope differs from the Labs API, and the failures that bypass it are on the shared [Errors](errors.md#tokenization-api-errors) page.
 
-| Error Code                | Description                                  | Solution                               |
-| ------------------------- | -------------------------------------------- | -------------------------------------- |
-| 401 Unauthorized          | Missing or invalid consumer credential       | Check the `Authorization` header — the `mol_` credential goes in directly, with no `Bearer` prefix |
-| 400 Bad Request           | Invalid parameters or malformed JSON         | Verify input data format               |
-| `INVALID_INPUT`           | Required fields missing or malformed         | Verify the input object shape          |
+The errors you'll see in the OCL flow on this page:
+
+| Code | `retryable` | From | Fix |
+| --- | --- | --- | --- |
+| `INVALID_INPUT` | false | both | Check the input shape and the `oclId` format |
+| `INVALID_INPUT` | false | `getOclTermsMessage` | No agreement at `agreementKey`, or `contentHash` doesn't match it. Pass the exact `agreementKey` and `agreementContentHash` returned by `generateOclMembershipAgreement` |
+| `INVALID_METADATA` | false | `generateOclMembershipAgreement` | `agreementData` couldn't be parsed as JSON. Check the string you stringified |
+| `INTERNAL_ERROR` | **true** | both | Retry with backoff |
+
+A missing or invalid consumer credential is rejected with HTTP `401` before any of this runs. Check the `Authorization` header: the `mol_` credential goes in directly, with no `Bearer` prefix.
 
 Separately, the smart contracts revert with their own errors — most commonly `AlreadyTokenized()` (each Lab can only be tokenized once) and `MustControlLab()` (only the Lab's controller can tokenize) from the `OclTokenizer`.
 

@@ -223,7 +223,7 @@ Production also enforces a query-depth limit of 10, which fails at execution tim
 | What every term in these guides means | [Glossary](../../references/glossary.md) |
 | The config and helpers every tutorial uses | [Shared Setup](shared-setup.md) |
 | Every operation, parameter and error code | [Labs API](../labs-api/README.md) |
-| What each error code means and how to read it | [Error handling](../labs-api/README.md#error-handling) |
+| What each error code means and how to read it | [Errors](../errors.md) |
 | Paying per call, and the gateway base URLs | [x402 Gateway](../x402-gateway.md) |
 | What a Lab actually is, onchain | [Molecule Labs](../../technical-deep-dive/onchain-lab.md) |
 
