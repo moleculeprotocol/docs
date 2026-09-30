@@ -193,7 +193,7 @@ A few things follow automatically from that swap:
 What doesn't follow automatically, and is on you:
 
 * **Real funds.** Minting on `base` spends real ETH. Test on staging first.
-* **Introspection is off in production** and query depth is capped at 10. Generate types against staging — see [Getting the schema](#getting-the-schema).
+* **Introspection is off in production** and query depth is capped at 10. Generate types against staging — see [Getting the schema](#getting-the-schema). The other differences between the two environments are on [Rate & Query Limits](../rate-limits.md#staging-and-production).
 * **`SERVICE_NAME`** should identify the real integration; it is echoed into the sign-in message and stored against the issued token.
 * Full deployment list, including every other OCL contract on both chains: [Contracts reference](../../references/contracts/README.md).
 

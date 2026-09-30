@@ -113,6 +113,7 @@ The full quickstart — prerequisites, costs, and a ten-minute path to a lab wit
 | Tokenize a Lab into IP Tokens (IPTs)            | [Tokenization API](tokenization-api.md)                                                              |
 | Pay per call without a long-lived token         | [x402 Gateway](x402-gateway.md)                                                                      |
 | Handle errors and retries across every API      | [Errors](errors.md)                                                                                  |
+| Know the rate, query and storage limits         | [Rate & Query Limits](rate-limits.md)                                                                |
 
 ### Make your first request
 
