@@ -26,10 +26,10 @@ For how a refused request looks on the wire and how to retry it, see [Errors](er
 | [Edge request counts](#edge-request-counts) | each source IP and each credential, per 5 minutes | see [Edge request counts](#edge-request-counts) | raw HTTP `403` | No, counted only |
 | [Query depth](#query-depth) | the whole query | 10 levels, production only | `QueryDepthLimitReached` | Yes |
 | [Per-field selection](#per-field-selection-limits) | one field's own sub-selection | depth 6, 100 selections | `COMPLEXITY_LIMIT_EXCEEDED` | Yes |
-| [List size](#lists-without-paging-arguments) | lists with no paging arguments | 1000 items; 50 for `Token.relations` and `Token.markets` | `COMPLEXITY_LIMIT_EXCEEDED` | Yes |
+| [List size](#lists-without-paging-arguments) | 11 list fields with no paging arguments | 1000 items; 50 for `Token.relations` and `Token.markets` | `COMPLEXITY_LIMIT_EXCEEDED` | Yes |
 | [Page size and filters](#page-size-sorting-and-filters) | connection arguments | 100 per page, 3 sort keys, 100 ids, 200-character strings | `VALIDATION_FAILED` | Yes |
 | [Storage](#storage) | each lab's data room | 5 GB | contact Molecule | Yes |
-| [Concurrency](#concurrency) | none | no limit | `TIMEOUT` under load | — |
+| [Concurrency](#concurrency) | none | no limit | `TIMEOUT` or `INTERNAL_ERROR` under load | — |
 
 ---
 
@@ -69,6 +69,7 @@ A personal credential's budget is roughly one or two of the heaviest queries see
 
 - **A budget is per credential, not per process.** Every process, container or agent using the same credential draws from the same window. If several of them share one credential, coordinate their backoff, or ask for one credential each.
 - **Personal credentials share a budget per owner.** All the `mol_usr-…` credentials you issue draw from one window. Revoking a credential and issuing a new one doesn't reset it.
+- **x402 payers share one budget.** Every call through the [x402 Gateway](x402-gateway.md) is made with the gateway's own partner credential, so all payers draw from the same window. That credential isn't exempt and runs on the default 250,000,000-unit budget. Every x402 call is a mutation, so each one is charged ×10. A `RATE_LIMITED` you get through the gateway can be caused by other payers' traffic, and it's still settled: see [Errors › Forwarded mutation](errors.md#forwarded-mutation).
 - **Windows are fixed, not rolling.** Each window starts on a 5-minute boundary, and `retryAfterSeconds` in a denial is the time until the current one ends.
 
 ### What is charged
@@ -76,7 +77,7 @@ A personal credential's budget is roughly one or two of the heaviest queries see
 - **Personal credentials are charged on every request.**
 - **Partner credentials may be charged on a sample.** A partner credential is charged either on every request or once per authorization-cache period (up to 5 minutes). Molecule sets which applies per credential. Sampled budgets are calibrated on the same sampled numbers, so plan as if every request counts.
 - **Only authenticated machine requests are charged.** A request with a missing or invalid credential is refused before it's priced.
-- **Retries are charged too.** A denied request is itself charged, so tight-looping on `RATE_LIMITED` keeps the window empty. See [Rate-limited requests](errors.md#rate-limited-requests) for the backoff to use.
+- **Retries are charged too.** A denied request is itself charged, and a retry before `retryAfterSeconds` can't succeed: it only spends requests, which also count against the [edge request counts](#edge-request-counts). See [Rate-limited requests](errors.md#rate-limited-requests) for the backoff to use.
 
 ### Signed-in sessions
 
@@ -109,14 +110,14 @@ Staging has no depth limit. It also has introspection enabled, which production 
 
 ## Per-field selection limits
 
-Separately from the whole-query depth, each field measures its **own** sub-selection, the part of the query below it:
+Separately from the whole-query depth, each field measures its **own** sub-selection, the part of the query below it. The token fields are the exception: `token`, `tokenById`, `tokens`, `Lab.tokens`, `linkToken` and `unlinkToken` aren't measured yet.
 
 | Limit | Value |
 | --- | --- |
 | Depth, counting the field itself as level 1 | 6 |
 | Selections, including `__typename` | 100 |
 
-Over either one, the field fails with `COMPLEXITY_LIMIT_EXCEEDED` and `details.reason: "QUERY_SHAPE_LIMIT"`. `details.field` names the field that refused, `details.limit` says which limit (`depth` or `selections`), and `details.observed` and `details.allowed` give the numbers:
+Over either one, the field fails with `COMPLEXITY_LIMIT_EXCEEDED` and `details.reason: "QUERY_SHAPE_LIMIT"`. `details.field` names the field that refused as a `Type.field` coordinate, such as `"Query.labs"`. `details.limit` says which limit (`depth` or `selections`), and `details.observed` and `details.allowed` give the numbers:
 
 ```json
 {
@@ -127,7 +128,7 @@ Over either one, the field fails with `COMPLEXITY_LIMIT_EXCEEDED` and `details.r
     "retryable": false,
     "details": {
       "reason": "QUERY_SHAPE_LIMIT",
-      "field": "labActivity",
+      "field": "Query.labActivity",
       "limit": "selections",
       "observed": 103,
       "allowed": 100
@@ -136,9 +137,11 @@ Over either one, the field fails with `COMPLEXITY_LIMIT_EXCEEDED` and `details.r
 }
 ```
 
+On a Labs API mutation, the refusal comes back in the mutation's `error` field instead, with `code: "COMPLEXITY_LIMIT_EXCEEDED"` and the same `details`. See [Failed mutation](errors.md#failed-mutation).
+
 On union results, such as an activity feed, the branches add up: the selections under every `... on` branch count towards the same 100. Select only the fields you render from each branch.
 
-A fragment spread inside a `... on` branch can't be measured, so it's refused with `details.reason: "QUERY_SHAPE_UNVERIFIABLE"` and no numbers. Inline the fragment's fields into the branch and retry.
+A named fragment spread anywhere inside a `... on` branch of a union or interface result can't be measured, so it's refused with `details.reason: "QUERY_SHAPE_UNVERIFIABLE"`, `details.limit: "shape"` and no numbers. Inline the fragment's fields into the branch and retry. A selection too large to measure gets the same answer.
 
 Retrying an unchanged query gives the same answer; neither reason is retryable.
 
@@ -146,15 +149,28 @@ Retrying an unchanged query gives the same answer; neither reason is retryable.
 
 ## Lists without paging arguments
 
-Some list fields return every item and take no `first` or `limit` argument, for example `Lab.members` and `DataRoom.files`. Each has a size limit, stated in its field description: 1000 items for most of them, and 50 for `Token.relations` and `Token.markets`. Above it, a query that selects the list fails with `COMPLEXITY_LIMIT_EXCEEDED` and `details.reason: "RESULT_CARDINALITY_LIMIT"`. A shortened list is never returned as if it were complete.
+Eleven list fields return every item, take no `first` or `limit` argument, and have a size limit instead, stated in each field's description:
 
-The affected fields and how the failure spreads are covered in [the changelog entry](changelog.md#lists-without-paging-arguments-now-fail-above-a-size-limit).
+| Field | Limit |
+| --- | --- |
+| `Lab.members`, `LabRef.members`, `ListLabMembersResult.members` | 1000 |
+| `DataRoom.files` | 1000 |
+| `Announcement.attachments`, `SearchLabsAnnouncement.attachments` | 1000 |
+| `OnChainEvent.events` | 1000 |
+| `FileCategoriesAndTagsResult.data`, `FileCategory.tags` | 1000 |
+| `Token.relations`, `Token.markets` | 50 |
+
+Above its limit, a query that selects the list fails with `COMPLEXITY_LIMIT_EXCEEDED` and `details.reason: "RESULT_CARDINALITY_LIMIT"`. `details.field` names the list as a `Type.field` coordinate, and `details.limit` is its limit as a number, for example `1000`. Unlike the per-field selection limits, there's no `details.observed`. A shortened list is never returned as if it were complete.
+
+`listLabMembers` is the one exception to "selects the list": it fails over the limit even when the query doesn't select `members`.
+
+Which part of the response fails, the list field alone or the root field that returned it, is covered in [the changelog entry](changelog.md#lists-without-paging-arguments-now-fail-above-a-size-limit).
 
 ---
 
 ## Page size, sorting and filters
 
-Connection fields (the `…Connection` queries with `first` / `after`) validate their arguments before running:
+Connection fields (`labsConnection`, `tokens` and `Lab.tokens`, paged with `first` / `after`) validate their arguments before running:
 
 | Argument | Limit |
 | --- | --- |
@@ -177,14 +193,18 @@ Each lab's data room can hold **5 GB** by default. Molecule can raise the limit 
 
 There is no limit on how many requests you have in flight, and no number to stay under. The cost budget is the only throttle, and it counts per window, not per moment.
 
-That doesn't make concurrency free. Requests in flight at the same time share database capacity, so running many at once makes each one slower. Past some point, one of them fails with `TIMEOUT` and `details.reason: "DB_POOL_TIMEOUT"` (or `DB_CONNECT_TIMEOUT`). Read that as backpressure: lower your concurrency, then retry with backoff. Retrying at the same width won't help. `details.reason: "DB_QUERY_TIMEOUT"` or `"LAMBDA_TIMEOUT"` is different: a single request was too large, so reduce its page size or selection instead.
+That doesn't make concurrency free. Requests in flight at the same time share database capacity, so running many at once makes each one slower. Past some point, requests start failing, and not all in the same way:
+
+- **`TIMEOUT` with `details.reason: "DB_POOL_TIMEOUT"` or `"DB_CONNECT_TIMEOUT"`**: the request waited too long for a database connection. Usually that's backpressure: lower your concurrency, then retry with backoff. Retrying at the same width won't help. One heavy request can also cause it by itself, because each request gets a single connection and the queries behind its fields wait their turn on it. If it keeps happening at low concurrency, trim the selection.
+- **`TIMEOUT` with `details.reason: "LAMBDA_TIMEOUT"`**: a single request was too large. Reduce its page size or selection.
+- **`INTERNAL_ERROR`**: when the service is already running as many requests as it can, new ones are rejected before they run. That comes back as a masked `INTERNAL_ERROR`, not `TIMEOUT`, so a burst of them under load is backpressure too.
 
 If you're walking every page of a list, for example to build an index or a sitemap:
 
 1. **Use `labsConnection`, not `labs`.** It's answered in one query per page, where `labs` is much slower per page. Add `filter: { hasDataRoom: true }` if you only want labs that have a page.
-2. **Select only what you render.** `totalCount`, `latestContributionAt` and the assessment fields are computed only when you select them, and they're the expensive ones.
+2. **Select only what you render.** `totalCount`, the scoring fields (`weightedScore`, `scoreInterpretation`, `criterionScores`, `scoredAt`, `todos`), `members`, `ipnft` and `legalAgreementStatus` are fetched only when you select them; `totalCount` is the most expensive.
 3. **Walk sequentially.** The next cursor arrives with the current page, and with (1) and (2) a full walk is usually fast without any parallelism.
-4. **If you still need parallelism, keep it small.** Treat the first `TIMEOUT` as the ceiling you just found, and drop back to sequential.
+4. **If you still need parallelism, keep it small.** Treat the first `TIMEOUT` or `INTERNAL_ERROR` as the ceiling you just found, and drop back to sequential.
 
 ---
 
