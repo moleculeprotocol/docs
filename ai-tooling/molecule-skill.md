@@ -71,7 +71,7 @@ The operating wallet pays real costs: USDC on Base for x402-billed mutations plu
 
 All configuration and secrets are plain **process environment variables** read by the MCP server subprocess — set them wherever your harness injects env into MCP servers (the `env` block of the MCP registration, or Claude Code's settings files as shown in [Installation](molecule-skill.md#claude-code)). Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys.
 
-Every non-secret value is published: the GraphQL endpoints on [API Overview](../api-reference/README.md), the [x402 Gateway base URLs](../api-reference/x402-gateway.md#gateway-base-urls), and the contract addresses in the [Contracts reference](../references/contracts/). The only thing you have to request is a `mol_` consumer credential — see [Getting Started](../api-reference/getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) to request one.
+Every non-secret value is published: the GraphQL endpoints on [API Overview](../api-reference/README.md), the [x402 Gateway base URLs](../api-reference/x402-gateway.md#gateway-base-urls), and the contract addresses in the [Contracts reference](../references/contracts/). The only thing you have to request is a `mol_` consumer credential — see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential-the-one-manual-step) to request one.
 
 **Ready-to-paste values per environment:**
 
@@ -139,7 +139,7 @@ The plugin is open source — install it from [moleculeprotocol/mol-labs-plugin]
 git clone https://github.com/moleculeprotocol/mol-labs-plugin.git
 ```
 
-The one value you have to request is a `mol_` **consumer credential** — see [Getting Started](../api-reference/getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) to request one. Everything else — endpoints, gateway base URLs, contract addresses — is in the [Configuration](molecule-skill.md#configuration) table above. The repository layout:
+The one value you have to request is a `mol_` **consumer credential** — see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential-the-one-manual-step) to request one. Everything else — endpoints, gateway base URLs, contract addresses — is in the [Configuration](molecule-skill.md#configuration) table above. The repository layout:
 
 ```
 mol-labs-plugin/

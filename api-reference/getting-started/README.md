@@ -55,7 +55,7 @@ All three open with the same configuration constants and helper functions, which
 
 Two things, and only one of them involves a human.
 
-### 1. A `mol_` consumer credential — the one manual step
+### A consumer credential (the one manual step)
 
 Every request to the API carries a consumer credential in the `Authorization` header. Until the Developer Portal ships (coming soon), you will need to request this from the Molecule team.
 
@@ -79,7 +79,7 @@ Treat the whole string as one secret: it is not split into a public and a privat
 `Authorization: Bearer mol_…` fails authentication. `Bearer` is reserved for Privy user tokens.
 {% endhint %}
 
-### 2. A funded wallet on Base Sepolia
+### A funded wallet on Base Sepolia
 
 **You only need this if you are creating a new Lab from code.** Creating a Lab means minting a LabNFT, which is an onchain transaction, and the wallet that sends it pays the gas. If you create your Lab in the Molecule app instead, you need no funds at all — Molecule covers those transactions for you. The app is at [labs.molecule.xyz](https://labs.molecule.xyz/), or [testnet.labs.molecule.xyz](https://testnet.labs.molecule.xyz/) for the Base Sepolia environment these tutorials run against.
 

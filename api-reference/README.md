@@ -84,7 +84,7 @@ Not an API surface of its own — the whole Labs workflow packaged as an agent s
 All Molecule APIs require a consumer credential; the Labs API additionally uses a Service Token for write operations, which callers **issue for themselves** by signing a message with their wallet — no manual provisioning. Obtaining credentials, the per-API header requirements, and the full Labs API authentication model (public queries vs. protected mutations) are documented on the dedicated [Authentication](authentication.md) page.
 
 {% hint style="info" %}
-**The Developer Portal is coming soon.** You'll be able to issue and manage your `mol_` consumer credentials there. Until it ships, request one from the Molecule team — see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step).
+**The Developer Portal is coming soon.** You'll be able to issue and manage your `mol_` consumer credentials there. Until it ships, request one from the Molecule team — see [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step).
 {% endhint %}
 
 ---

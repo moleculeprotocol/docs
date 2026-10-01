@@ -6,16 +6,16 @@ There are two credentials, and they do different jobs. If any term on this page 
 
 | Credential | Answers | How you get it |
 | ---------- | ------- | -------------- |
-| **Consumer credential** (`mol_<consumerId>_<secret>`) | *Which API consumer is calling?* | Requested once from the Molecule team ([how to request](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step)) — the one manual step (Developer Portal coming soon) |
+| **Consumer credential** (`mol_<consumerId>_<secret>`) | *Which API consumer is calling?* | Requested once from the Molecule team ([how to request](getting-started/README.md#a-consumer-credential-the-one-manual-step)) — the one manual step (Developer Portal coming soon) |
 | **Service Token** (JWT) | *Which wallet is calling, so what may it do?* | **Self-issued**: sign a message with your wallet. No human in the loop |
 
 ## Obtaining API Access
 
 {% hint style="info" %}
-**The Developer Portal is coming soon.** You'll be able to issue and manage your `mol_` consumer credentials there. Until it ships, request one from the Molecule team — see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) for the steps.
+**The Developer Portal is coming soon.** You'll be able to issue and manage your `mol_` consumer credentials there. Until it ships, request one from the Molecule team — see [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step) for the steps.
 {% endhint %}
 
-Every request carries a **consumer credential** in the `Authorization` header. See [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) for how to request one.
+Every request carries a **consumer credential** in the `Authorization` header. See [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step) for how to request one.
 
 What comes back is one opaque string per environment:
 

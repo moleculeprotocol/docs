@@ -56,7 +56,7 @@ All Molecule APIs (Labs, Tokenization — they share one GraphQL endpoint) now a
 + Authorization: mol_<consumerId>_<secret>
 ```
 
-**Migration:** Request a consumer credential (see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step)) and send it as `Authorization: mol_<consumerId>_<secret>` instead of `x-api-key` — do not prefix it with `Bearer`, which is reserved for Privy user tokens and will fail authentication. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before. See [Authentication](authentication.md) for the full header reference.
+**Migration:** Request a consumer credential (see [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step)) and send it as `Authorization: mol_<consumerId>_<secret>` instead of `x-api-key` — do not prefix it with `Bearer`, which is reserved for Privy user tokens and will fail authentication. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before. See [Authentication](authentication.md) for the full header reference.
 
 ---
 
