@@ -29,7 +29,7 @@ icon: stamp
 
 ### Related
 
-* [Contracts](../references/contracts/README.md) — deployed contract addresses
+* [Supported Networks & Contracts](../references/contracts/README.md) — chain IDs and deployed contract addresses
 * [Architecture](../technical-deep-dive/architecture.md) — what the audited contracts do
 
 {% include "../.gitbook/includes/support.md" %}

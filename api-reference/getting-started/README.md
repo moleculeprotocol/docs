@@ -29,7 +29,7 @@ Three ways in. None is better than the others — pick by who is making the call
 | **You run an AI coding agent** (Claude Code, Codex, Cursor) and want it to do the whole workflow for you | The Molecule Skill plugin, which wraps every network, onchain and crypto operation as a single tool call | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
 | **You'd rather pay per call** than hold a long-lived credential | The x402 gateway, which settles USDC on Base per request | [x402 Gateway](../x402-gateway.md) |
 
-These combine rather than compete — choosing one now doesn't lock you out of the others. A common setup is the plugin for the workflow and x402 for the calls that cost money.
+These combine rather than compete — choosing one now doesn't lock you out of the others. A common setup is the plugin for the workflow and x402 for the calls that cost money. Check out [Common Use Cases](../../use-cases.md) to find out how our products are being utilised.
 
 ### If you are an agent reading this
 
@@ -59,15 +59,7 @@ Two things, and only one of them involves a human.
 
 Every request to the API carries a consumer credential in the `Authorization` header. Until the Developer Portal ships (coming soon), you will need to request this from the Molecule team.
 
-Request it on the [Molecule Discord](https://t.co/L0VEiy4Bjk): post in [the general-chat channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**, using this template (the channel link needs you to be in the server — join with the invite first):
-
-```
-Consumer credential request
-- Who: <your name / org>
-- What you're building: <one line>
-- Environment: staging   (add production if you need both)
-- Contact: <Discord handle or email>
-```
+Request it on [labs.molecule.xyz](https://labs.molecule.xyz) using the API key request button.
 
 What comes back is a single opaque string per environment:
 

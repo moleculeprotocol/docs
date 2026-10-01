@@ -1,6 +1,7 @@
 # Table of contents
 
 - [Home](home.md)
+- [Common Use Cases](use-cases.md)
 
 ## INTRODUCTION
 
@@ -61,6 +62,13 @@
   - [Tokenization API](release-notes/tokenization-api.md)
   - [x402 Gateway](release-notes/x402-gateway.md)
 
+## Networks & Contracts
+
+- [Supported Networks & Contracts](references/contracts/README.md)
+  - [IPT](references/contracts/ipt.md)
+  - [Tokenizer](references/contracts/tokenizer.md)
+  - [AccessResolver](references/contracts/accessresolver.md)
+
 ## AI Tooling
 
 - [Which Tool Do I Need?](ai-tooling/README.md)
@@ -70,10 +78,6 @@
 ## REFERENCES
 
 - [Glossary](references/glossary.md)
-- [Contracts](references/contracts/README.md)
-  - [IPT](references/contracts/ipt.md)
-  - [Tokenizer](references/contracts/tokenizer.md)
-  - [AccessResolver](references/contracts/accessresolver.md)
 
 ## Security
 

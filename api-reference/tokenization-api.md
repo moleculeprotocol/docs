@@ -19,7 +19,7 @@ All Tokenization API mutations require a consumer credential.
 
 ### Obtaining a Consumer Credential
 
-The consumer credential is the same one every Molecule API uses — if you already have one, you are ready. To request one, use the [credential request template](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) on our [Discord community](https://t.co/L0VEiy4Bjk), adding your expected tokenization volume.
+The consumer credential is the same one every Molecule API uses — if you already have one, you are ready. To request one, go to [labs.molecule.xyz](https://labs.molecule.xyz) — see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step).
 
 You'll receive:
 
@@ -225,7 +225,7 @@ For complete code examples including:
 * Error handling and retry logic
 * Safe multisig integration
 
-Contract addresses, ABIs and interfaces are published in the [Contracts reference](../references/contracts/README.md) — [`OclTokenizer`](../references/contracts/tokenizer.md), [`IPToken`](../references/contracts/ipt.md), [`AccessResolver`](../references/contracts/accessresolver.md) — so no request is needed for those. For the remaining narrative material (Safe multisig integration, worked retry logic), ask on the [Molecule Discord](https://t.co/L0VEiy4Bjk) using the [same request template](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step), naming the Technical Integration Guide instead of a credential.
+Contract addresses, ABIs and interfaces are published in the [Contracts reference](../references/contracts/README.md) — [`OclTokenizer`](../references/contracts/tokenizer.md), [`IPToken`](../references/contracts/ipt.md), [`AccessResolver`](../references/contracts/accessresolver.md) — so no request is needed for those. For the remaining narrative material (Safe multisig integration, worked retry logic), ask on the [Molecule Discord](https://t.co/L0VEiy4Bjk), naming the Technical Integration Guide.
 
 ### Basic Example Structure
 
@@ -294,8 +294,8 @@ console.log('Lab tokenized!', txHash);
 For assistance with the Tokenization API:
 
 * **Smart contracts**: addresses, ABIs and interfaces are published in the [Contracts reference](../references/contracts/README.md) — no request needed
-* **Consumer credential**: the [request template](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) on Getting Started
-* **Technical Integration Guide**: ask on Discord with that same template, naming the guide instead of a credential
+* **Consumer credential**: request one on [labs.molecule.xyz](https://labs.molecule.xyz) — see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step)
+* **Technical Integration Guide**: ask on Discord, naming the guide
 * **Discord**: join our [community](https://t.co/L0VEiy4Bjk) for support
 
 ***

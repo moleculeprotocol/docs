@@ -171,7 +171,8 @@ const result = await generateText({
 
 * **Public Endpoint**: [https://molecule-mcp.vercel.app/mcp](https://molecule-mcp.vercel.app/mcp)
 * **MCP Specification**: [https://modelcontextprotocol.io](https://modelcontextprotocol.io)
-* **Source Code & API Key Request**: Contact the Molecule team.
+* **Source Code**: Contact the Molecule team.
+* **API Key**: Request a consumer credential on [labs.molecule.xyz](https://labs.molecule.xyz).
 
 ## Related
 
