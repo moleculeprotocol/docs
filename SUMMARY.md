@@ -1,6 +1,7 @@
 # Table of contents
 
 - [Home](home.md)
+- [Common Use Cases](use-cases.md)
 
 ## INTRODUCTION
 
@@ -54,6 +55,13 @@
 - [API Types](api-reference/types.md)
 - [API Changelog & Migration](api-reference/changelog.md)
 
+## Networks & Contracts
+
+- [Supported Networks & Contracts](references/contracts/README.md)
+  - [IPT](references/contracts/ipt.md)
+  - [Tokenizer](references/contracts/tokenizer.md)
+  - [AccessResolver](references/contracts/accessresolver.md)
+
 ## Release Notes
 
 - [Overview](release-notes/README.md)
@@ -70,10 +78,6 @@
 ## REFERENCES
 
 - [Glossary](references/glossary.md)
-- [Contracts](references/contracts/README.md)
-  - [IPT](references/contracts/ipt.md)
-  - [Tokenizer](references/contracts/tokenizer.md)
-  - [AccessResolver](references/contracts/accessresolver.md)
 
 ## Security
 

@@ -29,7 +29,7 @@ Three ways in. None is better than the others — pick by who is making the call
 | **You run an AI coding agent** (Claude Code, Codex, Cursor) and want it to do the whole workflow for you | The Molecule Skill plugin, which wraps every network, onchain and crypto operation as a single tool call | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
 | **You'd rather pay per call** than hold a long-lived credential | The x402 gateway, which settles USDC on Base per request | [x402 Gateway](../x402-gateway.md) |
 
-These combine rather than compete — choosing one now doesn't lock you out of the others. A common setup is the plugin for the workflow and x402 for the calls that cost money.
+These combine rather than compete — choosing one now doesn't lock you out of the others. A common setup is the plugin for the workflow and x402 for the calls that cost money. Check out [Common Use Cases](../../use-cases.md) for the path through these docs for what you're building.
 
 ### If you are an agent reading this
 
@@ -55,19 +55,11 @@ All three open with the same configuration constants and helper functions, which
 
 Two things, and only one of them involves a human.
 
-### 1. A `mol_` consumer credential — the one manual step
+### A consumer credential (the one manual step)
 
 Every request to the API carries a consumer credential in the `Authorization` header. Until the Developer Portal ships (coming soon), you will need to request this from the Molecule team.
 
-Request it on the [Molecule Discord](https://t.co/L0VEiy4Bjk): post in [the general-chat channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**, using this template (the channel link needs you to be in the server — join with the invite first):
-
-```
-Consumer credential request
-- Who: <your name / org>
-- What you're building: <one line>
-- Environment: staging   (add production if you need both)
-- Contact: <Discord handle or email>
-```
+Sign in at [labs.molecule.xyz](https://labs.molecule.xyz) with an account that has an email address, open **API Keys**, and click **Request access**. The team replies by email within one business day. In your reply, say whether you need staging, production, or both — every tutorial in these docs runs on staging.
 
 What comes back is a single opaque string per environment:
 
@@ -87,7 +79,7 @@ Treat the whole string as one secret: it is not split into a public and a privat
 `Authorization: Bearer mol_…` fails authentication. `Bearer` is reserved for Privy user tokens.
 {% endhint %}
 
-### 2. A funded wallet on Base Sepolia
+### A funded wallet on Base Sepolia
 
 **You only need this if you are creating a new Lab from code.** Creating a Lab means minting a LabNFT, which is an onchain transaction, and the wallet that sends it pays the gas. If you create your Lab in the Molecule app instead, you need no funds at all — Molecule covers those transactions for you. The app is at [labs.molecule.xyz](https://labs.molecule.xyz/), or [testnet.labs.molecule.xyz](https://testnet.labs.molecule.xyz/) for the Base Sepolia environment these tutorials run against.
 

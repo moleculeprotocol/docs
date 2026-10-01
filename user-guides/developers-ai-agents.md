@@ -7,7 +7,7 @@ icon: robot
 
 # Developers/AI Agents
 
-> **Want to start writing code now?** Go to [🚀 Getting Started](../api-reference/getting-started/README.md) — it helps you pick a way in and gets you to a lab with a file in it in about ten minutes. This page is the narrative map of every integration surface, for when you need to decide *what* to build rather than *how* to make the first call. New to the ecosystem? The [Glossary](../references/glossary.md) defines every Molecule term these docs use.
+> **Want to start writing code now?** Go to [🚀 Getting Started](../api-reference/getting-started/README.md) — it helps you pick a way in and gets you to a lab with a file in it in about ten minutes. This page is the narrative map of every integration surface, for when you need to decide *what* to build rather than *how* to make the first call. Looking for one specific use case? [Common Use Cases](../use-cases.md) maps each one to its page. New to the ecosystem? The [Glossary](../references/glossary.md) defines every Molecule term these docs use.
 
 ### Who This Guide Is For
 
@@ -90,14 +90,13 @@ If you're building an AI research agent, start with BioAgents. Fork the reposito
 
 If you want an AI coding agent to run the whole Lab workflow for you, install the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin — the skill plus MCP server that wraps every network, onchain and cryptographic step as one typed tool call.
 
-Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a consumer credential, a module attestation request, or any integration support — for a credential, post in [the general-chat channel](https://discord.com/channels/608198475598790656/832947534983987281) and ping **@ella**.
+Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). To request a consumer credential, see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential-the-one-manual-step). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a module attestation request or any integration support.
 
 ### Related
 
 * [Getting Started](../api-reference/getting-started/README.md) — prerequisites, costs and a ten-minute quickstart
 * [Agent access](../api-reference/getting-started/agent-as-a-lab-contributor.md) — give an agent its own role and token
 * [Molecule Skill](../ai-tooling/molecule-skill.md) — the agent plugin that runs the whole Lab workflow
-* [MCP Tools](../references/mcp-tools.md) — the read-only ecosystem-data MCP server
 * [Executor Modules](../technical-deep-dive/module-registry/executor-modules.md) — how agents transact from a Lab's account
 
 {% include "../.gitbook/includes/support.md" %}
