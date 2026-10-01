@@ -11,18 +11,18 @@ Each use case below describes something people build on Molecule. It says who it
 
 New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossary.md) explains each in a sentence or two. Everything below runs against **staging** (Base Sepolia, testnet funds) first. Moving to mainnet means changing a few constants: see [Running in Production](api-reference/getting-started/README.md#running-in-production).
 
-| I want to…                                                   | Use case                                                                             |
-| -----------------------------------------------------------  | ------------------------------------------------------------------------------------ |
-| Push data from instruments, pipelines or CI into a Lab       | [Publish research data from a pipeline](#publish-research-data-from-a-pipeline)      |
+| I want to…                                                   | Use case                                                                                  |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| Push data from instruments, pipelines or CI into a Lab       | [Publish research data from a pipeline](#publish-research-data-from-a-pipeline)           |
 | Keep files confidential but readable by chosen collaborators | [Share confidential data with collaborators](#share-confidential-data-with-collaborators) |
-| Let an AI agent read and write into a Lab I own              | [Give an AI agent access to a Lab](#give-an-ai-agent-access-to-a-lab)                |
-| Have my coding agent do the whole Lab workflow for me        | [Let a coding agent run the workflow](#let-a-coding-agent-run-the-workflow)          |
-| Show Labs, files and activity in my own app                  | [Build a dashboard over Lab data](#build-a-dashboard-over-lab-data)                  |
-| Turn a Lab into a token and fund the research                | [Tokenize a Lab and raise funding](#tokenize-a-lab-and-raise-funding)                |
-| Offer a service that writes to Labs and pays per call        | [Run a pay-per-call agent service](#run-a-pay-per-call-agent-service)                |
-| Add new onchain capabilities to Labs                         | [Extend Labs with a smart contract module](#extend-labs-with-a-smart-contract-module) |
+| Let an AI agent read and write into a Lab I own              | [Give an AI agent access to a Lab](#give-an-ai-agent-access-to-a-lab)                     |
+| Have my coding agent do the whole Lab workflow for me        | [Let a coding agent run the workflow](#let-a-coding-agent-run-the-workflow)               |
+| Show Labs, files and activity in my own app                  | [Build a dashboard over Lab data](#build-a-dashboard-over-lab-data)                       |
+| Turn a Lab into a token and fund the research                | [Tokenize a Lab and raise funding](#tokenize-a-lab-and-raise-funding)                     |
+| Offer a service that writes to Labs and pays per call        | [Run a pay-per-call agent service](#run-a-pay-per-call-agent-service)                     |
+| Add new onchain capabilities to Labs                         | [Extend Labs with a smart contract module](#extend-labs-with-a-smart-contract-module)     |
 
-***
+---
 
 ## Publish research data from a pipeline
 
@@ -67,7 +67,7 @@ For the design behind this, see [Deploying an AI Research Agent](user-guides/dev
 
 **For:** developers and scientists who would rather describe the task than script it. **Uses:** the Molecule Skill plugin (a skill plus a local MCP server), with x402 for paid calls.
 
-1. **Check it's the right tool.** The Skill is for agents that *act* on Labs. To chat about Molecule instead, use MIRA. See [Which Tool Do I Need?](ai-tooling/README.md)
+1. **Check it's the right tool.** The Skill is for agents that _act_ on Labs. To chat about Molecule instead, use MIRA. See [Which Tool Do I Need?](ai-tooling/README.md)
 2. **Install the plugin and choose a wallet backend.** See [Getting the Plugin](ai-tooling/molecule-skill.md#getting-the-plugin) and [Wallet Backends](ai-tooling/molecule-skill.md#wallet-backends).
 3. **Configure the environment.** Set staging or production, your `mol_` credential, and fund the wallet with gas and USDC for x402. See [Configuration](ai-tooling/molecule-skill.md#configuration).
 4. **Ask for the outcome.** For example: "Create a Lab and upload `results.csv` encrypted." The agent works through the Skill's phases one after another. See [What the Skill Does](ai-tooling/molecule-skill.md#what-the-skill-does).
@@ -100,14 +100,15 @@ For live onchain state the indexer doesn't cover, such as balances or allowances
 
 ## Run a pay-per-call agent service
 
-**What you end up with:** an agent or tool that writes to Labs on behalf of other people. It pays in USDC for each call instead of holding long-lived credentials, and every write is recorded under the wallet that paid.
+**What you end up with:** an agent or tool that writes to Labs whose owners have added its wallet as a member. It pays in USDC for each call instead of holding long-lived credentials, and every write is recorded under the wallet that paid.
 
 **For:** builders of third-party tools and agents that serve external users. **Uses:** the x402 Gateway (USDC on Base).
 
 1. **Check x402 fits.** Use it when you have no service token set up in advance, or when you want to pay per call. See [When to use x402](api-reference/x402-gateway.md#when-to-use-x402).
 2. **Point at the gateway and fund the payer wallet.** Staging uses Base Sepolia USDC from the Circle faucet. See [Gateway base URLs](api-reference/x402-gateway.md#gateway-base-urls).
-3. **Handle the payment challenge.** Read the 402 response, sign the payment and retry. The gateway then issues a short-lived service token that covers only that one mutation. See [Payment Flow](api-reference/x402-gateway.md#payment-flow) and [Agent Usage Pattern](api-reference/x402-gateway.md#agent-usage-pattern).
-4. **Handle both ways a call can fail.** The gateway can reject the payment, or the mutation it forwards can fail. See [x402 Gateway errors](api-reference/errors.md#x402-gateway-errors).
+3. **Make sure the payer wallet has a role on each target Lab.** Paying doesn't grant a role. Content writes need **Contributor**, and `createLab` and LabNFT-metadata changes need **Owner**. Without the role, the call returns `200` with `UNAUTHORIZED` and you are still charged. Check with the public, free `listLabMembers` query before signing. See the warning in [Reading the 402 challenge](api-reference/x402-gateway.md#reading-the-402-challenge).
+4. **Handle the payment challenge.** Read the 402 response, sign the payment and retry. The gateway then issues a short-lived service token that covers only that one mutation. See [Payment Flow](api-reference/x402-gateway.md#payment-flow) and [Agent Usage Pattern](api-reference/x402-gateway.md#agent-usage-pattern).
+5. **Handle both ways a call can fail.** The gateway can reject the payment, or the mutation it forwards can fail. See [x402 Gateway errors](api-reference/errors.md#x402-gateway-errors).
 
 ## Extend Labs with a smart contract module
 
@@ -118,9 +119,9 @@ For live onchain state the indexer doesn't cover, such as balances or allowances
 1. **Pick the module type.** An **executor** triggers actions from the Lab's account. A **fallback** adds new functions to the Lab. See [Module Registry](technical-deep-dive/module-registry/README.md), [Executor Modules](technical-deep-dive/module-registry/executor-modules.md) and [Fallback Modules](technical-deep-dive/module-registry/fallback-modules.md).
 2. **Learn how the account executes calls.** Modules are called as regular external calls, never through `delegatecall`. See [Architecture](technical-deep-dive/architecture.md).
 3. **Build and test against Base Sepolia.** The registry, factory and validator addresses are on [Supported Networks & Contracts](references/contracts/README.md). For the development cycle, see [Extending Labs with Smart Contract Modules](user-guides/developers-ai-agents.md#extending-labs-with-smart-contract-modules).
-4. **Get it attested, then installed.** Submit the module to the Molecule team for attestation. Once attested, a Lab owner can install it.
+4. **Get it attested, then installed.** Submit the module to the Molecule team for attestation through [Molecule Discord](https://t.co/L0VEiy4Bjk). Once attested, a Lab owner can install it.
 
-***
+---
 
 Is your use case missing? Ask on the [Molecule Discord](https://t.co/L0VEiy4Bjk). Describe what you're building and we'll point you to the right place.
 

@@ -53,7 +53,6 @@ MIRA serves three core user groups:
 
 ### Related
 
-* [MCP Tools](../references/mcp-tools.md) — the tools MIRA calls
 * [Funders](../user-guides/investors.md) — how funders use MIRA's assessments
 * [Scientists](../user-guides/scientists-researchers.md) — MIRA from the researcher's side
 

@@ -19,7 +19,7 @@ All Tokenization API mutations require a consumer credential.
 
 ### Obtaining a Consumer Credential
 
-The consumer credential is the same one every Molecule API uses — if you already have one, you are ready. To request one, go to [labs.molecule.xyz](https://labs.molecule.xyz) — see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step).
+The consumer credential is the same one every Molecule API uses — if you already have one, you are ready. To request one, see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step).
 
 You'll receive:
 
@@ -294,7 +294,7 @@ console.log('Lab tokenized!', txHash);
 For assistance with the Tokenization API:
 
 * **Smart contracts**: addresses, ABIs and interfaces are published in the [Contracts reference](../references/contracts/README.md) — no request needed
-* **Consumer credential**: request one on [labs.molecule.xyz](https://labs.molecule.xyz) — see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step)
+* **Consumer credential**: see [Getting Started](getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step) to request one
 * **Technical Integration Guide**: ask on Discord, naming the guide
 * **Discord**: join our [community](https://t.co/L0VEiy4Bjk) for support
 

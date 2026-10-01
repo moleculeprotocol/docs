@@ -90,14 +90,13 @@ If you're building an AI research agent, start with BioAgents. Fork the reposito
 
 If you want an AI coding agent to run the whole Lab workflow for you, install the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin — the skill plus MCP server that wraps every network, onchain and cryptographic step as one typed tool call.
 
-Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). Request a consumer credential on [labs.molecule.xyz](https://labs.molecule.xyz). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a module attestation request or any integration support.
+Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). To request a consumer credential, see [Getting Started](../api-reference/getting-started/README.md#1-a-mol-consumer-credential-the-one-manual-step). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a module attestation request or any integration support.
 
 ### Related
 
 * [Getting Started](../api-reference/getting-started/README.md) — prerequisites, costs and a ten-minute quickstart
 * [Agent access](../api-reference/getting-started/agent-as-a-lab-contributor.md) — give an agent its own role and token
 * [Molecule Skill](../ai-tooling/molecule-skill.md) — the agent plugin that runs the whole Lab workflow
-* [MCP Tools](../references/mcp-tools.md) — the read-only ecosystem-data MCP server
 * [Executor Modules](../technical-deep-dive/module-registry/executor-modules.md) — how agents transact from a Lab's account
 
 {% include "../.gitbook/includes/support.md" %}

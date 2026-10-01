@@ -29,7 +29,7 @@ Three ways in. None is better than the others — pick by who is making the call
 | **You run an AI coding agent** (Claude Code, Codex, Cursor) and want it to do the whole workflow for you | The Molecule Skill plugin, which wraps every network, onchain and crypto operation as a single tool call | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
 | **You'd rather pay per call** than hold a long-lived credential | The x402 gateway, which settles USDC on Base per request | [x402 Gateway](../x402-gateway.md) |
 
-These combine rather than compete — choosing one now doesn't lock you out of the others. A common setup is the plugin for the workflow and x402 for the calls that cost money. Check out [Common Use Cases](../../use-cases.md) to find out how our products are being utilised.
+These combine rather than compete — choosing one now doesn't lock you out of the others. A common setup is the plugin for the workflow and x402 for the calls that cost money. Check out [Common Use Cases](../../use-cases.md) for the path through these docs for what you're building.
 
 ### If you are an agent reading this
 
@@ -59,7 +59,7 @@ Two things, and only one of them involves a human.
 
 Every request to the API carries a consumer credential in the `Authorization` header. Until the Developer Portal ships (coming soon), you will need to request this from the Molecule team.
 
-Request it on [labs.molecule.xyz](https://labs.molecule.xyz) using the API key request button.
+Sign in at [labs.molecule.xyz](https://labs.molecule.xyz) with an account that has an email address, open **API Keys**, and click **Request access**. The team replies by email within one business day. In your reply, say whether you need staging, production, or both — every tutorial in these docs runs on staging.
 
 What comes back is a single opaque string per environment:
 

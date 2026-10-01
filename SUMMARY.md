@@ -55,19 +55,19 @@
 - [API Types](api-reference/types.md)
 - [API Changelog & Migration](api-reference/changelog.md)
 
-## Release Notes
-
-- [Overview](release-notes/README.md)
-  - [Labs API](release-notes/labs-api.md)
-  - [Tokenization API](release-notes/tokenization-api.md)
-  - [x402 Gateway](release-notes/x402-gateway.md)
-
 ## Networks & Contracts
 
 - [Supported Networks & Contracts](references/contracts/README.md)
   - [IPT](references/contracts/ipt.md)
   - [Tokenizer](references/contracts/tokenizer.md)
   - [AccessResolver](references/contracts/accessresolver.md)
+
+## Release Notes
+
+- [Overview](release-notes/README.md)
+  - [Labs API](release-notes/labs-api.md)
+  - [Tokenization API](release-notes/tokenization-api.md)
+  - [x402 Gateway](release-notes/x402-gateway.md)
 
 ## AI Tooling
 

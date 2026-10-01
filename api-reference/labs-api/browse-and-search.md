@@ -434,6 +434,5 @@ On a raw event, `contractName` is one of `accessresolver`, `ocl`, `ipnft`, `ipt`
 
 * [Lab Management](lab-management.md) — reads scoped to one lab
 * [Files](files.md) — reading a single file
-* [MCP Tools](../../references/mcp-tools.md) — ecosystem data for AI assistants
 
 {% include "../../.gitbook/includes/support.md" %}
