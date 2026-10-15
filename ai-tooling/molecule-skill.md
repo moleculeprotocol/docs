@@ -318,7 +318,7 @@ Claude Desktop runs local MCP servers from its config file. Open **Settings → 
 
 To add the skill, zip the `skills/aura-orchestrator` folder and upload it under **Customize → Skills → + → Upload a skill**. Skills need code execution enabled; on Team and Enterprise an admin turns on Skills for the organization first.
 
-The MCP server runs on your machine, so the plugin works in the Claude Desktop app only.
+The MCP server runs on your machine, so this works in the Claude Desktop app only — not in claude.ai in the browser.
 
 {% hint style="warning" %}
 **Not live yet:** Agent Connect is not available yet.

@@ -5,7 +5,7 @@ icon: signs-post
 
 # Which Tool Do I Need?
 
-Molecule offers three AI tools. They don't overlap — pick by what you want to do:
+Molecule offers three AI tools. Pick by what you want to do:
 
 | I want to…                                                                        | Use                                         | Runs                   | Setup                                                    |
 | --------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | -------------------------------------------------------- |

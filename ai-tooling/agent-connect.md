@@ -75,7 +75,7 @@ A connector you added on claude.ai also appears in Claude Code when you sign in 
 OpenAI's guide: [Add custom MCP server](https://developers.openai.com/api/docs/guides/custom-mcp-server).
 
 1. In ChatGPT on the web, open **Plugins**, select **+**, then **Add custom MCP server**.
-2. Enter a name, such as `Molecule`, and under **Connection** enter the address as the **Server URL**. OpenAI's own example adds a `/mcp` path; leave it out.
+2. Enter a name, such as `Molecule`, and under **Connection** enter the address as the **Server URL**, without `/mcp`.
 3. Choose **OAuth** for authentication, review the risk warning and select **I understand and want to continue**.
 4. Select **Create as a plugin**, then install the plugin.
 
@@ -132,7 +132,7 @@ Then open Cursor's **Customize** page, where `molecule` is listed, and sign in w
 
 When your app opens the browser window:
 
-1. **Sign in to Molecule** with the account you use in the Molecule app. You only do this once in that browser. If you are new to Molecule, you set up your account first and come back to this page.
+1. **Sign in to Molecule** with the account you use in the Molecule app. If you are already signed in in that browser, the page skips this step. If you are new to Molecule, you set up your account first and come back to this page.
 2. **Choose the Lab.** The page lists the Labs you own that have a data room; if you own none yet, it offers to create one. If the app is already connected to other Labs, the page lists those too: the new Lab is added to the same agent, which then reaches all of them.
 3. **Choose a role**, Viewer or Contributor. See [What each role can do](#what-each-role-can-do).
 4. **Click Connect.** If you have not accepted Molecule's API Terms of Service and Acceptable Use Policy before, the page asks you to accept them first. Molecule adds the agent to the Lab and pays the network fee. You are asked to confirm only when the Lab is held by an external wallet, which then pays the fee itself, or when your Molecule wallet is not set up to sign without asking.
@@ -176,7 +176,7 @@ You don't call tools yourself. Ask in plain words, such as "List the files in my
 {% hint style="warning" %}
 **Not live yet:** the upload limits and the handling of attached files are not final.
 
-In a chat app, the assistant writes the file into its request to Molecule, so an upload has to fit in one of its replies. That suits text, CSV, Markdown and small JSON files of up to a few hundred kilobytes. The server accepts up to 3 MB of file in one upload, but a chat app cannot get near that.
+In a chat app, the assistant writes the file into its request to Molecule, so an upload has to fit in one of its replies. That suits text, CSV, Markdown and small JSON files of up to a few hundred kilobytes. Molecule accepts up to 3 MB written this way, but a chat app cannot get near that.
 
 * **A larger public file:** use Claude Code or Codex, which send the file to the data room directly.
 * **A larger private file:** upload it in the Molecule app.
