@@ -7,6 +7,12 @@ icon: robot
 
 # Agent access
 
+{% hint style="warning" %}
+**Not live yet:** Agent Connect is not available yet.
+
+**Using Claude, ChatGPT, Codex, Grok or Cursor as a chat app?** You don't need to set up a wallet or run a script: [connect the app to your Lab](../../ai-tooling/agent-connect.md) from the browser instead. This page is for developers who run their own agent.
+{% endhint %}
+
 The most common real-world shape: a researcher created their Lab in the Labs app with an email address — no wallet, no code — and now wants an agent contributing to it. The agent gets its **own** identity rather than borrowing the human's; the human grants it a role; the agent authenticates itself from then on.
 
 {% hint style="info" %}

@@ -18,6 +18,12 @@ Everything inside a Lab is available through Molecule's interface, where a resea
 
 For a workflow that already runs on scripts or AI agents, the same Lab is reachable through a consumer credential, and files, updates, and project activity move through the same underlying data whichever pathway is used. An agent-native researcher can pull work into their own tools and push new findings back, keeping the Lab's public record current throughout.&#x20;
 
+{% hint style="warning" %}
+**Not live yet:** Agent Connect is not available yet.
+
+A researcher who works in a chat app such as Claude or ChatGPT can [connect it to the Lab](../ai-tooling/agent-connect.md) from the browser, with no code and no keys, and choose what the app's agent may do there.
+{% endhint %}
+
 Both pathways carry the same security and access rules, so working through the API never changes who can see what.
 
 ### Storing and Sharing Research

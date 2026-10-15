@@ -18,6 +18,12 @@ It ships as a cross-harness agent plugin with two parts:
 
 The skill format (`SKILL.md`) and MCP are open standards, so the same plugin works under Claude Code, OpenAI Codex, Cursor, VS Code, Gemini CLI, Windsurf, Claude Desktop and any other agent harness that can run a local MCP server. To obtain and install it, jump to [Getting the Plugin](molecule-skill.md#getting-the-plugin).
 
+{% hint style="warning" %}
+**Not live yet:** Agent Connect is not available yet.
+
+**The plugin or Agent Connect?** Use this plugin when your agent should hold its own keys on your machine, pay per call through x402, run scripts or create Labs. To let Claude, ChatGPT, Codex, Grok or Cursor read and add files in a Lab you already own, use [Agent Connect](agent-connect.md) instead: nothing to install and no keys, and you choose the agent's role on each Lab in your browser.
+{% endhint %}
+
 ### What the Skill Does
 
 The workflow is sequential — each phase consumes the previous phase's output:
@@ -312,11 +318,23 @@ Claude Desktop runs local MCP servers from its config file. Open **Settings → 
 
 To add the skill, zip the `skills/aura-orchestrator` folder and upload it under **Customize → Skills → + → Upload a skill**. Skills need code execution enabled; on Team and Enterprise an admin turns on Skills for the organization first.
 
-The MCP server runs on your machine, so this works in the Claude Desktop app only — not in claude.ai in the browser.
+The MCP server runs on your machine, so the plugin works in the Claude Desktop app only.
+
+{% hint style="warning" %}
+**Not live yet:** Agent Connect is not available yet.
+
+For claude.ai in the browser, use [Agent Connect](agent-connect.md) instead.
+{% endhint %}
 
 #### ChatGPT
 
-Not supported. ChatGPT only connects to **remote** MCP servers, and the `molecule` server is local by design: it holds your wallet credentials and encryption keys on your machine. Use one of the clients above.
+The plugin does not run in ChatGPT: ChatGPT only connects to **remote** MCP servers, and the `molecule` server is local by design, because it holds your wallet credentials and encryption keys on your machine.
+
+{% hint style="warning" %}
+**Not live yet:** Agent Connect is not available yet.
+
+To work in a Lab from ChatGPT, use [Agent Connect](agent-connect.md) instead.
+{% endhint %}
 
 #### Other MCP hosts
 
