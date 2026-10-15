@@ -269,7 +269,6 @@ const finishResult = await graphql(
     $uploadToken: String!
     $path: String!
     $accessLevel: String!
-    $changeBy: String!
     $description: String
     $tags: [String!]
     $categories: [String!]
@@ -280,7 +279,6 @@ const finishResult = await graphql(
       uploadToken: $uploadToken
       path: $path
       accessLevel: $accessLevel
-      changeBy: $changeBy
       description: $description
       tags: $tags
       categories: $categories
@@ -298,7 +296,6 @@ const finishResult = await graphql(
     uploadToken,
     path: basename(filePath),
     accessLevel: "PUBLIC", // DataRoomAccessLevel: PUBLIC | HOLDERS | ADMIN
-    changeBy: account.address,
     description: "Baseline assay results",
     tags: ["preliminary"],
     categories: ["raw-data"],
@@ -584,8 +581,8 @@ async function main() {
   if (!putResponse.ok) throw new Error(`Upload failed: ${putResponse.status} ${putResponse.statusText}`);
 
   const finishResult = await graphql(
-    `mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!, $changeBy: String!) {
-      finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, changeBy: $changeBy) {
+    `mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!) {
+      finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel) {
         datasetId version
         error { code message requestId retryable details }
       }
@@ -595,7 +592,6 @@ async function main() {
       uploadToken,
       path: basename(filePath),
       accessLevel: "PUBLIC",
-      changeBy: account.address,
     },
   );
   assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");

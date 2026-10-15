@@ -194,7 +194,6 @@ const finishResult = await graphql(
     $uploadToken: String!
     $path: String!
     $accessLevel: String!
-    $changeBy: String!
     $encryptionMetadata: EncryptionMetadataInput
   ) {
     finishCreateOrUpdateFile(
@@ -202,7 +201,6 @@ const finishResult = await graphql(
       uploadToken: $uploadToken
       path: $path
       accessLevel: $accessLevel
-      changeBy: $changeBy
       encryptionMetadata: $encryptionMetadata
     ) {
       datasetId
@@ -216,7 +214,6 @@ const finishResult = await graphql(
     uploadToken,
     path: basename(filePath),
     accessLevel: "HOLDERS", // encrypted files use HOLDERS or ADMIN, not PUBLIC
-    changeBy: account.address,
     encryptionMetadata: {
       encryptionSystem, // echo verbatim — never hardcode
       encryptedDek,
@@ -568,8 +565,8 @@ async function main() {
   if (!putResponse.ok) throw new Error(`Upload failed: ${putResponse.status} ${putResponse.statusText}`);
 
   const finishResult = await graphql(
-    `mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!, $changeBy: String!, $encryptionMetadata: EncryptionMetadataInput) {
-      finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, changeBy: $changeBy, encryptionMetadata: $encryptionMetadata) {
+    `mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!, $encryptionMetadata: EncryptionMetadataInput) {
+      finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, encryptionMetadata: $encryptionMetadata) {
         datasetId version
         error { code message requestId retryable details }
       }
@@ -579,7 +576,6 @@ async function main() {
       uploadToken,
       path: basename(filePath),
       accessLevel: "HOLDERS",
-      changeBy: account.address,
       encryptionMetadata: {
         encryptionSystem,
         encryptedDek,

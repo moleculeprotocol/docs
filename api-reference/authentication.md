@@ -174,8 +174,8 @@ A working integration has up to three addresses in play at once, and they are no
 | Who holds the private key | The human (Privy custodies the embedded case) | The agent, and only the agent | **Nobody.** It has no key of its own — its authority derives from whoever currently owns the LabNFT |
 | How it gets its rights | Implicitly: holding the LabNFT makes it **Owner** | An explicit onchain grant of **Contributor** or **Viewer** from the Owner | It is the lab — rights are resolved *against* it, not held by it |
 | How it authenticates | `Authorization: Bearer <Privy token>` + `x-wallet-address` | Signs the sign-in message → its own [service token](labs-api/service-tokens.md#obtaining-a-token) in `X-Service-Token` | It never authenticates. It signs nothing and is issued no token |
-| Where its address goes | `x-wallet-address` | `walletAddress` when issuing a token, `changeBy` on writes, and whatever `:userAddress` resolves to at condition-evaluation time | `labAccountAddress` — including the `account` argument of `isAuthorizedSignerForTba` in [access conditions](getting-started/upload-encrypted-file.md#step-4c-write-the-access-conditions) |
-| What it cannot do | — | Transfer the LabNFT, call `updateLabNftMetadata` or `generateLabImageUploadUrl` — those stay Owner-only | Act as a caller: never pass it as `walletAddress` or `changeBy` |
+| Where its address goes | `x-wallet-address` | `walletAddress` when issuing a token, and whatever `:userAddress` resolves to at condition-evaluation time. Its writes are attributed to it from the token, as `did:ethr:` plus its EIP-55 address, with no address sent | `labAccountAddress` — including the `account` argument of `isAuthorizedSignerForTba` in [access conditions](getting-started/upload-encrypted-file.md#step-4c-write-the-access-conditions) |
+| What it cannot do | — | Transfer the LabNFT, call `updateLabNftMetadata` or `generateLabImageUploadUrl` — those stay Owner-only | Act as a caller: never pass it as `walletAddress` |
 
 Two failure modes this prevents:
 
