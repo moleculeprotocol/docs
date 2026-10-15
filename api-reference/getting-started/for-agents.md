@@ -124,10 +124,10 @@ mutation Initiate($oclId: String!, $contentType: String!, $contentLength: Int!) 
 `PUT` the raw bytes to `uploadUrl` with **exactly** the returned `headers` (key/value pairs) and the returned `method`. Presigned URLs expire in ~15 minutes.
 
 ```graphql
-mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!, $changeBy: String!,
+mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!,
                 $description: String, $tags: [String!], $categories: [String!], $contentText: String) {
   finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel,
-                           changeBy: $changeBy, description: $description, tags: $tags,
+                           description: $description, tags: $tags,
                            categories: $categories, contentText: $contentText) {
     datasetId contentHash version
     error { code message requestId retryable details }
@@ -136,7 +136,7 @@ mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessL
 ```
 
 * `accessLevel`: `"PUBLIC"` | `"HOLDERS"` | `"ADMIN"`.
-* `changeBy`: the caller's wallet address.
+* The change is attributed to the authenticated caller, as `did:ethr:<EIP-55 address>`. Do not send `changeBy`: it is deprecated and ignored, and removed after 2027-01-01.
 * `path` for a **new** file (no underscores), `ref` for a **new version** of an existing one. Use one or the other, never both.
 * Valid `tags` / `categories` come from the public `fileCategoriesAndTags` query.
 
@@ -174,7 +174,7 @@ Full recipe including `accessControlConditions`: [Upload an encrypted file](uplo
 6. Send the presigned `PUT` with the returned headers unchanged, and the raw bytes as the body.
 7. Writing into a lab you do not own needs a **Contributor** role on it — see [Agent access](agent-as-a-lab-contributor.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
 8. **A successful `createLab` does not mean the lab is writable yet.** Step 4's first call can return `NOT_FOUND` ("Project 0x… does not exist") for a few seconds, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. Retry `NOT_FOUND` with backoff on the first write after a mint; do not re-run `createLab`, which then returns `CONFLICT`.
-9. **Three addresses, not interchangeable**: your own wallet (`walletAddress`, `changeBy`), the human owner's (`x-wallet-address`, their path only), and the Lab's OCL account (`labAccountAddress`, and the `account` argument in access conditions). Putting an owner's address where `labAccountAddress` belongs uploads fine and then locks everyone out of the file, with no error saying why. `oclId` is none of them — it is a lab id whose trailing 40 hex chars happen to be the OCL account address. See [the three wallets](../authentication.md#the-three-wallets-side-by-side).
+9. **Three addresses, not interchangeable**: your own wallet (`walletAddress`), the human owner's (`x-wallet-address`, their path only), and the Lab's OCL account (`labAccountAddress`, and the `account` argument in access conditions). Putting an owner's address where `labAccountAddress` belongs uploads fine and then locks everyone out of the file, with no error saying why. `oclId` is none of them — it is a lab id whose trailing 40 hex chars happen to be the OCL account address. See [the three wallets](../authentication.md#the-three-wallets-side-by-side).
 10. Production has introspection off and a depth limit of 10. Generate types against staging.
 
 ## Related
