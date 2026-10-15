@@ -136,7 +136,7 @@ mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessL
 ```
 
 * `accessLevel`: `"PUBLIC"` | `"HOLDERS"` | `"ADMIN"`.
-* The change is attributed to the authenticated caller, as `did:ethr:<EIP-55 address>`. Do not send `changeBy`: it is deprecated and ignored, and removed after 2027-01-01.
+* The change is attributed to the authenticated caller, as `did:ethr:<EIP-55 address>`. Do not send `changeBy`: it is deprecated and ignored, and will be removed after 2027-01-01.
 * `path` for a **new** file (no underscores), `ref` for a **new version** of an existing one. Use one or the other, never both.
 * Valid `tags` / `categories` come from the public `fileCategoriesAndTags` query.
 
