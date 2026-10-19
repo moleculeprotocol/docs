@@ -30,7 +30,7 @@ Nothing goes after it: no `/mcp` and no trailing slash. Some apps' own instructi
 {% endhint %}
 
 {% hint style="warning" %}
-**Not live yet:** neither address answers yet.
+**Not live yet:** `https://mcp.molecule.xyz` does not answer yet.
 {% endhint %}
 
 ## Add Molecule to your app
@@ -174,13 +174,13 @@ You don't call tools yourself. Ask in plain words, such as "List the files in my
 ## Upload size
 
 {% hint style="warning" %}
-**Not live yet:** the upload limits and the handling of attached files are not final.
+**Not live yet:** the upload tools are not live yet.
 
 In a chat app, the assistant writes the file into its request to Molecule, so an upload has to fit in one of its replies. That suits text, CSV, Markdown and small JSON files of up to a few hundred kilobytes. Molecule accepts up to 3 MB written this way, but a chat app cannot get near that.
 
 * **A larger public file:** use Claude Code or Codex, which send the file to the data room directly.
 * **A larger private file:** upload it in the Molecule app.
-* **A file attached to a ChatGPT conversation:** ChatGPT passes it to Molecule as a file, so it does not have to fit in a reply. Files attached on claude.ai or grok.com cannot be uploaded this way.
+* **A file attached to the conversation:** not supported yet, in any app. Ask the assistant to write the file out instead, or upload it in the Molecule app.
 {% endhint %}
 
 ## Disconnecting
