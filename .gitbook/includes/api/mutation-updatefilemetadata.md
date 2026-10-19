@@ -1,4 +1,4 @@
-Updates metadata for an existing file without creating a new version. Note: The wallet address for audit trail is automatically derived from authentication.
+Updates a file's metadata, recorded as a new version with unchanged content. The change is attributed to the authenticated caller.
 
 Returns [`UpdateFileMetadataResult!`](/api-reference/types.md#updatefilemetadataresult).
 
@@ -10,4 +10,4 @@ Returns [`UpdateFileMetadataResult!`](/api-reference/types.md#updatefilemetadata
 | `description` | `String` | Description to store for the file. |
 | `tags` | `[String!]` | Tags to store on the file. |
 | `categories` | `[String!]` | Categories to store on the file. |
-| `contentText` | `String` | Text content for searchability. |
+| `contentText` | `String` | Searchable text, stored and returned unencrypted even on `ADMIN` files, so it should hold no more than the title. |

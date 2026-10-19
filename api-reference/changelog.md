@@ -10,6 +10,19 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ## Authentication
 
+### Consumer credentials are self-service, and require accepting the API terms
+
+**Behaviour change, 2026-10-09.** You now create your own `mol_` consumer credential on the **API Keys** page of the Labs app, in staging and production. Asking the Molecule team is no longer how you get one.
+
+- A self-service credential looks like `mol_usr-<id>_<secret>`. It goes in the `Authorization` header with **no `Bearer` prefix**, like any consumer credential.
+- The full string is shown **once**, at creation, and can't be recovered. A lost credential is replaced, not recovered.
+- It expires after 90 days by default, at most 365. You can have 5 active at a time; expired ones don't count.
+- There is no rotate: create a new credential, switch to it, revoke the old one. Revoking takes effect on the next request and can't be undone.
+- **Creating a credential requires accepting the Molecule API Terms of Service and Acceptable Use Policy**, the first time and after every change to them. Listing and revoking never do.
+- New fields in the schema: `issueConsumerCredential`, `myConsumerCredentials`, `revokeConsumerCredential` and `myApiTermsStatus`. New `details.reason` values: `SERVICE_TOKEN_NOT_ACCEPTED`, `CREDENTIAL_QUOTA_EXCEEDED`, `CREDENTIAL_NOT_FOUND`, `TERMS_ACCEPTANCE_REQUIRED` and `SELF_SERVICE_CREDENTIALS_DISABLED`.
+
+**Migration:** None. Credentials issued by the Molecule team keep working unchanged. See [Obtaining API access](authentication.md#obtaining-api-access).
+
 ### The service-token sign-in message is now single-use and expires
 
 `getServiceSignInMessage` used to return a deterministic string — a pure function of `(walletAddress, serviceName)` — which meant one captured signature could mint fresh tokens indefinitely. The message now embeds a **server-issued single-use nonce** and its expiry, and `generateServiceToken` verifies and consumes that nonce:
@@ -27,7 +40,7 @@ Failures come back as `UNAUTHENTICATED` with `details.reason` one of `NONCE_NOT_
 
 Two clarifications and one hardening, all now reflected across the API docs:
 
-- **Nobody provisions a service token for you.** `generateServiceToken` accepts a wallet signature, so any caller mints its own: `getServiceSignInMessage` → sign the message verbatim (EIP-191 `personal_sign`) → `generateServiceToken`. The only credential that still comes from the Molecule team is the `mol_` consumer credential. Earlier pages described service tokens as team-issued; that was never the only path and is no longer the documented one.
+- **Nobody provisions a service token for you.** `generateServiceToken` accepts a wallet signature, so any caller mints its own: `getServiceSignInMessage` → sign the message verbatim (EIP-191 `personal_sign`) → `generateServiceToken`. At the time, the only credential that still came from the Molecule team was the `mol_` consumer credential; that is now self-service too (see [above](#consumer-credentials-are-self-service-and-require-accepting-the-api-terms)). Earlier pages described service tokens as team-issued; that was never the only path and is no longer the documented one.
 - **A service token is bound to a wallet, not to a lab.** Docs that described it as identifying "which lab you have write access to" were wrong. It carries a wallet identity; what it may do on a given lab is resolved per request from that wallet's live onchain role. One token therefore works across every lab the wallet has a role on, and a role granted *after* issuance takes effect without re-issuing.
 - **`extendServiceToken` and `revokeServiceToken` are scoped to the caller's own tokens.** The presented token must own the `tokenId` it names; a `tokenId` belonging to another wallet returns the byte-identical `NOT_FOUND` of one that does not exist, so token existence cannot be enumerated.
 
@@ -56,7 +69,7 @@ All Molecule APIs (Labs, Tokenization — they share one GraphQL endpoint) now a
 + Authorization: mol_<consumerId>_<secret>
 ```
 
-**Migration:** Request a consumer credential (see [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step)) and send it as `Authorization: mol_<consumerId>_<secret>` instead of `x-api-key` — do not prefix it with `Bearer`, which is reserved for Privy user tokens and will fail authentication. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before. See [Authentication](authentication.md) for the full header reference.
+**Migration:** Create a consumer credential (see [Getting Started](getting-started/README.md#a-consumer-credential)) and send it as `Authorization: mol_<consumerId>_<secret>` instead of `x-api-key` — do not prefix it with `Bearer`, which is reserved for Privy user tokens and will fail authentication. Nothing else changes: `X-Service-Token` for machine-authorized mutations, and `Authorization: Bearer <Privy token>` + `x-wallet-address` for user-authorized mutations, work exactly as before. See [Authentication](authentication.md) for the full header reference.
 
 ---
 
@@ -157,12 +170,12 @@ On an in-band mutation error, `details` arrives as a JSON-encoded string (AppSyn
 
 | Code                        | `retryable` | Meaning                                                                  | Typical `details.reason`                                                         |
 | --------------------------- | ----------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `UNAUTHENTICATED`           | false       | Missing, invalid or expired credentials.                                 | `AUTH_FAILED`, `SERVICE_AUTH_FAILED`, `INVALID_SIGNATURE`, `NONCE_NOT_FOUND`, `NONCE_EXPIRED`, `WALLET_MISMATCH`, `CONSUMER_CREDENTIAL_REQUIRED` |
+| `UNAUTHENTICATED`           | false       | Missing, invalid or expired credentials.                                 | `AUTH_FAILED`, `SERVICE_AUTH_FAILED`, `INVALID_SIGNATURE`, `NONCE_NOT_FOUND`, `NONCE_EXPIRED`, `WALLET_MISMATCH`, `CONSUMER_CREDENTIAL_REQUIRED`, `SERVICE_TOKEN_NOT_ACCEPTED` |
 | `UNAUTHORIZED`              | false       | Authenticated but not allowed (role or membership).                      | `UNAUTHORIZED` (role/membership denial), `NOT_LAB_OWNER`, `MUTATION_NOT_ALLOWED` |
-| `NOT_FOUND`                 | false       | The referenced resource does not exist.                                  | `LAB_NOT_FOUND`, `OCL_NOT_FOUND`, `TOKEN_NOT_FOUND`, `PROJECT_NOT_FOUND`, …      |
+| `NOT_FOUND`                 | false       | The referenced resource does not exist.                                  | `LAB_NOT_FOUND`, `OCL_NOT_FOUND`, `TOKEN_NOT_FOUND`, `PROJECT_NOT_FOUND`, `CREDENTIAL_NOT_FOUND`, … |
 | `VALIDATION_FAILED`         | false       | Input failed validation; `details.field` names the offending field.      | `INVALID_OCL_ID`, `INVALID_INPUT`, `MISSING_INPUT`, …                            |
-| `CONFLICT`                  | false       | A valid request conflicts with current state.                            | `SHORTNAME_TAKEN`, `PROJECT_CONFLICT`, `ACCOUNT_NAME_CONFLICT`, `ALREADY_REVOKED` |
-| `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until that state changes.  | `TOKEN_REVOKED`, `LEGACY_ENCRYPTION`, `NOT_ENCRYPTED`, `MISSING_DEK`             |
+| `CONFLICT`                  | false       | A valid request conflicts with current state.                            | `SHORTNAME_TAKEN`, `PROJECT_CONFLICT`, `ACCOUNT_NAME_CONFLICT`, `ALREADY_REVOKED`, `CREDENTIAL_QUOTA_EXCEEDED` |
+| `FAILED_PRECONDITION`       | false       | Resource state makes the operation impossible until that state changes.  | `TOKEN_REVOKED`, `LEGACY_ENCRYPTION`, `NOT_ENCRYPTED`, `MISSING_DEK`, `TERMS_ACCEPTANCE_REQUIRED`, `SELF_SERVICE_CREDENTIALS_DISABLED` |
 | `COMPLEXITY_LIMIT_EXCEEDED` | false       | Query shape or result size is over the limit.                            | `COMPLEXITY_LIMIT_EXCEEDED`, `RESULT_CARDINALITY_LIMIT` ([list limits](#lists-without-paging-arguments-now-fail-above-a-size-limit)) |
 | `RATE_LIMITED`              | **true**    | Throttled — retry with backoff.                                          | —                                                                                |
 | `TIMEOUT`                   | **true**    | Execution exceeded the request budget.                                   | —                                                                                |

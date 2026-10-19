@@ -14,7 +14,7 @@ The Labs API allows developers to interact with Molecule Labs datarooms without 
 
 For every use case mapped to the page that covers it, see [Common Use Cases](../../use-cases.md).
 
-> **Ready for Production**: This API is production-ready and actively used by projects for automated data management. To get started, see [🚀 Getting Started](../getting-started/README.md) — it covers the one credential you need to request and gets you to a lab with a file in it in about ten minutes.
+> **Ready for Production**: This API is production-ready and actively used by projects for automated data management. To get started, see [🚀 Getting Started](../getting-started/README.md) — it covers creating your consumer credential and gets you to a lab with a file in it in about ten minutes.
 
 ---
 

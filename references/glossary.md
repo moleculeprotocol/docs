@@ -55,7 +55,7 @@ Role checks are hierarchical: a Contributor passes Viewer checks, and the Owner 
 
 ## Calling the API
 
-**Consumer credential** — the `mol_<consumerId>_<secret>` string that identifies your integration. It goes in the `Authorization` header on every request, with **no `Bearer` prefix**, and it is issued per environment. This is the one credential you have to request from the Molecule team.
+**Consumer credential** — the `mol_<consumerId>_<secret>` string that identifies your integration. It goes in the `Authorization` header on every request, with **no `Bearer` prefix**, and it is issued per environment. It is created on the **API Keys** page of the Labs app, shown once, and expires after 90 days by default. See [Obtaining API access](../api-reference/authentication.md#obtaining-api-access).
 
 **Service token** — proof that you control a particular wallet. You issue it yourself by signing a message with that wallet, then send it as the `X-Service-Token` header. What it lets you write is decided by that wallet's onchain role on the target Lab, not by the token itself. Reference: [Service Tokens](../api-reference/labs-api/service-tokens.md).
 

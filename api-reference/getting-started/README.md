@@ -53,27 +53,27 @@ All three open with the same configuration constants and helper functions, which
 
 ## Prerequisites
 
-Two things, and only one of them involves a human.
+### A consumer credential
 
-### A consumer credential (the one manual step)
+Every request to the API carries a consumer credential in the `Authorization` header. To create one:
 
-Every request to the API carries a consumer credential in the `Authorization` header. Until the Developer Portal ships (coming soon), you will need to request this from the Molecule team.
+1. Sign in at [testnet.labs.molecule.xyz](https://testnet.labs.molecule.xyz) for staging, which is what every tutorial in these docs runs against, or at [labs.molecule.xyz](https://labs.molecule.xyz) for production. Credentials are per environment: a staging credential doesn't work against production.
+2. Open **API Keys** and click **Create**. Give it a name, pick a lifetime (90 days by default, at most 1 year), and accept the API terms the first time.
+3. **Copy the credential straight away.** It's shown once and can't be recovered. If you lose it, create a new one and revoke the old one.
 
-Sign in at [labs.molecule.xyz](https://labs.molecule.xyz) with an account that has an email address, open **API Keys**, and click **Request access**. The team replies by email within one business day. In your reply, say whether you need staging, production, or both — every tutorial in these docs runs on staging.
-
-What comes back is a single opaque string per environment:
+What you copy is a single string:
 
 ```
-mol_<consumerId>_<secret>
+mol_usr-<id>_<secret>
 ```
 
 Send it as the `Authorization` header value **directly — no `Bearer` prefix**:
 
 ```bash
-Authorization: mol_your-consumer-id_your-secret
+Authorization: mol_usr-your-id_your-secret
 ```
 
-Treat the whole string as one secret: it is not split into a public and a private half. Full header reference: [Authentication](../authentication.md).
+Treat the whole string as one secret. Expiry, the limit of 5 active credentials, revoking and the API terms are all covered in [Authentication](../authentication.md#obtaining-api-access).
 
 {% hint style="warning" %}
 `Authorization: Bearer mol_…` fails authentication. `Bearer` is reserved for Privy user tokens.

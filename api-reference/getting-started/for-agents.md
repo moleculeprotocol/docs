@@ -63,6 +63,7 @@ function parseDetails(d) {
 ```
 * Branch on `code`, never on `message`. Retry only when `retryable` is `true`, with exponential backoff. Quote `requestId` in any bug report.
 * One exception to "retry when retryable": a malformed or out-of-bounds `expiresIn` on `generateServiceToken` is not pre-validated and comes back as `INTERNAL_ERROR` / `details.reason: TOKEN_GENERATION_FAILED`, which is flagged retryable but never will be. Validate `expiresIn` client-side (`<int><unit>`, unit in `s m h d w M y`, 1 hour to 2 years) and cap retries on that reason.
+* Consumer-credential management (`issueConsumerCredential`, `myConsumerCredentials`, `revokeConsumerCredential`, `myApiTermsStatus`) needs a signed-in human session, so an agent never calls it. Its reasons, if you see them: `UNAUTHENTICATED` / `AUTH_FAILED` or `SERVICE_TOKEN_NOT_ACCEPTED`; `CONFLICT` / `CREDENTIAL_QUOTA_EXCEEDED` (`details.limit`); `NOT_FOUND` / `CREDENTIAL_NOT_FOUND`; `VALIDATION_FAILED` (`details.field` `label` or `expiresInDays`); `FAILED_PRECONDITION` / `TERMS_ACCEPTANCE_REQUIRED` or `SELF_SERVICE_CREDENTIALS_DISABLED`. A human creates the credential in the Labs app: [Authentication](../authentication.md#obtaining-api-access).
 * Codes: `UNAUTHENTICATED`, `UNAUTHORIZED`, `NOT_FOUND`, `VALIDATION_FAILED`, `CONFLICT`, `FAILED_PRECONDITION`, `COMPLEXITY_LIMIT_EXCEEDED`, `RATE_LIMITED`*, `TIMEOUT`*, `UPSTREAM_UNAVAILABLE`*, `INTERNAL_ERROR`* (`*` = retryable). An unrecognised code: treat as non-retryable, preserve it, surface it.
 
 ## Step 1 — Self-issue a service token

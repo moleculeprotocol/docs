@@ -2,30 +2,113 @@
 
 All Molecule APIs require authentication. This page covers how to obtain credentials, which headers each API expects, and the specific authentication model for the Labs API.
 
-There are two credentials, and they do different jobs. If any term on this page is unfamiliar, the [Glossary](../references/glossary.md) defines it in a sentence.
+You hold two secrets, and they do different jobs. Sending one where the other belongs fails in ways the error message doesn't explain, so keep this table in mind. If any term on this page is unfamiliar, the [Glossary](../references/glossary.md) defines it in a sentence.
 
-| Credential | Answers | How you get it |
-| ---------- | ------- | -------------- |
-| **Consumer credential** (`mol_<consumerId>_<secret>`) | *Which API consumer is calling?* | Requested once from the Molecule team ([how to request](getting-started/README.md#a-consumer-credential-the-one-manual-step)) — the one manual step (Developer Portal coming soon) |
-| **Service Token** (JWT) | *Which wallet is calling, so what may it do?* | **Self-issued**: sign a message with your wallet. No human in the loop |
+| | **Consumer credential** (`mol_usr-…`) | **Service token** (a JWT) |
+| -- | -- | -- |
+| Answers | *Which application is calling?* | *Which wallet is acting, so what may it do?* |
+| Header | `Authorization`, with **no `Bearer` prefix** | `X-Service-Token` |
+| Checked | At the edge, on every request, before your operation runs | Per mutation, against the wallet's onchain role on the lab |
+| Needed for | Every request: reads need only this | Write mutations, together with the consumer credential |
+| How you get it | Create it on the **API Keys** page of the Labs app, see [Obtaining API access](#obtaining-api-access) | Sign a message with your wallet, see [Obtaining a Service Token](#obtaining-a-service-token) |
 
-## Obtaining API Access
+They are not alternatives. A read-only integration needs only the credential. An agent that writes to a lab needs both: the credential to get through the door, the token to be allowed to act.
+
+## Obtaining API access
+
+### Create a credential
+
+1. Sign in to the Labs app: [labs.molecule.xyz](https://labs.molecule.xyz) for production, or [testnet.labs.molecule.xyz](https://testnet.labs.molecule.xyz) for staging, where every tutorial in these docs runs. **Credentials are per environment**: a staging credential doesn't authenticate against production, and the other way round.
+2. Open **API Keys** in the navigation.
+3. Click **Create**, give the credential a name you'll recognise later (optional, at most 64 characters, for example `Data sync script`), and pick how long it should last: 7, 30, 90 days, 1 year, or a custom date. The default is 90 days.
+4. The first time, and again whenever the terms change, tick the box to accept the API Terms of Service and the Acceptable Use Policy. See [Accepting the API terms](#accepting-the-api-terms).
+5. **Copy the credential now.** It is shown exactly once. Molecule stores only a salted hash of it, so a lost credential can't be recovered or shown again: create a new one and revoke the lost one.
+
+What you copy is a single string:
+
+```
+mol_usr-<id>_<secret>
+```
+
+The `usr-<id>` part is the credential's public identifier, the `consumerId`. It's what the Labs app and `myConsumerCredentials` list, and what you pass to revoke one. The `<secret>` after it is never returned again. Still, treat the **whole string** as the secret: send it whole, store it whole, and never split it up.
+
+Send it as the `Authorization` header value directly, with **no `Bearer` prefix**:
+
+```bash
+Authorization: mol_usr-<id>_<secret>
+```
+
+Adding `Bearer` in front of a consumer credential makes the request fail authentication. `Bearer` belongs to the Privy session path [below](#protected-mutations-write-operations).
+
+Write mutations also need a service token, which you get by signing a message with your wallet. See [Service Tokens](labs-api/service-tokens.md#obtaining-a-token), or [Step 1 of Create a lab and upload a public file](getting-started/create-lab-and-upload-file.md#step-1-get-a-service-token) for the runnable version.
 
 {% hint style="info" %}
-**The Developer Portal is coming soon.** You'll be able to issue and manage your `mol_` consumer credentials there. Until it ships, request one from the Molecule team — see [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step) for the steps.
+**Partner credentials.** Integrations under a partner agreement can get a credential with a higher, separately agreed budget, managed by Molecule rather than from the Labs app. Its consumerId has no `usr-` prefix. If you need limits above what a personal credential allows, ask the team (see the help box at the bottom of this page).
 {% endhint %}
 
-Every request carries a **consumer credential** in the `Authorization` header. See [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step) for how to request one.
+### Accepting the API terms
 
-What comes back is one opaque string per environment:
+No credential is created until you've accepted the current **Molecule API Terms of Service** and **Acceptable Use Policy**:
 
-```
-mol_<consumerId>_<secret>
-```
+* [API Terms of Service](https://molecule.xyz/api-terms-of-service)
+* [API Acceptable Use Policy](https://molecule.xyz/api-acceptable-use-policy)
 
-Send it as the `Authorization` header value directly — **no `Bearer` prefix**: `Authorization: mol_<consumerId>_<secret>`. This differs from the Privy path below, which does use `Bearer`; adding `Bearer` in front of a consumer credential makes the request fail authentication. Treat the entire string as a secret — it is not split into a public/private part. Credentials are per environment: a staging credential does not authenticate against production.
+You accept them once, the first time you create a credential, and again only when Molecule publishes a new version. Accepting a new version doesn't affect the credentials you already have: they keep working. Listing and revoking credentials never ask for acceptance, so you can always see and remove a credential whatever you've accepted.
 
-You do **not** need to ask anyone for a Service Token. Write mutations need one, and you mint it yourself by signing a message with your wallet — see [Service Tokens](labs-api/service-tokens.md#obtaining-a-token), or [Step 1 of Create a lab and upload a public file](getting-started/create-lab-and-upload-file.md#step-1-get-a-service-token) for the runnable version.
+In the Labs app this is the checkbox on the create form. If you're building your own client for these fields, the flow is:
+
+1. Call `myApiTermsStatus`. If `isCurrentVersionAccepted` is `true`, call `issueConsumerCredential` **without** `acceptedTermsVersion`.
+2. Otherwise, show the user every document in `documents` (each `{ type, version, url }`) and let them accept, by ticking a box themselves.
+3. Only then call `issueConsumerCredential` with `acceptedTermsVersion` set to the `termsVersion` they were shown. That call records their acceptance.
+
+If you skip step 1, `issueConsumerCredential` refuses with `FAILED_PRECONDITION`, `details.reason: TERMS_ACCEPTANCE_REQUIRED`, and the same information in `details.termsVersion`, `details.documents` and `details.hint`. Nothing is issued and nothing is recorded.
+
+{% hint style="warning" %}
+**Never send `acceptedTermsVersion` on every call.** The argument is the user's acceptance, and a client that fills it in automatically records an acceptance nobody gave. On the normal path it is omitted. Send it only right after showing the documents and getting the user's tick, and only with the version you showed. Any other value, including an older version the user accepted before, is refused with `TERMS_ACCEPTANCE_REQUIRED`.
+{% endhint %}
+
+### Managing your credentials
+
+Everything happens on the **API Keys** page of the Labs app.
+
+* **List.** The page shows your credentials that you haven't revoked, newest first, with their name, creation date and expiry. The secret is never shown again.
+* **Expiry.** Every personal credential expires: after 90 days by default, and at most 365 days after creation (at least 1 day). An expired credential stops authenticating requests. Create a new one before it expires; it can't be extended.
+* **At most 5 active credentials.** Give each script or agent its own credential, so that revoking one doesn't take down the others. An expired credential no longer counts toward the 5. It stays on the list until you revoke it or create your next credential, which clears expired ones away.
+* **Revoke.** Revoking takes effect on the very next request made with that credential. It can't be undone, by you or by Molecule. Revoke immediately if a credential may have leaked.
+* **No rotate button: create, switch, revoke.** To replace a credential, create a new one, move your code to it, then revoke the old one. You control both ends, so there's no need to coordinate a cut-over with anyone, and two credentials can be live side by side while you switch.
+
+### Limits on personal credentials
+
+Personal (`usr-`) credentials have a lower [cost budget](rate-limits.md#budgets) than partner credentials. The budget belongs to **you**, not to the credential: every credential you create draws on the same window, so creating another credential, or revoking one and creating a replacement, doesn't add budget. Once the budget is spent, requests get [`RATE_LIMITED`](errors.md#rate-limited-requests); wait `details.retryAfterSeconds` before retrying. The current numbers and how requests are priced are on [Rate & Query Limits](rate-limits.md).
+
+### Credential operations reference
+
+The Labs app calls four GraphQL fields to do all of the above. They're listed here so you recognise them in the schema. They need a signed-in session: `Authorization: Bearer <Privy token>` plus `x-wallet-address`, the same as the [Privy path](#protected-mutations-write-operations). That session is issued to a browser at sign-in, so use the Labs app to manage credentials rather than scripting these calls.
+
+Two rules apply to all four:
+
+* **A service token can't manage credentials.** A request that carries `X-Service-Token` is refused with `UNAUTHENTICATED`, `details.reason: SERVICE_TOKEN_NOT_ACCEPTED`, even alongside a valid session. A machine holding a token must not be able to mint credentials that outlive it.
+* **A consumer credential can't manage credentials either.** A request without a signed-in session gets `UNAUTHENTICATED`, `details.reason: AUTH_FAILED`.
+
+#### `issueConsumerCredential`
+
+{% include "../.gitbook/includes/api/mutation-issueconsumercredential.md" %}
+
+The credential string is in `credential`, in this response only. Failures: `VALIDATION_FAILED` with `details.field` `label` or `expiresInDays`; `CONFLICT` with `details.reason: CREDENTIAL_QUOTA_EXCEEDED` and `details.limit` when you already have 5 active credentials; `FAILED_PRECONDITION` with `details.reason: TERMS_ACCEPTANCE_REQUIRED` (see [Accepting the API terms](#accepting-the-api-terms)).
+
+#### `myConsumerCredentials`
+
+{% include "../.gitbook/includes/api/query-myconsumercredentials.md" %}
+
+#### `revokeConsumerCredential`
+
+{% include "../.gitbook/includes/api/mutation-revokeconsumercredential.md" %}
+
+A `consumerId` that doesn't exist and one that belongs to someone else both get `NOT_FOUND` with `details.reason: CREDENTIAL_NOT_FOUND`, so the answer never confirms that another user's credential exists.
+
+#### `myApiTermsStatus`
+
+{% include "../.gitbook/includes/api/query-myapitermsstatus.md" %}
 
 ## Authentication Headers
 
@@ -226,19 +309,20 @@ Which path to choose: use a Service Token for unattended callers (backends, bots
 
 **Security Warnings:**
 
-- Service tokens are returned only once, at generation — store them securely immediately
+- Consumer credentials and service tokens are each returned only once, when created — store them securely immediately
 - Never commit tokens or consumer credentials to version control
 - Never log credentials in application logs
 - Store in environment variables or secure secret management systems
 - Give an agent's token an `expiresIn` matching its role grant's expiry rather than taking the 180-day default
 - Rotate tokens regularly, and `revokeServiceToken` immediately on compromise
+- Replace a consumer credential before it expires, and revoke it in the Labs app immediately on compromise
 
 > Service Token lifecycle operations (extending, revoking) are documented in [Service Tokens](labs-api/service-tokens.md).
 
 ## Related
 
 * [Service Tokens](labs-api/service-tokens.md) — issue, extend and revoke tokens
-* [Getting Started](getting-started/README.md) — request a consumer credential
+* [Getting Started](getting-started/README.md) — the two things you need before your first call
 * [Agent access](getting-started/agent-as-a-lab-contributor.md) — an agent with its own wallet and token
 * [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md) — what each onchain role can do
 * [x402 Gateway](x402-gateway.md) — pay per call instead of holding a token
