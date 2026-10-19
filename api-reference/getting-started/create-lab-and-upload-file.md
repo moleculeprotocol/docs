@@ -390,7 +390,7 @@ Your file is in `dataRoom.files` with `accessLevel: "PUBLIC"` and `version: 1`. 
 
 If `labWithDataRoomAndFiles` comes back `null`, the lab is not registered: Step 3 didn't complete. This is one of only two nullable queries on the Labs API, so a missing lab nulls the field instead of throwing.
 
-The second check is visual. The lab has a page at `${LAB_APP_URL}/projects/<slug>`. Until the lab is renamed, that slug is `lab-<labNftTokenId>` — the token id `createLab` returned in Step 3 — so a lab you have just created is at `https://testnet.labs.molecule.xyz/projects/lab-1274` on staging. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name and the `lab-<tokenId>` form stops resolving. `oclId` does not work here.
+The second check is visual. The lab has a page at `${LAB_APP_URL}/labs/<slug>`. Until the lab is renamed, that slug is `lab-<labNftTokenId>` — the token id `createLab` returned in Step 3 — so a lab you have just created is at `https://testnet.app.molecule.xyz/labs/lab-1274` on staging. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name and the `lab-<tokenId>` form stops resolving. `oclId` does not work here.
 
 ## Complete script
 
@@ -415,7 +415,7 @@ const GRAPHQL_URL = "https://staging.graphql.api.molecule.xyz/graphql";
 const CHAIN = baseSepolia;
 const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90"; // OnChainLabFactory
 const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28"; // LabNFT (proxy)
-const LAB_APP_URL = "https://testnet.labs.molecule.xyz";
+const LAB_APP_URL = "https://testnet.app.molecule.xyz";
 const SERVICE_NAME = "tutorial-agent";
 
 const CONSUMER_CREDENTIAL = process.env.CONSUMER_CREDENTIAL; // mol_<id>_<secret> — no "Bearer" prefix
@@ -620,7 +620,7 @@ async function main() {
   // Until the lab is renamed its page slug is `lab-<tokenId>`; after a rename it is
   // the derived shortname, and the lab-<tokenId> form stops resolving.
   const slug = lab.shortname ?? `lab-${labNftTokenId}`;
-  console.log("Lab page:", `${LAB_APP_URL}/projects/${slug}`);
+  console.log("Lab page:", `${LAB_APP_URL}/labs/${slug}`);
 }
 
 main().catch((err) => {

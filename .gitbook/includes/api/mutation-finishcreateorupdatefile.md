@@ -12,6 +12,6 @@ Returns [`FinishFileUploadResult!`](/api-reference/types.md#finishfileuploadresu
 | `changeBy` | `String` | Deprecated and ignored: the change is attributed to the authenticated caller. Removed after 2027-01-01. |
 | `description` | `String` | Description of the file or version. |
 | `tags` | `[String!]` | Tags for the file or version. |
-| `contentText` | `String` | Text content for searchability. |
+| `contentText` | `String` | Searchable text, stored and returned unencrypted even on `ADMIN` files, so it should hold no more than the title. |
 | `categories` | `[String!]` | Categories for the file or version. |
 | `encryptionMetadata` | [`EncryptionMetadataInput`](/api-reference/types.md#encryptionmetadatainput) | Encryption metadata for encrypted files (KMS, BLS, or legacy). |

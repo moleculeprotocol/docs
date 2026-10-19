@@ -19,12 +19,7 @@ All Tokenization API mutations require a consumer credential.
 
 ### Obtaining a Consumer Credential
 
-The consumer credential is the same one every Molecule API uses — if you already have one, you are ready. To request one, see [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step).
-
-You'll receive:
-
-* **Consumer credential** (`mol_<consumerId>_<secret>`) for authentication
-* **Technical Integration Guide** with complete code examples and ABI files (not yet published; requested with the credential)
+The consumer credential is the same one every Molecule API uses — if you already have one, you are ready. If not, create one on the **API credentials** page of the Labs app; see [Getting Started](getting-started/README.md#a-consumer-credential).
 
 ### Using Your Consumer Credential
 
@@ -163,7 +158,7 @@ The terms message is reconstructed onchain by `OclTermsPermissioner.specificTerm
 
 ### For Lab Tokenization
 
-* **Consumer credential**: the same credential every Molecule API uses — see [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step)
+* **Consumer credential**: the same credential every Molecule API uses — see [Getting Started](getting-started/README.md#a-consumer-credential)
 * **Lab Control**: The caller must be the Lab's controller (the current LabNFT owner)
 * **Base ETH Balance**: Sufficient for gas fees on Base
 * **Token Details**: Symbol and initial supply amount (the token name is derived automatically)
@@ -294,7 +289,7 @@ console.log('Lab tokenized!', txHash);
 For assistance with the Tokenization API:
 
 * **Smart contracts**: addresses, ABIs and interfaces are published in the [Contracts reference](../references/contracts/README.md) — no request needed
-* **Consumer credential**: see [Getting Started](getting-started/README.md#a-consumer-credential-the-one-manual-step) to request one
+* **Consumer credential**: created on the **API credentials** page of the Labs app — see [Getting Started](getting-started/README.md#a-consumer-credential)
 * **Technical Integration Guide**: ask on Discord, naming the guide
 * **Discord**: join our [community](https://t.co/L0VEiy4Bjk) for support
 

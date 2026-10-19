@@ -53,27 +53,27 @@ All three open with the same configuration constants and helper functions, which
 
 ## Prerequisites
 
-Two things, and only one of them involves a human.
+### A consumer credential
 
-### A consumer credential (the one manual step)
+Every request to the API carries a consumer credential in the `Authorization` header. To create one:
 
-Every request to the API carries a consumer credential in the `Authorization` header. Until the Developer Portal ships (coming soon), you will need to request this from the Molecule team.
+1. Sign in at [testnet.app.molecule.xyz](https://testnet.app.molecule.xyz) for staging, which is what every tutorial in these docs runs against, or at [app.molecule.xyz](https://app.molecule.xyz) for production. Credentials are per environment: a staging credential doesn't work against production.
+2. Open the **API credentials** page and click **Create**. Give it a name, pick a lifetime (90 days by default, at most 1 year), and accept the API terms the first time.
+3. **Copy the credential straight away.** It's shown once and can't be recovered. If you lose it, create a new one and revoke the old one.
 
-Sign in at [labs.molecule.xyz](https://labs.molecule.xyz) with an account that has an email address, open **API Keys**, and click **Request access**. The team replies by email within one business day. In your reply, say whether you need staging, production, or both — every tutorial in these docs runs on staging.
-
-What comes back is a single opaque string per environment:
+What you copy is a single string:
 
 ```
-mol_<consumerId>_<secret>
+mol_usr-<id>_<secret>
 ```
 
 Send it as the `Authorization` header value **directly — no `Bearer` prefix**:
 
 ```bash
-Authorization: mol_your-consumer-id_your-secret
+Authorization: mol_usr-your-id_your-secret
 ```
 
-Treat the whole string as one secret: it is not split into a public and a private half. Full header reference: [Authentication](../authentication.md).
+Treat the whole string as one secret. Expiry, the limit of 5 active credentials, revoking and the API terms are all covered in [Authentication](../authentication.md#obtaining-api-access).
 
 {% hint style="warning" %}
 `Authorization: Bearer mol_…` fails authentication. `Bearer` is reserved for Privy user tokens.
@@ -81,7 +81,7 @@ Treat the whole string as one secret: it is not split into a public and a privat
 
 ### A funded wallet on Base Sepolia
 
-**You only need this if you are creating a new Lab from code.** Creating a Lab means minting a LabNFT, which is an onchain transaction, and the wallet that sends it pays the gas. If you create your Lab in the Molecule app instead, you need no funds at all — Molecule covers those transactions for you. The app is at [labs.molecule.xyz](https://labs.molecule.xyz/), or [testnet.labs.molecule.xyz](https://testnet.labs.molecule.xyz/) for the Base Sepolia environment these tutorials run against.
+**You only need this if you are creating a new Lab from code.** Creating a Lab means minting a LabNFT, which is an onchain transaction, and the wallet that sends it pays the gas. If you create your Lab in the Molecule app instead, you need no funds at all — Molecule covers those transactions for you. The app is at [app.molecule.xyz](https://app.molecule.xyz/), or [testnet.app.molecule.xyz](https://testnet.app.molecule.xyz/) for the Base Sepolia environment these tutorials run against.
 
 For the programmatic path you need an [EOA](../../references/glossary.md#calling-the-api) — an ordinary wallet with a private key — holding testnet ETH on Base Sepolia. Fund it from a [Base Sepolia faucet](https://docs.base.org/base-chain/tools/network-faucets).
 
@@ -149,14 +149,14 @@ curl -s -X POST https://staging.graphql.api.molecule.xyz/graphql \
 
 Your file appears in `dataRoom.files` with the `path` you sent and `accessLevel: "PUBLIC"`. If `labWithDataRoomAndFiles` comes back `null`, `createLab` did not complete — a missing lab nulls the field rather than throwing an error.
 
-The second check is visual — the lab has a page of its own, at `/projects/<slug>`:
+The second check is visual — the lab has a page of its own, at `/labs/<slug>`:
 
 | Environment | Lab page |
 | ----------- | -------- |
-| Staging | `https://testnet.labs.molecule.xyz/projects/<slug>` |
-| Production | `https://labs.molecule.xyz/projects/<slug>` |
+| Staging | `https://testnet.app.molecule.xyz/labs/<slug>` |
+| Production | `https://app.molecule.xyz/labs/<slug>` |
 
-Until the lab is renamed, that slug is **`lab-<tokenId>`**, built from the `labNftTokenId` that `createLab` returns — so a lab you have just created is at `.../projects/lab-1274`. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name, and the `lab-<tokenId>` form stops resolving.
+Until the lab is renamed, that slug is **`lab-<tokenId>`**, built from the `labNftTokenId` that `createLab` returns — so a lab you have just created is at `.../labs/lab-1274`. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name, and the `lab-<tokenId>` form stops resolving.
 
 Do not build this URL from `oclId`. It identifies the lab in API calls, it is not a page slug, and it does not resolve here.
 
@@ -174,7 +174,7 @@ The tutorials all run against staging (Base Sepolia, testnet funds). To run the 
 | `LABNFT_ADDRESS` | `0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28` | `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92` |
 | `ACCESS_RESOLVER_ADDRESS` | `0x5493F472602C87318EA5Eff753cDD593bf9bF559` | `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B` |
 | `ACCESS_CONDITION_CHAIN` | `"baseSepolia"` | `"base"` |
-| `LAB_APP_URL` | `https://testnet.labs.molecule.xyz` | `https://labs.molecule.xyz` |
+| `LAB_APP_URL` | `https://testnet.app.molecule.xyz` | `https://app.molecule.xyz` |
 
 A few things follow automatically from that swap:
 

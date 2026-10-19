@@ -1,4 +1,4 @@
-Partial update of the LabNft display metadata. Restricted to the OCL admin (LabNft owner + multisig signers).
+Partial update of the LabNft display metadata. Restricted to lab owners (see `LabMemberRole.OWNER`), which for a nested lab includes the owners of the lab at the top of its chain. Changing `name` re-derives `shortname`, which changes the lab's public URL; the previous slug still resolves, and clients should route to `lab.shortname` from the result.
 
 Returns [`UpdateLabNftMetadataResult!`](/api-reference/types.md#updatelabnftmetadataresult).
 

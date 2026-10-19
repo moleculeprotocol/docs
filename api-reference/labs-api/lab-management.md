@@ -296,7 +296,7 @@ Issue it yourself — no request, no waiting. Two calls with the owner wallet:
 
 Full parameters and bounds: [Service Tokens](service-tokens.md#obtaining-a-token). Runnable: [Step 1 of Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md#step-1-get-a-service-token).
 
-The only credential you have to request is the **consumer credential** — see [Getting Started](../getting-started/README.md#a-consumer-credential-the-one-manual-step) to request one.
+The other credential you need is the **consumer credential**, created on the **API credentials** page of the Labs app — see [Getting Started](../getting-started/README.md#a-consumer-credential).
 
 ***
 

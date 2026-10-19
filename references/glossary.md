@@ -21,7 +21,7 @@ If a term in the tutorials is unfamiliar, it is defined here. Each entry is shor
 
 **OCL / `oclId`** — "onchain lab". `oclId` is the Lab's canonical identifier: a 32-byte hex string (`0x…`) emitted in the `OclIdentityCreated` event when the LabNFT is minted. Every Labs API call that targets a Lab takes this value. How it is derived: [Lab Management](../api-reference/labs-api/lab-management.md#how-oclid-is-derived).
 
-**`shortname`** — the slug in a Lab's public page address, `/projects/<slug>`. Until the Lab is renamed, the slug is `lab-<tokenId>`, built from the LabNFT's token id. Once it is renamed, `shortname` is derived server-side from the new name and the `lab-<tokenId>` form stops resolving. `oclId` is not a page slug and never resolves in this URL.
+**`shortname`** — the slug in a Lab's public page address, `/labs/<slug>`. Until the Lab is renamed, the slug is `lab-<tokenId>`, built from the LabNFT's token id. Once it is renamed, `shortname` is derived server-side from the new name and the `lab-<tokenId>` form stops resolving. `oclId` is not a page slug and never resolves in this URL.
 
 ***
 
@@ -55,7 +55,7 @@ Role checks are hierarchical: a Contributor passes Viewer checks, and the Owner 
 
 ## Calling the API
 
-**Consumer credential** — the `mol_<consumerId>_<secret>` string that identifies your integration. It goes in the `Authorization` header on every request, with **no `Bearer` prefix**, and it is issued per environment. This is the one credential you have to request from the Molecule team.
+**Consumer credential** — the `mol_<consumerId>_<secret>` string that identifies your integration. It goes in the `Authorization` header on every request, with **no `Bearer` prefix**, and it is issued per environment. It is created on the **API credentials** page of the Labs app, shown once, and expires after 90 days by default. See [Obtaining API access](../api-reference/authentication.md#obtaining-api-access).
 
 **Service token** — proof that you control a particular wallet. You issue it yourself by signing a message with that wallet, then send it as the `X-Service-Token` header. What it lets you write is decided by that wallet's onchain role on the target Lab, not by the token itself. Reference: [Service Tokens](../api-reference/labs-api/service-tokens.md).
 
