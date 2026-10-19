@@ -174,7 +174,7 @@ You don't call tools yourself. Ask in plain words, such as "List the files in my
 ## Upload size
 
 {% hint style="warning" %}
-**Not live yet:** the upload tools are not live yet.
+**Not live yet:** uploading from an app.
 
 In a chat app, the assistant writes the file into its request to Molecule, so an upload has to fit in one of its replies. That suits text, CSV, Markdown and small JSON files of up to a few hundred kilobytes. Molecule accepts up to 3 MB written this way, but a chat app cannot get near that.
 
