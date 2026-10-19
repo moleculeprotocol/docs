@@ -12,7 +12,7 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ### Consumer credentials are self-service, and require accepting the API terms
 
-**Behaviour change, 2026-10-09.** You now create your own `mol_` consumer credential on the **API Keys** page of the Labs app, in staging and production. Asking the Molecule team is no longer how you get one.
+**Behaviour change, 2026-10-09.** You now create your own `mol_` consumer credential on the **API credentials** page of the Labs app, in staging and production. Asking the Molecule team is no longer how you get one.
 
 - A self-service credential looks like `mol_usr-<id>_<secret>`. It goes in the `Authorization` header with **no `Bearer` prefix**, like any consumer credential.
 - The full string is shown **once**, at creation, and can't be recovered. A lost credential is replaced, not recovered.

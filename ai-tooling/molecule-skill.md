@@ -71,7 +71,7 @@ The operating wallet pays real costs: USDC on Base for x402-billed mutations plu
 
 All configuration and secrets are plain **process environment variables** read by the MCP server subprocess — set them wherever your harness injects env into MCP servers (the `env` block of the MCP registration, or Claude Code's settings files as shown in [Installation](molecule-skill.md#claude-code)). Tools read credentials from the environment — the agent passes file paths, queries, and addresses, not keys.
 
-Every non-secret value is published: the GraphQL endpoints on [API Overview](../api-reference/README.md), the [x402 Gateway base URLs](../api-reference/x402-gateway.md#gateway-base-urls), and the contract addresses in the [Contracts reference](../references/contracts/). The only secret you supply is a `mol_` consumer credential, created on the **API Keys** page of the Labs app — see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential).
+Every non-secret value is published: the GraphQL endpoints on [API Overview](../api-reference/README.md), the [x402 Gateway base URLs](../api-reference/x402-gateway.md#gateway-base-urls), and the contract addresses in the [Contracts reference](../references/contracts/). The only secret you supply is a `mol_` consumer credential, created on the **API credentials** page of the Labs app — see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential).
 
 **Ready-to-paste values per environment:**
 
@@ -80,7 +80,7 @@ Every non-secret value is published: the GraphQL endpoints on [API Overview](../
 | `ENVIRONMENT` | `staging` | `production` |
 | `CHAIN_ID` | `84532` | `8453` |
 | `MOLECULE_LABS_URL` | `https://staging.graphql.api.molecule.xyz/graphql` | `https://production.graphql.api.molecule.xyz/graphql` |
-| `MOLECULE_CLIENT_URL` | `https://testnet.labs.molecule.xyz` | `https://labs.molecule.xyz` |
+| `MOLECULE_CLIENT_URL` | `https://testnet.app.molecule.xyz` | `https://app.molecule.xyz` |
 | `X402_GATEWAY_URL` | `https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/prod` | `https://0qb5gyw72f.execute-api.eu-central-2.amazonaws.com/prod` |
 | `ONCHAIN_LAB_FACTORY_ADDRESS` | `0xd629FE2310b4309a212495F10A47f8436dcEfD90` | `0xECdF4f05384056507485C90aeAb0a83268760D6E` |
 | `LABNFT_ADDRESS` | `0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28` | `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92` |
@@ -139,7 +139,7 @@ The plugin is open source — install it from [moleculeprotocol/mol-labs-plugin]
 git clone https://github.com/moleculeprotocol/mol-labs-plugin.git
 ```
 
-The one value you supply is a `mol_` **consumer credential**, created on the **API Keys** page of the Labs app — see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential). Everything else — endpoints, gateway base URLs, contract addresses — is in the [Configuration](molecule-skill.md#configuration) table above. The repository layout:
+The one value you supply is a `mol_` **consumer credential**, created on the **API credentials** page of the Labs app — see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential). Everything else — endpoints, gateway base URLs, contract addresses — is in the [Configuration](molecule-skill.md#configuration) table above. The repository layout:
 
 ```
 mol-labs-plugin/

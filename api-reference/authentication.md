@@ -9,8 +9,8 @@ You hold two secrets, and they do different jobs. Sending one where the other be
 | Answers | *Which application is calling?* | *Which wallet is acting, so what may it do?* |
 | Header | `Authorization`, with **no `Bearer` prefix** | `X-Service-Token` |
 | Checked | At the edge, on every request, before your operation runs | Per mutation, against the wallet's onchain role on the lab |
-| Needed for | Every request: reads need only this | Write mutations, together with the consumer credential |
-| How you get it | Create it on the **API Keys** page of the Labs app, see [Obtaining API access](#obtaining-api-access) | Sign a message with your wallet, see [Obtaining a Service Token](#obtaining-a-service-token) |
+| Needed for | Every request your code makes (signed-in browser sessions use a Privy token instead); reads need only this | Write mutations, together with the consumer credential |
+| How you get it | Create it on the **API credentials** page of the Labs app, see [Obtaining API access](#obtaining-api-access) | Sign a message with your wallet, see [Obtaining a Service Token](#obtaining-a-service-token) |
 
 They are not alternatives. A read-only integration needs only the credential. An agent that writes to a lab needs both: the credential to get through the door, the token to be allowed to act.
 
@@ -18,8 +18,8 @@ They are not alternatives. A read-only integration needs only the credential. An
 
 ### Create a credential
 
-1. Sign in to the Labs app: [labs.molecule.xyz](https://labs.molecule.xyz) for production, or [testnet.labs.molecule.xyz](https://testnet.labs.molecule.xyz) for staging, where every tutorial in these docs runs. **Credentials are per environment**: a staging credential doesn't authenticate against production, and the other way round.
-2. Open **API Keys** in the navigation.
+1. Sign in to the Labs app: [app.molecule.xyz](https://app.molecule.xyz) for production, or [testnet.app.molecule.xyz](https://testnet.app.molecule.xyz) for staging, where every tutorial in these docs runs. **Credentials are per environment**: a staging credential doesn't authenticate against production, and the other way round.
+2. Open the **API credentials** page from the navigation. In production the menu entry may still read **API Keys**.
 3. Click **Create**, give the credential a name you'll recognise later (optional, at most 64 characters, for example `Data sync script`), and pick how long it should last: 7, 30, 90 days, 1 year, or a custom date. The default is 90 days.
 4. The first time, and again whenever the terms change, tick the box to accept the API Terms of Service and the Acceptable Use Policy. See [Accepting the API terms](#accepting-the-api-terms).
 5. **Copy the credential now.** It is shown exactly once. Molecule stores only a salted hash of it, so a lost credential can't be recovered or shown again: create a new one and revoke the lost one.
@@ -55,13 +55,13 @@ No credential is created until you've accepted the current **Molecule API Terms 
 
 You accept them once, the first time you create a credential, and again only when Molecule publishes a new version. Accepting a new version doesn't affect the credentials you already have: they keep working. Listing and revoking credentials never ask for acceptance, so you can always see and remove a credential whatever you've accepted.
 
-In the Labs app this is the checkbox on the create form. If you're building your own client for these fields, the flow is:
+In the Labs app this is the checkbox on the create form. This is what the Labs app does:
 
-1. Call `myApiTermsStatus`. If `isCurrentVersionAccepted` is `true`, call `issueConsumerCredential` **without** `acceptedTermsVersion`.
-2. Otherwise, show the user every document in `documents` (each `{ type, version, url }`) and let them accept, by ticking a box themselves.
-3. Only then call `issueConsumerCredential` with `acceptedTermsVersion` set to the `termsVersion` they were shown. That call records their acceptance.
+1. It calls `myApiTermsStatus`. If `isCurrentVersionAccepted` is `true`, it calls `issueConsumerCredential` **without** `acceptedTermsVersion`.
+2. Otherwise, it shows every document in `documents` (each `{ type, version, url }`) next to an unticked checkbox, which you tick yourself.
+3. Only then does it call `issueConsumerCredential` with `acceptedTermsVersion` set to the `termsVersion` it showed you. That call records your acceptance.
 
-If you skip step 1, `issueConsumerCredential` refuses with `FAILED_PRECONDITION`, `details.reason: TERMS_ACCEPTANCE_REQUIRED`, and the same information in `details.termsVersion`, `details.documents` and `details.hint`. Nothing is issued and nothing is recorded.
+If the user hasn't accepted the current version and the call is made without `acceptedTermsVersion`, `issueConsumerCredential` refuses with `FAILED_PRECONDITION`, `details.reason: TERMS_ACCEPTANCE_REQUIRED`, and the same information in `details.termsVersion`, `details.documents` and `details.hint`. Nothing is issued and nothing is recorded.
 
 {% hint style="warning" %}
 **Never send `acceptedTermsVersion` on every call.** The argument is the user's acceptance, and a client that fills it in automatically records an acceptance nobody gave. On the normal path it is omitted. Send it only right after showing the documents and getting the user's tick, and only with the version you showed. Any other value, including an older version the user accepted before, is refused with `TERMS_ACCEPTANCE_REQUIRED`.
@@ -69,7 +69,7 @@ If you skip step 1, `issueConsumerCredential` refuses with `FAILED_PRECONDITION`
 
 ### Managing your credentials
 
-Everything happens on the **API Keys** page of the Labs app.
+Everything happens on the **API credentials** page of the Labs app.
 
 * **List.** The page shows your credentials that you haven't revoked, newest first, with their name, creation date and expiry. The secret is never shown again.
 * **Expiry.** Every personal credential expires: after 90 days by default, and at most 365 days after creation (at least 1 day). An expired credential stops authenticating requests. Create a new one before it expires; it can't be extended.
@@ -79,7 +79,7 @@ Everything happens on the **API Keys** page of the Labs app.
 
 ### Limits on personal credentials
 
-Personal (`usr-`) credentials have a lower [cost budget](rate-limits.md#budgets) than partner credentials. The budget belongs to **you**, not to the credential: every credential you create draws on the same window, so creating another credential, or revoking one and creating a replacement, doesn't add budget. Once the budget is spent, requests get [`RATE_LIMITED`](errors.md#rate-limited-requests); wait `details.retryAfterSeconds` before retrying. The current numbers and how requests are priced are on [Rate & Query Limits](rate-limits.md).
+Personal (`usr-`) credentials have a lower [cost budget](rate-limits.md#budgets) than partner credentials. The budget belongs to **you**, not to the credential: every credential you create draws on the same window, so creating another credential, or revoking one and creating a replacement, doesn't add budget. Once rate limits are enforced (see [Rate & Query Limits](rate-limits.md)), requests over the budget get [`RATE_LIMITED`](errors.md#rate-limited-requests); wait `details.retryAfterSeconds` before retrying. The same page has the current numbers and how requests are priced.
 
 ### Credential operations reference
 

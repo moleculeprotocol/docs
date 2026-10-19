@@ -29,7 +29,7 @@ const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90"; // OnChain
 const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28"; // LabNFT (proxy)
 const ACCESS_RESOLVER_ADDRESS = "0x5493F472602C87318EA5Eff753cDD593bf9bF559"; // AccessResolver
 const ACCESS_CONDITION_CHAIN = "baseSepolia"; // the `chain` string inside accessControlConditions
-const LAB_APP_URL = "https://testnet.labs.molecule.xyz"; // production: https://labs.molecule.xyz
+const LAB_APP_URL = "https://testnet.app.molecule.xyz"; // production: https://app.molecule.xyz
 
 const CONSUMER_CREDENTIAL = process.env.CONSUMER_CREDENTIAL; // mol_<id>_<secret> — no "Bearer" prefix
 const WALLET_PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY;

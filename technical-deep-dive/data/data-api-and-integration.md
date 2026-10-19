@@ -46,7 +46,7 @@ The API serves two broad categories of data. Market and token data — represent
 
 Research and Lab data — representing the remaining 15% — includes data room file listings, file versions, project activity feeds, and semantic search results. This data is served through the Labs API, which reads from Kamu for file metadata and provenance, and generates presigned S3 URLs through Filebase for file uploads and downloads.
 
-The API uses a two-tier authentication model. Read operations (queries) require a consumer credential, created on the API Keys page of the Labs app. Write operations (mutations) — file uploads, metadata updates — require both a consumer credential and a service token, which is scoped to a specific wallet address and Lab. Service tokens have configurable expiration and can be extended or revoked through the API. For detailed authentication setup, credential management, and rate limits, see the Labs API reference page.
+The API uses a two-tier authentication model. Read operations (queries) require a consumer credential, created on the API credentials page of the Labs app. Write operations (mutations) — file uploads, metadata updates — require both a consumer credential and a service token, which identifies a wallet; what it may write is decided by that wallet's onchain role on each Lab. Service tokens have configurable expiration and can be extended or revoked through the API. For detailed authentication setup, credential management, and rate limits, see the Labs API reference page.
 
 ### How Consumers Access Data
 
