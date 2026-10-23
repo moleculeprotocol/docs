@@ -1,7 +1,11 @@
+---
+title: query-getdidlinkstatus
+---
+
 Read-only snapshot of DID-linking state for the given OCL. Exposes the state-machine fields (status, attempts, userOpHash, txHash, account/data room DIDs, count of active onchain DIDs). DID-linking runs automatically in the background after createLab; this query is provided for diagnostic and support visibility.
 
-Returns [`DidLinkStatusResult!`](/api-reference/types.md#didlinkstatusresult).
+Returns [`DidLinkStatusResult!`](../../../api-reference/types.md#didlinkstatusresult).
 
-| Name | Type | Description |
-| --- | --- | --- |
+| Name    | Type      | Description                                                    |
+| ------- | --------- | -------------------------------------------------------------- |
 | `oclId` | `String!` | 32-byte OCL id of the lab, `0x` plus 64 hex, case-insensitive. |
