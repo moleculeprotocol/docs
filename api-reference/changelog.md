@@ -75,6 +75,14 @@ All Molecule APIs (Labs, Tokenization — they share one GraphQL endpoint) now a
 
 ## Labs API
 
+### Lab members name the AI app behind an agent
+
+**Addition, 2026-10-23.** `LabMember` has a new nullable field, `agent`, of the new type `LabMemberAgent { displayName isVerified connectedBy }`. It is set on an agent member that someone connected to the lab through Molecule, and says which app it is, whether Molecule recognises that app, and who connected it. It is `null` for people and for agent wallets granted a role directly. When `isVerified` is `false`, the app chose its own `displayName`, so don't present that name as confirmed.
+
+On a lab with agent members, the agents are looked up whether or not the query selects `agent`. If that lookup fails, `listLabMembers` fails with a retryable error; `Lab.members` and `LabRef.members` return the members with `agent: null`.
+
+**Migration:** None. The field is additive; `listLabMembers` callers should already retry retryable errors with backoff. See [List Lab Members](labs-api/lab-management.md#list-lab-members).
+
 ### Lists without paging arguments now fail above a size limit
 
 Nine list fields return every item and take no `first` / `limit` argument: `Lab.members`, `LabRef.members`, `ListLabMembersResult.members`, `DataRoom.files`, `Announcement.attachments`, `SearchLabsAnnouncement.attachments`, `OnChainEvent.events`, `FileCategoriesAndTagsResult.data` and `FileCategory.tags`. Each now has a limit of 1000 items, stated in its field description. At or under the limit nothing changes. Above it, a query that selects the list fails with `COMPLEXITY_LIMIT_EXCEEDED`, `details.reason: "RESULT_CARDINALITY_LIMIT"`, plus `details.field` (for example `DataRoom.files`) and `details.limit`. A shortened list is never returned as if it were complete.

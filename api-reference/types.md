@@ -30,7 +30,7 @@ Legal agreement document attached to an IP-NFT (e.g. the assignment agreement re
 
 ## AgreementFilterBy
 
-Exact-match filters for `agreements`. Every given field must match exactly (case-sensitive); fields are combined with AND. Timestamp fields are ISO-8601 strings.
+Exact-match filters for `agreements`, combined with AND; text matches ignore case.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -141,7 +141,7 @@ Blockchain on which IP-NFTs and IP Tokens are deployed.
 
 ## ChainFilterBy
 
-Exact-match filters for `chains`. Every given field must match exactly (case-sensitive); fields are combined with AND. Timestamp fields are ISO-8601 strings.
+Exact-match filters for `chains`, combined with AND; text matches ignore case. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -248,6 +248,7 @@ Data room file as it appeared in an activity-feed event: the version the event r
 | Name | Type | Description |
 | --- | --- | --- |
 | `ref` | `String!` | Stable reference (dataset id) of the file across versions. Use it with `finishCreateOrUpdateFile(ref)` to upload a new version and `updateFileMetadata(ref)` to edit metadata. |
+| `shortRef` | `String` | First 12 hex characters of `ref` after `did:odf:fed01`, accepted by `dataRoomFile(ref)`. Null when `ref` has another format. |
 | `path` | `String!` |  |
 | `tags` | `[String!]` | Tags on this version. Null when none. |
 | `description` | `String` | Description of this version. Null when none. |
@@ -271,6 +272,7 @@ File in a lab's data room, with its current version's metadata and, when the cal
 | --- | --- | --- |
 | `id` | `ID!` |  |
 | `did` | `String!` |  |
+| `shortRef` | `String` | First 12 hex characters of `did` after `did:odf:fed01`, accepted by `dataRoomFile(ref)`. Null when `did` has another format. |
 | `path` | `String!` |  |
 | `version` | `Int` | Version number of the file's current revision. Null when no version is reported. |
 | `contentType` | `String!` | Defaults to `application/octet-stream` when the backend reports none. |
@@ -329,6 +331,7 @@ Lightweight data room entry for search results.
 | `lab` | [`LabRef!`](/api-reference/types.md#labref) | Lab the file belongs to. Carries the lab metadata tier (see `LabRef`), so a client does not need a second lookup to render it. |
 | `path` | `String!` | Path of the file within the data room. |
 | `ref` | `String!` | Stable reference (dataset id) of the file across versions. |
+| `shortRef` | `String` | First 12 hex characters of `ref` after `did:odf:fed01`, accepted by `dataRoomFile(ref)`. Null when `ref` has another format. |
 | `systemTime` | `AWSDateTime!` | When the matching version was written by the data room backend. |
 | `eventTime` | `AWSDateTime!` | When the matching version took effect. |
 | `file` | [`DataRoomFile!`](/api-reference/types.md#dataroomfile) | File's current metadata. |
@@ -667,7 +670,7 @@ Onchain token representing the legal rights to a research project's IP and data.
 
 ## IPNFTFilterBy
 
-Exact-match filters for `ipnfts`. Every given field must match exactly (case-sensitive); fields are combined with AND. Nested filters (`owner`, `researchLead`) match on the related record's fields, and timestamp fields are ISO-8601 strings.
+Exact-match filters for `ipnfts`, combined with AND; text matches ignore case. Nested filters (`owner`, `researchLead`) match on the related record's fields. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -677,8 +680,8 @@ Exact-match filters for `ipnfts`. Every given field must match exactly (case-sen
 | `chainId` | `Int` |  |
 | `owner` | [`UserFilterBy`](/api-reference/types.md#userfilterby) | Match on the current owner's fields, e.g. `{ address }`. |
 | `userId` | `String` |  |
-| `originalOwner` | `String` | Match the stored casing exactly. |
-| `ipt` | `String` | Not usable: `ipt` is a relation, not a text field; a value here makes the request fail. |
+| `originalOwner` | `String` |  |
+| `ipt` | `String` | Not usable: `ipt` is a relation, not a text field; a non-null value fails with `VALIDATION_FAILED`. |
 | `tokenUri` | `String` |  |
 | `symbol` | `String` |  |
 | `name` | `String` |  |
@@ -689,12 +692,12 @@ Exact-match filters for `ipnfts`. Every given field must match exactly (case-sen
 | `organization` | `String` |  |
 | `topic` | `String` |  |
 | `fundingAmountCurrency` | `String` |  |
-| `fundingAmountValue` | `String` | Compared as a decimal string, not numerically. |
+| `fundingAmountValue` | `String` | Whole number in the signed 64-bit range as a decimal string, matched by numeric value; anything else fails with `VALIDATION_FAILED`. |
 | `fundingAmountDecimals` | `Int` |  |
 | `fundingAmountCurrencyType` | `String` |  |
 | `researchLead` | [`ResearchLeadFilterBy`](/api-reference/types.md#researchleadfilterby) | Match on the research lead's fields, e.g. `{ email }`. |
 | `researchLeadId` | `String` |  |
-| `agreements` | [`AgreementFilterBy`](/api-reference/types.md#agreementfilterby) | Not usable: `agreements` is a list relation, which this exact-match filter cannot express; a value here makes the request fail. |
+| `agreements` | [`AgreementFilterBy`](/api-reference/types.md#agreementfilterby) | Not usable: `agreements` is a list relation, which this exact-match filter cannot express; a value fails with `VALIDATION_FAILED`. |
 | `schemaVersion` | `String` |  |
 
 ## IPNFTSortBy
@@ -784,7 +787,7 @@ Kind of IPT (IP Token) agreement.
 
 ## IPTFilterBy
 
-Exact-match filters for `ipts`. Every given field must match exactly (case-sensitive); fields are combined with AND. Nested filters (`ipnft`, `originalOwner`) match on the related record's fields, and timestamp fields are ISO-8601 strings.
+Exact-match filters for `ipts`, combined with AND; text matches ignore case. Nested filters (`ipnft`, `originalOwner`) match on the related record's fields. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -793,9 +796,9 @@ Exact-match filters for `ipts`. Every given field must match exactly (case-sensi
 | `updatedAt` | `String` |  |
 | `ipnft` | [`IPNFTFilterBy`](/api-reference/types.md#ipnftfilterby) | Match on the parent IP-NFT's fields, e.g. `{ topic }`. |
 | `ipnftId` | `String` |  |
-| `l2TokenAddress` | `String` | Match the stored casing exactly. |
-| `holderCount` | `String` | Not usable: the holder count is numeric and this filter is text; a value here makes the request fail. |
-| `markets` | `String` | Not usable: `markets` is a relation, not a text field; a value here makes the request fail. |
+| `l2TokenAddress` | `String` |  |
+| `holderCount` | `String` | Not usable: the holder count is numeric and this filter is text; a non-null value fails with `VALIDATION_FAILED`. |
+| `markets` | `String` | Not usable: `markets` is a relation, not a text field; a value fails with `VALIDATION_FAILED`. |
 | `name` | `String` |  |
 | `symbol` | `String` |  |
 | `decimals` | `Int` |  |
@@ -804,8 +807,8 @@ Exact-match filters for `ipts`. Every given field must match exactly (case-sensi
 | `originalOwner` | [`UserFilterBy`](/api-reference/types.md#userfilterby) | Match on the original owner's fields, e.g. `{ address }`. |
 | `originalOwnerId` | `String` |  |
 | `image` | `String` |  |
-| `links` | `String` | Not usable: `links` is a list, which this exact-match filter cannot express; a value here makes the request fail. |
-| `capped` | `String` | Not usable: `capped` is a boolean and this filter is text; a value here makes the request fail. |
+| `links` | `String` | Not usable: `links` is a list, which this exact-match filter cannot express; a value fails with `VALIDATION_FAILED`. |
+| `capped` | `String` | Not usable: `capped` is a boolean and this filter is text; a value fails with `VALIDATION_FAILED`. |
 | `circulatingSupply` | `String` | Compared as a decimal string, not numerically. |
 | `totalIssued` | `String` | Compared as a decimal string, not numerically. |
 
@@ -1031,6 +1034,17 @@ Single lab member entry, derived from the indexed onchain role state.
 | `expiry` | `String` | Unix-seconds expiry as a decimal string, encoded as a string because BigInt unix-seconds is unsafe as a JSON Int. Null means the grant is permanent. |
 | `isAgent` | `Boolean!` | Whether the role was granted onchain with the agent flag set. Always `false` for `OWNER`, which is not granted. |
 | `grantedAt` | `String!` | ISO-8601 timestamp the row was first persisted. For `NESTED_OWNERSHIP`, when the chain of LabNft holders above the lab last changed. |
+| `agent` | [`LabMemberAgent`](/api-reference/types.md#labmemberagent) | App behind an agent member and who connected it, kept after a disconnect while the role stands. Null for non-agents, agents never connected to this lab through Molecule, and on lookup failure. |
+
+## LabMemberAgent
+
+App connected to a lab through Molecule, acting there as an agent member.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `displayName` | `String!` |  |
+| `isVerified` | `Boolean!` | Whether Molecule recognises the app. When false, the app chose its own `displayName`, which may imitate another app's. |
+| `connectedBy` | `String` | Lowercased wallet that connected the agent to this lab; null until the connection completes and after it is disconnected. |
 
 ## LabMemberRole
 
@@ -1266,21 +1280,21 @@ DEX trading pair of an IP Token, with its latest price and liquidity figures.
 
 ## MarketFilterBy
 
-Exact-match filters for `markets`. Every given field must match exactly (case-sensitive); fields are combined with AND. Nested filters (`chain`, `token`) match on the related record's fields, and timestamp fields are ISO-8601 strings.
+Exact-match filters for `markets`, combined with AND; text matches ignore case. Nested filters (`chain`, `token`) match on the related record's fields. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `id` | `String` |  |
 | `createdAt` | `String` |  |
 | `updatedAt` | `String` |  |
-| `liquidityUsd` | `String` | Not usable: liquidity is numeric and this filter is text; a value here makes the request fail. |
-| `pairAddress` | `String` | Match the stored casing exactly. |
-| `usdPrice` | `String` | Not usable: the price is numeric and this filter is text; a value here makes the request fail. |
-| `usdPrice24hrPercentageChange` | `String` | Not usable: the price change is numeric and this filter is text; a value here makes the request fail. |
+| `liquidityUsd` | `String` | Not usable: liquidity is numeric and this filter is text; a value fails with `VALIDATION_FAILED`. |
+| `pairAddress` | `String` |  |
+| `usdPrice` | `String` | Not usable: the price is numeric and this filter is text; a value fails with `VALIDATION_FAILED`. |
+| `usdPrice24hrPercentageChange` | `String` | Not usable: the price change is numeric and this filter is text; a non-null value fails with `VALIDATION_FAILED`. |
 | `chain` | [`ChainFilterBy`](/api-reference/types.md#chainfilterby) | Match on the chain's fields, e.g. `{ chainId }`. |
 | `chainId` | `Int` |  |
-| `marketCapUsd` | `String` | Not usable: market cap is numeric and this filter is text; a value here makes the request fail. |
-| `tradingVolume24hr` | `String` | Not usable: trading volume is numeric and this filter is text; a value here makes the request fail. |
+| `marketCapUsd` | `String` | Not usable: market cap is numeric and this filter is text; a value fails with `VALIDATION_FAILED`. |
+| `tradingVolume24hr` | `String` | Not usable: trading volume is numeric and this filter is text; a value fails with `VALIDATION_FAILED`. |
 | `token` | [`IPTFilterBy`](/api-reference/types.md#iptfilterby) | Match on the traded IP Token's fields, e.g. `{ symbol }`. |
 | `iptId` | `String` |  |
 | `inverted` | `Boolean` |  |
@@ -1416,7 +1430,7 @@ Research lead of an IP-NFT's project.
 
 ## ResearchLeadFilterBy
 
-Exact-match filters for `researchLeads`. Every given field must match exactly (case-sensitive); fields are combined with AND. Timestamp fields are ISO-8601 strings.
+Exact-match filters for `researchLeads`, combined with AND; text matches ignore case. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -1425,7 +1439,7 @@ Exact-match filters for `researchLeads`. Every given field must match exactly (c
 | `updatedAt` | `String` |  |
 | `name` | `String` |  |
 | `email` | `String` |  |
-| `ipnfts` | `String` | Not usable: `ipnfts` is a relation, not a text field; a value here makes the request fail. |
+| `ipnfts` | `String` | Not usable: `ipnfts` is a relation, not a text field; a value fails with `VALIDATION_FAILED`. |
 
 ## ResearchLeadSortBy
 
@@ -1892,7 +1906,7 @@ Wallet known to the IP-NFT registry as an owner or original minter.
 | `id` | `String!` | Checksummed wallet address, the same value as `address`. |
 | `createdAt` | `AWSDateTime!` | When Molecule first indexed the wallet. |
 | `updatedAt` | `AWSDateTime!` | When Molecule last refreshed the record. |
-| `address` | `String!` | Checksummed EVM address; match it exactly when filtering. |
+| `address` | `String!` | Checksummed EVM address. Filters on it ignore case. |
 | `ipnfts` | [`[IPNFT!]!`](/api-reference/types.md#ipnft) | IP-NFTs owned by this wallet; the arguments are accepted but ignored. Whether this field resolves data is unverified, so prefer `ipnfts(filterBy: { userId })`. |
 | `ipts` | [`[IPT!]!`](/api-reference/types.md#ipt) | **Deprecated.** Use `tokens` with an IPT kind filter. Removed after 2027-01-01. IP Tokens originally issued to this wallet; the arguments are accepted but ignored. Whether this field resolves data is unverified, so prefer `ipts(filterBy: { originalOwnerId })`. |
 
@@ -1918,14 +1932,14 @@ Wallet known to the IP-NFT registry as an owner or original minter.
 
 ## UserFilterBy
 
-Exact-match filters for `users`. Every given field must match exactly (case-sensitive); fields are combined with AND. Timestamp fields are ISO-8601 strings.
+Exact-match filters for `users`, combined with AND; text matches ignore case. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `id` | `String` |  |
 | `createdAt` | `String` |  |
 | `updatedAt` | `String` |  |
-| `address` | `String` | Match the stored casing exactly. |
+| `address` | `String` |  |
 | `ipnft` | `String` | Not usable: it does not name a `User` field, so it is ignored. |
 | `ipt` | `String` | Not usable: it does not name a `User` field, so it is ignored. |
 
