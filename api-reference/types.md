@@ -30,7 +30,7 @@ Legal agreement document attached to an IP-NFT (e.g. the assignment agreement re
 
 ## AgreementFilterBy
 
-Exact-match filters for `agreements`. Every given field must match exactly (case-sensitive); fields are combined with AND. Timestamp fields are ISO-8601 strings.
+Exact-match filters for `agreements`, combined with AND; text matches ignore case.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -62,7 +62,7 @@ Announcement posted to a lab's data room, with its attached files.
 | `id` | `String!` | Unique within the data room only, so key any cache on the lab as well. |
 | `headline` | `String!` |  |
 | `body` | `String!` |  |
-| `attachments` | [`[DataRoomFile!]!`](/api-reference/types.md#dataroomfile) | Files attached to the announcement (at least one; announcements cannot be created without an attachment). |
+| `attachments` | [`[DataRoomFile!]!`](/api-reference/types.md#dataroomfile) | Files attached to the announcement, at least one. Selecting it fails the query with `COMPLEXITY_LIMIT_EXCEEDED` when an announcement on the page has more than 1000. |
 | `changeBy` | `String!` | Identity of the member who posted the announcement, as `did:ethr:` plus the EIP-55 checksummed wallet address. Older records may hold a bare address or an unverified value. |
 
 ## ApiError
@@ -76,6 +76,35 @@ Standard error of the Molecule GraphQL API, returned inside a mutation's `*Resul
 | `requestId` | `String!` | Correlation id for the request that failed. Include it in bug reports. |
 | `retryable` | `Boolean!` | Whether retrying the same request unchanged can plausibly succeed. Retry with exponential backoff. |
 | `details` | `AWSJSON` | Structured context for the failure. Keys: `field` (offending input), `reason` (second-level code), `hint` (next step), `docs` (URL); unknown keys may appear and must be ignored. |
+
+## ApiTermsDocument
+
+Published document that forms part of the API terms.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `type` | [`ApiTermsDocumentType!`](/api-reference/types.md#apitermsdocumenttype) |  |
+| `version` | `String!` | Version label printed on the document. |
+| `url` | `AWSURL!` |  |
+
+## ApiTermsDocumentType
+
+Documents that make up the API terms.
+
+| Value | Description |
+| --- | --- |
+| `TERMS_OF_SERVICE` | Molecule API Terms of Service. |
+| `ACCEPTABLE_USE_POLICY` | Molecule API Acceptable Use Policy. |
+
+## ApiTermsStatus
+
+Caller's acceptance status for the API terms that `issueConsumerCredential` requires.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `isCurrentVersionAccepted` | `Boolean!` | Whether the caller has accepted the version named by `ApiTermsStatus.termsVersion`. |
+| `termsVersion` | `String!` | Version of the API terms in force, sent back as `acceptedTermsVersion` once the user has accepted it. |
+| `documents` | [`[ApiTermsDocument!]!`](/api-reference/types.md#apitermsdocument) | Documents making up that version, to show the user before asking for acceptance. |
 
 ## AssignmentAgreementType
 
@@ -112,7 +141,7 @@ Blockchain on which IP-NFTs and IP Tokens are deployed.
 
 ## ChainFilterBy
 
-Exact-match filters for `chains`. Every given field must match exactly (case-sensitive); fields are combined with AND. Timestamp fields are ISO-8601 strings.
+Exact-match filters for `chains`, combined with AND; text matches ignore case. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -146,6 +175,17 @@ Cursor-based (Relay-style) pagination info for connections. The page-numbered `P
 | `hasPreviousPage` | `Boolean!` | Whether more items exist before this page. When paginating forward it reflects whether an `after` cursor was supplied. |
 | `startCursor` | `String` | Cursor of the first edge; null on an empty page. |
 | `endCursor` | `String` | Cursor of the last edge; null on an empty page. |
+
+## ConsumerCredential
+
+Personal API credential, identified by `consumerId`. Holds no secret material: the credential string itself is shown once, by `issueConsumerCredential`, and cannot be retrieved afterwards.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `consumerId` | `ID!` | Public identifier of the credential, also readable as the middle segment of the credential string. |
+| `label` | `String` | Label supplied at issuance, for telling credentials apart. |
+| `createdAt` | `AWSDateTime!` | When the credential was issued. |
+| `expiresAt` | `AWSDateTime!` | When the credential stops authenticating requests. |
 
 ## CreateAnnouncementResult
 
@@ -189,7 +229,7 @@ Lab's data room: the container for its files and announcements.
 | `lastUpdatedAt` | `AWSDateTime` |  |
 | `owner` | [`DataRoomOwner!`](/api-reference/types.md#dataroomowner) |  |
 | `keywords` | `[String!]` | Empty array rather than null when the data room has no keywords. |
-| `files` | [`[DataRoomFile!]`](/api-reference/types.md#dataroomfile) | Files in the data room. Populated by `labWithDataRoomAndFiles`; null when the files could not be listed. |
+| `files` | [`[DataRoomFile!]`](/api-reference/types.md#dataroomfile) | Files in the data room, populated by `labWithDataRoomAndFiles`; null when they could not be listed. Selecting it fails the query with `COMPLEXITY_LIMIT_EXCEEDED` above 1000 files. |
 
 ## DataRoomAccessLevel
 
@@ -199,7 +239,7 @@ Who may read a data room file. The level is a label on the file; the restriction
 | --- | --- |
 | `PUBLIC` | Anyone. |
 | `HOLDERS` | Intended for files readable by the lab's token holders, but neither assigned nor enforced today. |
-| `ADMIN` | Confidential, readable only by lab members. Enforced by envelope encryption, so the URL alone yields ciphertext. |
+| `ADMIN` | Content readable only by lab members, enforced by envelope encryption. Metadata, `contentText` included, is public. |
 
 ## DataRoomEntry
 
@@ -208,6 +248,7 @@ Data room file as it appeared in an activity-feed event: the version the event r
 | Name | Type | Description |
 | --- | --- | --- |
 | `ref` | `String!` | Stable reference (dataset id) of the file across versions. Use it with `finishCreateOrUpdateFile(ref)` to upload a new version and `updateFileMetadata(ref)` to edit metadata. |
+| `shortRef` | `String` | First 12 hex characters of `ref` after `did:odf:fed01`, accepted by `dataRoomFile(ref)`. Null when `ref` has another format. |
 | `path` | `String!` |  |
 | `tags` | `[String!]` | Tags on this version. Null when none. |
 | `description` | `String` | Description of this version. Null when none. |
@@ -219,7 +260,7 @@ Data room file as it appeared in an activity-feed event: the version the event r
 | `categories` | `[String!]` | Categories of this version. Null when none. |
 | `contentType` | `String!` |  |
 | `contentHash` | `String!` |  |
-| `contentText` | `String` | Searchable text extracted from or supplied for this version. Null when none. |
+| `contentText` | `String` | Searchable text extracted from or supplied for this version, or null. Public on `ADMIN` files too: only the content is encrypted. |
 | `lab` | [`LabRef!`](/api-reference/types.md#labref) |  |
 | `encryptionMetadata` | [`EncryptionMetadata`](/api-reference/types.md#encryptionmetadata) | Encryption metadata when the file is encrypted (KMS, BLS or a legacy ciphertext); null for plaintext files. |
 
@@ -231,6 +272,7 @@ File in a lab's data room, with its current version's metadata and, when the cal
 | --- | --- | --- |
 | `id` | `ID!` |  |
 | `did` | `String!` |  |
+| `shortRef` | `String` | First 12 hex characters of `did` after `did:odf:fed01`, accepted by `dataRoomFile(ref)`. Null when `did` has another format. |
 | `path` | `String!` |  |
 | `version` | `Int` | Version number of the file's current revision. Null when no version is reported. |
 | `contentType` | `String!` | Defaults to `application/octet-stream` when the backend reports none. |
@@ -247,8 +289,38 @@ File in a lab's data room, with its current version's metadata and, when the cal
 | `description` | `String` |  |
 | `tags` | `[String!]` | Empty array rather than null when the file has no tags. |
 | `categories` | `[String!]` | Empty array rather than null when the file has no categories. |
-| `contentText` | `String` |  |
+| `contentText` | `String` | Searchable text, or null. Public on `ADMIN` files too: only the content is encrypted. |
 | `changeBy` | `String` | Identity of the member who last changed the file, as `did:ethr:` plus the EIP-55 checksummed wallet address. Older records may hold a bare address or an unverified value. |
+| `lastChangedBy` | [`DataRoomWriter`](/api-reference/types.md#dataroomwriter) | Writer of the current version, resolved from `changeBy`. Served by `labWithDataRoomAndFiles` and `dataRoomFile`; null elsewhere or when it could not be resolved. |
+| `history` | [`[DataRoomFileChange!]`](/api-reference/types.md#dataroomfilechange) | Changes newest first; null when unreadable. Served on `dataRoomFile` only but costing 1000 changes per file wherever selected; above 1000 changes the query fails with `COMPLEXITY_LIMIT_EXCEEDED`. |
+
+## DataRoomFileChange
+
+One change to a data room file, as recorded by the data room backend. Its metadata fields hold the file's values as of that change.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `kind` | [`DataRoomFileChangeKind!`](/api-reference/types.md#dataroomfilechangekind) |  |
+| `version` | `Int!` | Version of the file after this change, 1 for the first upload. |
+| `path` | `String` | Path of the file after this change; null when not recorded. |
+| `changedAt` | `AWSDateTime!` | When the change was made, by the data room backend's clock. |
+| `changedBy` | [`DataRoomWriter!`](/api-reference/types.md#dataroomwriter) |  |
+| `accessLevel` | [`DataRoomAccessLevel!`](/api-reference/types.md#dataroomaccesslevel) |  |
+| `description` | `String` |  |
+| `tags` | `[String!]!` |  |
+| `categories` | `[String!]!` |  |
+
+## DataRoomFileChangeKind
+
+Kind of change to a data room file, derived by comparing each version with the one before it.
+
+| Value | Description |
+| --- | --- |
+| `ADDED` | File was added to the data room. |
+| `CONTENT_UPDATED` | New version with different content. |
+| `METADATA_UPDATED` | New version with unchanged content: a metadata edit, or a re-upload of identical bytes. |
+| `MOVED` | File moved to a new path; the version is unchanged. Can take minutes to appear. |
+| `REMOVED` | File was removed from the data room. |
 
 ## DataRoomFileSearchEntry
 
@@ -256,9 +328,10 @@ Lightweight data room entry for search results.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `lab` | [`LabRef!`](/api-reference/types.md#labref) | Lab the file belongs to (search-result hydration tier; see `LabRef`). |
+| `lab` | [`LabRef!`](/api-reference/types.md#labref) | Lab the file belongs to. Carries the lab metadata tier (see `LabRef`), so a client does not need a second lookup to render it. |
 | `path` | `String!` | Path of the file within the data room. |
 | `ref` | `String!` | Stable reference (dataset id) of the file across versions. |
+| `shortRef` | `String` | First 12 hex characters of `ref` after `did:odf:fed01`, accepted by `dataRoomFile(ref)`. Null when `ref` has another format. |
 | `systemTime` | `AWSDateTime!` | When the matching version was written by the data room backend. |
 | `eventTime` | `AWSDateTime!` | When the matching version took effect. |
 | `file` | [`DataRoomFile!`](/api-reference/types.md#dataroomfile) | File's current metadata. |
@@ -272,6 +345,19 @@ Owner of a data room. Data room IDs follow the format `<contract_address>_<token
 | `id` | `ID!` |  |
 | `accountName` | `String!` |  |
 | `displayName` | `String!` | Display name reported by the data room backend. |
+
+## DataRoomWriter
+
+Wallet that changed a data room file, with its standing in the lab.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `did` | `String!` | Identity recorded for the change, as `did:ethr:` plus the EIP-55 checksummed wallet address. Older records may hold a bare address or an unverified value. |
+| `walletAddress` | `String` | Lowercased wallet address parsed from `did`; null when `did` holds none. |
+| `isAgent` | `Boolean!` | Whether the wallet is an AI agent: its latest role grant on the lab flags it as one, even if since revoked, or it connected to Molecule as one. |
+| `agentName` | `String` | Name of the agent's client, e.g. `Claude`; clients Molecule does not recognise choose their own, unverified. Null for non-agents and agents not connected through Molecule. |
+| `grantedBy` | `String` | Lowercased wallet that made the wallet's latest role grant on the lab, even if since revoked; null when none is recorded, as for most owners. |
+| `currentRole` | [`LabMemberRole`](/api-reference/types.md#labmemberrole) | Role the wallet holds on the lab now; null when it holds none. |
 
 ## DecryptDataKeyResult
 
@@ -323,7 +409,7 @@ Snapshot of DID-linking state for an OCL. `status` is null until the first linki
 
 ## DidLinkStatusResult
 
-Payload of the public getDidLinkStatus query. Failures are thrown as GraphQL errors, never encoded in this payload.
+Payload of the getDidLinkStatus query. Failures are thrown as GraphQL errors, never encoded in this payload.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -389,7 +475,7 @@ Payload of `fileCategoriesAndTags`. Failures are thrown as GraphQL errors, never
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `data` | [`[FileCategory!]`](/api-reference/types.md#filecategory) | Every valid category with its tags. |
+| `data` | [`[FileCategory!]`](/api-reference/types.md#filecategory) | Every valid category with its tags. Selecting it fails the query with `COMPLEXITY_LIMIT_EXCEEDED` when there are more than 1000 categories. |
 
 ## FileCategory
 
@@ -398,7 +484,7 @@ File category and tags valid within it, as configured by Molecule.
 | Name | Type | Description |
 | --- | --- | --- |
 | `name` | `String!` |  |
-| `tags` | `[String!]!` |  |
+| `tags` | `[String!]!` | Tags valid within this category. Selecting it fails the query with `COMPLEXITY_LIMIT_EXCEEDED` when a category has more than 1000 tags. |
 
 ## FinishFileUploadResult
 
@@ -584,7 +670,7 @@ Onchain token representing the legal rights to a research project's IP and data.
 
 ## IPNFTFilterBy
 
-Exact-match filters for `ipnfts`. Every given field must match exactly (case-sensitive); fields are combined with AND. Nested filters (`owner`, `researchLead`) match on the related record's fields, and timestamp fields are ISO-8601 strings.
+Exact-match filters for `ipnfts`, combined with AND; text matches ignore case. Nested filters (`owner`, `researchLead`) match on the related record's fields. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -594,8 +680,8 @@ Exact-match filters for `ipnfts`. Every given field must match exactly (case-sen
 | `chainId` | `Int` |  |
 | `owner` | [`UserFilterBy`](/api-reference/types.md#userfilterby) | Match on the current owner's fields, e.g. `{ address }`. |
 | `userId` | `String` |  |
-| `originalOwner` | `String` | Match the stored casing exactly. |
-| `ipt` | `String` | Not usable: `ipt` is a relation, not a text field; a value here makes the request fail. |
+| `originalOwner` | `String` |  |
+| `ipt` | `String` | Not usable: `ipt` is a relation, not a text field; a non-null value fails with `VALIDATION_FAILED`. |
 | `tokenUri` | `String` |  |
 | `symbol` | `String` |  |
 | `name` | `String` |  |
@@ -606,12 +692,12 @@ Exact-match filters for `ipnfts`. Every given field must match exactly (case-sen
 | `organization` | `String` |  |
 | `topic` | `String` |  |
 | `fundingAmountCurrency` | `String` |  |
-| `fundingAmountValue` | `String` | Compared as a decimal string, not numerically. |
+| `fundingAmountValue` | `String` | Whole number in the signed 64-bit range as a decimal string, matched by numeric value; anything else fails with `VALIDATION_FAILED`. |
 | `fundingAmountDecimals` | `Int` |  |
 | `fundingAmountCurrencyType` | `String` |  |
 | `researchLead` | [`ResearchLeadFilterBy`](/api-reference/types.md#researchleadfilterby) | Match on the research lead's fields, e.g. `{ email }`. |
 | `researchLeadId` | `String` |  |
-| `agreements` | [`AgreementFilterBy`](/api-reference/types.md#agreementfilterby) | Not usable: `agreements` is a list relation, which this exact-match filter cannot express; a value here makes the request fail. |
+| `agreements` | [`AgreementFilterBy`](/api-reference/types.md#agreementfilterby) | Not usable: `agreements` is a list relation, which this exact-match filter cannot express; a value fails with `VALIDATION_FAILED`. |
 | `schemaVersion` | `String` |  |
 
 ## IPNFTSortBy
@@ -701,7 +787,7 @@ Kind of IPT (IP Token) agreement.
 
 ## IPTFilterBy
 
-Exact-match filters for `ipts`. Every given field must match exactly (case-sensitive); fields are combined with AND. Nested filters (`ipnft`, `originalOwner`) match on the related record's fields, and timestamp fields are ISO-8601 strings.
+Exact-match filters for `ipts`, combined with AND; text matches ignore case. Nested filters (`ipnft`, `originalOwner`) match on the related record's fields. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -710,9 +796,9 @@ Exact-match filters for `ipts`. Every given field must match exactly (case-sensi
 | `updatedAt` | `String` |  |
 | `ipnft` | [`IPNFTFilterBy`](/api-reference/types.md#ipnftfilterby) | Match on the parent IP-NFT's fields, e.g. `{ topic }`. |
 | `ipnftId` | `String` |  |
-| `l2TokenAddress` | `String` | Match the stored casing exactly. |
-| `holderCount` | `String` | Not usable: the holder count is numeric and this filter is text; a value here makes the request fail. |
-| `markets` | `String` | Not usable: `markets` is a relation, not a text field; a value here makes the request fail. |
+| `l2TokenAddress` | `String` |  |
+| `holderCount` | `String` | Not usable: the holder count is numeric and this filter is text; a non-null value fails with `VALIDATION_FAILED`. |
+| `markets` | `String` | Not usable: `markets` is a relation, not a text field; a value fails with `VALIDATION_FAILED`. |
 | `name` | `String` |  |
 | `symbol` | `String` |  |
 | `decimals` | `Int` |  |
@@ -721,8 +807,8 @@ Exact-match filters for `ipts`. Every given field must match exactly (case-sensi
 | `originalOwner` | [`UserFilterBy`](/api-reference/types.md#userfilterby) | Match on the original owner's fields, e.g. `{ address }`. |
 | `originalOwnerId` | `String` |  |
 | `image` | `String` |  |
-| `links` | `String` | Not usable: `links` is a list, which this exact-match filter cannot express; a value here makes the request fail. |
-| `capped` | `String` | Not usable: `capped` is a boolean and this filter is text; a value here makes the request fail. |
+| `links` | `String` | Not usable: `links` is a list, which this exact-match filter cannot express; a value fails with `VALIDATION_FAILED`. |
+| `capped` | `String` | Not usable: `capped` is a boolean and this filter is text; a value fails with `VALIDATION_FAILED`. |
 | `circulatingSupply` | `String` | Compared as a decimal string, not numerically. |
 | `totalIssued` | `String` | Compared as a decimal string, not numerically. |
 
@@ -751,6 +837,16 @@ Exact-match filters for `ipts`. Every given field must match exactly (case-sensi
 | `circulatingSupply` | Lexicographic, not numeric: the supply is stored as a decimal string. |
 | `totalIssued` | Lexicographic, not numeric: the total is stored as a decimal string. |
 
+## IssueConsumerCredentialResult
+
+Result of `issueConsumerCredential`. Success when `error == null`; the credential fields are populated only on success.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `credential` | `String` | Credential string, sent in the `Authorization` header of later requests, returned by this response only and unrecoverable afterwards. Null on failure. |
+| `consumerCredential` | [`ConsumerCredential`](/api-reference/types.md#consumercredential) | Metadata of the issued credential, as it will appear in `myConsumerCredentials`. Null on failure. |
+| `error` | [`ApiError`](/api-reference/types.md#apierror) | Null on success. Non-null means the mutation failed. |
+
 ## Lab
 
 Single onchain lab with its data room, as returned by `labWithDataRoomAndFiles`. Lightweight references to labs elsewhere use `LabRef`.
@@ -761,9 +857,11 @@ Single onchain lab with its data room, as returned by `labWithDataRoomAndFiles`.
 | `eventTime` | `AWSDateTime!` | When the lab record's current state took effect in the data room backend. |
 | `mintedAt` | `AWSDateTime` | LabNft mint block timestamp from the OclIdentityCreated event. |
 | `oclId` | `String!` | Canonical 32-byte oclId (lowercase 0x-hex); primary identifier. |
-| `shortname` | `String` | Human-readable slug used as the URL segment (e.g. "vita-fast"), derived from `name` and re-derived on rename, at which point the previous slug stops resolving. Persist `oclId`, not the slug. |
+| `shortname` | `String` | Human-readable slug used as the URL segment (e.g. "vita-fast"), re-derived from `name` on rename; the last five retired slugs still resolve, so compare to redirect. Persist `oclId`, not the slug. |
 | `labAccountAddress` | `String!` | ERC-6551 token-bound smart-account address for this lab; the deterministic account address tied to the LabNft `tokenId`. |
 | `labNftTokenId` | `String!` | LabNft tokenId as a decimal string. Replaces the legacy `ipnftTokenId`. |
+| `parentLab` | [`LabRef`](/api-reference/types.md#labref) | Lab whose token-bound account holds this LabNft; its assessment fields, `ipnft` and `latestContributionAt` are null. Null if a wallet holds it, the lineage is unreadable or it tops a broken chain. |
+| `rootOclId` | `String` | oclId of the topmost lab above this one. Null when `parentLab` is null, or when the chain of parents loops or exceeds 10 levels, in which case nobody owns the lab. |
 | `account` | [`LabAccount!`](/api-reference/types.md#labaccount) | Owning account of this lab's data room. |
 | `dataRoom` | [`DataRoom!`](/api-reference/types.md#dataroom) | Lab's data room: metadata plus, when `files` is selected, its files. |
 | `ipnft` | [`IPNFT`](/api-reference/types.md#ipnft) | Legacy IPNFT this lab was migrated from, fully hydrated (owner, researchLead, agreements, ipt) for the single-lab query. Null when the lab has no linked IPNFT. |
@@ -774,9 +872,10 @@ Single onchain lab with its data room, as returned by `labWithDataRoomAndFiles`.
 | `image` | `String` | LabNft image URL; owner-editable. Null until the owner sets a custom image. |
 | `externalUrl` | `String` | External link surfaced by the LabNft tokenURI metadata. |
 | `hasDataRoom` | `Boolean!` | Always true on this type, which resolves only labs whose data room exists. Use the `lab` query to tell a lab still being set up from one that is ready. |
-| `members` | [`[LabMember!]`](/api-reference/types.md#labmember) | Active members of the lab, the same data as the top-level `listLabMembers` query and public with no authentication required. Null only on lookup failure. |
+| `members` | [`[LabMember!]`](/api-reference/types.md#labmember) | Active members of the lab, as `listLabMembers` returns them; public. Null on lookup failure, or with a `COMPLEXITY_LIMIT_EXCEEDED` error on this field above 1000 members. |
 | `tokens` | [`TokenConnection`](/api-reference/types.md#tokenconnection) | Tokens linked to this lab, using `tokens` pagination. Invalid arguments, including `filter.oclId`, fail with `VALIDATION_FAILED`. |
-| `legalAgreementStatus` | [`LegalAgreementStatusResult`](/api-reference/types.md#legalagreementstatusresult) | Signed status of a legal agreement for this lab, inlined so a client can fetch it per lab instead of calling `legalAgreementStatus` N times. Public, and null only when the lab cannot be resolved. |
+| `childLabs` | [`LabRefConnection`](/api-reference/types.md#labrefconnection) | Labs whose LabNft this lab's token-bound account holds, earliest-nested first. Invalid arguments fail with `VALIDATION_FAILED`. |
+| `legalAgreementStatus` | [`LegalAgreementStatusResult`](/api-reference/types.md#legalagreementstatusresult) | Signed status of a legal agreement for this lab, verified against the stored signed artifact on this single-lab surface. Public; null only when the lab cannot be resolved. |
 | `trlValue` | `String` | Technology Readiness Level of the lab, from Molecule's AI-assisted assessment rather than onchain. Null when no assessment exists. |
 | `trlRationale` | `String` | Human-readable explanation for the assigned `trlValue`. Null when no assessment exists. |
 | `trlLastUpdated` | `AWSDateTime` | When `trlValue` last changed. Null when no assessment exists. |
@@ -813,6 +912,15 @@ Single onchain lab with its data room, as returned by `labWithDataRoomAndFiles`.
 | `filter` | [`TokenFilter`](/api-reference/types.md#tokenfilter) | Typed filters, combined with AND; `oclId` is implied by the parent lab. |
 | `orderBy` | [`[TokenOrderInput!]`](/api-reference/types.md#tokenorderinput) | Up to 3 ordering keys. Default `CREATED_AT DESC`. |
 
+**`childLabs` arguments**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `first` | `Int` | Forward page size, from 1-100; mutually exclusive with `last`. |
+| `after` | `String` | Opaque cursor after which to continue; requires `first`. |
+| `last` | `Int` | Backward page size, from 1-100; mutually exclusive with `first`. |
+| `before` | `String` | Opaque cursor before which to continue; requires `last`. |
+
 **`legalAgreementStatus` arguments**
 
 | Name | Type | Description |
@@ -835,6 +943,17 @@ Kind of activity-feed entry. Omit the filter to receive every kind.
 | --- | --- |
 | `ANNOUNCEMENT` | Announcements only. |
 | `FILE` | File events only (added, updated, removed). |
+
+## LabActivityKind
+
+Kind of activity-feed entry, as listed in the `kinds` argument of `labActivity` and `activities`.
+
+| Value | Description |
+| --- | --- |
+| `ANNOUNCEMENT` | Announcement was posted. |
+| `FILE_ADDED` | File was added to the data room. |
+| `FILE_UPDATED` | File received a new version, was moved, or had its details or access level changed. |
+| `FILE_REMOVED` | File was removed from the data room. |
 
 ## LabActivityNode
 
@@ -880,7 +999,7 @@ Data room file was removed.
 
 ## LabEventFileUpdated
 
-New version of an existing data room file was uploaded.
+Data room file received a new version, was moved, or had its details or access level changed.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -913,22 +1032,33 @@ Single lab member entry, derived from the indexed onchain role state.
 | `role` | [`LabMemberRole!`](/api-reference/types.md#labmemberrole) | Effective role on the lab. |
 | `source` | [`LabMemberSource!`](/api-reference/types.md#labmembersource) | Source row that authoritatively defines this membership. |
 | `expiry` | `String` | Unix-seconds expiry as a decimal string, encoded as a string because BigInt unix-seconds is unsafe as a JSON Int. Null means the grant is permanent. |
-| `isAgent` | `Boolean!` | True if the member is an agent identity (separate from human auth, surfaced for UI but not used for authorization). |
-| `grantedAt` | `String!` | ISO-8601 timestamp the row was first persisted. |
+| `isAgent` | `Boolean!` | Whether the role was granted onchain with the agent flag set. Always `false` for `OWNER`, which is not granted. |
+| `grantedAt` | `String!` | ISO-8601 timestamp the row was first persisted. For `NESTED_OWNERSHIP`, when the chain of LabNft holders above the lab last changed. |
+| `agent` | [`LabMemberAgent`](/api-reference/types.md#labmemberagent) | App behind an agent member and who connected it, kept after a disconnect while the role stands. Null for non-agents, agents never connected to this lab through Molecule, and on lookup failure. |
+
+## LabMemberAgent
+
+App connected to a lab through Molecule, acting there as an agent member.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `displayName` | `String!` |  |
+| `isVerified` | `Boolean!` | Whether Molecule recognises the app. When false, the app chose its own `displayName`, which may imitate another app's. |
+| `connectedBy` | `String` | Lowercased wallet that connected the agent to this lab; null until the connection completes and after it is disconnected. |
 
 ## LabMemberRole
 
-Onchain role of a lab member. Roles are granted and revoked onchain through the lab's AccessResolver contract (`grantRole(oclId, account, role, expiry, isAgent)`, role 1 = VIEWER, 2 = CONTRIBUTOR; OWNER is whoever holds the LabNft). This API reflects those grants and cannot change them.
+Onchain role of a lab member. Roles are granted and revoked onchain through the lab's AccessResolver contract (`grantRole(oclId, account, role, expiry, isAgent)`, role 1 = VIEWER, 2 = CONTRIBUTOR; OWNER follows LabNft ownership instead). This API reflects those grants and cannot change them.
 
 | Value | Description |
 | --- | --- |
-| `OWNER` | Holds the lab's LabNft; full control of the lab and its data room. |
+| `OWNER` | Holds the LabNft, or directly signs a Safe holding it, of this lab or of the top lab of its nested chain; full control. |
 | `CONTRIBUTOR` | May write to the data room (upload files, post announcements). |
 | `VIEWER` | Read-only membership: may read the data room, including confidential files, but not write to it. |
 
 ## LabMembershipFilter
 
-Membership predicate: labs where the wallet holds an active role. Applied in SQL before pagination, so `totalCount` and cursors reflect the filtered set.
+Membership predicate: labs where the wallet holds an active role, including `OWNER` of every lab nested under one it owns. Applied before pagination, so `totalCount` and cursors reflect the filtered set.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -937,7 +1067,7 @@ Membership predicate: labs where the wallet holds an active role. Applied in SQL
 
 ## LabMemberSource
 
-Where a membership record came from. `ONCHAIN_EVENT` and `MULTISIG_RESOLUTION` derive from canonical owner state, `ACCESS_CONTRACT` is the legacy V2 IPNFT-auth contract, and `ACCESS_RESOLVER_EVENT` records stream from AccessResolver V3 role events and may have an expiry.
+Where a membership record came from. `ONCHAIN_EVENT`, `MULTISIG_RESOLUTION` and `NESTED_OWNERSHIP` derive from canonical owner state, `ACCESS_CONTRACT` is the legacy V2 IPNFT-auth contract, and `ACCESS_RESOLVER_EVENT` records stream from AccessResolver V3 role events and may have an expiry.
 
 | Value | Description |
 | --- | --- |
@@ -945,6 +1075,7 @@ Where a membership record came from. `ONCHAIN_EVENT` and `MULTISIG_RESOLUTION` d
 | `MULTISIG_RESOLUTION` | Derived by resolving a multisig owner to its signers. |
 | `ACCESS_CONTRACT` | Granted through the legacy V2 IPNFT access contract. |
 | `ACCESS_RESOLVER_EVENT` | Granted by an AccessResolver V3 RoleGranted event; the only source whose grants can carry an `expiry`. |
+| `NESTED_OWNERSHIP` | Owner of the topmost lab above a nested lab, or a signer of the Safe that owns it; never granted. |
 
 ## LabOrderField
 
@@ -974,19 +1105,21 @@ Lightweight lab reference, returned wherever a lab is referenced rather than ful
 | --- | --- | --- |
 | `oclId` | `String!` | Canonical 32-byte oclId (lowercase 0x-hex); primary identifier. |
 | `mintedAt` | `AWSDateTime` | LabNft mint block timestamp from the OclIdentityCreated event. |
-| `shortname` | `String` | Human-readable slug (see `Lab.shortname`), seeded as "lab-<tokenId>" at index time and re-derived on rename. Null on `searchLabs` and for unbackfilled legacy labs; replaces the legacy token `symbol`. |
-| `ipnftId` | `String` | Linked legacy IPNFT tokenId. Null on `searchLabs` and when no IPNFT is linked; `ipnft` carries the full object on the queries that hydrate it. |
-| `hasDataRoom` | `Boolean` | Whether the lab's data room exists; it must be created before files or announcements can be added. Null on `searchLabs`, which does not mean false. |
+| `shortname` | `String` | Human-readable slug, seeded as "lab-<tokenId>" at index time and re-derived on rename; recent retired slugs still resolve (see `Lab.shortname`). Null for unbackfilled legacy labs. |
+| `ipnftId` | `String` | Linked legacy IPNFT tokenId. Null when no IPNFT is linked; `ipnft` carries the full object on the queries that hydrate it. |
+| `hasDataRoom` | `Boolean` | Whether the lab's data room exists; it must be created before files or announcements can be added. Always true on the activity feeds and `searchLabs`, whose entries live in a data room. |
 | `ipnft` | [`IPNFT`](/api-reference/types.md#ipnft) | Legacy IPNFT this lab was migrated from, hydrated when selected. Null when no IPNFT is linked, and on the activity feeds and `searchLabs`, which expose `ipnftId` for a follow-up lookup. |
 | `labAccountAddress` | `String!` | ERC-6551 token-bound smart-account address for this lab; deterministic from the LabNft tokenId via the OnChainLabFactory. Replaces the misleadingly-named `ipnftAddress`. |
 | `labNftTokenId` | `String!` | LabNft tokenId as a decimal string. Replaces the legacy `ipnftTokenId`. |
+| `parentLab` | [`LabRef`](/api-reference/types.md#labref) | Lab whose token-bound account holds this LabNft; its assessment fields, `ipnft` and `latestContributionAt` are null. Null if a wallet holds it, the lineage is unreadable or it tops a broken chain. |
+| `rootOclId` | `String` | oclId of the topmost lab above this one. Null when `parentLab` is null, or when the chain of parents loops or exceeds 10 levels, in which case nobody owns the lab. |
 | `latestContributionAt` | `AWSDateTime` | Timestamp of the lab's latest data room activity, lagging a few hours on `labsConnection` and `lab`. Null on `labs` unless selected, on other queries, when there is none, or on lookup failure. |
-| `name` | `String` | LabNft display name (defaults to "Lab #<tokenId>"). Null on `searchLabs`. |
-| `description` | `String` | Owner-editable description (see `updateLabNftMetadata`). Null when unset and on `searchLabs`. |
-| `image` | `String` | LabNft image URL, null until the owner sets a custom image. Null on `searchLabs`. |
-| `externalUrl` | `String` | External link surfaced by the LabNft tokenURI metadata. Null on `searchLabs`. |
-| `members` | [`[LabMember!]`](/api-reference/types.md#labmember) | Active members of the lab, mirroring the public `listLabMembers` query. Null only on lookup failure. |
-| `legalAgreementStatus` | [`LegalAgreementStatusResult`](/api-reference/types.md#legalagreementstatusresult) | Signed status of a legal agreement for this lab, inlined so a client can fetch it per lab instead of calling `legalAgreementStatus` N times. Public, and null only when the lab cannot be resolved. |
+| `name` | `String` | LabNft display name (defaults to "Lab #<tokenId>"). |
+| `description` | `String` | Owner-editable description (see `updateLabNftMetadata`). Null when unset. |
+| `image` | `String` | LabNft image URL, null until the owner sets a custom image. |
+| `externalUrl` | `String` | External link surfaced by the LabNft tokenURI metadata. |
+| `members` | [`[LabMember!]`](/api-reference/types.md#labmember) | Active members, mirroring the public `listLabMembers` query; up to a minute stale on the activity feeds. Null on lookup failure; above 1000 members the field fails with `COMPLEXITY_LIMIT_EXCEEDED`. |
+| `legalAgreementStatus` | [`LegalAgreementStatusResult`](/api-reference/types.md#legalagreementstatusresult) | Signed status of a legal agreement for this lab, read from the acceptance record (`Lab.legalAgreementStatus` also checks the stored artifact). Public; null only when the lab cannot be resolved. |
 | `trlValue` | `String` | Technology Readiness Level from Molecule's AI-assisted assessment rather than onchain. Null when no assessment exists, and on the activity feeds and `searchLabs`. |
 | `trlRationale` | `String` | Human-readable explanation for the assigned `trlValue`. Null when no assessment exists, and on the activity feeds and `searchLabs`. |
 | `trlLastUpdated` | `AWSDateTime` | When `trlValue` last changed. Null when no assessment exists, and on the activity feeds and `searchLabs`. |
@@ -996,13 +1129,13 @@ Lightweight lab reference, returned wherever a lab is referenced rather than ful
 | `criterionScores` | `[AWSJSON!]` | Per-criterion breakdown behind `weightedScore`, each entry shaped like `{ "criterion": String, "score": Number }` with further keys possible over time. Null when no assessment exists, and on the activity feeds and `searchLabs`. |
 | `scoredAt` | `AWSDateTime` | When the scoring behind `weightedScore` was last computed. Null when no assessment exists, and on the activity feeds and `searchLabs`. |
 | `todos` | `[AWSJSON!]` | Action items for the lab from Molecule's assessment (AI-assisted), each a JSON object shaped like `{ "todo": String, "completed": Boolean }`; further keys may be added over time. Null when none exist, and on the activity feeds and `searchLabs`. |
-| `websiteUrl` | `AWSURL` | Lab website URL; null when unset or not hydrated, including on `searchLabs`. |
-| `xUrl` | `AWSURL` | Lab X (Twitter) profile URL; null when unset or not hydrated, including on `searchLabs`. |
-| `telegramUrl` | `AWSURL` | Lab Telegram group or channel URL; null when unset or not hydrated, including on `searchLabs`. |
-| `governanceUrl` | `AWSURL` | Lab governance forum or voting URL; null when unset or not hydrated, including on `searchLabs`. |
-| `projectFormat` | `String` | Project format slug, including stored retired slugs; active choices are in `LabTaxonomyResult.projectFormats`. Null when unset or not hydrated, including on `searchLabs`. |
-| `therapeuticFields` | `[String!]` | Therapeutic-field slugs in their saved order; active choices are in `LabTaxonomyResult.therapeuticFields`. Empty when unset, null when not hydrated, including on `searchLabs`. |
-| `isRwaEnabled` | `Boolean` | Whether the lab is RWA-enabled, as defined by `Lab.isRwaEnabled`. Null when metadata is not hydrated, including on `searchLabs`. |
+| `websiteUrl` | `AWSURL` | Lab website URL; null when unset or not hydrated. |
+| `xUrl` | `AWSURL` | Lab X (Twitter) profile URL; null when unset or not hydrated. |
+| `telegramUrl` | `AWSURL` | Lab Telegram group or channel URL; null when unset or not hydrated. |
+| `governanceUrl` | `AWSURL` | Lab governance forum or voting URL; null when unset or not hydrated. |
+| `projectFormat` | `String` | Project format slug, including stored retired slugs; active choices are in `LabTaxonomyResult.projectFormats`. Null when unset or not hydrated. |
+| `therapeuticFields` | `[String!]` | Therapeutic-field slugs in their saved order; active choices are in `LabTaxonomyResult.therapeuticFields`. Empty when unset, null when not hydrated. |
+| `isRwaEnabled` | `Boolean` | Whether the lab is RWA-enabled, as defined by `Lab.isRwaEnabled`. Null when the metadata tier was hydrated without the token model, which is the case on the activity feeds and `searchLabs`. |
 
 **`legalAgreementStatus` arguments**
 
@@ -1019,7 +1152,7 @@ Relay-style connection over labs.
 | `edges` | [`[LabRefEdge!]!`](/api-reference/types.md#labrefedge) | Page's labs, each with its cursor, in the requested order. |
 | `nodes` | [`[LabRef!]!`](/api-reference/types.md#labref) | Convenience list of nodes (same order as edges), for callers that don't need per-item cursors. |
 | `pageInfo` | [`ConnectionPageInfo!`](/api-reference/types.md#connectionpageinfo) | Cursors and has-more flags for continuing from this page. |
-| `totalCount` | `Int` | Total labs matching the filter, ignoring pagination. Computed only when selected and the most expensive part of the query, so omit it when it is not needed. |
+| `totalCount` | `Int` | Total labs in this connection, ignoring pagination. Computed only when selected and the most expensive part of the query, so omit it when it is not needed. |
 
 ## LabRefEdge
 
@@ -1121,7 +1254,7 @@ Result type for the listLabMembers query. Failures are thrown as GraphQL errors,
 | Name | Type | Description |
 | --- | --- | --- |
 | `message` | `String!` | Human-readable status message. |
-| `members` | [`[LabMember!]!`](/api-reference/types.md#labmember) | Active members on the lab. Empty array when the lab has no recorded members. |
+| `members` | [`[LabMember!]!`](/api-reference/types.md#labmember) | Active members on the lab; empty array when it has no recorded members. Fails with `COMPLEXITY_LIMIT_EXCEEDED` above 1000 items. |
 
 ## Market
 
@@ -1147,21 +1280,21 @@ DEX trading pair of an IP Token, with its latest price and liquidity figures.
 
 ## MarketFilterBy
 
-Exact-match filters for `markets`. Every given field must match exactly (case-sensitive); fields are combined with AND. Nested filters (`chain`, `token`) match on the related record's fields, and timestamp fields are ISO-8601 strings.
+Exact-match filters for `markets`, combined with AND; text matches ignore case. Nested filters (`chain`, `token`) match on the related record's fields. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `id` | `String` |  |
 | `createdAt` | `String` |  |
 | `updatedAt` | `String` |  |
-| `liquidityUsd` | `String` | Not usable: liquidity is numeric and this filter is text; a value here makes the request fail. |
-| `pairAddress` | `String` | Match the stored casing exactly. |
-| `usdPrice` | `String` | Not usable: the price is numeric and this filter is text; a value here makes the request fail. |
-| `usdPrice24hrPercentageChange` | `String` | Not usable: the price change is numeric and this filter is text; a value here makes the request fail. |
+| `liquidityUsd` | `String` | Not usable: liquidity is numeric and this filter is text; a value fails with `VALIDATION_FAILED`. |
+| `pairAddress` | `String` |  |
+| `usdPrice` | `String` | Not usable: the price is numeric and this filter is text; a value fails with `VALIDATION_FAILED`. |
+| `usdPrice24hrPercentageChange` | `String` | Not usable: the price change is numeric and this filter is text; a non-null value fails with `VALIDATION_FAILED`. |
 | `chain` | [`ChainFilterBy`](/api-reference/types.md#chainfilterby) | Match on the chain's fields, e.g. `{ chainId }`. |
 | `chainId` | `Int` |  |
-| `marketCapUsd` | `String` | Not usable: market cap is numeric and this filter is text; a value here makes the request fail. |
-| `tradingVolume24hr` | `String` | Not usable: trading volume is numeric and this filter is text; a value here makes the request fail. |
+| `marketCapUsd` | `String` | Not usable: market cap is numeric and this filter is text; a value fails with `VALIDATION_FAILED`. |
+| `tradingVolume24hr` | `String` | Not usable: trading volume is numeric and this filter is text; a value fails with `VALIDATION_FAILED`. |
 | `token` | [`IPTFilterBy`](/api-reference/types.md#iptfilterby) | Match on the traded IP Token's fields, e.g. `{ symbol }`. |
 | `iptId` | `String` |  |
 | `inverted` | `Boolean` |  |
@@ -1235,7 +1368,7 @@ One transaction's onchain activity classified into a single timeline entry. An O
 | `type` | `String!` | One of: OCL_CREATED, OCL_TOKENIZED, OCL_TRANSFERRED, OCL_DID_LINKED, ROLE_GRANTED, ROLE_REVOKED, ROLE_CHANGED, IPT_TOKENIZED, IPNFT_MINTED, IPNFT_TRANSFERRED, IPNFT_METADATA_UPDATED, OTHER. |
 | `title` | `String!` | Human-readable title, e.g. `New Onchain Lab created`. For `OTHER` it is the raw event name. |
 | `args` | `AWSJSON!` | Structured facts of the classified action, such as oclId, from/to, role and account. Addresses appear lowercased in full; titles use shortened forms. |
-| `events` | [`[RawOnChainEvent!]!`](/api-reference/types.md#rawonchainevent) | Raw events of the transaction in ascending log order. Includes events that did not match the oclId or wallet filter, giving full transaction context. |
+| `events` | [`[RawOnChainEvent!]!`](/api-reference/types.md#rawonchainevent) | Raw events of the transaction in ascending log order, including ones outside the oclId or wallet filter. Selecting it fails the page with `COMPLEXITY_LIMIT_EXCEEDED` above 1000 events. |
 
 ## OrderDirection
 
@@ -1297,7 +1430,7 @@ Research lead of an IP-NFT's project.
 
 ## ResearchLeadFilterBy
 
-Exact-match filters for `researchLeads`. Every given field must match exactly (case-sensitive); fields are combined with AND. Timestamp fields are ISO-8601 strings.
+Exact-match filters for `researchLeads`, combined with AND; text matches ignore case. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -1306,7 +1439,7 @@ Exact-match filters for `researchLeads`. Every given field must match exactly (c
 | `updatedAt` | `String` |  |
 | `name` | `String` |  |
 | `email` | `String` |  |
-| `ipnfts` | `String` | Not usable: `ipnfts` is a relation, not a text field; a value here makes the request fail. |
+| `ipnfts` | `String` | Not usable: `ipnfts` is a relation, not a text field; a value fails with `VALIDATION_FAILED`. |
 
 ## ResearchLeadSortBy
 
@@ -1319,6 +1452,16 @@ Exact-match filters for `researchLeads`. Every given field must match exactly (c
 | `email` |  |
 | `ipnfts` | Not a usable sort key; the request fails with `INTERNAL_ERROR`. |
 
+## RevokeConsumerCredentialResult
+
+Result of `revokeConsumerCredential`. Success when `error == null`.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `consumerId` | `ID` | Identifier of the credential that was revoked. Null on failure. |
+| `revokedAt` | `AWSDateTime` | When the revocation took effect. Null on failure. |
+| `error` | [`ApiError`](/api-reference/types.md#apierror) | Null on success. Non-null means the mutation failed. |
+
 ## SearchLabsAnnouncement
 
 Lightweight announcement type for search results (no embedded lab).
@@ -1328,7 +1471,7 @@ Lightweight announcement type for search results (no embedded lab).
 | `id` | `String!` | Announcement id, unique within the data room. |
 | `headline` | `String!` | Title of the announcement. |
 | `body` | `String!` | Body text of the announcement. |
-| `attachments` | [`[DataRoomFile!]!`](/api-reference/types.md#dataroomfile) | Files attached to the announcement. |
+| `attachments` | [`[DataRoomFile!]!`](/api-reference/types.md#dataroomfile) | Files attached to the announcement. Selecting it fails the query with `COMPLEXITY_LIMIT_EXCEEDED` when an announcement on the page has more than 1000. |
 | `changeBy` | `String!` | Identity of the member who posted the announcement, as `did:ethr:` plus the EIP-55 checksummed wallet address. Older records may hold a bare address or an unverified value. |
 | `systemTime` | `AWSDateTime!` | When the announcement was written by the data room backend. |
 | `eventTime` | `AWSDateTime!` | When the announcement was posted. |
@@ -1340,7 +1483,7 @@ Announcement search result.
 | Name | Type | Description |
 | --- | --- | --- |
 | `announcement` | [`SearchLabsAnnouncement!`](/api-reference/types.md#searchlabsannouncement) | Matching announcement. |
-| `lab` | [`LabRef!`](/api-reference/types.md#labref) | Lab the announcement was posted to (search-result hydration tier; see `LabRef`). |
+| `lab` | [`LabRef!`](/api-reference/types.md#labref) | Lab the announcement was posted to. Carries the lab metadata tier (see `LabRef`), so a client does not need a second lookup to render it. |
 
 ## SearchLabsFileHit
 
@@ -1721,7 +1864,7 @@ Patch input for LabNft display metadata. All fields optional: an omitted field i
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `name` | `String` | New display name, 2-100 characters, from which the lab's shortname is rederived. Clearing it fails with `VALIDATION_FAILED`, and a shortname clash with another lab fails with `CONFLICT`. |
+| `name` | `String` | New display name, 2-100 characters, from which the lab's shortname is rederived. Clearing it fails with `VALIDATION_FAILED`; a clash with another lab's current or retired slug fails with `CONFLICT`. |
 | `description` | `String` | New description of the lab. |
 | `image` | `String` | See `generateLabImageUploadUrl` for hosting an image. |
 | `externalUrl` | `String` | New external link for the lab. |
@@ -1741,6 +1884,7 @@ Result of `updateLabNftMetadata`.
 | `oclId` | `String` | OCL id of the updated lab. Null on failure. |
 | `message` | `String` | Human-readable status message; mirrors `error.message` on failure. |
 | `error` | [`ApiError`](/api-reference/types.md#apierror) | Null on success. Non-null means the mutation failed. |
+| `lab` | [`LabRef`](/api-reference/types.md#labref) | Lab as it reads after the update, shaped like `lab(oclId:)`, with the re-derived `shortname` after a rename. Null on failure, and null with `error` unset when the post-write read-back failed. |
 
 ## UploadMetadataWithKeyResult
 
@@ -1762,7 +1906,7 @@ Wallet known to the IP-NFT registry as an owner or original minter.
 | `id` | `String!` | Checksummed wallet address, the same value as `address`. |
 | `createdAt` | `AWSDateTime!` | When Molecule first indexed the wallet. |
 | `updatedAt` | `AWSDateTime!` | When Molecule last refreshed the record. |
-| `address` | `String!` | Checksummed EVM address; match it exactly when filtering. |
+| `address` | `String!` | Checksummed EVM address. Filters on it ignore case. |
 | `ipnfts` | [`[IPNFT!]!`](/api-reference/types.md#ipnft) | IP-NFTs owned by this wallet; the arguments are accepted but ignored. Whether this field resolves data is unverified, so prefer `ipnfts(filterBy: { userId })`. |
 | `ipts` | [`[IPT!]!`](/api-reference/types.md#ipt) | **Deprecated.** Use `tokens` with an IPT kind filter. Removed after 2027-01-01. IP Tokens originally issued to this wallet; the arguments are accepted but ignored. Whether this field resolves data is unverified, so prefer `ipts(filterBy: { originalOwnerId })`. |
 
@@ -1788,14 +1932,14 @@ Wallet known to the IP-NFT registry as an owner or original minter.
 
 ## UserFilterBy
 
-Exact-match filters for `users`. Every given field must match exactly (case-sensitive); fields are combined with AND. Timestamp fields are ISO-8601 strings.
+Exact-match filters for `users`, combined with AND; text matches ignore case. Timestamps need seconds and an offset, e.g. `2024-01-31T12:00:00Z` or `2024-01-31T12:00:00+01:00`, and match as an instant; others fail with `VALIDATION_FAILED`.
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `id` | `String` |  |
 | `createdAt` | `String` |  |
 | `updatedAt` | `String` |  |
-| `address` | `String` | Match the stored casing exactly. |
+| `address` | `String` |  |
 | `ipnft` | `String` | Not usable: it does not name a `User` field, so it is ignored. |
 | `ipt` | `String` | Not usable: it does not name a `User` field, so it is ignored. |
 

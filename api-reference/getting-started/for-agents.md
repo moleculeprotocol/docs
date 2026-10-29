@@ -26,7 +26,7 @@ ONCHAIN_LAB_FACTORY      0xd629FE2310b4309a212495F10A47f8436dcEfD90
 LABNFT                   0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28
 ACCESS_RESOLVER          0x5493F472602C87318EA5Eff753cDD593bf9bF559
 ACCESS_CONDITION_CHAIN   "baseSepolia"
-LAB_PAGE                 https://testnet.labs.molecule.xyz/projects/<slug>
+LAB_PAGE                 https://testnet.app.molecule.xyz/labs/<slug>
 ```
 
 Production (Base) — swap these in, nothing else changes:
@@ -38,7 +38,7 @@ ONCHAIN_LAB_FACTORY      0xECdF4f05384056507485C90aeAb0a83268760D6E
 LABNFT                   0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92
 ACCESS_RESOLVER          0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B
 ACCESS_CONDITION_CHAIN   "base"
-LAB_PAGE                 https://labs.molecule.xyz/projects/<slug>
+LAB_PAGE                 https://app.molecule.xyz/labs/<slug>
 ```
 
 ## Headers
@@ -69,6 +69,7 @@ function parseDetails(d) {
 ```
 * Branch on `code`, never on `message`. Retry only when `retryable` is `true`, with exponential backoff. Quote `requestId` in any bug report.
 * One exception to "retry when retryable": a malformed or out-of-bounds `expiresIn` on `generateServiceToken` is not pre-validated and comes back as `INTERNAL_ERROR` / `details.reason: TOKEN_GENERATION_FAILED`, which is flagged retryable but never will be. Validate `expiresIn` client-side (`<int><unit>`, unit in `s m h d w M y`, 1 hour to 2 years) and cap retries on that reason.
+* Consumer-credential management (`issueConsumerCredential`, `myConsumerCredentials`, `revokeConsumerCredential`, `myApiTermsStatus`) needs a signed-in human session, so an agent never calls it. Its reasons, if you see them: `UNAUTHENTICATED` / `AUTH_FAILED` or `SERVICE_TOKEN_NOT_ACCEPTED`; `CONFLICT` / `CREDENTIAL_QUOTA_EXCEEDED` (`details.limit`); `NOT_FOUND` / `CREDENTIAL_NOT_FOUND`; `VALIDATION_FAILED` (`details.field` `label` or `expiresInDays`); `FAILED_PRECONDITION` / `TERMS_ACCEPTANCE_REQUIRED` or `SELF_SERVICE_CREDENTIALS_DISABLED`. A human creates the credential in the Labs app: [Authentication](../authentication.md#obtaining-api-access).
 * Codes: `UNAUTHENTICATED`, `UNAUTHORIZED`, `NOT_FOUND`, `VALIDATION_FAILED`, `CONFLICT`, `FAILED_PRECONDITION`, `COMPLEXITY_LIMIT_EXCEEDED`, `RATE_LIMITED`*, `TIMEOUT`*, `UPSTREAM_UNAVAILABLE`*, `INTERNAL_ERROR`* (`*` = retryable). An unrecognised code: treat as non-retryable, preserve it, surface it.
 
 ## Step 1 — Self-issue a service token

@@ -205,7 +205,7 @@ import { basename } from "node:path";
 import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
 
 const GRAPHQL_URL = "https://staging.graphql.api.molecule.xyz/graphql";
-const LAB_APP_URL = "https://testnet.labs.molecule.xyz";
+const LAB_APP_URL = "https://testnet.app.molecule.xyz";
 const AGENT_SERVICE_NAME = "research-agent-1";
 
 const CONSUMER_CREDENTIAL = process.env.CONSUMER_CREDENTIAL;
@@ -407,7 +407,7 @@ async function main() {
     attributed ? "— attributed to the agent" : `— createdBy: ${file.createdBy}`,
   );
   if (verify.labWithDataRoomAndFiles.shortname) {
-    console.log("Human can see it at:", `${LAB_APP_URL}/projects/${verify.labWithDataRoomAndFiles.shortname}`);
+    console.log("Human can see it at:", `${LAB_APP_URL}/labs/${verify.labWithDataRoomAndFiles.shortname}`);
   }
 }
 

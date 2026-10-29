@@ -1,7 +1,11 @@
-Active members of a lab, from the indexed onchain role state, excluding grants that have expired. Membership is granted onchain through the AccessResolver contract rather than through this API. Public, with no authentication beyond an API key, mirroring the public onchain role state.
+---
+title: query-listlabmembers
+---
 
-Returns [`ListLabMembersResult!`](/api-reference/types.md#listlabmembersresult).
+Active members of a lab, from the indexed onchain role state, excluding grants that have expired. Membership is granted onchain through the AccessResolver contract rather than through this API. On a nested lab the owners of its topmost lab are also listed, as `NESTED_OWNERSHIP`. Public, with no authentication beyond an API key.
 
-| Name | Type | Description |
-| --- | --- | --- |
+Returns [`ListLabMembersResult!`](../../../api-reference/types.md#listlabmembersresult).
+
+| Name    | Type      | Description                                                    |
+| ------- | --------- | -------------------------------------------------------------- |
 | `oclId` | `String!` | 32-byte OCL id of the lab, `0x` plus 64 hex, case-insensitive. |

@@ -96,7 +96,7 @@ If you want an AI coding agent to run the whole Lab workflow for you, install th
 If you only want Claude, ChatGPT or another chat app to read and add files in a Lab you own, you need no code at all: see [Connect your agent](../ai-tooling/agent-connect.md).
 {% endhint %}
 
-Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). To request a consumer credential, see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential-the-one-manual-step). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a module attestation request or any integration support.
+Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). Consumer credentials are created on the **API credentials** page of the Labs app — see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a module attestation request or any integration support.
 
 ### Related
 

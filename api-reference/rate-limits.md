@@ -59,7 +59,7 @@ To keep costs down, select only the fields you use, and ask for the page size yo
 | Credential | Budget per 5-minute window | Can be exempted |
 | --- | --- | --- |
 | Partner credential, issued by Molecule | 250,000,000 units by default; Molecule can set a different budget per credential | Yes |
-| Personal credential (`mol_usr-…`), issued by you for yourself; staging only for now | 10,000,000 units | No |
+| Personal credential (`mol_usr-…`), issued by you for yourself | 10,000,000 units | No |
 
 These are the current defaults. They may be recalibrated before enforcement starts; any change will be announced in the [API Changelog](changelog.md).
 
