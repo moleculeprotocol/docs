@@ -474,6 +474,20 @@ query GetAgreements($id: ID!) {
 }
 ```
 
+---
+
+## Agent Connect
+
+### Connect a chat app to a Lab
+
+{% hint style="warning" %}
+**Not live yet:** replace `<release date>` below with the date this page goes live.
+{% endhint %}
+
+**Addition, <release date>.** A scientist can now connect Claude, ChatGPT, Codex, Grok or Cursor to a Lab they own with no code, no keys and no consumer credential: they paste `https://mcp.molecule.xyz` into the app and approve the connection in the browser. Each app gets its own agent with its own wallet, which the scientist adds to the Lab as a Viewer or Contributor, flagged as an agent. What the agent uploads is attributed to its own wallet, like any other caller's writes. Walkthrough: [Connect your agent](../ai-tooling/agent-connect.md).
+
+**Migration:** None. This is an addition: the Labs API, its headers and its tokens are unchanged, and existing integrations are not affected.
+
 ## Related
 
 * [Release Notes](../release-notes/README.md) — per-version release notes

@@ -15,6 +15,7 @@ New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossa
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
 | Push data from instruments, pipelines or CI into a Lab       | [Publish research data from a pipeline](#publish-research-data-from-a-pipeline)           |
 | Keep files confidential but readable by chosen collaborators | [Share confidential data with collaborators](#share-confidential-data-with-collaborators) |
+| Connect Claude, ChatGPT or another chat app to my Lab        | [Connect your agent](ai-tooling/agent-connect.md)                                         |
 | Let an AI agent read and write into a Lab I own              | [Give an AI agent access to a Lab](#give-an-ai-agent-access-to-a-lab)                     |
 | Have my coding agent do the whole Lab workflow for me        | [Let a coding agent run the workflow](#let-a-coding-agent-run-the-workflow)               |
 | Show Labs, files and activity in my own app                  | [Build a dashboard over Lab data](#build-a-dashboard-over-lab-data)                       |
@@ -49,6 +50,10 @@ New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossa
 5. **Revoke access when it should end.** `revokeRole` takes effect on the next decrypt. See [AccessResolver](references/contracts/accessresolver.md).
 
 ## Give an AI agent access to a Lab
+
+{% hint style="info" %}
+**Using Claude, ChatGPT, Codex, Grok or Cursor?** Connect it to your Lab from the browser instead, with no code and no keys: see [Connect your agent](ai-tooling/agent-connect.md). The steps below are for developers running their own agent.
+{% endhint %}
 
 **What you end up with:** an AI agent with its own wallet and its own time-limited role on a Lab that a human owns. It reads the Lab's data, runs its analysis and writes findings back as new files.
 

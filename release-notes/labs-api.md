@@ -8,6 +8,18 @@ icon: flask
 Changes to the [Labs API](../api-reference/labs-api/README.md) that affect integrations. Versions not
 listed shipped nothing consumer-visible.
 
+## Unreleased
+
+{% hint style="warning" %}
+**Not live yet:** this entry goes out with the Agent Connect announcement. Replace `Unreleased` with the Labs API version it belongs to and add its `_Released <date>_` line.
+{% endhint %}
+
+### Added
+
+#### Agent Connect: connect a chat app to a Lab
+
+Claude, ChatGPT, Codex, Grok and Cursor can connect to a Lab through `https://mcp.molecule.xyz`. The scientist approves the connection in the browser, and the app's agent then lists and reads the Lab's files and, with the Contributor role, uploads new ones. No consumer credential or service token is involved. See [Connect your agent](../ai-tooling/agent-connect.md) and [API Changelog & Migration](../api-reference/changelog.md#agent-connect).
+
 ## 3.0.1
 
 _Released 2026-08-25_

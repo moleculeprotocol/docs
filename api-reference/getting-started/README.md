@@ -21,10 +21,11 @@ Everything here runs against **staging** (Base Sepolia, testnet funds), so nothi
 
 ## Choose how you'll call the API
 
-Three ways in. None is better than the others — pick by who is making the calls.
+Four ways in. None is better than the others — pick by who is making the calls.
 
 | If this is you | What you'll use | Start here |
 | -------------- | --------------- | ---------- |
+| **You use Claude, ChatGPT, Grok or another chat app** and want it to read and add files in a Lab you own | Agent Connect: paste one address into the app and approve the connection in your browser. No code, no keys and no consumer credential | [Connect your agent](../../ai-tooling/agent-connect.md) |
 | **You're writing a script** in Node/TypeScript and want to see the raw calls | GraphQL requests plus [viem](https://viem.sh) for the one onchain step | [The tutorials](#the-tutorials) below |
 | **You run an AI coding agent** (Claude Code, Codex, Cursor) and want it to do the whole workflow for you | The Molecule Skill plugin, which wraps every network, onchain and crypto operation as a single tool call | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
 | **You'd rather pay per call** than hold a long-lived credential | The x402 gateway, which settles USDC on Base per request | [x402 Gateway](../x402-gateway.md) |

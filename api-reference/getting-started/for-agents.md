@@ -7,6 +7,10 @@ icon: robot
 
 # 🤖 For Agents: One-Pager
 
+{% hint style="info" %}
+**Using Claude, ChatGPT, Codex, Grok or Cursor as a chat app?** You don't need this page or a script: [connect the app to your Lab](../../ai-tooling/agent-connect.md) from the browser instead. This page is for agents that call the Labs API from code.
+{% endhint %}
+
 The complete default flow — self-issue a token, mint a lab, upload a public file, verify — with nothing else on the page. Copy it into a system prompt or a context file. For the same flow with expected responses, failure modes and the encrypted variant, use [the tutorials](README.md).
 
 ## Constants

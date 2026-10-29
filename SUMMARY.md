@@ -72,6 +72,7 @@
 ## AI Tooling
 
 * [Which Tool Do I Need?](ai-tooling/README.md)
+* [Connect your agent](ai-tooling/agent-connect.md)
 * [MIRA](ai-tooling/mira.md)
 * [Molecule Skill](ai-tooling/molecule-skill.md)
 
