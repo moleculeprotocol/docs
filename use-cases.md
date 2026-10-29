@@ -23,10 +23,6 @@ New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossa
 | Offer a service that writes to Labs and pays per call        | [Run a pay-per-call agent service](#run-a-pay-per-call-agent-service)                     |
 | Add new onchain capabilities to Labs                         | [Extend Labs with a smart contract module](#extend-labs-with-a-smart-contract-module)     |
 
-{% hint style="warning" %}
-**Not live yet:** Connect your agent, in the third row, is not available yet.
-{% endhint %}
-
 ---
 
 ## Publish research data from a pipeline
@@ -55,9 +51,7 @@ New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossa
 
 ## Give an AI agent access to a Lab
 
-{% hint style="warning" %}
-**Not live yet:** Agent Connect is not available yet.
-
+{% hint style="info" %}
 **Using Claude, ChatGPT, Codex, Grok or Cursor?** Connect it to your Lab from the browser instead, with no code and no keys: see [Connect your agent](ai-tooling/agent-connect.md). The steps below are for developers running their own agent.
 {% endhint %}
 

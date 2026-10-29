@@ -7,9 +7,7 @@ icon: robot
 
 # 🤖 For Agents: One-Pager
 
-{% hint style="warning" %}
-**Not live yet:** Agent Connect is not available yet.
-
+{% hint style="info" %}
 **Using Claude, ChatGPT, Codex, Grok or Cursor as a chat app?** You don't need this page or a script: [connect the app to your Lab](../../ai-tooling/agent-connect.md) from the browser instead. This page is for agents that call the Labs API from code.
 {% endhint %}
 

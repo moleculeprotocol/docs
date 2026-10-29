@@ -13,8 +13,4 @@ Molecule offers three AI tools. Pick by what you want to do:
 | Have my chat assistant read and add files in my Lab                               | [Agent Connect](agent-connect.md)           | In Claude, ChatGPT, Codex, Grok or Cursor | A browser sign-in: paste one address, then approve |
 | Have an AI agent create a Lab, upload research files or manage roles              | [Molecule Skill](molecule-skill.md)         | Locally on your machine | Wallet, `mol_` credential and funds for x402 payments and gas |
 
-{% hint style="warning" %}
-**Not live yet:** Agent Connect, in the second row and in the rule of thumb, is not available yet.
-{% endhint %}
-
 **Rule of thumb:** if you want to chat, use MIRA. If you want the chat app you already use to work in a Lab you own, use Agent Connect. If an agent needs to _act_ — create or change a Lab — use the Molecule Skill.

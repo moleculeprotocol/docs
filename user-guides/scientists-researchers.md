@@ -20,11 +20,7 @@ For a workflow that already runs on scripts or AI agents, the same Lab is reacha
 
 Both pathways carry the same security and access rules, so working through the API never changes who can see what.
 
-{% hint style="warning" %}
-**Not live yet:** Agent Connect is not available yet.
-
 A researcher who works in a chat app such as Claude or ChatGPT can also [connect it to the Lab](../ai-tooling/agent-connect.md) from the browser, with no code and no keys, and choose what the app's agent may do there.
-{% endhint %}
 
 ### Storing and Sharing Research
 

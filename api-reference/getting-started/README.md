@@ -30,10 +30,6 @@ Four ways in. None is better than the others — pick by who is making the calls
 | **You run an AI coding agent** (Claude Code, Codex, Cursor) and want it to do the whole workflow for you | The Molecule Skill plugin, which wraps every network, onchain and crypto operation as a single tool call | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
 | **You'd rather pay per call** than hold a long-lived credential | The x402 gateway, which settles USDC on Base per request | [x402 Gateway](../x402-gateway.md) |
 
-{% hint style="warning" %}
-**Not live yet:** Agent Connect, in the first row, is not available yet.
-{% endhint %}
-
 These combine rather than compete — choosing one now doesn't lock you out of the others. A common setup is the plugin for the workflow and x402 for the calls that cost money. Check out [Common Use Cases](../../use-cases.md) for the path through these docs for what you're building.
 
 ### If you are an agent reading this
