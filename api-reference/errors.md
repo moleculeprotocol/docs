@@ -201,8 +201,8 @@ if (result.error) {
 | `UNAUTHORIZED`              | **false**   | Authenticated, but not allowed (role/membership)                                                     |
 | `NOT_FOUND`                 | **false**   | Referenced resource doesn't exist                                                                    |
 | `VALIDATION_FAILED`         | **false**   | Input failed validation (unknown filter/sort fields, out-of-range pagination, malformed ids); `details.field` names the offender |
-| `CONFLICT`                  | **false**   | Valid request conflicts with current state (e.g. `details.reason` `SHORTNAME_TAKEN`, `ALREADY_SIGNED`) |
-| `FAILED_PRECONDITION`       | **false**   | Resource state makes the operation impossible until the state changes (e.g. `TEMPLATE_EXPIRED`)      |
+| `CONFLICT`                  | **false**   | Valid request conflicts with current state (e.g. `details.reason` `SHORTNAME_TAKEN`, `ALREADY_SIGNED`, `CREDENTIAL_QUOTA_EXCEEDED`) |
+| `FAILED_PRECONDITION`       | **false**   | Resource state makes the operation impossible until the state changes (e.g. `TEMPLATE_EXPIRED`, `TERMS_ACCEPTANCE_REQUIRED`) |
 | `COMPLEXITY_LIMIT_EXCEEDED` | **false**   | Query shape or result size over limits                                                               |
 | `RATE_LIMITED`              | **true**    | Throttled — retry with backoff                                                                       |
 | `TIMEOUT`                   | **true**    | Execution exceeded the request budget                                                                |
@@ -238,6 +238,16 @@ An HTTP `401` instead of `UNAUTHENTICATED` means the consumer credential was rej
 
 - Check that the `oclId` format is correct: a 32-byte hex string with `0x` prefix
 - For `searchLabs`: verify filter values match expected types (arrays of strings)
+
+**Managing consumer credentials** (`issueConsumerCredential`, `myConsumerCredentials`, `revokeConsumerCredential`, `myApiTermsStatus`):
+
+- `UNAUTHENTICATED` / `SERVICE_TOKEN_NOT_ACCEPTED`: these fields take a signed-in session only. Drop the `X-Service-Token` header
+- `UNAUTHENTICATED` / `AUTH_FAILED`: no valid signed-in session. A consumer credential can't manage credentials
+- `CONFLICT` / `CREDENTIAL_QUOTA_EXCEEDED`: you already have `details.limit` active credentials. Revoke one, or wait for one to expire, then try again
+- `NOT_FOUND` / `CREDENTIAL_NOT_FOUND`: the `consumerId` doesn't exist, or isn't yours; both get the same answer
+- `VALIDATION_FAILED`: `details.field` is `label` (over 64 characters, or control characters) or `expiresInDays` (not a whole number from 1 to 365)
+- `FAILED_PRECONDITION` / `TERMS_ACCEPTANCE_REQUIRED`: accept the current API terms first; see [Accepting the API terms](authentication.md#accepting-the-api-terms)
+- `FAILED_PRECONDITION` / `SELF_SERVICE_CREDENTIALS_DISABLED`: self-service credentials aren't available in this environment. Staging and production both serve them
 
 **Retryable errors (`RATE_LIMITED`, `TIMEOUT`, `UPSTREAM_UNAVAILABLE`, `INTERNAL_ERROR`):**
 

@@ -296,7 +296,7 @@ Issue it yourself — no request, no waiting. Two calls with the owner wallet:
 
 Full parameters and bounds: [Service Tokens](service-tokens.md#obtaining-a-token). Runnable: [Step 1 of Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md#step-1-get-a-service-token).
 
-The only credential you have to request is the **consumer credential** — see [Getting Started](../getting-started/README.md#a-consumer-credential-the-one-manual-step) to request one.
+The other credential you need is the **consumer credential**, created on the **API credentials** page of the Labs app — see [Getting Started](../getting-started/README.md#a-consumer-credential).
 
 ***
 
@@ -428,12 +428,25 @@ query ListLabMembers($oclId: String!) {
       expiry
       isAgent
       grantedAt
+      agent {
+        displayName
+        isVerified
+        connectedBy
+      }
     }
   }
 }
 ```
 
-Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code (an unknown `oclId` throws `NOT_FOUND`). The response carries `"data": null` (the field is non-nullable, so the error propagates to the root) and `errors[0].path` names `listLabMembers`.
+A member with `isAgent: true` holds a role granted with the agent flag. When someone connects an AI app to the lab through Molecule, the app acts from its own wallet, and `agent` says which app it is:
+
+* `displayName`: the app's name, for example `Claude`.
+* `isVerified`: `true` when Molecule recognises the app. When `false`, the app chose `displayName` itself, and it may be imitating another app's name.
+* `connectedBy`: the lowercased wallet of the person who connected the app. `null` while the connection is pending and after it is disconnected.
+
+`agent` is `null` for people, and for agent wallets granted a role directly rather than connected through Molecule. `displayName` and `isVerified` stay after a disconnect for as long as the role does, because the onchain role outlives the connection. The same `agent` field is on `Lab.members` and `LabRef.members`. `listLabMembers` is cached per lab for up to five minutes, so a new connection can take that long to show there.
+
+Failures throw: they arrive as top-level GraphQL `errors[]` entries with `errorType` set to the catalogue code (an unknown `oclId` throws `NOT_FOUND`). The response carries `"data": null` (the field is non-nullable, so the error propagates to the root) and `errors[0].path` names `listLabMembers`. On a lab with agent members, the agents are looked up whether or not the query selects `agent`, and if that lookup fails, `listLabMembers` fails with a retryable error rather than answering without them; `Lab.members` and `LabRef.members` return the members with `agent: null` instead.
 
 ***
 

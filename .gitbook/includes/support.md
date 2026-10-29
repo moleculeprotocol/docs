@@ -1,3 +1,7 @@
+---
+title: support
+---
+
 {% hint style="info" %}
 **Need help?**
 
