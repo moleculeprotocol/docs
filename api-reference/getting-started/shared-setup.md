@@ -11,7 +11,7 @@ icon: code
 
 You do not have to copy it by hand if you only want to run one tutorial end to end: the **complete script** at the bottom of each tutorial page carries all of this inline and runs standalone. This page exists so the shared parts are documented and maintained in one place instead of three.
 
-Everything here targets **staging** (Base Sepolia, testnet funds). To point the same code at mainnet, replace the constants using the table in [Running in Production](README.md#running-in-production) — nothing else changes, because every step reads from these constants.
+Everything here targets the **[sandbox](../sandbox.md)** (Base Sepolia, testnet funds). To point the same code at mainnet, replace the constants using the table in [Running in Production](README.md#running-in-production) — nothing else changes, because every step reads from these constants.
 
 ***
 
@@ -22,14 +22,14 @@ Every environment-specific value lives in this one block, and every helper the t
 ```javascript
 import { baseSepolia } from "viem/chains"; // production: `base`
 
-// ---- Staging (Base Sepolia) config — see "Running in Production" to swap ----
-const GRAPHQL_URL = "https://staging.graphql.api.molecule.xyz/graphql";
+// ---- Sandbox (Base Sepolia) config — see "Running in Production" to swap ----
+const GRAPHQL_URL = "https://sandbox.graphql.api.molecule.xyz/graphql";
 const CHAIN = baseSepolia;
-const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90"; // OnChainLabFactory
-const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28"; // LabNFT (proxy)
-const ACCESS_RESOLVER_ADDRESS = "0x5493F472602C87318EA5Eff753cDD593bf9bF559"; // AccessResolver
+const FACTORY_ADDRESS = "0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB"; // OnChainLabFactory
+const LABNFT_ADDRESS = "0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14"; // LabNFT (proxy)
+const ACCESS_RESOLVER_ADDRESS = "0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe"; // AccessResolver
 const ACCESS_CONDITION_CHAIN = "baseSepolia"; // the `chain` string inside accessControlConditions
-const LAB_APP_URL = "https://testnet.app.molecule.xyz"; // production: https://app.molecule.xyz
+const LAB_APP_URL = "https://sandbox.app.molecule.xyz"; // production: https://app.molecule.xyz
 
 const CONSUMER_CREDENTIAL = process.env.CONSUMER_CREDENTIAL; // mol_<id>_<secret> — no "Bearer" prefix
 const WALLET_PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY;

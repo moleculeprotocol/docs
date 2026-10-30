@@ -15,7 +15,7 @@ This page covers the two things you need before your first call, which way of ca
 **New to the Molecule ecosystem?** The [Glossary](../../references/glossary.md) defines every term used in these guides — Lab, LabNFT, oclId, data room, service token, indexer — in a sentence or two each. Worth keeping open in a second tab.
 {% endhint %}
 
-Everything here runs against **staging** (Base Sepolia, testnet funds), so nothing spends real money. Moving to mainnet later is a matter of swapping a handful of constants: [Running in Production](#running-in-production).
+Everything here runs against the **[sandbox](../sandbox.md)** (Base Sepolia, testnet funds), so nothing spends real money. Moving to mainnet later is a matter of swapping a handful of constants: [Running in Production](#running-in-production).
 
 ***
 
@@ -39,7 +39,7 @@ Go to the [**Agent one-pager**](for-agents.md) instead. It is the whole default 
 
 ## The tutorials
 
-Each one is runnable end to end against staging, and shows the expected response and the failure modes at every step.
+Each one is runnable end to end against the sandbox, and shows the expected response and the failure modes at every step.
 
 | Tutorial | What you have when you finish |
 | -------- | ----------------------------- |
@@ -57,7 +57,7 @@ All three open with the same configuration constants and helper functions, which
 
 Every request to the API carries a consumer credential in the `Authorization` header. To create one:
 
-1. Sign in at [testnet.app.molecule.xyz](https://testnet.app.molecule.xyz) for staging, which is what every tutorial in these docs runs against, or at [app.molecule.xyz](https://app.molecule.xyz) for production. Credentials are per environment: a staging credential doesn't work against production.
+1. Sign in at [sandbox.app.molecule.xyz](https://sandbox.app.molecule.xyz) for the sandbox, which is what every tutorial in these docs runs against, or at [app.molecule.xyz](https://app.molecule.xyz) for production. Credentials are per environment: a sandbox credential doesn't work against production.
 2. Open the **API credentials** page and click **Create**. Give it a name, pick a lifetime (90 days by default, at most 1 year), and accept the API terms the first time.
 3. **Copy the credential straight away.** It's shown once and can't be recovered. If you lose it, create a new one and revoke the old one.
 
@@ -81,7 +81,7 @@ Treat the whole string as one secret. Expiry, the limit of 5 active credentials,
 
 ### A funded wallet on Base Sepolia
 
-**You only need this if you are creating a new Lab from code.** Creating a Lab means minting a LabNFT, which is an onchain transaction, and the wallet that sends it pays the gas. If you create your Lab in the Molecule app instead, you need no funds at all — Molecule covers those transactions for you. The app is at [app.molecule.xyz](https://app.molecule.xyz/), or [testnet.app.molecule.xyz](https://testnet.app.molecule.xyz/) for the Base Sepolia environment these tutorials run against.
+**You only need this if you are creating a new Lab from code.** Creating a Lab means minting a LabNFT, which is an onchain transaction, and the wallet that sends it pays the gas. If you create your Lab in the Molecule app instead, you need no funds at all — Molecule covers those transactions for you. The app is at [app.molecule.xyz](https://app.molecule.xyz/), or [sandbox.app.molecule.xyz](https://sandbox.app.molecule.xyz/) for the sandbox these tutorials run against.
 
 For the programmatic path you need an [EOA](../../references/glossary.md#calling-the-api) — an ordinary wallet with a private key — holding testnet ETH on Base Sepolia. Fund it from a [Base Sepolia faucet](https://docs.base.org/base-chain/tools/network-faucets).
 
@@ -138,7 +138,7 @@ node create-lab-and-upload-file.js ./research-data.csv
 Two checks. The first works on every environment and needs nothing but your credential:
 
 ```bash
-curl -s -X POST https://staging.graphql.api.molecule.xyz/graphql \
+curl -s -X POST https://sandbox.graphql.api.molecule.xyz/graphql \
   -H 'Content-Type: application/json' \
   -H "Authorization: $CONSUMER_CREDENTIAL" \
   -d '{
@@ -153,7 +153,7 @@ The second check is visual — the lab has a page of its own, at `/labs/<slug>`:
 
 | Environment | Lab page |
 | ----------- | -------- |
-| Staging | `https://testnet.app.molecule.xyz/labs/<slug>` |
+| Sandbox | `https://sandbox.app.molecule.xyz/labs/<slug>` |
 | Production | `https://app.molecule.xyz/labs/<slug>` |
 
 Until the lab is renamed, that slug is **`lab-<tokenId>`**, built from the `labNftTokenId` that `createLab` returns — so a lab you have just created is at `.../labs/lab-1274`. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name, and the `lab-<tokenId>` form stops resolving.
@@ -164,28 +164,28 @@ Do not build this URL from `oclId`. It identifies the lab in API calls, it is no
 
 ## Running in Production
 
-The tutorials all run against staging (Base Sepolia, testnet funds). To run the same scripts against production, replace the values in the [Shared Setup](shared-setup.md) config block — nothing else changes, because every step reads from these constants:
+The tutorials all run against the sandbox (Base Sepolia, testnet funds). To run the same scripts against production, replace the values in the [Shared Setup](shared-setup.md) config block — nothing else changes, because every step reads from these constants:
 
-| Constant | Staging (these tutorials) | Production |
+| Constant | Sandbox (these tutorials) | Production |
 | -------- | ------------------------- | ---------- |
-| `GRAPHQL_URL` | `https://staging.graphql.api.molecule.xyz/graphql` | `https://production.graphql.api.molecule.xyz/graphql` |
+| `GRAPHQL_URL` | `https://sandbox.graphql.api.molecule.xyz/graphql` | `https://production.graphql.api.molecule.xyz/graphql` |
 | `CHAIN` (viem import) | `baseSepolia` from `viem/chains` | `base` from `viem/chains` |
-| `FACTORY_ADDRESS` | `0xd629FE2310b4309a212495F10A47f8436dcEfD90` | `0xECdF4f05384056507485C90aeAb0a83268760D6E` |
-| `LABNFT_ADDRESS` | `0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28` | `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92` |
-| `ACCESS_RESOLVER_ADDRESS` | `0x5493F472602C87318EA5Eff753cDD593bf9bF559` | `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B` |
+| `FACTORY_ADDRESS` | `0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB` | `0xECdF4f05384056507485C90aeAb0a83268760D6E` |
+| `LABNFT_ADDRESS` | `0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14` | `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92` |
+| `ACCESS_RESOLVER_ADDRESS` | `0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe` | `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B` |
 | `ACCESS_CONDITION_CHAIN` | `"baseSepolia"` | `"base"` |
-| `LAB_APP_URL` | `https://testnet.app.molecule.xyz` | `https://app.molecule.xyz` |
+| `LAB_APP_URL` | `https://sandbox.app.molecule.xyz` | `https://app.molecule.xyz` |
 
 A few things follow automatically from that swap:
 
-* **Headers and the `graphql()` helper** are identical — `Authorization` (consumer credential, no `Bearer`) and the self-issued `X-Service-Token` work the same against both endpoints. Note that credentials are **per environment**: a staging `mol_` credential does not authenticate against production.
+* **Headers and the `graphql()` helper** are identical — `Authorization` (consumer credential, no `Bearer`) and the self-issued `X-Service-Token` work the same against both endpoints. Note that credentials are **per environment**: a sandbox `mol_` credential does not authenticate against production.
 * **The `mintFeeWei()` read** already queries the live contract, so it picks up whatever fee production has configured with no code change.
 * **The access-condition ABIs** are unchanged; only `contractAddress` and `chain` differ, and both come from the config block.
+* **The limits are the same.** The sandbox runs the production release with production's limits — introspection off, query depth capped at 10, the same rate rules — so a query that passes on the sandbox passes on production. See [Rate & Query Limits](../rate-limits.md#sandbox-and-production).
 
 What doesn't follow automatically, and is on you:
 
-* **Real funds.** Minting on `base` spends real ETH. Test on staging first.
-* **Introspection is off in production** and query depth is capped at 10. Generate types against staging — see [Getting the schema](#getting-the-schema). The other differences between the two environments are on [Rate & Query Limits](../rate-limits.md#staging-and-production).
+* **Real funds.** Minting on `base` spends real ETH. Test on the sandbox first.
 * **`SERVICE_NAME`** should identify the real integration; it is echoed into the sign-in message and stored against the issued token.
 * Full deployment list, including every other OCL contract on both chains: [Contracts reference](../../references/contracts/README.md).
 
@@ -193,18 +193,11 @@ What doesn't follow automatically, and is on you:
 
 ## Getting the schema
 
-**Staging has GraphQL introspection enabled** — point codegen, a playground or an SDK generator straight at it:
+**GraphQL introspection is disabled on both the sandbox and production**, deliberately — `__schema` and `__type` return a validation error (`__typename` still resolves), so codegen, playgrounds and SDK generators can't discover the schema from a live endpoint.
 
-```bash
-# graphql-codegen, apollo, gql.tada… all work against staging
-DESCI_API_SCHEMA=https://staging.graphql.api.molecule.xyz/graphql npx graphql-codegen
-```
+The schema is published in these docs instead. [API Types](../types.md) lists every object, input, enum and union with its fields and descriptions, and each operation page in the [Labs API](../labs-api/README.md) gives its arguments and return type. A machine-readable SDL file for codegen isn't published yet; until it is, write your types from those pages.
 
-Introspection requires only the `Authorization` consumer-credential header, the same as any query.
-
-**Production has introspection disabled**, deliberately — `__schema` and `__type` return a validation error there (`__typename` still resolves). Generate against staging and point the generated client at production; the two environments serve the same schema.
-
-Production also enforces a query-depth limit of 10, which fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data — a plain GraphQL error, not the catalogued shape. Handle both.
+Both environments also enforce a query-depth limit of 10, which fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data — a plain GraphQL error, not the catalogued shape. Handle both.
 
 ***
 
@@ -212,6 +205,7 @@ Production also enforces a query-depth limit of 10, which fails at execution tim
 
 | Next | Page |
 | ---- | ---- |
+| What the sandbox is, and its demo lab | [Sandbox](../sandbox.md) |
 | What every term in these guides means | [Glossary](../../references/glossary.md) |
 | The config and helpers every tutorial uses | [Shared Setup](shared-setup.md) |
 | Every operation, parameter and error code | [Labs API](../labs-api/README.md) |

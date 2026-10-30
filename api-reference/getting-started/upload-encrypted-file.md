@@ -328,11 +328,11 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains"; // production: `base`
 
-const GRAPHQL_URL = "https://staging.graphql.api.molecule.xyz/graphql";
+const GRAPHQL_URL = "https://sandbox.graphql.api.molecule.xyz/graphql";
 const CHAIN = baseSepolia;
-const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90";
-const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28";
-const ACCESS_RESOLVER_ADDRESS = "0x5493F472602C87318EA5Eff753cDD593bf9bF559";
+const FACTORY_ADDRESS = "0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB";
+const LABNFT_ADDRESS = "0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14";
+const ACCESS_RESOLVER_ADDRESS = "0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe";
 const ACCESS_CONDITION_CHAIN = "baseSepolia";
 const SERVICE_NAME = "tutorial-agent";
 

@@ -13,7 +13,7 @@ Before `createLab` can attach a dataroom, an onchain lab (OCL) has to exist: a L
 | Chain                  | `OnChainLabFactory`                         | `LabNFT` (proxy)                            |
 | ----------------------- | -------------------------------------------- | -------------------------------------------- |
 | Base Mainnet (`8453`)   | `0xECdF4f05384056507485C90aeAb0a83268760D6E` | `0x9F96027eeAFb9ad5F2b5d7043B36Ee96B2EeBE92` |
-| Base Sepolia (`84532`)  | `0xd629FE2310b4309a212495F10A47f8436dcEfD90` | `0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28` |
+| Base Sepolia (`84532`, sandbox) | `0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB` | `0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14` |
 
 Full deployment list, including every other OCL contract: [Contracts reference](../../references/contracts/README.md).
 
@@ -38,8 +38,8 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains"; // use `base` + the mainnet addresses in production
 
-const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90";
-const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28";
+const FACTORY_ADDRESS = "0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB";
+const LABNFT_ADDRESS = "0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14";
 
 const factoryAbi = parseAbi([
   "function mintAndCreateAccount(address to) external payable returns (address account, uint256 tokenId)",

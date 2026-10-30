@@ -95,7 +95,7 @@ All APIs use the same GraphQL endpoint:
 
 ```
 Production: https://production.graphql.api.molecule.xyz/graphql
-Staging:    https://staging.graphql.api.molecule.xyz/graphql
+Sandbox:    https://sandbox.graphql.api.molecule.xyz/graphql
 ```
 
 ---
@@ -145,7 +145,7 @@ If you encounter any issues or have questions about the APIs:
 - [Glossary](../references/glossary.md) — every Molecule term used in these docs, defined in a sentence
 - [Getting Started](getting-started/README.md) — prerequisites, costs, ten-minute quickstart
 - [Agent one-pager](getting-started/for-agents.md) — the default flow, paste-ready
-- [Getting the schema](getting-started/README.md#getting-the-schema) — staging introspection is enabled; production's is not
+- [Getting the schema](getting-started/README.md#getting-the-schema) — introspection is off on the sandbox and production; the schema is published in these docs
 - [Molecule Skill](../ai-tooling/molecule-skill.md) — the agent plugin that drives this API
 - [Smart Contract Addresses](../references/contracts/)
 

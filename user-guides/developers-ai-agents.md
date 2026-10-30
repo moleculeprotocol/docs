@@ -45,7 +45,7 @@ Your module is a standalone Solidity contract. It does not inherit from the Lab 
 
 A critical detail: modules never run via delegatecall — the account dispatches module calls as regular external calls, so a module cannot touch the Lab's storage directly. Your executor triggers Lab actions through `executeFromExecutor`, and the attestation process reviews what those actions can do. Reentrancy and unauthorized asset access remain the key risks the review looks for.
 
-The Base Sepolia deployment includes all the infrastructure you need for testing: the OnChainLabFactory at `0xd629FE2310b4309a212495F10A47f8436dcEfD90`, the ERC7484Registry at `0x1Ab5Ba4300613F7346835b2BE7E2D10Ce6125eF5`, and the full set of supporting contracts listed in the [Contracts reference](../references/contracts/).
+The Base Sepolia deployment includes all the infrastructure you need for testing: the OnChainLabFactory at `0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB`, the ERC7484Registry at `0x1Ab5Ba4300613F7346835b2BE7E2D10Ce6125eF5`, and the full set of supporting contracts listed in the [Contracts reference](../references/contracts/).
 
 ### Deploying an AI Research Agent
 

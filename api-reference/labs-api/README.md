@@ -102,7 +102,7 @@ The legacy `*V2` operations and the pre-OCL naming have been **removed**. The cu
 If you encounter any issues or have questions about the Labs API:
 
 1. Check this documentation and the [troubleshooting section](../errors.md#labs-troubleshooting)
-2. Run the [Tutorials](../getting-started/README.md) against staging — each step lists its expected response and failure modes
+2. Run the [Tutorials](../getting-started/README.md) against the [sandbox](../sandbox.md) — each step lists its expected response and failure modes
 3. Join our [Discord community](https://t.co/L0VEiy4Bjk) for support, quoting the `requestId` from the failing response
 
 ---
