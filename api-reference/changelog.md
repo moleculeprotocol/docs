@@ -8,6 +8,31 @@ This page tracks breaking changes, deprecations, and additions across the Molecu
 
 ---
 
+## Environments
+
+### The sandbox replaces staging for testing
+
+**Breaking change, YYYY-MM-DD.** Testing against the Molecule API now happens on the [sandbox](sandbox.md): the production release on Base Sepolia, with its own contracts and its own data. Staging is no longer open to external developers, and every page in these docs now points at the sandbox.
+
+| What | Was (staging) | Now (sandbox) |
+| ---- | ------------- | ------------- |
+| GraphQL API | `https://staging.graphql.api.molecule.xyz/graphql` | `https://sandbox.graphql.api.molecule.xyz/graphql` |
+| Labs app | `https://testnet.app.molecule.xyz` | `https://sandbox.app.molecule.xyz` |
+| x402 gateway | `https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/prod` | `https://cjwbtwwqz2.execute-api.eu-central-2.amazonaws.com/prod` |
+| `OnChainLabFactory` | `0xd629FE2310b4309a212495F10A47f8436dcEfD90` | `0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB` |
+| `LabNFT` (proxy) | `0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28` | `0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14` |
+| `AccessResolver` | `0x5493F472602C87318EA5Eff753cDD593bf9bF559` | `0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe` |
+
+The rest of the sandbox contract set is on [Supported Networks & Contracts](../references/contracts/README.md). The chain is still Base Sepolia (`84532`), so `CHAIN` and `ACCESS_CONDITION_CHAIN` don't change.
+
+- **Introspection is off on the sandbox**, as in production, and query depth is capped at 10. This supersedes [Staging introspection is the supported way to get the schema](#staging-introspection-is-the-supported-way-to-get-the-schema) below: take types from [API Types](types.md) instead. See [Getting the schema](getting-started/README.md#getting-the-schema).
+- **The limits are production's.** The sandbox's edge request counts, depth limit and budgets match production, not staging's tighter numbers. See [Rate & Query Limits](rate-limits.md#sandbox-and-production).
+- **Nothing carries over from staging.** Staging credentials, labs and files don't exist on the sandbox.
+
+**Migration:** Create a credential on the [sandbox Labs app](https://sandbox.app.molecule.xyz). Replace `GRAPHQL_URL`, `FACTORY_ADDRESS`, `LABNFT_ADDRESS`, `ACCESS_RESOLVER_ADDRESS` and `LAB_APP_URL` with the values above (the [Shared Setup](getting-started/shared-setup.md) block has them), and point x402 clients at the sandbox gateway. Re-create any test labs you need. If your codegen introspected staging, generate from [API Types](types.md) instead.
+
+---
+
 ## Authentication
 
 ### Consumer credentials are self-service, and require accepting the API terms

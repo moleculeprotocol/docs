@@ -9,7 +9,7 @@ icon: list-check
 
 Each use case below describes something people build on Molecule. It says who it's for, what it uses, and the order to read the docs in. Pick the one closest to your goal and follow its steps. For a single operation, like deleting a file or reading an error code, use the sidebar instead.
 
-New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossary.md) explains each in a sentence or two. Everything below runs against **staging** (Base Sepolia, testnet funds) first. Moving to mainnet means changing a few constants: see [Running in Production](api-reference/getting-started/README.md#running-in-production).
+New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossary.md) explains each in a sentence or two. Everything below runs against the **[sandbox](api-reference/sandbox.md)** (Base Sepolia, testnet funds) first. Moving to mainnet means changing a few constants: see [Running in Production](api-reference/getting-started/README.md#running-in-production).
 
 | I want to…                                                   | Use case                                                                                  |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
@@ -82,7 +82,7 @@ For the design behind this, see [Deploying an AI Research Agent](user-guides/dev
 2. **Open a single Lab** with its files and download URLs. See [Get Single Project with Files](api-reference/labs-api/lab-management.md#get-single-project-with-files).
 3. **Add activity feeds**: per Lab ([Project Activity Feed](api-reference/labs-api/browse-and-search.md#project-activity-feed)), across all Labs ([Global Activity Feed](api-reference/labs-api/browse-and-search.md#global-activity-feed)) and onchain ([Onchain Activity Feed](api-reference/labs-api/browse-and-search.md#onchain-activity-feed)).
 4. **Add search** across every Lab's files with `searchLabs`. See [Searching Labs](api-reference/labs-api/browse-and-search.md#searching-labs).
-5. **Generate types and respect the limits.** Introspection is off in production, so generate types against staging. Always pass paging arguments. See [Getting the schema](api-reference/getting-started/README.md#getting-the-schema) and [Rate & Query Limits](api-reference/rate-limits.md).
+5. **Write your types and respect the limits.** Introspection is off on the sandbox and in production, so take types from [API Types](api-reference/types.md). Always pass paging arguments. See [Getting the schema](api-reference/getting-started/README.md#getting-the-schema) and [Rate & Query Limits](api-reference/rate-limits.md).
 
 For live onchain state the indexer doesn't cover, such as balances or allowances, read the contracts directly. Addresses are on [Supported Networks & Contracts](references/contracts/README.md).
 
@@ -105,7 +105,7 @@ For live onchain state the indexer doesn't cover, such as balances or allowances
 **For:** builders of third-party tools and agents that serve external users. **Uses:** the x402 Gateway (USDC on Base).
 
 1. **Check x402 fits.** Use it when you have no service token set up in advance, or when you want to pay per call. See [When to use x402](api-reference/x402-gateway.md#when-to-use-x402).
-2. **Point at the gateway and fund the payer wallet.** Staging uses Base Sepolia USDC from the Circle faucet. See [Gateway base URLs](api-reference/x402-gateway.md#gateway-base-urls).
+2. **Point at the gateway and fund the payer wallet.** The sandbox uses Base Sepolia USDC from the Circle faucet. See [Gateway base URLs](api-reference/x402-gateway.md#gateway-base-urls).
 3. **Make sure the payer wallet has a role on each target Lab.** Paying doesn't grant a role. Content writes need **Contributor**, and `createLab` and LabNFT-metadata changes need **Owner**. Without the role, the call returns `200` with `UNAUTHORIZED` and you are still charged. Check with the public, free `listLabMembers` query before signing. See the warning in [Reading the 402 challenge](api-reference/x402-gateway.md#reading-the-402-challenge).
 4. **Handle the payment challenge.** Read the 402 response, sign the payment and retry. The gateway then issues a short-lived service token that covers only that one mutation. See [Payment Flow](api-reference/x402-gateway.md#payment-flow) and [Agent Usage Pattern](api-reference/x402-gateway.md#agent-usage-pattern).
 5. **Handle both ways a call can fail.** The gateway can reject the payment, or the mutation it forwards can fail. See [x402 Gateway errors](api-reference/errors.md#x402-gateway-errors).

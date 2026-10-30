@@ -390,11 +390,11 @@ Your file is in `dataRoom.files` with `accessLevel: "PUBLIC"` and `version: 1`. 
 
 If `labWithDataRoomAndFiles` comes back `null`, the lab is not registered: Step 3 didn't complete. This is one of only two nullable queries on the Labs API, so a missing lab nulls the field instead of throwing.
 
-The second check is visual. The lab has a page at `${LAB_APP_URL}/labs/<slug>`. Until the lab is renamed, that slug is `lab-<labNftTokenId>` — the token id `createLab` returned in Step 3 — so a lab you have just created is at `https://testnet.app.molecule.xyz/labs/lab-1274` on staging. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name and the `lab-<tokenId>` form stops resolving. `oclId` does not work here.
+The second check is visual. The lab has a page at `${LAB_APP_URL}/labs/<slug>`. Until the lab is renamed, that slug is `lab-<labNftTokenId>` — the token id `createLab` returned in Step 3 — so a lab you have just created is at `https://sandbox.app.molecule.xyz/labs/lab-1274` on the sandbox. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name and the `lab-<tokenId>` form stops resolving. `oclId` does not work here.
 
 ## Complete script
 
-All five steps in one file, against staging. No pre-issued service token needed.
+All five steps in one file, against the sandbox. No pre-issued service token needed.
 
 ```javascript
 #!/usr/bin/env node
@@ -410,12 +410,12 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains"; // production: `base`
 
-// ---- Staging (Base Sepolia) config — see "Running in Production" to swap ----
-const GRAPHQL_URL = "https://staging.graphql.api.molecule.xyz/graphql";
+// ---- Sandbox (Base Sepolia) config — see "Running in Production" to swap ----
+const GRAPHQL_URL = "https://sandbox.graphql.api.molecule.xyz/graphql";
 const CHAIN = baseSepolia;
-const FACTORY_ADDRESS = "0xd629FE2310b4309a212495F10A47f8436dcEfD90"; // OnChainLabFactory
-const LABNFT_ADDRESS = "0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28"; // LabNFT (proxy)
-const LAB_APP_URL = "https://testnet.app.molecule.xyz";
+const FACTORY_ADDRESS = "0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB"; // OnChainLabFactory
+const LABNFT_ADDRESS = "0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14"; // LabNFT (proxy)
+const LAB_APP_URL = "https://sandbox.app.molecule.xyz";
 const SERVICE_NAME = "tutorial-agent";
 
 const CONSUMER_CREDENTIAL = process.env.CONSUMER_CREDENTIAL; // mol_<id>_<secret> — no "Bearer" prefix

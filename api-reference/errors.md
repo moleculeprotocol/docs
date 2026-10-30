@@ -38,7 +38,7 @@ Some requests fail before any resolver sees them. They look the same whichever A
 
 **Invalid GraphQL document: a plain GraphQL error with no code.** A query that selects a field that doesn't exist, or passes a variable of the wrong type, returns a top-level `errors[]` entry. It has a `message` but no catalogued `errorType` and no `errorInfo`. Fix the document; retrying it unchanged won't help. On a mutation, an `errors[]` entry like this means the document failed validation and the mutation didn't run.
 
-**Query too deep: `QueryDepthLimitReached`.** Production enforces a query-depth limit of 10. A query deeper than that fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data. It's a plain GraphQL error, not the catalogued shape.
+**Query too deep: `QueryDepthLimitReached`.** The sandbox and production enforce a query-depth limit of 10. A query deeper than that fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data. It's a plain GraphQL error, not the catalogued shape.
 
 Your client has to handle both shapes: catalogued errors with `errorInfo`, and plain GraphQL errors without it.
 
@@ -247,7 +247,7 @@ An HTTP `401` instead of `UNAUTHENTICATED` means the consumer credential was rej
 - `NOT_FOUND` / `CREDENTIAL_NOT_FOUND`: the `consumerId` doesn't exist, or isn't yours; both get the same answer
 - `VALIDATION_FAILED`: `details.field` is `label` (over 64 characters, or control characters) or `expiresInDays` (not a whole number from 1 to 365)
 - `FAILED_PRECONDITION` / `TERMS_ACCEPTANCE_REQUIRED`: accept the current API terms first; see [Accepting the API terms](authentication.md#accepting-the-api-terms)
-- `FAILED_PRECONDITION` / `SELF_SERVICE_CREDENTIALS_DISABLED`: self-service credentials aren't available in this environment. Staging and production both serve them
+- `FAILED_PRECONDITION` / `SELF_SERVICE_CREDENTIALS_DISABLED`: self-service credentials aren't available in this environment. The sandbox and production both serve them
 
 **Retryable errors (`RATE_LIMITED`, `TIMEOUT`, `UPSTREAM_UNAVAILABLE`, `INTERNAL_ERROR`):**
 

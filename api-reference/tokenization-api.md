@@ -35,7 +35,7 @@ Authorization: YOUR_CONSUMER_CREDENTIAL
 
 ```
 Production: https://production.graphql.api.molecule.xyz/graphql
-Staging:    https://staging.graphql.api.molecule.xyz/graphql
+Sandbox:    https://sandbox.graphql.api.molecule.xyz/graphql
 ```
 
 ***
@@ -150,7 +150,7 @@ The terms message is reconstructed onchain by `OclTermsPermissioner.specificTerm
 | Network      | Chain ID | OclTokenizer (proxy)                         |
 | ------------ | -------- | -------------------------------------------- |
 | Base Mainnet | 8453     | `0x62F532C3f563D974deEc103AAb8cC597f4f9c84E` |
-| Base Sepolia | 84532    | `0xEe19e0Db8a7e59538710FAF6ed3ab655BCfCdB24` |
+| Base Sepolia (sandbox) | 84532    | `0x70F9A9E28C58f78049768F503CCd90E6f6e26BcD` |
 
 ***
 
@@ -271,7 +271,7 @@ console.log('Lab tokenized!', txHash);
 
 ### Testing
 
-* Use Base Sepolia for development
+* Use the [sandbox](sandbox.md) (Base Sepolia) for development
 * Test the complete workflow end-to-end
 * Verify the agreement document and terms text before signing
 

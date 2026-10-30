@@ -11,16 +11,16 @@ The complete default flow — self-issue a token, mint a lab, upload a public fi
 
 ## Constants
 
-Staging (Base Sepolia) — everything on this page runs against these:
+Sandbox (Base Sepolia) — everything on this page runs against these:
 
 ```
-GRAPHQL_URL              https://staging.graphql.api.molecule.xyz/graphql
+GRAPHQL_URL              https://sandbox.graphql.api.molecule.xyz/graphql
 CHAIN                    baseSepolia (84532)
-ONCHAIN_LAB_FACTORY      0xd629FE2310b4309a212495F10A47f8436dcEfD90
-LABNFT                   0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28
-ACCESS_RESOLVER          0x5493F472602C87318EA5Eff753cDD593bf9bF559
+ONCHAIN_LAB_FACTORY      0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB
+LABNFT                   0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14
+ACCESS_RESOLVER          0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe
 ACCESS_CONDITION_CHAIN   "baseSepolia"
-LAB_PAGE                 https://testnet.app.molecule.xyz/labs/<slug>
+LAB_PAGE                 https://sandbox.app.molecule.xyz/labs/<slug>
 ```
 
 Production (Base) — swap these in, nothing else changes:
@@ -176,7 +176,7 @@ Full recipe including `accessControlConditions`: [Upload an encrypted file](uplo
 7. Writing into a lab you do not own needs a **Contributor** role on it — see [Agent access](agent-as-a-lab-contributor.md). After a role grant, an indexer lag of a few seconds can still return `UNAUTHORIZED`; retry with backoff.
 8. **A successful `createLab` does not mean the lab is writable yet.** Step 4's first call can return `NOT_FOUND` ("Project 0x… does not exist") for a few seconds, because `createLab` falls back to an onchain ownership check while the file mutations read the indexed record. Retry `NOT_FOUND` with backoff on the first write after a mint; do not re-run `createLab`, which then returns `CONFLICT`.
 9. **Three addresses, not interchangeable**: your own wallet (`walletAddress`, `changeBy`), the human owner's (`x-wallet-address`, their path only), and the Lab's OCL account (`labAccountAddress`, and the `account` argument in access conditions). Putting an owner's address where `labAccountAddress` belongs uploads fine and then locks everyone out of the file, with no error saying why. `oclId` is none of them — it is a lab id whose trailing 40 hex chars happen to be the OCL account address. See [the three wallets](../authentication.md#the-three-wallets-side-by-side).
-10. Production has introspection off and a depth limit of 10. Generate types against staging.
+10. Introspection is off on the sandbox and production, and both cap query depth at 10. Take types from [API Types](../types.md), not from introspection.
 
 ## Related
 

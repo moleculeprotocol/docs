@@ -29,12 +29,12 @@ Use the standard [Labs API](labs-api/README.md) with a service token when you ha
 
 | Environment | Base URL | Network | Asset |
 | ----------- | -------- | ------- | ----- |
-| **Staging** | `https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/prod` | Base Sepolia (`eip155:84532`) | [USDC `0x036CbD…dCF7e`](https://sepolia.basescan.org/address/0x036CbD53842c5426634e7929541eC2318f3dCF7e) |
+| **Sandbox** | `https://cjwbtwwqz2.execute-api.eu-central-2.amazonaws.com/prod` | Base Sepolia (`eip155:84532`) | [USDC `0x036CbD…dCF7e`](https://sepolia.basescan.org/address/0x036CbD53842c5426634e7929541eC2318f3dCF7e) |
 | **Production** | `https://0qb5gyw72f.execute-api.eu-central-2.amazonaws.com/prod` | Base (`eip155:8453`) | [USDC `0x833589…02913`](https://basescan.org/address/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
 
 Endpoints are `POST {base}/x402/labs/{mutation}`. Note the `/prod` stage segment on the base URL: it is part of the path you call. (The `resource.url` echoed back inside the `402` challenge omits it — call the URL you built, not the one in the challenge.)
 
-Testnet USDC for the staging gateway comes from the [Circle faucet](https://faucet.circle.com/) — select **Base Sepolia**. You also need a little Base Sepolia ETH for gas if you are doing anything onchain alongside; the payment itself is signed, not sent, so it costs the payer no gas.
+Testnet USDC for the sandbox gateway comes from the [Circle faucet](https://faucet.circle.com/) — select **Base Sepolia**. You also need a little Base Sepolia ETH for gas if you are doing anything onchain alongside; the payment itself is signed, not sent, so it costs the payer no gas.
 
 Both base URLs are also what the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin expects in `X402_GATEWAY_URL`.
 
@@ -122,7 +122,7 @@ The price is **quoted per request** — always read it from the challenge rather
 
 ```bash
 curl -i -X POST \
-  https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/prod/x402/labs/createLab \
+  https://cjwbtwwqz2.execute-api.eu-central-2.amazonaws.com/prod/x402/labs/createLab \
   -H 'Content-Type: application/json' \
   -d '{
     "query": "mutation CreateLab($oclId: String!) { createLab(input: { oclId: $oclId }) { message error { code message requestId retryable details } } }",
@@ -152,7 +152,7 @@ curl -sD - -o /dev/null -X POST "$URL" -H 'Content-Type: application/json' -d "$
   "x402Version": 2,
   "error": "Payment required",
   "resource": {
-    "url": "https://0go1j7o645.execute-api.eu-central-2.amazonaws.com/x402/labs/createLab",
+    "url": "https://cjwbtwwqz2.execute-api.eu-central-2.amazonaws.com/x402/labs/createLab",
     "description": "x402 payment for createLab",
     "mimeType": ""
   },
@@ -170,7 +170,7 @@ curl -sD - -o /dev/null -X POST "$URL" -H 'Content-Type: application/json' -d "$
 }
 ```
 
-`amount` is in the asset's smallest unit — USDC has 6 decimals, so `"10000"` is **$0.01**. That is the price on both staging and production today, for every allow-listed mutation. `extra.name` / `extra.version` are the EIP-712 domain values for the token's `transferWithAuthorization`.
+`amount` is in the asset's smallest unit — USDC has 6 decimals, so `"10000"` is **$0.01**. That is the price on both the sandbox and production today, for every allow-listed mutation. `extra.name` / `extra.version` are the EIP-712 domain values for the token's `transferWithAuthorization`.
 
 **Step 3 — sign the authorization and retry.** Build an EIP-3009 `transferWithAuthorization` for `amount` to `payTo` on `network`, wrap it in the x402 payment payload, base64 it, and re-send the *same* request with the header:
 
@@ -249,7 +249,7 @@ X402_PRICE_<UPPER_MUTATION>          e.g. X402_PRICE_CREATELAB
 X402_PRICE_DEFAULT                   fallback when no per-mutation price is set
 ```
 
-Values are interpreted as USDC amounts (e.g. `"2.50"` = $2.50). Prices are environment-configured — the authoritative price for a given mutation is the one quoted in the `402` challenge, so clients should always [read it from the challenge](#reading-the-402-challenge) rather than hardcoding amounts. As of 2026-08-27 every allow-listed mutation quotes **$0.01** on both staging and production.
+Values are interpreted as USDC amounts (e.g. `"2.50"` = $2.50). Prices are environment-configured — the authoritative price for a given mutation is the one quoted in the `402` challenge, so clients should always [read it from the challenge](#reading-the-402-challenge) rather than hardcoding amounts. As of 2026-08-27 every allow-listed mutation quotes **$0.01** on both the sandbox and production.
 
 | Variable                         | Default                                                 | Purpose                                                  |
 | -------------------------------- | ------------------------------------------------------- | -------------------------------------------------------- |

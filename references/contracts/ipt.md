@@ -22,7 +22,7 @@ An **IP Token (IPT)** is a fungible ERC-20 token representing a fractional claim
 | **Solidity** | 0.8.33                                                        |
 | **License**  | MIT                                                           |
 
-Clone templates: Base mainnet [`0xd13a5D5ab80c15c344aA0eAa36f16ABae940dB0c`](https://basescan.org/address/0xd13a5D5ab80c15c344aA0eAa36f16ABae940dB0c), Base Sepolia [`0x8038d3B220C635b3B7A7B4bcba0928a2D5B0B8F6`](https://sepolia.basescan.org/address/0x8038d3B220C635b3B7A7B4bcba0928a2D5B0B8F6). Each Lab's IPT is a distinct clone with its own address — resolve it via `OclTokenizer.tokenized(labId)`.
+Clone templates: Base mainnet [`0xd13a5D5ab80c15c344aA0eAa36f16ABae940dB0c`](https://basescan.org/address/0xd13a5D5ab80c15c344aA0eAa36f16ABae940dB0c), Base Sepolia [`0xBeA1A862cC19fD2c0Fe2c52EE63DbeA0766A48bE`](https://sepolia.basescan.org/address/0xBeA1A862cC19fD2c0Fe2c52EE63DbeA0766A48bE). Each Lab's IPT is a distinct clone with its own address — resolve it via `OclTokenizer.tokenized(labId)`.
 
 ### Naming & Metadata
 

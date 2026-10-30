@@ -22,8 +22,8 @@ Every agreement type shares **one** signature schema — `LegalAgreementAcceptan
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | `name`               | `"MoleculeOcl"`                                                                                                                            |
 | `version`            | `"1"`                                                                                                                                      |
-| `chainId`            | the **deployment's L2 chain** — `84532` (Base Sepolia) on dev/staging, `8453` (Base) in production. This is the chain the LabNFT lives on, not the OCL "canonical chain id" used for CREATE2 address derivation. |
-| `verifyingContract`  | the environment's LabNFT proxy, **lowercased** — `0x13ff210695fdb54a7f928eccc28bc3486c05bb28` (dev/staging), `0x9f96027eeafb9ad5f2b5d7043b36ee96b2eebe92` (production) |
+| `chainId`            | the **deployment's L2 chain** — `84532` (Base Sepolia) on the sandbox, `8453` (Base) in production. This is the chain the LabNFT lives on, not the OCL "canonical chain id" used for CREATE2 address derivation. |
+| `verifyingContract`  | the environment's LabNFT proxy, **lowercased** — `0x0fcacd29be871688eef853e9fbc6dcea78343a14` (sandbox), `0x9f96027eeafb9ad5f2b5d7043b36ee96b2eebe92` (production) |
 
 ### Types
 
@@ -54,7 +54,7 @@ const typedData = {
     name: "MoleculeOcl",
     version: "1",
     chainId: 84532, // 8453 in production
-    verifyingContract: "0x13ff210695fdb54a7f928eccc28bc3486c05bb28", // per-environment LabNFT proxy, lowercased
+    verifyingContract: "0x0fcacd29be871688eef853e9fbc6dcea78343a14", // per-environment LabNFT proxy, lowercased
   },
   types: {
     LegalAgreementAcceptance: [
@@ -98,7 +98,7 @@ Domain:
   "name": "MoleculeOcl",
   "version": "1",
   "chainId": 84532,
-  "verifyingContract": "0x13ff210695fdb54a7f928eccc28bc3486c05bb28"
+  "verifyingContract": "0x0fcacd29be871688eef853e9fbc6dcea78343a14"
 }
 ```
 
