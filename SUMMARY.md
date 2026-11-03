@@ -41,8 +41,6 @@
   * [Shared Setup](api-reference/getting-started/shared-setup.md)
   * [Create a lab and upload a public file](api-reference/getting-started/create-lab-and-upload-file.md)
   * [Upload an encrypted file](api-reference/getting-started/upload-encrypted-file.md)
-  * [Agent access](api-reference/getting-started/agent-as-a-lab-contributor.md)
-  * [For Agents: One-Pager](api-reference/getting-started/for-agents.md)
 * [🔐 Authentication](api-reference/authentication.md)
 * [Errors](api-reference/errors.md)
 * [Rate & Query Limits](api-reference/rate-limits.md)
@@ -73,8 +71,8 @@
 ## AI Tooling
 
 * [Which Tool Do I Need?](ai-tooling/README.md)
+* [Connect your agent](ai-tooling/agent-connect.md)
 * [MIRA](ai-tooling/mira.md)
-* [Molecule Skill](ai-tooling/molecule-skill.md)
 
 ## REFERENCES
 

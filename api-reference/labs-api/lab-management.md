@@ -438,7 +438,7 @@ query ListLabMembers($oclId: String!) {
 }
 ```
 
-A member with `isAgent: true` holds a role granted with the agent flag. When someone connects an AI app to the lab through Molecule, the app acts from its own wallet, and `agent` says which app it is:
+A member with `isAgent: true` holds a role granted with the agent flag. When someone connects an AI app to the lab through Molecule ([Connect your agent](../../ai-tooling/agent-connect.md)), the app acts from its own wallet, and `agent` says which app it is:
 
 * `displayName`: the app's name, for example `Claude`.
 * `isVerified`: `true` when Molecule recognises the app. When `false`, the app chose `displayName` itself, and it may be imitating another app's name.

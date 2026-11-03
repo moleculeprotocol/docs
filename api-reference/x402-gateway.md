@@ -36,8 +36,6 @@ Endpoints are `POST {base}/x402/labs/{mutation}`. Note the `/prod` stage segment
 
 Testnet USDC for the sandbox gateway comes from the [Circle faucet](https://faucet.circle.com/) — select **Base Sepolia**. You also need a little Base Sepolia ETH for gas if you are doing anything onchain alongside; the payment itself is signed, not sent, so it costs the payer no gas.
 
-Both base URLs are also what the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin expects in `X402_GATEWAY_URL`.
-
 ---
 
 ## Endpoints
@@ -295,7 +293,7 @@ Beyond that, three habits:
 * **Check authorization before paying.** Confirm the lab exists and the payer wallet holds the role the mutation needs (`labWithDataRoomAndFiles`, `listLabMembers` — both public and free) before signing anything. Payment does not grant a role.
 * **Check `payment-response` on every `200`.** A failed settlement means you weren't charged, but the mutation still ran — don't resend it. See [Idempotency](#idempotency).
 
-If you would rather not implement the handshake at all, the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin's `x402_pay` tool does the whole flow in one call. See the [Developers / AI Agents guide](../user-guides/developers-ai-agents.md) for broader integration patterns, and the [Labs API reference](labs-api/README.md) for the full GraphQL signatures of each gated mutation.
+See the [Developers / AI Agents guide](../user-guides/developers-ai-agents.md) for broader integration patterns, and the [Labs API reference](labs-api/README.md) for the full GraphQL signatures of each gated mutation.
 
 ---
 
@@ -303,7 +301,6 @@ If you would rather not implement the handshake at all, the [Molecule Skill](../
 
 - [Getting Started](getting-started/README.md) — how to interact with our products, prerequisites, costs
 - [Glossary](../references/glossary.md) — every Molecule term used in these docs, defined in a sentence
-- [Molecule Skill](../ai-tooling/molecule-skill.md) — `x402_pay` does this handshake in one tool call
 - [Labs API](labs-api/README.md) — full mutation signatures and variable types
 - [Errors](errors.md) — every gateway status and message, and when a retry is safe
 - [Developers / AI Agents](../user-guides/developers-ai-agents.md) — agent integration guide

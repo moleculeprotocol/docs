@@ -77,7 +77,7 @@ The six content-write mutations — `initiateCreateOrUpdateFile`, `finishCreateO
 
 This is what unblocks the "human owns the lab, agent contributes to it" flow: the owner grants the agent's wallet Contributor, and the agent's self-issued token can write. Owner-gated surfaces are unchanged — `createLab`, `updateLabNftMetadata` and `generateLabImageUploadUrl` still require ownership.
 
-**Migration:** None — this is a widening. Note that role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after a grant confirms onchain; retry with backoff rather than re-issuing the token. Walkthrough: [Agent access](getting-started/agent-as-a-lab-contributor.md).
+**Migration:** None — this is a widening. Note that role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after a grant confirms onchain; retry with backoff rather than re-issuing the token.
 
 ### Backend credential stores confined to the platform network
 
@@ -498,6 +498,16 @@ query GetAgreements($id: ID!) {
   }
 }
 ```
+
+---
+
+## Agent Connect
+
+### Connect a chat app to a Lab
+
+**Addition, 2026-10-30.** A scientist can now connect Claude, ChatGPT, Codex, Grok or Cursor to a Lab they own with no code, no keys and no consumer credential: they paste `https://mcp.molecule.xyz` into the app and approve the connection in the browser. Each app gets its own agent with its own wallet, which the scientist adds to the Lab as a Viewer or Contributor, flagged as an agent. What the agent uploads is attributed to its own wallet, like any other caller's writes. Walkthrough: [Connect your agent](../ai-tooling/agent-connect.md).
+
+**Migration:** None. This is an addition: the Labs API, its headers and its tokens are unchanged, and existing integrations are not affected.
 
 ## Related
 

@@ -21,19 +21,14 @@ Everything here runs against the **[sandbox](../sandbox.md)** (Base Sepolia, tes
 
 ## Choose how you'll call the API
 
-Three ways in. None is better than the others — pick by who is making the calls.
+Two ways in. Neither is better than the other — pick by who is making the calls.
 
 | If this is you | What you'll use | Start here |
 | -------------- | --------------- | ---------- |
 | **You're writing a script** in Node/TypeScript and want to see the raw calls | GraphQL requests plus [viem](https://viem.sh) for the one onchain step | [The tutorials](#the-tutorials) below |
-| **You run an AI coding agent** (Claude Code, Codex, Cursor) and want it to do the whole workflow for you | The Molecule Skill plugin, which wraps every network, onchain and crypto operation as a single tool call | [Molecule Skill](../../ai-tooling/molecule-skill.md) |
 | **You'd rather pay per call** than hold a long-lived credential | The x402 gateway, which settles USDC on Base per request | [x402 Gateway](../x402-gateway.md) |
 
-These combine rather than compete — choosing one now doesn't lock you out of the others. A common setup is the plugin for the workflow and x402 for the calls that cost money. Check out [Common Use Cases](../../use-cases.md) for the path through these docs for what you're building.
-
-### If you are an agent reading this
-
-Go to the [**Agent one-pager**](for-agents.md) instead. It is the whole default flow on a single page with no prose detours — written to be pasted into a system prompt.
+These combine rather than compete — choosing one now doesn't lock you out of the other. Check out [Common Use Cases](../../use-cases.md) for the path through these docs for what you're building.
 
 ***
 
@@ -45,9 +40,8 @@ Each one is runnable end to end against the sandbox, and shows the expected resp
 | -------- | ----------------------------- |
 | [**Create a lab and upload a public file**](create-lab-and-upload-file.md) — start here | A Lab of your own, with a public file in it |
 | [**Upload an encrypted file**](upload-encrypted-file.md) | A confidential file that only certain people that you specify can decrypt |
-| [**Agent access**](agent-as-a-lab-contributor.md) | An agent writing into a Lab that a human owns |
 
-All three open with the same configuration constants and helper functions, which live on one page: [**Shared Setup**](shared-setup.md). Copy that block once and every snippet in the tutorials runs against it.
+Both open with the same configuration constants and helper functions, which live on one page: [**Shared Setup**](shared-setup.md). Copy that block once and every snippet in the tutorials runs against it.
 
 ***
 
@@ -102,12 +96,6 @@ You do **not** need a pre-issued **service token** — it is proof that you cont
 
 ```bash
 npm install viem          # Node 18+ has fetch and node:crypto built in
-```
-
-Or, if you are using the Molecule Skill plugin, install [`mol-labs-plugin`](../../ai-tooling/molecule-skill.md#getting-the-plugin) and run `config_doctor` — it names exactly which configuration is still missing instead of letting a tool guess:
-
-```bash
-claude --plugin-dir /path/to/mol-labs-plugin
 ```
 
 ***

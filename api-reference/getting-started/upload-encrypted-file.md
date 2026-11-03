@@ -109,7 +109,7 @@ const ownerOnlyConditions = JSON.stringify([
 ]);
 ```
 
-**Owner or Contributor or Viewer** — the recipe to use when the lab has a team, and the one the contributor agent in [Agent access](agent-as-a-lab-contributor.md) needs. `hasRole` is hierarchical (`ROLE_VIEWER = 1`; a Contributor and the Owner both pass a Viewer check), and the explicit `isAuthorizedSignerForTba` branch keeps the Owner covered even if conditions are ever evaluated against a non-canonical chain:
+**Owner or Contributor or Viewer** — the recipe to use when the lab has a team. `hasRole` is hierarchical (`ROLE_VIEWER = 1`; a Contributor and the Owner both pass a Viewer check), and the explicit `isAuthorizedSignerForTba` branch keeps the Owner covered even if conditions are ever evaluated against a non-canonical chain:
 
 ```javascript
 const accessResolverAbi = {
@@ -194,7 +194,6 @@ const finishResult = await graphql(
     $uploadToken: String!
     $path: String!
     $accessLevel: String!
-    $changeBy: String!
     $encryptionMetadata: EncryptionMetadataInput
   ) {
     finishCreateOrUpdateFile(
@@ -202,7 +201,6 @@ const finishResult = await graphql(
       uploadToken: $uploadToken
       path: $path
       accessLevel: $accessLevel
-      changeBy: $changeBy
       encryptionMetadata: $encryptionMetadata
     ) {
       datasetId
@@ -216,7 +214,6 @@ const finishResult = await graphql(
     uploadToken,
     path: basename(filePath),
     accessLevel: "HOLDERS", // encrypted files use HOLDERS or ADMIN, not PUBLIC
-    changeBy: account.address,
     encryptionMetadata: {
       encryptionSystem, // echo verbatim — never hardcode
       encryptedDek,
@@ -568,8 +565,8 @@ async function main() {
   if (!putResponse.ok) throw new Error(`Upload failed: ${putResponse.status} ${putResponse.statusText}`);
 
   const finishResult = await graphql(
-    `mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!, $changeBy: String!, $encryptionMetadata: EncryptionMetadataInput) {
-      finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, changeBy: $changeBy, encryptionMetadata: $encryptionMetadata) {
+    `mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!, $encryptionMetadata: EncryptionMetadataInput) {
+      finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, encryptionMetadata: $encryptionMetadata) {
         datasetId version
         error { code message requestId retryable details }
       }
@@ -579,7 +576,6 @@ async function main() {
       uploadToken,
       path: basename(filePath),
       accessLevel: "HOLDERS",
-      changeBy: account.address,
       encryptionMetadata: {
         encryptionSystem,
         encryptedDek,
@@ -663,7 +659,7 @@ node upload-encrypted-file.js ./confidential-results.csv
 
 | | |
 | --- | --- |
-| Let an agent decrypt and contribute too | [Agent access](agent-as-a-lab-contributor.md) |
+| Give someone a role so they can decrypt | [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md#onchain-interface) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | How conditions are evaluated, in depth | [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) |
 

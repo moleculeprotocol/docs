@@ -4,7 +4,7 @@
 
 The Molecule Protocol provides programmatic APIs for building applications, integrations, and automated workflows on top of decentralized science infrastructure. These APIs enable developers to query project data, tokenize research, and manage research datarooms.
 
-> **New here? Start at [🚀 Getting Started](getting-started/README.md).** It explains what a Lab is, lists the two prerequisites, and walks a ten-minute quickstart that ends in a lab with a file in it. Agents: the [one-pager](getting-started/for-agents.md) is the whole default flow on one page.
+> **New here? Start at [🚀 Getting Started](getting-started/README.md).** It explains what a Lab is, lists the two prerequisites, and walks a ten-minute quickstart that ends in a lab with a file in it.
 
 ## API Areas
 
@@ -63,22 +63,6 @@ Pay-per-call HTTP 402 gateway that fronts a set of Labs API write mutations with
 
 ---
 
-### 🪄 Molecule Skill (agent plugin)
-
-Not an API surface of its own — the whole Labs workflow packaged as an agent skill plus a typed MCP server, so an AI coding agent runs it as tool calls instead of hand-written requests.
-
-**Purpose:**
-
-- Give Claude Code, Codex, or any MCP-capable harness the full Lab lifecycle in one plugin
-- Wrap every network, onchain, and cryptographic step as a single typed tool call
-- Settle paid mutations automatically through the x402 Gateway
-
-**Authentication:** Your `mol_` consumer credential, plus a wallet the plugin operates (Privy agentic wallet or raw EOA)
-
-[View Molecule Skill Documentation →](../ai-tooling/molecule-skill.md)
-
----
-
 ## Authentication
 
 All Molecule APIs require a consumer credential; the Labs API additionally uses a Service Token for write operations, which callers **issue for themselves** by signing a message with their wallet — no manual provisioning. Obtaining credentials, the per-API header requirements, and the full Labs API authentication model (public queries vs. protected mutations) are documented on the dedicated [Authentication](authentication.md) page.
@@ -107,9 +91,8 @@ The full quickstart — prerequisites, costs, and a ten-minute path to a lab wit
 | If you want to...                               | Go to                                                                                                |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Get from zero to a lab with a file in it        | [Getting Started](getting-started/README.md)                                                         |
-| Point an AI agent at this API                   | [Agent one-pager](getting-started/for-agents.md) · [Molecule Skill](../ai-tooling/molecule-skill.md) |
 | Upload files to a Lab dataroom                  | [Labs API](labs-api/README.md) · [Tutorials](getting-started/README.md)                              |
-| Let an agent write into a lab someone else owns | [Agent access](getting-started/agent-as-a-lab-contributor.md)                                        |
+| Let another wallet write into your Lab          | [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md#onchain-interface)             |
 | Tokenize a Lab into IP Tokens (IPTs)            | [Tokenization API](tokenization-api.md)                                                              |
 | Pay per call without a long-lived token         | [x402 Gateway](x402-gateway.md)                                                                      |
 | Handle errors and retries across every API      | [Errors](errors.md)                                                                                  |
@@ -144,9 +127,7 @@ If you encounter any issues or have questions about the APIs:
 
 - [Glossary](../references/glossary.md) — every Molecule term used in these docs, defined in a sentence
 - [Getting Started](getting-started/README.md) — prerequisites, costs, ten-minute quickstart
-- [Agent one-pager](getting-started/for-agents.md) — the default flow, paste-ready
 - [Getting the schema](getting-started/README.md#getting-the-schema) — introspection is off on the sandbox and production; the schema is published in these docs
-- [Molecule Skill](../ai-tooling/molecule-skill.md) — the agent plugin that drives this API
 - [Smart Contract Addresses](../references/contracts/)
 
 ---

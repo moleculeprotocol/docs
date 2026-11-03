@@ -133,7 +133,6 @@ mutation FinishFileUpload(
   $path: String
   $ref: String
   $accessLevel: String!
-  $changeBy: String!
   $description: String
   $tags: [String!]
   $categories: [String!]
@@ -145,7 +144,6 @@ mutation FinishFileUpload(
     path: $path
     ref: $ref
     accessLevel: $accessLevel
-    changeBy: $changeBy
     description: $description
     tags: $tags
     categories: $categories
@@ -176,13 +174,12 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation FinishFileUpload($oclId: String!, $uploadToken: String!, $path: String, $accessLevel: String!, $changeBy: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, changeBy: $changeBy, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { datasetId contentHash version message error { code message requestId retryable details } } }",
+    "query": "mutation FinishFileUpload($oclId: String!, $uploadToken: String!, $path: String, $accessLevel: String!, $description: String, $tags: [String!], $categories: [String!], $contentText: String) { finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, description: $description, tags: $tags, categories: $categories, contentText: $contentText) { datasetId contentHash version message error { code message requestId retryable details } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
       "uploadToken": "TOKEN_FROM_STEP_1",
       "path": "research-results.pdf",
       "accessLevel": "PUBLIC",
-      "changeBy": "0x1234567890123456789012345678901234567890",
       "description": "Q4 2024 Research Results",
       "tags": ["research", "results", "2024"],
       "categories": ["data"],
@@ -336,14 +333,12 @@ async function uploadFileToLabs(filePath, oclId, serviceToken) {
             $uploadToken: String!
             $path: String!
             $accessLevel: String!
-            $changeBy: String!
           ) {
             finishCreateOrUpdateFile(
               oclId: $oclId
               uploadToken: $uploadToken
               path: $path
               accessLevel: $accessLevel
-              changeBy: $changeBy
             ) {
               datasetId
               message
@@ -356,7 +351,6 @@ async function uploadFileToLabs(filePath, oclId, serviceToken) {
           uploadToken,
           path: filename,
           accessLevel: "PUBLIC",
-          changeBy: process.env.WALLET_ADDRESS,
         },
       }),
     });
@@ -401,7 +395,7 @@ if (require.main === module) {
 
   if (!filePath || !oclId || !serviceToken) {
     console.error(
-      'Usage: SERVICE_TOKEN="token" WALLET_ADDRESS="0x..." node upload.js <file> <ocl-id>',
+      'Usage: SERVICE_TOKEN="token" node upload.js <file> <ocl-id>',
     );
     process.exit(1);
   }
@@ -415,7 +409,7 @@ module.exports = { uploadFileToLabs };
 **Usage:**
 
 ```bash
-CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret" SERVICE_TOKEN="your-service-token" WALLET_ADDRESS="0x..." node upload.js data.pdf 0x0101000000000000000000000000000000000000000000000000000000000042
+CONSUMER_CREDENTIAL="mol_your-consumer-id_your-secret" SERVICE_TOKEN="your-service-token" node upload.js data.pdf 0x0101000000000000000000000000000000000000000000000000000000000042
 ```
 ---
 
@@ -457,7 +451,7 @@ mutation UpdateFileMetadata(
 }
 ```
 
-> **Note**: The `changeBy` field (wallet address) is automatically derived from your authentication and does not need to be provided as a parameter.
+> **Note**: Like every write on this page, the change is attributed to the authenticated caller and recorded as `did:ethr:` plus its EIP-55 checksummed wallet address. There is no address to send.
 
 **Example Request:**
 
@@ -489,8 +483,8 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
 **GraphQL Mutation:**
 
 ```graphql
-mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) {
-  deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) {
+mutation DeleteFile($oclId: String!, $path: String!) {
+  deleteDataRoomFile(oclId: $oclId, path: $path) {
     oclId
     filePath
     error {
@@ -514,11 +508,10 @@ curl -X POST https://production.graphql.api.molecule.xyz/graphql \
   -H 'Authorization: YOUR_CONSUMER_CREDENTIAL' \
   -H 'X-Service-Token: YOUR_SERVICE_TOKEN' \
   -d '{
-    "query": "mutation DeleteFile($oclId: String!, $path: String!, $changeBy: String!) { deleteDataRoomFile(oclId: $oclId, path: $path, changeBy: $changeBy) { oclId filePath error { code message requestId retryable details } } }",
+    "query": "mutation DeleteFile($oclId: String!, $path: String!) { deleteDataRoomFile(oclId: $oclId, path: $path) { oclId filePath error { code message requestId retryable details } } }",
     "variables": {
       "oclId": "0x0101000000000000000000000000000000000000000000000000000000000042",
-      "path": "old-data.pdf",
-      "changeBy": "0x1234567890123456789012345678901234567890"
+      "path": "old-data.pdf"
     }
   }'
 ```

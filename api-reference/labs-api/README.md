@@ -24,8 +24,7 @@ For every use case mapped to the page that covers it, see [Common Use Cases](../
 | --- | --- |
 | **First time here** | [🚀 Getting Started](../getting-started/README.md) — prerequisites, costs, ten-minute quickstart |
 | **A term here is unfamiliar** | [Glossary](../../references/glossary.md) — Lab, `oclId`, data room, service token, indexer |
-| **You want runnable code** | [Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md) · [Upload an encrypted file](../getting-started/upload-encrypted-file.md) · [Agent access](../getting-started/agent-as-a-lab-contributor.md) |
-| **You're an AI agent** | [Agent one-pager](../getting-started/for-agents.md), or drive this API through the [Molecule Skill](../../ai-tooling/molecule-skill.md) plugin |
+| **You want runnable code** | [Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md) · [Upload an encrypted file](../getting-started/upload-encrypted-file.md) |
 | **You want to pay per call** | [x402 Gateway](../x402-gateway.md) |
 
 ---
