@@ -9,8 +9,6 @@ icon: plug
 
 Agent Connect lets you work in your Lab from Claude, ChatGPT, Codex, Grok or Cursor: you paste one address into the app and approve the connection in your browser, with no keys and no scripts. The app gets its own agent, with its own wallet and a role on each Lab you connect it to.
 
-If you write code against the Labs API, or want an agent that holds its own keys and can create Labs, use [Getting Started](../api-reference/getting-started/README.md) or the [Molecule Skill](molecule-skill.md) instead.
-
 ## The address
 
 Paste this address into your app exactly as it is:
@@ -22,7 +20,7 @@ https://mcp.molecule.xyz
 Nothing goes after it: no `/mcp` and no trailing slash. Some apps' own instructions add `/mcp` to a server address; leave it out for Molecule.
 
 {% hint style="info" %}
-**Testing on Base Sepolia?** Use `https://staging.mcp.molecule.xyz` instead. It connects your app to Labs in the test app, [testnet.app.molecule.xyz](https://testnet.app.molecule.xyz), which runs on Base Sepolia with test funds only.
+**Want to try it first?** Use `https://sandbox.mcp.molecule.xyz` instead. It connects your app to Labs in the sandbox, [sandbox.app.molecule.xyz](https://sandbox.app.molecule.xyz), which runs on Base Sepolia with test funds only. Use test files only: what you put in the sandbox stays there.
 {% endhint %}
 
 ## Add Molecule to your app
@@ -185,10 +183,7 @@ Removing the connector in your app does not remove the agent's role on the Lab; 
 
 ## Related
 
-* [Which Tool Do I Need?](README.md): Agent Connect, MIRA and the Molecule Skill side by side
-* [Molecule Skill](molecule-skill.md): the plugin for agents that hold their own keys and create Labs
 * [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md): what Viewer and Contributor mean on a Lab
 * [Data Privacy & Access](../technical-deep-dive/data/data-privacy-and-access.md): how private files stay private
-* [Agent access](../api-reference/getting-started/agent-as-a-lab-contributor.md): the developer path, where you give an agent a role yourself
 
 {% include "../.gitbook/includes/support.md" %}
