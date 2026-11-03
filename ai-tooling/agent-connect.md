@@ -129,6 +129,8 @@ The link your app opens is valid for 15 minutes. After that, start again from yo
 * **Viewer** lists and reads the Lab's files, including private files that only members can open.
 * **Contributor** does the same and also uploads files, public or private.
 
+That is what the agent can do through Agent Connect. For everything each role allows on a Lab, see the [Capability Matrix](../technical-deep-dive/roles-and-permissions.md#capability-matrix) in Roles & Permissions.
+
 To change the role later, remove the agent in Members and connect again with the new role. It comes back as the same agent.
 
 Whatever the role, the name, description, tags and searchable text of a private file are public: only its contents are encrypted. And anyone can download a public file as soon as it is uploaded, so treat a public upload as published. Deleting it later does not take back copies already made.
