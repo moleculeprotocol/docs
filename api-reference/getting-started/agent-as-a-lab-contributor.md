@@ -128,7 +128,7 @@ Issuance is **not** gated on holding a role — any wallet can mint a token for 
 
 ## Step 4: The agent uploads
 
-From here the agent is an ordinary caller. Run [Step 4 of Create a lab and upload a public file](create-lab-and-upload-file.md#step-4-upload-the-file) with `changeBy: agentAccount.address`, or [Upload an encrypted file](upload-encrypted-file.md) for a confidential file — the `hasRole` branch of the team conditions is exactly what lets the agent decrypt too.
+From here the agent is an ordinary caller. Run [Step 4 of Create a lab and upload a public file](create-lab-and-upload-file.md#step-4-upload-the-file) with the agent's service token, or [Upload an encrypted file](upload-encrypted-file.md) for a confidential file — the `hasRole` branch of the team conditions is exactly what lets the agent decrypt too. Each write is attributed to the authenticated caller, here the agent, as `did:ethr:` plus its EIP-55 address; there is no address to send.
 
 Writes by a Contributor service token are gated per mutation, matching the Privy user path: `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `deleteDataRoomFile`, `updateFileMetadata` and `moveEntry` all accept Contributor. A few surfaces remain **Owner-only** and an agent Contributor cannot reach them: `updateLabNftMetadata`, `generateLabImageUploadUrl` and the legal-agreement mutations.
 
@@ -160,7 +160,7 @@ await withIndexerLagRetry(() => uploadFile(oclId, "./findings.csv"), { codes: ["
 
 ## Step 5: Verify from both sides
 
-**The agent** verifies as in [Step 5 of Create a lab and upload a public file](create-lab-and-upload-file.md#step-5-verify-it-worked) — the file is in `dataRoom.files` with `createdBy` set to the agent's address:
+**The agent** verifies as in [Step 5 of Create a lab and upload a public file](create-lab-and-upload-file.md#step-5-verify-it-worked) — the file is in `dataRoom.files` with `createdBy` set to `did:ethr:` plus the agent's address:
 
 ```javascript
 const verify = await graphql(
@@ -362,8 +362,8 @@ async function main() {
     if (!putResponse.ok) throw new Error(`Upload failed: ${putResponse.status}`);
 
     const finishResult = await graphql(
-      `mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!, $changeBy: String!) {
-        finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel, changeBy: $changeBy) {
+      `mutation Finish($oclId: String!, $uploadToken: String!, $path: String!, $accessLevel: String!) {
+        finishCreateOrUpdateFile(oclId: $oclId, uploadToken: $uploadToken, path: $path, accessLevel: $accessLevel) {
           datasetId
           error { code message requestId retryable details }
         }
@@ -373,7 +373,6 @@ async function main() {
         uploadToken,
         path: basename(filePath),
         accessLevel: "PUBLIC",
-        changeBy: agentAccount.address,
       },
     );
     assertOk(finishResult.finishCreateOrUpdateFile, "finishCreateOrUpdateFile");
@@ -396,7 +395,7 @@ async function main() {
   );
   if (!file) throw new Error("File not found in the data room");
   const attributed =
-    file.createdBy?.toLowerCase() === agentAccount.address.toLowerCase();
+    file.createdBy?.toLowerCase() === `did:ethr:${agentAccount.address}`.toLowerCase();
   console.log(
     "5/5 Verified:", file.path, file.accessLevel,
     attributed ? "— attributed to the agent" : `— createdBy: ${file.createdBy}`,
