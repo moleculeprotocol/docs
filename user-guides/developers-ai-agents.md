@@ -55,7 +55,7 @@ The simplest agent integration is read-only: query a Lab's data room for files, 
 
 A write-enabled agent goes further: it reads data, performs analysis, and writes results back as new files in the Lab's data room. This requires both a consumer credential and a service token. Two paths to a service token:
 
-* **Long-lived service token** — the agent mints its own via the `generateServiceToken` mutation, by signing a message with its wallet (a Privy session works too). No provisioning request. The token is a JWT tied to that wallet; write authorization is resolved per request from the wallet's onchain role on the target Lab. Content writes need **Contributor**. The end-to-end version — agent wallet, human grants the role, agent self-issues and uploads — is [Agent access](../api-reference/getting-started/agent-as-a-lab-contributor.md).
+* **Long-lived service token** — the agent mints its own via the `generateServiceToken` mutation, by signing a message with its wallet (a Privy session works too). No provisioning request. The token is a JWT tied to that wallet; write authorization is resolved per request from the wallet's onchain role on the target Lab. Content writes need **Contributor**. The Lab owner grants that role onchain with `grantRole`: see [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md#onchain-interface).
 * **Pay-per-call via the** [**x402 Gateway**](../api-reference/x402-gateway.md) — for agents that serve external users, charge per request, or don't have pre-provisioned credentials. The gateway settles a USDC payment on Base per call and mints a short-lived (default 5-minute) service token scoped to one mutation. Available for `initiateCreateOrUpdateFile`, `finishCreateOrUpdateFile`, `createLab`, `generateDataEncryptionKey`, and `decryptDataKey`.
 
 The three-step upload flow (initiate, PUT, finalize) lets you write any file type with metadata including descriptions, tags, categories, and searchable content text. If the file should be confidential, first request a key via `generateDataEncryptionKey` — the backend returns a one-shot plaintext DEK (plus its encrypted form) you use to encrypt locally before upload, attaching the encryption metadata on finish. Every file the agent writes becomes a permanent, versioned record in the Lab's history.
@@ -88,8 +88,6 @@ If you're building a smart contract module, start with the poc-protocol-modular-
 
 If you're building an AI research agent, start with BioAgents. Fork the repository, configure your LLM providers, and connect it to a Lab's data room via the Labs API. The /api/deep-research route gives you a working multi-agent research pipeline out of the box.
 
-If you want an AI coding agent to run the whole Lab workflow for you, install the [Molecule Skill](../ai-tooling/molecule-skill.md) plugin — the skill plus MCP server that wraps every network, onchain and cryptographic step as one typed tool call.
-
 If you only want Claude, ChatGPT or another chat app to read and add files in a Lab you own, you need no code at all: see [Connect your agent](../ai-tooling/agent-connect.md).
 
 Service tokens are self-issued, and every endpoint, gateway URL and contract address is published — see [Getting Started](../api-reference/getting-started/README.md). Consumer credentials are created on the **API credentials** page of the Labs app — see [Getting Started](../api-reference/getting-started/README.md#a-consumer-credential). Reach out on the [Molecule Discord](https://t.co/L0VEiy4Bjk) for a module attestation request or any integration support.
@@ -97,8 +95,8 @@ Service tokens are self-issued, and every endpoint, gateway URL and contract add
 ### Related
 
 * [Getting Started](../api-reference/getting-started/README.md) — prerequisites, costs and a ten-minute quickstart
-* [Agent access](../api-reference/getting-started/agent-as-a-lab-contributor.md) — give an agent its own role and token
-* [Molecule Skill](../ai-tooling/molecule-skill.md) — the agent plugin that runs the whole Lab workflow
+* [Connect your agent](../ai-tooling/agent-connect.md) — let Claude, ChatGPT or another chat app work in a Lab, with no code
+* [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md) — grant an agent's wallet a role on a Lab
 * [Executor Modules](../technical-deep-dive/module-registry/executor-modules.md) — how agents transact from a Lab's account
 
 {% include "../.gitbook/includes/support.md" %}

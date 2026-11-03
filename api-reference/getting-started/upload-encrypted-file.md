@@ -109,7 +109,7 @@ const ownerOnlyConditions = JSON.stringify([
 ]);
 ```
 
-**Owner or Contributor or Viewer** — the recipe to use when the lab has a team, and the one the contributor agent in [Agent access](agent-as-a-lab-contributor.md) needs. `hasRole` is hierarchical (`ROLE_VIEWER = 1`; a Contributor and the Owner both pass a Viewer check), and the explicit `isAuthorizedSignerForTba` branch keeps the Owner covered even if conditions are ever evaluated against a non-canonical chain:
+**Owner or Contributor or Viewer** — the recipe to use when the lab has a team. `hasRole` is hierarchical (`ROLE_VIEWER = 1`; a Contributor and the Owner both pass a Viewer check), and the explicit `isAuthorizedSignerForTba` branch keeps the Owner covered even if conditions are ever evaluated against a non-canonical chain:
 
 ```javascript
 const accessResolverAbi = {
@@ -659,7 +659,7 @@ node upload-encrypted-file.js ./confidential-results.csv
 
 | | |
 | --- | --- |
-| Let an agent decrypt and contribute too | [Agent access](agent-as-a-lab-contributor.md) |
+| Give someone a role so they can decrypt | [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md#onchain-interface) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | How conditions are evaluated, in depth | [Data Privacy & Access](../../technical-deep-dive/data/data-privacy-and-access.md) |
 

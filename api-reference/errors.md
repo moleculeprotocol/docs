@@ -225,7 +225,7 @@ An HTTP `401` instead of `UNAUTHENTICATED` means the consumer credential was rej
 **`UNAUTHORIZED`** — the wallet behind the service token lacks the required role on the lab:
 
 - Check the wallet's role with the public `listLabMembers(oclId)` query. Content writes (uploads, metadata, moves, deletes) need **Contributor**; `createLab` and the LabNFT-metadata mutations need **Owner**
-- Not the right role? The lab owner grants one onchain — see [Agent access](getting-started/agent-as-a-lab-contributor.md)
+- Not the right role? The lab owner grants one onchain — see [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md#onchain-interface)
 - **Just granted the role?** Role state reaches the API through an event indexer, so a write can still return `UNAUTHORIZED` for a few seconds after the grant confirms onchain. Retry with backoff; re-issuing the token does not help
 - **`details.reason` is `INTERNAL_FIELD`?** The request selects, filters or sorts by a field that isn't part of the public API, and `details.fields` lists them. Nothing was read. Remove those fields from the query; if your integration needs one, ask Molecule for access. This check only logs today and refuses nothing; enforcement will be announced in the [API Changelog](changelog.md)
 
@@ -418,6 +418,5 @@ Codes may be added over time, and each addition is published in the [API Changel
 - [Rate & Query Limits](rate-limits.md) — the budgets and query limits behind `RATE_LIMITED`, `COMPLEXITY_LIMIT_EXCEEDED` and `QueryDepthLimitReached`
 - [API Types](types.md) — the full `ApiError` and `EvmTokenizationError` definitions
 - [API Changelog & Migration](changelog.md) — new codes, and the `details.reason` values under each
-- [Agent one-pager](getting-started/for-agents.md) — the error contract condensed for agents
 
 {% include "../.gitbook/includes/support.md" %}

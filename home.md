@@ -17,7 +17,7 @@ layout:
 
 # Molecule Docs
 
-Molecule is the infrastructure for recording, tokenizing and funding scientific research. Create a **Lab** — a research project with its own onchain identity and file store — then read and write its data from code, or hand the whole workflow to an AI agent.
+Molecule is the infrastructure for recording, tokenizing and funding scientific research. Create a **Lab** — a research project with its own onchain identity and file store — then read and write its data from code, or let Claude, ChatGPT or another chat app work in it.
 
 <a href="api-reference/getting-started/README.md" class="button primary" data-icon="rocket">Get started</a> <a href="use-cases.md" class="button secondary" data-icon="list-check">I want to…</a> <a href="README.md" class="button secondary" data-icon="microscope">Why Molecule?</a>
 
@@ -25,7 +25,7 @@ Molecule is the infrastructure for recording, tokenizing and funding scientific 
 
 ## What do you want to do?
 
-<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>Publish data from a pipeline</strong></td><td>Push results from instruments, pipelines or CI into a Lab automatically.</td><td><a href="use-cases.md#publish-research-data-from-a-pipeline">use-cases.md</a></td></tr><tr><td><strong>Give an AI agent access</strong></td><td>Let an agent read a Lab, run its analysis and write findings back.</td><td><a href="use-cases.md#give-an-ai-agent-access-to-a-lab">use-cases.md</a></td></tr><tr><td><strong>Tokenize and fund</strong></td><td>Turn a Lab into a token and raise funding for it.</td><td><a href="use-cases.md#tokenize-a-lab-and-raise-funding">use-cases.md</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>Publish data from a pipeline</strong></td><td>Push results from instruments, pipelines or CI into a Lab automatically.</td><td><a href="use-cases.md#publish-research-data-from-a-pipeline">use-cases.md</a></td></tr><tr><td><strong>Connect your agent</strong></td><td>Let Claude, ChatGPT or another chat app read and add files in your Lab.</td><td><a href="ai-tooling/agent-connect.md">agent-connect.md</a></td></tr><tr><td><strong>Tokenize and fund</strong></td><td>Turn a Lab into a token and raise funding for it.</td><td><a href="use-cases.md#tokenize-a-lab-and-raise-funding">use-cases.md</a></td></tr></tbody></table>
 
 Every other use case, from sharing confidential data to building modules, is on [Common Use Cases](use-cases.md).
 
@@ -35,7 +35,7 @@ Every other use case, from sharing confidential data to building modules, is on 
 
 ## Interact with our API
 
-<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>🚀 Getting Started</strong></td><td>A ten-minute path from zero to a Lab with a file in it, on testnet.</td><td><a href="api-reference/getting-started/README.md">README.md</a></td></tr><tr><td><strong>🤖 For Agents</strong></td><td>The whole default flow on one page, ready to paste into a system prompt.</td><td><a href="api-reference/getting-started/for-agents.md">for-agents.md</a></td></tr><tr><td><strong>📡 API Reference</strong></td><td>Labs, Tokenization and x402 APIs — endpoints, types and changelog.</td><td><a href="api-reference/README.md">README.md</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>🚀 Getting Started</strong></td><td>A ten-minute path from zero to a Lab with a file in it, on testnet.</td><td><a href="api-reference/getting-started/README.md">README.md</a></td></tr><tr><td><strong>📡 API Reference</strong></td><td>Labs, Tokenization and x402 APIs — endpoints, types and changelog.</td><td><a href="api-reference/README.md">README.md</a></td></tr></tbody></table>
 
 ## From the blog
 

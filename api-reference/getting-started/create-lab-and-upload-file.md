@@ -348,7 +348,7 @@ Keep `datasetId` — it is the file's stable identifier for later reads and upda
 | Symptom | Cause | Fix |
 | ------- | ----- | --- |
 | `initiate` → `NOT_FOUND`, "Project 0x… does not exist" | The mint is not indexed yet. `createLab` can succeed before this is true, so a successful Step 3 is no guarantee | Retry with backoff — `withIndexerLagRetry` above. Usually seconds; observed up to ~4 minutes under indexer backlog. Do **not** re-run `createLab`, which returns `CONFLICT` once registered |
-| `initiate` → `UNAUTHORIZED` | The wallet behind the token has no write role on this lab | You must be Owner or Contributor. See [Agent access](agent-as-a-lab-contributor.md) |
+| `initiate` → `UNAUTHORIZED` | The wallet behind the token has no write role on this lab | You must be Owner or Contributor. See the [Capability Matrix](../../technical-deep-dive/roles-and-permissions.md#capability-matrix) |
 | `PUT` → `403` | URL expired (~15 min), or headers altered | Re-run `initiate`; send the returned `headers` verbatim |
 | `PUT` → `400`/`411` | Body wasn't sent as raw bytes | Send the buffer, not a JSON wrapper. In curl: `--data-binary` |
 | `finish` → `VALIDATION_FAILED`, `details.field: "path"` | `path` contains an underscore, or both `path` and `ref` were sent | Underscores are not allowed in `path`; use `path` for a new file **or** `ref` for a new version, never both |
@@ -640,7 +640,7 @@ node create-lab-and-upload-file.js ./research-data.csv
 | | |
 | --- | --- |
 | Make the next file confidential | [Upload an encrypted file](upload-encrypted-file.md) |
-| Let an agent write into this lab | [Agent access](agent-as-a-lab-contributor.md) |
+| Let another wallet write into this lab | [Roles & Permissions](../../technical-deep-dive/roles-and-permissions.md#onchain-interface) |
 | Run it against mainnet | [Running in Production](README.md#running-in-production) |
 | Per-operation reference | [Files](../labs-api/files.md) · [Lab Management](../labs-api/lab-management.md) |
 
