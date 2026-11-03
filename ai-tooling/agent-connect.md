@@ -105,10 +105,6 @@ Add the server to `~/.cursor/mcp.json` (every project) or `.cursor/mcp.json` (th
 
 Then open Cursor's **Customize** page, where `molecule` is listed, and sign in when Cursor asks.
 
-{% hint style="warning" %}
-**Not live yet:** Cursor has not been tested against Molecule. Depending on how Cursor's desktop app signs in, the Molecule page may show it as an unverified app rather than as Cursor.
-{% endhint %}
-
 ## Approve the connection
 
 {% hint style="warning" %}
@@ -158,10 +154,6 @@ In a chat app, the assistant writes the file into its request to Molecule, so an
 * **A file attached to a ChatGPT conversation:** the assistant can upload it, public or private, up to 25 MB.
 * **A larger private file from any other app:** upload it in the Molecule app.
 * **A file attached to the conversation in any other app:** not supported. Ask the assistant to write the file out instead, or upload it in the Molecule app.
-
-{% hint style="warning" %}
-**Not live yet:** uploading a ChatGPT attachment has not been tested yet.
-{% endhint %}
 
 ## Disconnecting
 
