@@ -243,7 +243,7 @@ On every request, the API resolves what the token's wallet may do on the lab nam
 * **A role granted after the token was issued takes effect without re-issuing it.** Likewise a revoked role stops the token on that lab immediately, while leaving it valid elsewhere.
 * **A token for a wallet with no role authenticates but cannot write.** You will see `UNAUTHENTICATED` become `UNAUTHORIZED`: the caller is known, just not permitted.
 
-This is why an agent can be handed access to a lab it does not own — the human grants the agent's wallet a role, and the agent's own token starts working on that lab. See [Agent access](getting-started/agent-as-a-lab-contributor.md).
+This is why an agent can be handed access to a lab it does not own — the human grants the agent's wallet a role, and the agent's own token starts working on that lab. The grant itself is onchain: see [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md#onchain-interface).
 
 > Because role state reaches the API through an event indexer, there is a short window after a role grant confirms onchain in which a write can still return `UNAUTHORIZED`. Retry with backoff; re-issuing the token does not help.
 
@@ -263,7 +263,7 @@ A working integration has up to three addresses in play at once, and they are no
 Two failure modes this prevents:
 
 * **Passing the owner's address where the OCL account belongs** in `accessControlConditions`. Condition evaluation **fails closed**, so the file uploads fine and then nobody can decrypt it — with no error saying why. The `account` argument wants `labAccountAddress`; `:userAddress` is substituted with the caller's wallet automatically.
-* **Expecting the agent to inherit the human's reach.** The agent authenticates as itself, so its permissions come from its own grant. That is the point — the human never hands over a key — and it is why a few Owner-only mutations stay out of reach. Walkthrough: [Agent access](getting-started/agent-as-a-lab-contributor.md).
+* **Expecting the agent to inherit the human's reach.** The agent authenticates as itself, so its permissions come from its own grant. That is the point — the human never hands over a key — and it is why a few Owner-only mutations stay out of reach.
 
 #### `oclId` is not a wallet address
 
@@ -323,7 +323,6 @@ Which path to choose: use a Service Token for unattended callers (backends, bots
 
 * [Service Tokens](labs-api/service-tokens.md) — issue, extend and revoke tokens
 * [Getting Started](getting-started/README.md) — the two things you need before your first call
-* [Agent access](getting-started/agent-as-a-lab-contributor.md) — an agent with its own wallet and token
 * [Roles & Permissions](../technical-deep-dive/roles-and-permissions.md) — what each onchain role can do
 * [x402 Gateway](x402-gateway.md) — pay per call instead of holding a token
 

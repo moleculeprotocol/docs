@@ -7,9 +7,9 @@ icon: code
 
 # Shared Setup
 
-**Every tutorial in this section starts from the code on this page.** Creating a lab, uploading a file, encrypting and decrypting a file and adding an agent as a collaborator all assume the constants and helper functions below are already defined — their snippets call `graphql()`, `assertOk()` and `withIndexerLagRetry()` without redefining them, and read `GRAPHQL_URL`, `CHAIN`, `FACTORY_ADDRESS` and the rest from here. Copy this block into your script once, then follow whichever tutorial you need.
+**Every tutorial in this section starts from the code on this page.** Creating a lab, uploading a file, and encrypting and decrypting a file all assume the constants and helper functions below are already defined — their snippets call `graphql()`, `assertOk()` and `withIndexerLagRetry()` without redefining them, and read `GRAPHQL_URL`, `CHAIN`, `FACTORY_ADDRESS` and the rest from here. Copy this block into your script once, then follow whichever tutorial you need.
 
-You do not have to copy it by hand if you only want to run one tutorial end to end: the **complete script** at the bottom of each tutorial page carries all of this inline and runs standalone. This page exists so the shared parts are documented and maintained in one place instead of three.
+You do not have to copy it by hand if you only want to run one tutorial end to end: the **complete script** at the bottom of each tutorial page carries all of this inline and runs standalone. This page exists so the shared parts are documented and maintained in one place instead of two.
 
 Everything here targets **staging** (Base Sepolia, testnet funds). To point the same code at mainnet, replace the constants using the table in [Running in Production](README.md#running-in-production) — nothing else changes, because every step reads from these constants.
 
@@ -120,7 +120,7 @@ async function withIndexerLagRetry(
 | `graphql(query, variables)` | POSTs to the API with `Authorization` always set and `X-Service-Token` added once Step 1 has issued one | Every GraphQL call |
 | `parseDetails(details)` | Reads `error.details` tolerantly — it arrives as an object, a JSON string, or a doubly-encoded JSON string | Inside `assertOk`; also useful when you branch on `details.reason` yourself |
 | `assertOk(result, op)` | Turns an in-band mutation `error` into a thrown error carrying the catalogue `code` and the `requestId` | After every mutation |
-| `withIndexerLagRetry(fn)` | Retries a call that failed only because onchain state has not been indexed yet | [Step 4 of Create a lab and upload a public file](create-lab-and-upload-file.md#step-4-upload-the-file) (after a mint) and [Step 4 of Agent access](agent-as-a-lab-contributor.md#step-4-the-agent-uploads) (after a role grant) |
+| `withIndexerLagRetry(fn)` | Retries a call that failed only because onchain state has not been indexed yet | [Step 4 of Create a lab and upload a public file](create-lab-and-upload-file.md#step-4-upload-the-file) (after a mint). The first write after a role grant needs it too |
 
 ***
 
@@ -132,7 +132,6 @@ async function withIndexerLagRetry(
 | What every term used here means | [Glossary](../../references/glossary.md) |
 | Create a lab and upload a public file | [Create a lab and upload a public file](create-lab-and-upload-file.md) |
 | Upload an encrypted file | [Upload an encrypted file](upload-encrypted-file.md) |
-| Give your agent access to a lab | [Agent access](agent-as-a-lab-contributor.md) |
 | Run the same code against mainnet | [Running in Production](README.md#running-in-production) |
 
 {% include "../../.gitbook/includes/support.md" %}

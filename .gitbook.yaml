@@ -3,3 +3,8 @@ root: ./
 structure:
   readme: home.md
   summary: SUMMARY.md
+
+redirects:
+  api-reference/getting-started/for-agents: api-reference/getting-started/README.md
+  api-reference/getting-started/agent-as-a-lab-contributor: ai-tooling/agent-connect.md
+  ai-tooling/molecule-skill: ai-tooling/agent-connect.md

@@ -20,6 +20,8 @@ For a workflow that already runs on scripts or AI agents, the same Lab is reacha
 
 Both pathways carry the same security and access rules, so working through the API never changes who can see what.
 
+A researcher who works in a chat app such as Claude or ChatGPT can also [connect it to the Lab](../ai-tooling/agent-connect.md) from the browser, with no code and no keys, and choose what the app's agent may do there.
+
 ### Storing and Sharing Research
 
 Files are encrypted before they reach Molecule's servers, and only named people can open them, giving a researcher the ease of a cloud drive with security a drive does not provide. Access is set per file, so raw data can be shared publicly to build credibility while premium datasets and sensitive pre-publication results stay gated until the researcher chooses to release them. The Lab carries a public reporting surface alongside the confidential workspace, and the owner decides what stays private and what becomes visible. Collaborators join as a contributor or viewer.&#x20;

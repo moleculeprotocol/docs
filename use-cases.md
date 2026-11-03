@@ -15,8 +15,7 @@ New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossa
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
 | Push data from instruments, pipelines or CI into a Lab       | [Publish research data from a pipeline](#publish-research-data-from-a-pipeline)           |
 | Keep files confidential but readable by chosen collaborators | [Share confidential data with collaborators](#share-confidential-data-with-collaborators) |
-| Let an AI agent read and write into a Lab I own              | [Give an AI agent access to a Lab](#give-an-ai-agent-access-to-a-lab)                     |
-| Have my coding agent do the whole Lab workflow for me        | [Let a coding agent run the workflow](#let-a-coding-agent-run-the-workflow)               |
+| Connect Claude, ChatGPT or another chat app to my Lab        | [Connect your agent](ai-tooling/agent-connect.md)                                         |
 | Show Labs, files and activity in my own app                  | [Build a dashboard over Lab data](#build-a-dashboard-over-lab-data)                       |
 | Turn a Lab into a token and fund the research                | [Tokenize a Lab and raise funding](#tokenize-a-lab-and-raise-funding)                     |
 | Offer a service that writes to Labs and pays per call        | [Run a pay-per-call agent service](#run-a-pay-per-call-agent-service)                     |
@@ -31,7 +30,7 @@ New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossa
 **For:** research teams with instruments, analysis pipelines or CI jobs that produce data. **Uses:** Labs API, a dedicated pipeline wallet, a service token.
 
 1. **Get a Lab and a credential.** Create a `mol_` consumer credential and a Lab in the [Molecule app](user-guides/scientists-researchers.md#creating-a-lab), or [create the Lab from code](api-reference/getting-started/create-lab-and-upload-file.md). See [Prerequisites](api-reference/getting-started/README.md#prerequisites).
-2. **Give the pipeline its own wallet.** Uploading files needs the **Contributor** role, so the Lab owner grants it to the pipeline wallet. The [Agent access](api-reference/getting-started/agent-as-a-lab-contributor.md) tutorial shows the grant. It works the same for a bot as for an agent.
+2. **Give the pipeline its own wallet.** Uploading files needs the **Contributor** role, so the Lab owner grants it to the pipeline wallet. Grant it from the app ([How Invites Work in the App](technical-deep-dive/roles-and-permissions.md#how-invites-work-in-the-app)) or onchain with `grantRole` ([Onchain Interface](technical-deep-dive/roles-and-permissions.md#onchain-interface)).
 3. **Have the pipeline issue its own service token.** It signs a message with its wallet, so no human is involved. Choose `expiresIn` to fit the job (the default is 180 days), and renew it with `extendServiceToken` before it expires. See [Service Tokens](api-reference/labs-api/service-tokens.md).
 4. **Upload each result.** Uploading is three steps: initiate, PUT, finish. Set `tags`, `categories` and `contentText` on each file so it can be found through `searchLabs`. See [Files](api-reference/labs-api/files.md) and [Metadata Best Practices](api-reference/labs-api/README.md#metadata-best-practices).
 5. **Plan for failures and limits.** Retry only when `retryable` is `true`, and log each `requestId`. Keep batch sizes within the [Rate & Query Limits](api-reference/rate-limits.md). See [Errors](api-reference/errors.md#retrying).
@@ -47,30 +46,6 @@ New to the terms (Lab, `oclId`, service token)? The [Glossary](references/glossa
 3. **Grant roles to the people who should read it.** **Viewer** can decrypt. **Contributor** can also upload. Grant roles from the app ([How Invites Work in the App](technical-deep-dive/roles-and-permissions.md#how-invites-work-in-the-app)) or onchain with `grantRole`. You can set an expiry on each grant. See the [Capability Matrix](technical-deep-dive/roles-and-permissions.md#capability-matrix).
 4. **Collaborators decrypt with their own wallet.** `decryptDataKey` returns the key only if their role is still active. See [Verify by decrypting it](api-reference/getting-started/upload-encrypted-file.md#step-5-verify-by-decrypting-it).
 5. **Revoke access when it should end.** `revokeRole` takes effect on the next decrypt. See [AccessResolver](references/contracts/accessresolver.md).
-
-## Give an AI agent access to a Lab
-
-**What you end up with:** an AI agent with its own wallet and its own time-limited role on a Lab that a human owns. It reads the Lab's data, runs its analysis and writes findings back as new files.
-
-**For:** teams running research agents, such as [BioAgents](user-guides/developers-ai-agents.md#building-with-bioagents), on real Lab data. **Uses:** Labs API, `AccessResolver.grantRole` with `isAgent = true`, a service token the agent issues itself.
-
-1. **The agent reports its wallet address, and the owner grants a role.** Grant **Viewer** for read-only access and **Contributor** if the agent writes back. Set `isAgent = true` and an expiry that matches the agent's session. See [Agent access](api-reference/getting-started/agent-as-a-lab-contributor.md).
-2. **The agent issues its own service token**, with a lifetime that matches its role grant. See [Step 3 of Agent access](api-reference/getting-started/agent-as-a-lab-contributor.md#step-3-the-agent-self-issues-a-service-token).
-3. **The agent reads, analyses and writes back.** It lists files with `labWithDataRoomAndFiles`, decrypts what its role allows, and uploads its results. The [Agent one-pager](api-reference/getting-started/for-agents.md) puts the whole flow on one page, ready to paste into the agent's system prompt.
-4. **Revoke access when the job is done**, or let the grant expire. See [Revoking the agent](api-reference/getting-started/agent-as-a-lab-contributor.md#revoking-the-agent).
-
-For the design behind this, see [Deploying an AI Research Agent](user-guides/developers-ai-agents.md#deploying-an-ai-research-agent).
-
-## Let a coding agent run the workflow
-
-**What you end up with:** Claude Code, Codex, Cursor or another agent tool that creates Labs, uploads public or encrypted files and manages roles when you ask it to, without you writing API calls.
-
-**For:** developers and scientists who would rather describe the task than script it. **Uses:** the Molecule Skill plugin (a skill plus a local MCP server), with x402 for paid calls.
-
-1. **Check it's the right tool.** The Skill is for agents that _act_ on Labs. To chat about Molecule instead, use MIRA. See [Which Tool Do I Need?](ai-tooling/README.md)
-2. **Install the plugin and choose a wallet backend.** See [Getting the Plugin](ai-tooling/molecule-skill.md#getting-the-plugin) and [Wallet Backends](ai-tooling/molecule-skill.md#wallet-backends).
-3. **Configure the environment.** Set staging or production, your `mol_` credential, and fund the wallet with gas and USDC for x402. See [Configuration](ai-tooling/molecule-skill.md#configuration).
-4. **Ask for the outcome.** For example: "Create a Lab and upload `results.csv` encrypted." The agent works through the Skill's phases one after another. See [What the Skill Does](ai-tooling/molecule-skill.md#what-the-skill-does).
 
 ## Build a dashboard over Lab data
 
