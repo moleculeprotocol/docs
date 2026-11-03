@@ -69,10 +69,6 @@ OpenAI's guide: [Add custom MCP server](https://developers.openai.com/api/docs/g
 
 In a chat, type `@` and pick Molecule. If your workspace does not let you add a custom server, ask its admin.
 
-{% hint style="warning" %}
-**Not live yet:** ChatGPT has not been tested against Molecule yet, so these steps are not confirmed. That includes whether ChatGPT opens the browser window when you install the plugin or the first time you use it.
-{% endhint %}
-
 ### Codex
 
 Add the server, then sign in. OpenAI's guide: [Model Context Protocol in Codex](https://learn.chatgpt.com/docs/extend/mcp?surface=cli).
@@ -84,10 +80,6 @@ codex mcp login molecule
 
 The Codex CLI, the IDE extension and the ChatGPT desktop app share this setting. To Molecule, Codex and ChatGPT are different apps, so each gets its own agent.
 
-{% hint style="warning" %}
-**Not live yet:** Codex has not been tested against Molecule yet, so these steps are not confirmed.
-{% endhint %}
-
 ### grok.com
 
 xAI's guide: [Connectors](https://docs.x.ai/grok/connectors).
@@ -96,10 +88,6 @@ xAI's guide: [Connectors](https://docs.x.ai/grok/connectors).
 2. Enter the address and complete the sign-in.
 
 On a Business or Enterprise team, an admin may have to add the connector first.
-
-{% hint style="warning" %}
-**Not live yet:** grok.com has not been tested against Molecule yet, so these steps are not confirmed.
-{% endhint %}
 
 ### Cursor
 
@@ -122,6 +110,10 @@ Then open Cursor's **Customize** page, where `molecule` is listed, and sign in w
 {% endhint %}
 
 ## Approve the connection
+
+{% hint style="warning" %}
+**Firefox is not supported yet.** Connecting does not work in Firefox. Use another browser, such as Chrome, for this step.
+{% endhint %}
 
 When your app opens the browser window:
 
