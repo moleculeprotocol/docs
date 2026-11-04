@@ -34,7 +34,7 @@ These combine rather than compete — choosing one now doesn't lock you out of t
 
 ## The tutorials
 
-Each one is runnable end to end against the sandbox, and shows the expected response and the failure modes at every step.
+Each one walks through the whole flow on the sandbox, with an example response and the failure modes at every step.
 
 | Tutorial | What you have when you finish |
 | -------- | ----------------------------- |
@@ -144,7 +144,7 @@ The second check is visual — the lab has a page of its own, at `/labs/<slug>`:
 | Sandbox | `https://sandbox.app.molecule.xyz/labs/<slug>` |
 | Production | `https://app.molecule.xyz/labs/<slug>` |
 
-Until the lab is renamed, that slug is **`lab-<tokenId>`**, built from the `labNftTokenId` that `createLab` returns — so a lab you have just created is at `.../labs/lab-1274`. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name, and the `lab-<tokenId>` form stops resolving.
+Until the lab is renamed, that slug is **`lab-<tokenId>`**, built from the `labNftTokenId` that `createLab` returns — so a lab you have just created is at `.../labs/lab-7`. You need to be signed in to the Labs app to open it. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name, and the `lab-<tokenId>` form stops resolving.
 
 Do not build this URL from `oclId`. It identifies the lab in API calls, it is not a page slug, and it does not resolve here.
 

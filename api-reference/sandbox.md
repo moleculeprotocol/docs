@@ -26,7 +26,7 @@ Because it mirrors production, code that works on the sandbox works on productio
 
 The sandbox contract set — factory, LabNFT, AccessResolver, tokenizer and the rest — is on [Supported Networks & Contracts](../references/contracts/README.md).
 
-**Agent Connect** is the MCP server an AI host (Claude, ChatGPT, Codex, Cursor) connects to in order to act in a lab as an agent its owner approved. To try it against a sandbox lab, add `https://sandbox.mcp.molecule.xyz` to your host as a remote MCP server; the host is sent to the sandbox authorization server to sign in.
+To try [Agent Connect](../ai-tooling/agent-connect.md) against a sandbox lab, paste `https://sandbox.mcp.molecule.xyz` into your app instead of the production address.
 
 ***
 
@@ -69,7 +69,7 @@ The sandbox has a public demo lab you can query straight away, before you create
 | ----- | ----- |
 | Name | Schrödinger's Catnip Lab |
 | `shortname` | `schrodingers-catnip-lab` |
-| Lab page | [sandbox.app.molecule.xyz/labs/schrodingers-catnip-lab](https://sandbox.app.molecule.xyz/labs/schrodingers-catnip-lab) |
+| Lab page | [sandbox.app.molecule.xyz/labs/schrodingers-catnip-lab](https://sandbox.app.molecule.xyz/labs/schrodingers-catnip-lab) (sign in to the sandbox Labs app first) |
 | `oclId` | `0x0101000000000000000000000064fc5fc7134a36be03b7bc56a852abf996dc33` |
 | `labNftTokenId` | `0` |
 | Public file | `/preprints/catnip-superposition-preprint-v1.pdf` |

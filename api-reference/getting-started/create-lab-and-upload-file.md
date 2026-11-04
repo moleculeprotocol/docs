@@ -150,7 +150,7 @@ const labAccountAddress = identity.args.account;
 
 ```
 oclId:              0x0101000000000000000000000000abc…  (32-byte hex)
-tokenId:            1274
+tokenId:            7
 labAccountAddress:  0x… (the ERC-6551 Token Bound Account)
 ```
 
@@ -187,9 +187,9 @@ assertOk(createLabResult.createLab, "createLab");
       "error": null,
       "lab": {
         "oclId": "0x0101000000000000000000000000abc…",
-        "shortname": "lab-1274",
+        "shortname": "lab-7",
         "labAccountAddress": "0x…",
-        "labNftTokenId": "1274"
+        "labNftTokenId": "7"
       }
     }
   }
@@ -387,7 +387,7 @@ Your file is in `dataRoom.files` with `accessLevel: "PUBLIC"` and `version: 1`. 
 
 If `labWithDataRoomAndFiles` comes back `null`, the lab is not registered: Step 3 didn't complete. This is one of only two nullable queries on the Labs API, so a missing lab nulls the field instead of throwing.
 
-The second check is visual. The lab has a page at `${LAB_APP_URL}/labs/<slug>`. Until the lab is renamed, that slug is `lab-<labNftTokenId>` — the token id `createLab` returned in Step 3 — so a lab you have just created is at `https://sandbox.app.molecule.xyz/labs/lab-1274` on the sandbox. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name and the `lab-<tokenId>` form stops resolving. `oclId` does not work here.
+The second check is visual. The lab has a page at `${LAB_APP_URL}/labs/<slug>`. Until the lab is renamed, that slug is `lab-<labNftTokenId>` — the token id `createLab` returned in Step 3 — so a lab you have just created is at `https://sandbox.app.molecule.xyz/labs/lab-7` on the sandbox. Sign in to the sandbox Labs app to open it. Once the owner renames the lab, the slug becomes the `shortname` derived from the new name and the `lab-<tokenId>` form stops resolving. `oclId` does not work here.
 
 ## Complete script
 
