@@ -13,7 +13,7 @@ This page has been replaced by two step-by-step tutorials under **[🚀 Getting 
 | [**Create a lab and upload a public file**](../getting-started/create-lab-and-upload-file.md) | The default path — issue a service token, mint the LabNFT, register the lab, upload, verify. **Start here.** |
 | [**Upload an encrypted file**](../getting-started/upload-encrypted-file.md) | Local AES-256-GCM encryption, onchain access conditions, verified with a decrypt round trip |
 
-The configuration constants and helper functions both share are on [**Shared Setup**](../getting-started/shared-setup.md), and the staging → production swap table is on [Getting Started](../getting-started/README.md#running-in-production).
+The configuration constants and helper functions both share are on [**Shared Setup**](../getting-started/shared-setup.md), and the sandbox → production swap table is on [Getting Started](../getting-started/README.md#running-in-production).
 
 If you arrived here from a bookmark or an old link, [Create a lab and upload a public file](../getting-started/create-lab-and-upload-file.md) is the direct replacement for what used to be on this page — minus the assignment-agreement step, which is [no longer a gate on anything](../changelog.md#assignment-agreement-is-no-longer-a-gate-and-is-out-of-the-api-docs).
 

@@ -24,7 +24,7 @@ For how a refused request looks on the wire and how to retry it, see [Errors](er
 | --- | --- | --- | --- | --- |
 | [Cost budget](#cost-budget) | each machine credential, per 5-minute window | partner and personal credentials have different budgets, see [Budgets](#budgets) | `RATE_LIMITED` | No, measured only |
 | [Edge request counts](#edge-request-counts) | each source IP and each credential, per 5 minutes | see [Edge request counts](#edge-request-counts) | raw HTTP `403` | No, counted only |
-| [Query depth](#query-depth) | the whole query | 10 levels, production only | `QueryDepthLimitReached` | Yes |
+| [Query depth](#query-depth) | the whole query | 10 levels | `QueryDepthLimitReached` | Yes |
 | [Per-field selection](#per-field-selection-limits) | one field's own sub-selection | depth 6, 100 selections | `COMPLEXITY_LIMIT_EXCEEDED` | Yes |
 | [List size](#lists-without-paging-arguments) | 11 list fields with no paging arguments | 1000 items; 50 for `Token.relations` and `Token.markets` | `COMPLEXITY_LIMIT_EXCEEDED` | Yes |
 | [Page size and filters](#page-size-sorting-and-filters) | connection arguments | 100 per page, 3 sort keys, 100 ids, 200-character strings | `VALIDATION_FAILED` | Yes |
@@ -48,7 +48,7 @@ The cost of a request is worked out once, from the query document, before any re
 - **Mutations cost ×10.** The same selection costs ten times more on a mutation than on a query.
 - **At most 1,000,000,000 units per request.** No single request is charged more than that, so one pathological query can empty a window but never more than one.
 - **Documents that can't be priced are charged the maximum.** That's a document over 100 KB of query text, or a selection set too large to walk. Documents the API rejects anyway, such as syntax errors or a missing operation, are free.
-- **Introspection queries are free.** A query on `__schema` or `__type` isn't priced. Introspection is only available on staging.
+- **Introspection queries are free.** A query on `__schema` or `__type` isn't priced, though the sandbox and production both reject it (see [Getting the schema](getting-started/README.md#getting-the-schema)).
 
 Aliases don't make a query cheaper: fields are priced by their real name, not the alias.
 
@@ -89,12 +89,12 @@ Requests made with a signed-in Labs app session (a Privy `Bearer` token rather t
 
 The API sits behind a web application firewall with two request-count rules, each over a 5-minute window:
 
-| Rule | Counts requests per | Staging | Production |
-| --- | --- | --- | --- |
-| Per source IP | IP address | 100 | 2,000 |
-| Per credential | `Authorization` header value | 50 | 6,000 |
+| Rule | Counts requests per | Sandbox and production |
+| --- | --- | --- |
+| Per source IP | IP address | 2,000 |
+| Per credential | `Authorization` header value | 6,000 |
 
-These rules only **count** today; they block nothing. The production numbers are starting values, and they may change before any rule starts blocking. The staging numbers are much tighter, so a load test against staging is not a guide to production headroom.
+These rules only **count** today; they block nothing. The numbers are starting values, and they may change before any rule starts blocking.
 
 A blocked request gets a raw HTTP `403` with no GraphQL body. It's a different thing from `RATE_LIMITED`; see [Failures before your operation runs](errors.md#failures-before-your-operation-runs).
 
@@ -102,9 +102,9 @@ A blocked request gets a raw HTTP `403` with no GraphQL body. It's a different t
 
 ## Query depth
 
-**Production caps query depth at 10.** Scalar leaves count as a level, so `{ root { child { name } } }` is depth 3. A deeper query fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data. This is a plain GraphQL error, without `errorInfo`.
+**The sandbox and production cap query depth at 10.** Scalar leaves count as a level, so `{ root { child { name } } }` is depth 3. A deeper query fails at execution time with `errorType: "QueryDepthLimitReached"` and partial data. This is a plain GraphQL error, without `errorInfo`.
 
-Staging has no depth limit. It also has introspection enabled, which production doesn't (see [Getting the schema](getting-started/README.md#getting-the-schema)). Test your deepest queries against production-like limits before you ship: a query that works on staging can fail on production.
+Both environments also have introspection disabled (see [Getting the schema](getting-started/README.md#getting-the-schema)). Because the sandbox enforces the same limit, a query that runs there runs on production too.
 
 ---
 
@@ -208,14 +208,16 @@ If you're walking every page of a list, for example to build an index or a sitem
 
 ---
 
-## Staging and production
+## Sandbox and production
 
-| Limit | Staging | Production |
+The [sandbox](sandbox.md) runs the production release with production's configuration, so every limit on this page is the same in both:
+
+| Limit | Sandbox | Production |
 | --- | --- | --- |
 | Cost budget | same budgets, measured only | same budgets, measured only |
-| Edge request counts | 100 per IP, 50 per credential, per 5 minutes; counted only | 2,000 per IP, 6,000 per credential, per 5 minutes; counted only |
-| Query depth | no limit | 10 |
-| Introspection | enabled | disabled |
+| Edge request counts | 2,000 per IP, 6,000 per credential, per 5 minutes; counted only | 2,000 per IP, 6,000 per credential, per 5 minutes; counted only |
+| Query depth | 10 | 10 |
+| Introspection | disabled | disabled |
 | Per-field selection, list size, page size and filters | same | same |
 
 Credentials are per environment: each one has its own budget in the environment that issued it.

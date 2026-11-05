@@ -31,14 +31,14 @@ The `OclTokenizer` turns a Lab into a liquid asset: it deploys one fractional ER
 | LabToken (clone template)     | [`0xd13a5D5ab80c15c344aA0eAa36f16ABae940dB0c`](https://basescan.org/address/0xd13a5D5ab80c15c344aA0eAa36f16ABae940dB0c)         |
 | WrappedLabToken (clone template) | [`0x48Ab68bB775e4AC50eA0a9939dBcc71ae4A69817`](https://basescan.org/address/0x48Ab68bB775e4AC50eA0a9939dBcc71ae4A69817)      |
 
-**Base Sepolia:**
+**Base Sepolia (sandbox):**
 
 | Contract                      | Address                                                                                                                              |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| OclTokenizer (proxy)          | [`0xEe19e0Db8a7e59538710FAF6ed3ab655BCfCdB24`](https://sepolia.basescan.org/address/0xEe19e0Db8a7e59538710FAF6ed3ab655BCfCdB24)         |
-| OclTermsPermissioner          | [`0x2196e7181393b8045F34b66f571F1566922Aa4dB`](https://sepolia.basescan.org/address/0x2196e7181393b8045F34b66f571F1566922Aa4dB)         |
-| LabToken (clone template)     | [`0x8038d3B220C635b3B7A7B4bcba0928a2D5B0B8F6`](https://sepolia.basescan.org/address/0x8038d3B220C635b3B7A7B4bcba0928a2D5B0B8F6)         |
-| WrappedLabToken (clone template) | [`0x1Ba1Bd7d8824d6e7DB4dDF15aa41E00cE841abE2`](https://sepolia.basescan.org/address/0x1Ba1Bd7d8824d6e7DB4dDF15aa41E00cE841abE2)      |
+| OclTokenizer (proxy)          | [`0x70F9A9E28C58f78049768F503CCd90E6f6e26BcD`](https://sepolia.basescan.org/address/0x70F9A9E28C58f78049768F503CCd90E6f6e26BcD)         |
+| OclTermsPermissioner          | [`0x7E72A30F92652da825CB3458DFcD7C71eE0EA010`](https://sepolia.basescan.org/address/0x7E72A30F92652da825CB3458DFcD7C71eE0EA010)         |
+| LabToken (clone template)     | [`0xBeA1A862cC19fD2c0Fe2c52EE63DbeA0766A48bE`](https://sepolia.basescan.org/address/0xBeA1A862cC19fD2c0Fe2c52EE63DbeA0766A48bE)         |
+| WrappedLabToken (clone template) | [`0xbB1fc39750b4bD664896B790f7C3A81f9Bb4D31f`](https://sepolia.basescan.org/address/0xbB1fc39750b4bD664896B790f7C3A81f9Bb4D31f)      |
 
 ### How It Works
 

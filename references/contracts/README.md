@@ -4,16 +4,16 @@ icon: network-wired
 
 # Supported Networks & Contracts
 
-Molecule Labs runs on **Base**. Base mainnet is the canonical chain, where Lab state, LabNFT ownership and role grants live. Base Sepolia mirrors it for staging and development. The legacy IP-NFT contracts on Ethereum are listed at the bottom for reference only.
+Molecule Labs runs on **Base**. Base mainnet is the canonical chain, where Lab state, LabNFT ownership and role grants live. Base Sepolia hosts the [sandbox](../../api-reference/sandbox.md), the testnet copy of production for development. The legacy IP-NFT contracts on Ethereum are listed at the bottom for reference only.
 
 ### Networks
 
 | Network      | Chain ID | CAIP-2         | viem chain    | Environment                        | Explorer                                       |
 | ------------ | -------- | -------------- | ------------- | ---------------------------------- | ---------------------------------------------- |
 | Base         | `8453`   | `eip155:8453`  | `base`        | Production (canonical chain)       | [basescan.org](https://basescan.org)           |
-| Base Sepolia | `84532`  | `eip155:84532` | `baseSepolia` | Staging / development (testnet)    | [sepolia.basescan.org](https://sepolia.basescan.org) |
+| Base Sepolia | `84532`  | `eip155:84532` | `baseSepolia` | Sandbox (testnet)                  | [sepolia.basescan.org](https://sepolia.basescan.org) |
 
-The API environments map one-to-one onto these networks: the **staging** GraphQL endpoint and x402 gateway target Base Sepolia, and **production** targets Base. Credentials are per environment. To switch a script from one to the other, see [Running in Production](../../api-reference/getting-started/README.md#running-in-production).
+The API environments map one-to-one onto these networks: the **sandbox** GraphQL endpoint and x402 gateway target Base Sepolia, and **production** targets Base. Credentials are per environment. To switch a script from one to the other, see [Running in Production](../../api-reference/getting-started/README.md#running-in-production).
 
 #### Base Mainnet — Molecule Labs core (v0.1.0)
 
@@ -33,23 +33,23 @@ The Lab smart-account stack deployed on Base (chain ID `8453`):
 | LabToken (clone template)        | 0xd13a5D5ab80c15c344aA0eAa36f16ABae940dB0c | [BaseScan](https://basescan.org/address/0xd13a5D5ab80c15c344aA0eAa36f16ABae940dB0c) | IPT implementation (EIP-1167 template)      |
 | WrappedLabToken (clone template) | 0x48Ab68bB775e4AC50eA0a9939dBcc71ae4A69817 | [BaseScan](https://basescan.org/address/0x48Ab68bB775e4AC50eA0a9939dBcc71ae4A69817) | Bring-your-own-token IPT wrapper            |
 
-#### Base Sepolia Testnet — Molecule Labs core
+#### Base Sepolia Testnet (sandbox) — Molecule Labs core (v0.1.0)
 
-The same stack on Base Sepolia (chain ID `84532`). The staging API and every [Getting Started](../../api-reference/getting-started/README.md) tutorial run against these addresses:
+The same stack and the same contract versions on Base Sepolia (chain ID `84532`). The sandbox API and every [Getting Started](../../api-reference/getting-started/README.md) tutorial run against these addresses:
 
 | Contract                         | Address                                    | Verified URL                                                                                | Function                                    |
 | -------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| OnChainLabFactory                | 0xd629FE2310b4309a212495F10A47f8436dcEfD90 | [BaseScan](https://sepolia.basescan.org/address/0xd629FE2310b4309a212495F10A47f8436dcEfD90) | Lab account creation (mint & create)        |
-| LabNFT (proxy)                   | 0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28 | [BaseScan](https://sepolia.basescan.org/address/0x13Ff210695fdb54A7F928ECcc28BC3486c05BB28) | Lab ownership NFT (ERC-721)                 |
+| OnChainLabFactory                | 0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB | [BaseScan](https://sepolia.basescan.org/address/0x66CCDDbe7d5EF968d0EFD8F6f7B2A3Ee527825DB) | Lab account creation (mint & create)        |
+| LabNFT (proxy)                   | 0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14 | [BaseScan](https://sepolia.basescan.org/address/0x0FCACD29bE871688EeF853e9fBc6DCEA78343a14) | Lab ownership NFT (ERC-721)                 |
 | ERC7484Registry                  | 0x1Ab5Ba4300613F7346835b2BE7E2D10Ce6125eF5 | [BaseScan](https://sepolia.basescan.org/address/0x1Ab5Ba4300613F7346835b2BE7E2D10Ce6125eF5) | Module attestation registry                 |
 | RootValidator                    | 0xb31d39ECc0cb26478E258C8f7e9C906115f494f6 | [BaseScan](https://sepolia.basescan.org/address/0xb31d39ECc0cb26478E258C8f7e9C906115f494f6) | Default signature validator                 |
-| MoleculeOclDidRegistry (proxy)   | 0x8A23622967Cf7e3BB3219217ff685a5E4830C617 | [BaseScan](https://sepolia.basescan.org/address/0x8A23622967Cf7e3BB3219217ff685a5E4830C617) | DID linking for Labs                        |
-| OdfCoAttestVerifier              | 0x8c1BD0120CDe6102E60F547F5c898b82F6075541 | [BaseScan](https://sepolia.basescan.org/address/0x8c1BD0120CDe6102E60F547F5c898b82F6075541) | `did:odf` co-attestation verifier           |
-| AccessResolver (v3)              | 0x5493F472602C87318EA5Eff753cDD593bf9bF559 | [BaseScan](https://sepolia.basescan.org/address/0x5493F472602C87318EA5Eff753cDD593bf9bF559) | Roles & file access control                 |
-| OclTokenizer (proxy)             | 0xEe19e0Db8a7e59538710FAF6ed3ab655BCfCdB24 | [BaseScan](https://sepolia.basescan.org/address/0xEe19e0Db8a7e59538710FAF6ed3ab655BCfCdB24) | Lab tokenization (IPT factory)              |
-| OclTermsPermissioner             | 0x2196e7181393b8045F34b66f571F1566922Aa4dB | [BaseScan](https://sepolia.basescan.org/address/0x2196e7181393b8045F34b66f571F1566922Aa4dB) | Membership-agreement signature verification |
-| LabToken (clone template)        | 0x8038d3B220C635b3B7A7B4bcba0928a2D5B0B8F6 | [BaseScan](https://sepolia.basescan.org/address/0x8038d3B220C635b3B7A7B4bcba0928a2D5B0B8F6) | IPT implementation (EIP-1167 template)      |
-| WrappedLabToken (clone template) | 0x1Ba1Bd7d8824d6e7DB4dDF15aa41E00cE841abE2 | [BaseScan](https://sepolia.basescan.org/address/0x1Ba1Bd7d8824d6e7DB4dDF15aa41E00cE841abE2) | Bring-your-own-token IPT wrapper            |
+| MoleculeOclDidRegistry (proxy)   | 0xFD478b192eA86d38899a0D45a85E0b141A12aE87 | [BaseScan](https://sepolia.basescan.org/address/0xFD478b192eA86d38899a0D45a85E0b141A12aE87) | DID linking for Labs                        |
+| OdfCoAttestVerifier              | 0x0400F5F61B49F8C3E5C9fF72CC83D73375300205 | [BaseScan](https://sepolia.basescan.org/address/0x0400F5F61B49F8C3E5C9fF72CC83D73375300205) | `did:odf` co-attestation verifier           |
+| AccessResolver (v3)              | 0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe | [BaseScan](https://sepolia.basescan.org/address/0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe) | Roles & file access control                 |
+| OclTokenizer (proxy)             | 0x70F9A9E28C58f78049768F503CCd90E6f6e26BcD | [BaseScan](https://sepolia.basescan.org/address/0x70F9A9E28C58f78049768F503CCd90E6f6e26BcD) | Lab tokenization (IPT factory)              |
+| OclTermsPermissioner             | 0x7E72A30F92652da825CB3458DFcD7C71eE0EA010 | [BaseScan](https://sepolia.basescan.org/address/0x7E72A30F92652da825CB3458DFcD7C71eE0EA010) | Membership-agreement signature verification |
+| LabToken (clone template)        | 0xBeA1A862cC19fD2c0Fe2c52EE63DbeA0766A48bE | [BaseScan](https://sepolia.basescan.org/address/0xBeA1A862cC19fD2c0Fe2c52EE63DbeA0766A48bE) | IPT implementation (EIP-1167 template)      |
+| WrappedLabToken (clone template) | 0xbB1fc39750b4bD664896B790f7C3A81f9Bb4D31f | [BaseScan](https://sepolia.basescan.org/address/0xbB1fc39750b4bD664896B790f7C3A81f9Bb4D31f) | Bring-your-own-token IPT wrapper            |
 
 Need testnet funds? Get Base Sepolia ETH from a [Base Sepolia faucet](https://docs.base.org/base-chain/tools/network-faucets). You also need testnet USDC from the [Circle faucet](https://faucet.circle.com/), but only if you pay through the [x402 gateway](../../api-reference/x402-gateway.md).
 

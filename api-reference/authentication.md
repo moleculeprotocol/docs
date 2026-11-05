@@ -18,7 +18,7 @@ They are not alternatives. A read-only integration needs only the credential. An
 
 ### Create a credential
 
-1. Sign in to the Labs app: [app.molecule.xyz](https://app.molecule.xyz) for production, or [testnet.app.molecule.xyz](https://testnet.app.molecule.xyz) for staging, where every tutorial in these docs runs. **Credentials are per environment**: a staging credential doesn't authenticate against production, and the other way round.
+1. Sign in to the Labs app: [app.molecule.xyz](https://app.molecule.xyz) for production, or [sandbox.app.molecule.xyz](https://sandbox.app.molecule.xyz) for the [sandbox](sandbox.md), where every tutorial in these docs runs. **Credentials are per environment**: a sandbox credential doesn't authenticate against production, and the other way round.
 2. Open the **API credentials** page from the navigation. In production the menu entry may still read **API Keys**.
 3. Click **Create**, give the credential a name you'll recognise later (optional, at most 64 characters, for example `Data sync script`), and pick how long it should last: 7, 30, 90 days, 1 year, or a custom date. The default is 90 days.
 4. The first time, and again whenever the terms change, tick the box to accept the API Terms of Service and the Acceptable Use Policy. See [Accepting the API terms](#accepting-the-api-terms).

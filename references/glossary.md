@@ -67,7 +67,7 @@ Role checks are hierarchical: a Contributor passes Viewer checks, and the Owner 
 
 **Indexer / indexer lag** — onchain events reach the API through an indexing service, which takes a moment to catch up. A transaction that has confirmed onchain is therefore not immediately visible to the API, which is why a write straight after a mint or a role grant can fail and should be retried rather than treated as a real error.
 
-**Staging vs production** — staging runs on Base Sepolia with testnet funds and nothing costs real money; production runs on Base mainnet. Credentials are per environment and are not interchangeable.
+**Sandbox vs production** — the [sandbox](../api-reference/sandbox.md) runs the production release on Base Sepolia with testnet funds, so nothing costs real money; production runs on Base mainnet. Credentials are per environment and are not interchangeable.
 
 ## Related
 

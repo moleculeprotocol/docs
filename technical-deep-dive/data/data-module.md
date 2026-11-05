@@ -71,8 +71,8 @@ That means any DID-identified data source — another data platform, an instrume
 | --- | --- |
 | Registry (Base mainnet, proxy) | [`0x6cd3Cf3c34a18Bf48F90590c3a57708F175b2eE3`](https://basescan.org/address/0x6cd3Cf3c34a18Bf48F90590c3a57708F175b2eE3) |
 | Verifier — OdfCoAttestVerifier (Base mainnet) | [`0x5a7a22bbad7B8B3c91EdB7FC2Af2DE5de9060D8B`](https://basescan.org/address/0x5a7a22bbad7B8B3c91EdB7FC2Af2DE5de9060D8B) |
-| Registry (Base Sepolia, proxy) | [`0x8A23622967Cf7e3BB3219217ff685a5E4830C617`](https://sepolia.basescan.org/address/0x8A23622967Cf7e3BB3219217ff685a5E4830C617) |
-| Verifier — OdfCoAttestVerifier (Base Sepolia) | [`0x8c1BD0120CDe6102E60F547F5c898b82F6075541`](https://sepolia.basescan.org/address/0x8c1BD0120CDe6102E60F547F5c898b82F6075541) |
+| Registry (Base Sepolia sandbox, proxy) | [`0xFD478b192eA86d38899a0D45a85E0b141A12aE87`](https://sepolia.basescan.org/address/0xFD478b192eA86d38899a0D45a85E0b141A12aE87) |
+| Verifier — OdfCoAttestVerifier (Base Sepolia sandbox) | [`0x0400F5F61B49F8C3E5C9fF72CC83D73375300205`](https://sepolia.basescan.org/address/0x0400F5F61B49F8C3E5C9fF72CC83D73375300205) |
 
 Key functions:
 

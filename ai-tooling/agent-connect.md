@@ -20,7 +20,7 @@ https://mcp.molecule.xyz
 Nothing goes after it: no `/mcp` and no trailing slash. Some apps' own instructions add `/mcp` to a server address; leave it out for Molecule.
 
 {% hint style="info" %}
-**Want to try it first?** Use `https://sandbox.mcp.molecule.xyz` instead. It connects your app to Labs in the sandbox, [sandbox.app.molecule.xyz](https://sandbox.app.molecule.xyz), which runs on Base Sepolia with test funds only. Use test files only: what you put in the sandbox stays there.
+**Want to try it first?** Use `https://sandbox.mcp.molecule.xyz` instead. It connects your app to Labs in the sandbox, [sandbox.app.molecule.xyz](https://sandbox.app.molecule.xyz), which runs on Base Sepolia with test funds only. Use test files only: what you put in the sandbox stays there. More about the sandbox: [Sandbox](../api-reference/sandbox.md).
 {% endhint %}
 
 ## Add Molecule to your app

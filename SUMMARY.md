@@ -36,6 +36,7 @@
 ## API Reference
 
 * [📡 API Overview](api-reference/README.md)
+* [Sandbox](api-reference/sandbox.md)
 * [Getting Started](api-reference/getting-started/README.md)
   * [Shared Setup](api-reference/getting-started/shared-setup.md)
   * [Create a lab and upload a public file](api-reference/getting-started/create-lab-and-upload-file.md)

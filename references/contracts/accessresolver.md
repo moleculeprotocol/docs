@@ -29,9 +29,9 @@ The **V3 role system runs only on Base and Base Sepolia**. The Ethereum Mainnet 
 - **Base (canonical chain — v3, roles live here)**
   - Address: `0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B`
   - [Verified on BaseScan](https://basescan.org/address/0x89a14Be8f7824d4775053Edad0f2fA2d6767b72B)
-- **Base Sepolia (v3)**
-  - Address: `0x5493F472602C87318EA5Eff753cDD593bf9bF559`
-  - [Verified on BaseScan](https://sepolia.basescan.org/address/0x5493F472602C87318EA5Eff753cDD593bf9bF559)
+- **Base Sepolia (v3, sandbox)**
+  - Address: `0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe`
+  - [Verified on BaseScan](https://sepolia.basescan.org/address/0xE4Dc90D9C5a9331046aFC2Cd569D9f055f3d90fe)
 - **Ethereum Mainnet (v2 — signer predicates only)**
   - Address: `0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0`
   - [Verified on Etherscan](https://etherscan.io/address/0xc130e0b49840b266A49F62C0Cc77e353E0C99cD0)

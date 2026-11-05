@@ -35,7 +35,7 @@ Every other use case, from sharing confidential data to building modules, is on 
 
 ## Interact with our API
 
-<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>🚀 Getting Started</strong></td><td>A ten-minute path from zero to a Lab with a file in it, on testnet.</td><td><a href="api-reference/getting-started/README.md">README.md</a></td></tr><tr><td><strong>📡 API Reference</strong></td><td>Labs, Tokenization and x402 APIs — endpoints, types and changelog.</td><td><a href="api-reference/README.md">README.md</a></td></tr></tbody></table>
+<table data-view="cards"><thead><tr><th></th><th></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>🚀 Getting Started</strong></td><td>A ten-minute path from zero to a Lab with a file in it, on the sandbox.</td><td><a href="api-reference/getting-started/README.md">README.md</a></td></tr><tr><td><strong>📡 API Reference</strong></td><td>Labs, Tokenization and x402 APIs — endpoints, types and changelog.</td><td><a href="api-reference/README.md">README.md</a></td></tr></tbody></table>
 
 ## From the blog
 
