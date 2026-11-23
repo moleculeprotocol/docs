@@ -1,0 +1,83 @@
+name: Docs update notification
+
+# On every push to main, post what's new in the docs to the weekly product
+# channel in Slack, worded for product and marketing (IP-3535). GitBook's Git
+# Sync lands both merged PRs and change requests merged in the GitBook editor
+# on main, and main is what the site serves, so each push is a published
+# version. Pushes with nothing worth announcing (typos, links, formatting) are
+# skipped by the script, not posted.
+#
+# Setup (repo Settings → Secrets and variables → Actions):
+#   secrets.ANTHROPIC_API_KEY           writes the summary
+#   secrets.SLACK_DOCS_UPDATE_WEBHOOK   incoming webhook of the "Docs Updates" Slack app
+#
+# To preview a past push without posting: Actions → Docs update notification →
+# Run workflow, with the push's before and after SHAs and "dry run" ticked. The
+# Slack message is printed in the run log.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.md"
+      - "!.github/**"
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Commit to diff from (default: the parent of head)"
+        required: false
+      head:
+        description: "Commit to diff to (default: the latest commit on the branch)"
+        required: false
+      dry_run:
+        description: "Print the Slack message instead of posting it"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the diff needs the push's before commit
+          persist-credentials: false
+
+      # Not the runner's system Python, which may refuse pip installs (PEP 668).
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Install the Anthropic SDK
+        run: python3 -m pip install --quiet anthropic==2.5.0
+
+      - name: Post the update to Slack
+        # Above the script's API timeout with retries (3 x 5 min), and below the
+        # job's: a step that times out fails, so the report below still runs; a
+        # job that times out is cancelled and skips it.
+        timeout-minutes: 17
+        env:
+          BEFORE_SHA: ${{ github.event_name == 'push' && github.event.before || inputs.base }}
+          AFTER_SHA: ${{ github.event_name == 'push' && github.event.after || inputs.head || github.sha }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # A push always posts; a manual run posts only when dry run is off.
+          SLACK_WEBHOOK_URL: ${{ (github.event_name == 'push' || !inputs.dry_run) && secrets.SLACK_DOCS_UPDATE_WEBHOOK || '' }}
+        run: python3 .github/scripts/docs_update_notify.py
+
+      # Without this a failed run looks the same in the channel as a push with
+      # nothing to announce. Same condition as the post: never on a dry run.
+      - name: Report the failure in Slack
+        if: failure() && (github.event_name == 'push' || !inputs.dry_run)
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DOCS_UPDATE_WEBHOOK }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          HEAD_SHA: ${{ github.event_name == 'push' && github.event.after || inputs.head || github.sha }}
+        run: |
+          [ -n "$SLACK_WEBHOOK_URL" ] || exit 0
+          jq -n --arg sha "${HEAD_SHA:0:7}" --arg url "$RUN_URL" \
+            '{text: "The docs update for \($sha) could not be posted, so it was not announced here. <\($url)|See the failed run>"}' |
+            curl --silent --show-error --fail --max-time 30 -H "Content-Type: application/json" --data @- "$SLACK_WEBHOOK_URL"
