@@ -73,10 +73,17 @@ Add the server, then sign in. OpenAI's guide: [Model Context Protocol in Codex](
 
 ```bash
 codex mcp add molecule --url https://mcp.molecule.xyz
-codex mcp login molecule
+codex mcp login molecule --scopes labs
 ```
 
+`--scopes labs` asks Molecule for exactly the access an agent gets, which keeps Codex from returning to the approval page after **Connect**.
+
 The Codex CLI, the IDE extension and the ChatGPT desktop app share this setting. To Molecule, Codex and ChatGPT are different apps, so each gets its own agent.
+
+Two Codex settings affect Molecule's tools:
+
+* **Reasoning effort.** At `low`, Codex may not find Molecule's tools and say they do not exist. Use `medium` or higher.
+* **`codex exec`.** It cannot stop to ask for your approval, so it refuses the tools that change your Lab, such as uploads. Upload from interactive Codex instead.
 
 ### grok.com
 
@@ -109,6 +116,8 @@ Then open Cursor's **Customize** page, where `molecule` is listed, and sign in w
 **Firefox is not supported yet.** Connecting does not work in Firefox. Use another browser, such as Chrome, for this step.
 {% endhint %}
 
+This page opens only from your app, when it signs in to Molecule. The Molecule app has no link to it, because the page needs the sign-in request your app started.
+
 When your app opens the browser window:
 
 1. **Sign in to Molecule** with the account you use in the Molecule app. If you are already signed in in that browser, the page skips this step. If you are new to Molecule, you set up your account first and come back to this page.
@@ -133,7 +142,11 @@ That is what the agent can do through Agent Connect. For everything each role al
 
 To change the role later, remove the agent in Members and connect again with the new role. It comes back as the same agent.
 
-Whatever the role, the name, description, tags and searchable text of a private file are public: only its contents are encrypted. And anyone can download a public file as soon as it is uploaded, so treat a public upload as published. Deleting it later does not take back copies already made.
+A private file keeps only its contents secret. Anyone can see its name, path, description, tags and searchable text, who uploaded it and when, its size and its content hash, and anyone can download the encrypted file. For an agent's upload, "who" includes the agent's wallet, the app's name and the wallet that connected the agent.
+
+Anyone can download a public file as soon as it is uploaded, so treat a public upload as published. Deleting it later does not take back copies already made.
+
+Reading a file, public or private, leaves no public record, so nobody else can check who read which file.
 
 ## Tools
 
@@ -162,6 +175,8 @@ Disconnecting is removing the agent from the Lab's members in the Molecule app:
 1. Open the Lab's **Members** page, `https://app.molecule.xyz/labs/<shortname>/members`.
 2. Find the agent's row. Agents carry an **Agent** tag, and the row is named after the app, such as **Claude agent** or **Claude Code agent**. An app that chose its own name shows as **Unverified agent:** followed by that name.
 3. Open the row's menu, choose **Remove member**, then **Revoke access**.
+
+Agent Connect gives the agent's role no end date, so the role stays on the Lab until you remove it here, even after the app's connection ends.
 
 The agent loses the Lab as soon as Molecule records the revoke. If it is connected to other Labs, it keeps them and the app stays signed in. Once its last Lab is removed, the app has to sign in again.
 
