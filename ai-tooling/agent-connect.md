@@ -142,7 +142,7 @@ That is what the agent can do through Agent Connect. For everything each role al
 
 To change the role later, remove the agent in Members and connect again with the new role. It comes back as the same agent.
 
-A private file keeps only its contents secret. Anyone can see its name, path, description, tags and searchable text, who uploaded it and when, its size and its content hash, and anyone can download the encrypted file. For an agent's upload, "who" includes the agent's wallet, the app's name and the wallet that connected the agent.
+A private file keeps only its contents secret. Anyone can see its name, path, description, tags, categories, file type and searchable text, who uploaded it and when, its size and its content hash, and anyone can download the encrypted file. For an agent's upload, "who" includes the agent's wallet, the app's name and the wallet that connected the agent.
 
 Anyone can download a public file as soon as it is uploaded, so treat a public upload as published. Deleting it later does not take back copies already made.
 
