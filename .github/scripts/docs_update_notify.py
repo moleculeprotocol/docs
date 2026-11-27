@@ -26,6 +26,7 @@ import os
 import posixpath
 import re
 import subprocess
+import urllib.parse
 import urllib.request
 from datetime import datetime
 
@@ -40,6 +41,7 @@ MAX_DIFF_LINES = 800  # per file; generated API reference pages can change by th
 MAX_PROMPT_CHARS = 300_000  # all diffs together, roughly 75-100k tokens
 MAX_HIGHLIGHTS = 3
 SLACK_SECTION_CHARS = 3000  # Slack rejects a section block with longer text
+SLACK_HEADER_CHARS = 150  # and a header block with longer text
 
 # Not content: CI config and images. Everything else ending in .md is a page,
 # an include embedded in pages (.gitbook/includes/), or SUMMARY.md itself.
@@ -384,31 +386,36 @@ def escape(text):
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def read_more(item, pages, base_url):
+def view_link(item, pages, base_url):
     page = pages.get(item["page"])
-    return "<{}/{}|Read more>".format(base_url, page["url_path"]) if page else ""
+    return "<{}/{}|View>".format(base_url, page["url_path"]) if page else ""
 
 
 def slack_message(result, pages, base_url, published):
-    host = base_url.split("://", 1)[-1]
-    header = "*New docs version live on <{}|{}>* · {:%-d %b}".format(base_url, host, published)
-    # Top-level blocks only: legacy attachments (the coloured side bars) are not
-    # rendered everywhere, including Block Kit Builder.
-    blocks = [_section(header), {"type": "divider"}]
-    for item in result["highlights"][:MAX_HIGHLIGHTS]:
-        lines = ["*{}*".format(escape(item["title"])), escape(item["summary"])]
-        if item["page"] in pages:
-            lines.append("_{}_ · {}".format(escape(pages[item["page"]]["section"]), read_more(item, pages, base_url)))
-        blocks.append(_section("\n".join(lines)))
+    host = urllib.parse.urlsplit(base_url).hostname or base_url
+    # Block quotes set the post apart from other messages in the channel. The
+    # titles are header blocks for the larger font, which Slack cannot put inside
+    # a quote, so the quote restarts under each title. Header blocks take plain
+    # text only, so the site name in the title is not a link.
+    blocks = [_header("New docs version live on {} · {:%-d %b}".format(host, published))]
+    # Every highlight goes here, also any past MAX_HIGHLIGHTS: the limit is only
+    # asked for in the prompt, and the model ranked them as the main news.
+    if result["highlights"]:
+        lines = []
+        for item in result["highlights"]:
+            where = ""
+            if item["page"] in pages:
+                where = " _{}_ · {}".format(escape(pages[item["page"]]["section"]), view_link(item, pages, base_url))
+            lines.append("• *{}* - {}{}".format(escape(item["title"]), escape(item["summary"]), where))
+        blocks += [_header("Product & Marketing relevant changes")] + _quoted(lines)
 
-    also = result["also"] + result["highlights"][MAX_HIGHLIGHTS:]
-    if also:
-        lines = ["*Also in this release*"]
-        for item in also:
-            link = read_more(item, pages, base_url)
+    if result["also"]:
+        lines = []
+        for item in result["also"]:
+            link = view_link(item, pages, base_url)
             lines.append("• *{}* - {}{}".format(
                 escape(item["title"]), escape(item["summary"]), " " + link if link else ""))
-        blocks += [{"type": "divider"}] + _sections(lines)
+        blocks += [_header("Smaller updates")] + _quoted(lines)
 
     titles = [escape(i["title"]) for i in result["highlights"] + result["also"]]
     return {
@@ -417,6 +424,23 @@ def slack_message(result, pages, base_url, published):
         "unfurl_links": False,  # no link previews under the post
         "unfurl_media": False,
     }
+
+
+def _quote(text):
+    """Slack mrkdwn block quote; every line needs its own > to stay inside it."""
+    return "\n".join("> " + line if line else ">" for line in text.split("\n"))
+
+
+def _quoted(lines):
+    """Section blocks showing lines as a block quote, split as _sections does."""
+    return _sections([_quote(line) for line in lines])
+
+
+def _header(text):
+    """Header block: larger plain text, no markup, cut to Slack's limit."""
+    if len(text) > SLACK_HEADER_CHARS:
+        text = text[:SLACK_HEADER_CHARS - 1] + "…"
+    return {"type": "header", "text": {"type": "plain_text", "text": text}}
 
 
 def _section(text):
